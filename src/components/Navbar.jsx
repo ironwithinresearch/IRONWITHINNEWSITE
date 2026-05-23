@@ -130,32 +130,7 @@ export default function Navbar() {
           </Link>
 
           {/* Login / Profile */}
-          <Link href="/login" style={{ textDecoration: 'none' }}>
-            <button style={{
-              display: 'flex', alignItems: 'center', gap: '7px',
-              padding: '8px 18px',
-              background: 'var(--gradient-primary)',
-              border: 'none',
-              borderRadius: 'var(--radius-md)',
-              color: '#fff',
-              fontFamily: 'var(--font-body)',
-              fontWeight: 600,
-              fontSize: '0.875rem',
-              cursor: 'pointer',
-              boxShadow: 'var(--glow-sm)',
-              transition: 'all var(--transition-base)',
-            }}
-              onMouseEnter={e => e.currentTarget.style.boxShadow = 'var(--glow-blue)'}
-              onMouseLeave={e => e.currentTarget.style.boxShadow = 'var(--glow-sm)'}
-            >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
-              </svg>
-              Login
-            </button>
-          </Link>
+          <LoginBtn />
 
           {/* Hamburger (mobile) */}
           <button
@@ -307,14 +282,17 @@ function NavLink({ href, label }) {
       textDecoration: 'none',
       transition: 'all var(--transition-fast)',
       letterSpacing: '0.01em',
+      border: '1px solid transparent',
     }}
       onMouseEnter={e => {
         e.currentTarget.style.color = 'var(--primary-blue)';
         e.currentTarget.style.background = 'rgba(0,207,255,0.07)';
+        e.currentTarget.style.borderColor = 'var(--primary-blue)';
       }}
       onMouseLeave={e => {
         e.currentTarget.style.color = 'var(--text-secondary)';
         e.currentTarget.style.background = 'transparent';
+        e.currentTarget.style.borderColor = 'transparent';
       }}
     >
       {label}
@@ -350,5 +328,39 @@ function IconBtn({ children, onClick, title, active }) {
     >
       {children}
     </button>
+  );
+}
+
+function LoginBtn() {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <Link href="/login" style={{ textDecoration: 'none' }}>
+      <div
+        style={{
+          display: 'flex', alignItems: 'center', gap: '7px',
+          padding: '8px 18px',
+          background: 'var(--gradient-primary)',
+          border: hovered ? '2px solid rgba(255,255,255,0.4)' : '2px solid transparent',
+          borderRadius: 'var(--radius-md)',
+          color: '#fff',
+          fontFamily: 'var(--font-body)',
+          fontWeight: 600,
+          fontSize: '0.875rem',
+          cursor: 'pointer',
+          boxShadow: hovered ? 'var(--glow-blue)' : 'var(--glow-sm)',
+          transition: 'all var(--transition-base)',
+        }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        Login
+      </div>
+    </Link>
   );
 }
