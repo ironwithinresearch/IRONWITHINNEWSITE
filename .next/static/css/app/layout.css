@@ -1,79 +1,175 @@
 /*!*****************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[12].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[12].use[3]!./src/app/globals.css ***!
   \*****************************************************************************************************************************************************************************************************************************************************************/
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #020617;
-  color: white;
+:root {
+  --primary-blue: #00CFFF;
+  --secondary-blue: #1DA1F2;
+  --purple: #7C3AED;
+  --pink: #EC4899;
+  --bg-dark: #020617;
+  --card-dark: #0F172A;
+  --text-light: #EAFBFF;
 }
 
-/* Navbar */
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg-dark);
+  color: var(--text-light);
+  font-family: Arial, sans-serif;
+}
+
+/* 🔝 Navbar */
 .navbar {
   display: flex;
   justify-content: space-between;
-  padding: 20px;
-  background: #020617;
+  align-items: center;
+  padding: 20px 40px;
+  background: rgba(2, 6, 23, 0.9);
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 207, 255, 0.2);
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 20px;
+  color: var(--primary-blue);
+  text-shadow: 0 0 10px var(--primary-blue);
 }
 
 .nav-links a {
   margin: 0 15px;
-  color: white;
   text-decoration: none;
+  color: var(--text-light);
+  transition: 0.3s;
 }
 
-/* Hero */
+.nav-links a:hover {
+  color: var(--primary-blue);
+  text-shadow: 0 0 8px var(--primary-blue);
+}
+
+/* Right actions */
+.nav-actions span {
+  margin-left: 15px;
+  cursor: pointer;
+}
+
+/* 🏠 Hero */
 .hero {
   text-align: center;
-  padding: 100px 20px;
+  padding: 120px 20px;
+}
+
+.hero h1 {
+  font-size: 48px;
+  font-weight: bold;
 }
 
 .hero span {
-  color: #EC4899;
+  background: linear-gradient(90deg, #00CFFF, #7C3AED, #EC4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+  margin-top: 15px;
+  opacity: 0.8;
+}
+
+/* Buttons */
+.buttons {
+  margin-top: 30px;
 }
 
 .btn-primary {
-  background: linear-gradient(90deg, #7C3AED, #EC4899);
+  padding: 12px 25px;
   border: none;
-  padding: 10px 20px;
   color: white;
   margin: 10px;
+  cursor: pointer;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #00CFFF, #7C3AED, #EC4899);
+  box-shadow: 0 0 15px rgba(0, 207, 255, 0.6);
+  transition: 0.3s;
+}
+
+.btn-primary:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(236, 72, 153, 0.8);
 }
 
 .btn-secondary {
-  border: 1px solid white;
-  padding: 10px 20px;
+  padding: 12px 25px;
+  border: 1px solid var(--primary-blue);
   background: transparent;
-  color: white;
+  color: var(--text-light);
+  border-radius: 8px;
+  cursor: pointer;
 }
 
-/* Products */
+.btn-secondary:hover {
+  background: rgba(0, 207, 255, 0.1);
+}
+
+/* 🧪 Products */
 .products {
-  padding: 50px;
+  padding: 60px 40px;
+  text-align: center;
+}
+
+.products h2 {
+  margin-bottom: 30px;
 }
 
 .grid {
   display: flex;
   gap: 20px;
+  justify-content: center;
 }
 
 .card {
+  background: var(--card-dark);
   padding: 30px;
-  background: #1E293B;
+  border-radius: 12px;
+  width: 200px;
+  border: 1px solid rgba(0, 207, 255, 0.2);
+  transition: 0.3s;
 }
 
-/* Footer */
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px rgba(0, 207, 255, 0.4);
+}
+
+/* 🔻 Footer */
 .footer {
   background: #020617;
-  padding: 40px;
+  padding: 50px 40px;
+  border-top: 1px solid rgba(0, 207, 255, 0.2);
 }
 
 .footer-grid {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.footer h3, .footer h4 {
+  color: var(--primary-blue);
 }
 
 .copy {
   text-align: center;
-  margin-top: 20px;
+  opacity: 0.6;
+}
+
+.logo img {
+  object-fit: contain;
 }
