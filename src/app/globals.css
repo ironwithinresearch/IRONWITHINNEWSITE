@@ -1,0 +1,76 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #020617;
+  color: white;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  background: #020617;
+}
+
+.nav-links a {
+  margin: 0 15px;
+  color: white;
+  text-decoration: none;
+}
+
+/* Hero */
+.hero {
+  text-align: center;
+  padding: 100px 20px;
+}
+
+.hero span {
+  color: #EC4899;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #7C3AED, #EC4899);
+  border: none;
+  padding: 10px 20px;
+  color: white;
+  margin: 10px;
+}
+
+.btn-secondary {
+  border: 1px solid white;
+  padding: 10px 20px;
+  background: transparent;
+  color: white;
+}
+
+/* Products */
+.products {
+  padding: 50px;
+}
+
+.grid {
+  display: flex;
+  gap: 20px;
+}
+
+.card {
+  padding: 30px;
+  background: #1E293B;
+}
+
+/* Footer */
+.footer {
+  background: #020617;
+  padding: 40px;
+}
+
+.footer-grid {
+  display: flex;
+  justify-content: space-between;
+}
+
+.copy {
+  text-align: center;
+  margin-top: 20px;
+}
