@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   FlaskConical,
   Beaker,
@@ -23,6 +24,10 @@ import {
   ShoppingCart,
   Heart,
 } from 'lucide-react';
+import Medicine1 from '../../public/images/medicine1.png';
+import Medicine2 from '../../public/images/medicine2.png';
+import Medicine3 from '../../public/images/medicine3.png';
+import Medicine4 from '../../public/images/medicine4.png';
 
 /* ── Static data ─────────────────────────────────────────── */
 const featuredProducts = [
@@ -35,6 +40,7 @@ const featuredProducts = [
     badgeColor: 'var(--primary-blue)',
     desc: 'Promotes healing and recovery in muscles, tendons, and ligaments.',
     Icon: FlaskConical,
+    image: Medicine1,
   },
   {
     id: 2,
@@ -45,6 +51,7 @@ const featuredProducts = [
     badgeColor: 'var(--purple)',
     desc: 'Widely studied for tissue repair and anti-inflammatory properties.',
     Icon: Beaker,
+    image: Medicine2,
   },
   {
     id: 3,
@@ -55,6 +62,7 @@ const featuredProducts = [
     badgeColor: 'var(--pink)',
     desc: 'Research compound studied for metabolic and appetite regulation.',
     Icon: Pill,
+    image: Medicine3,
   },
   {
     id: 4,
@@ -65,6 +73,7 @@ const featuredProducts = [
     badgeColor: '#34d399',
     desc: 'Studied for its role in stimulating growth hormone secretion.',
     Icon: Dna,
+    image: Medicine4,
   },
 ];
 
@@ -649,7 +658,7 @@ export default function Home() {
 
 /* ── Product Card Sub-component ──────────────────────────── */
 function ProductCard({ product }) {
-  const { id, name, subtitle, price, badge, badgeColor = 'var(--primary-blue)', desc, Icon } = product;
+  const { id, name, subtitle, price, badge, badgeColor = 'var(--primary-blue)', desc, Icon, image } = product;
 
   return (
     <Link href={`/product/${id}`} style={{ textDecoration: 'none' }}>
@@ -678,29 +687,29 @@ function ProductCard({ product }) {
           e.currentTarget.style.boxShadow = 'none';
         }}
       >
-        {/* Badge */}
-        {badge && (
-          <div style={{
-            position: 'absolute', top: '16px', right: '16px',
-            padding: '4px 10px',
-            background: `${badgeColor}22`,
-            border: `1px solid ${badgeColor}55`,
-            borderRadius: '999px',
-            fontSize: '0.7rem', fontWeight: 700,
-            color: badgeColor,
-            letterSpacing: '0.05em',
-          }}>{badge}</div>
-        )}
+       
 
-        {/* Icon circle */}
         <div style={{
-          width: 60, height: 60,
+          width: '100%',
+          height: '180px',
           borderRadius: 'var(--radius-md)',
-          background: `${badgeColor}18`,
-          border: `1px solid ${badgeColor}33`,
+          background: `${badgeColor}08`,
+          border: `1px solid ${badgeColor}22`,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
+          marginBottom: '8px',
+          overflow: 'hidden',
         }}>
-          {Icon && <Icon size={28} color={badgeColor} />}
+          {image ? (
+            <Image
+              src={image}
+              alt={name}
+              width={'100%'}
+              height={180}
+               
+            />
+          ) : (
+            Icon && <Icon size={50} color={badgeColor} />
+          )}
         </div>
 
         {/* Info */}

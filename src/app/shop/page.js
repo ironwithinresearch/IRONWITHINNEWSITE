@@ -478,20 +478,7 @@ function ShopProductCard({ product }) {
           <Heart size={14} />
         </button>
 
-        {/* Badge */}
-        {badge && (
-          <div style={{
-            position: 'absolute', top: '10px', left: '10px',
-            padding: '3px 9px',
-            background: `${badgeColor}20`,
-            border: `1px solid ${badgeColor}50`,
-            borderRadius: '999px',
-            fontSize: '0.65rem', fontWeight: 700,
-            color: badgeColor,
-            letterSpacing: '0.06em',
-            textTransform: 'uppercase',
-          }}>{badge}</div>
-        )}
+    
 
         {/* Out of stock */}
         {!inStock && (

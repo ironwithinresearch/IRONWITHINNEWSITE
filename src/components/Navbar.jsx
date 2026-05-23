@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
+import Logo from '../../public/images/Logo.png';
 
 export default function Navbar() {
   const [scrolled, setScrolled]     = useState(false);
@@ -48,28 +50,18 @@ export default function Navbar() {
         {/* ── Logo ── */}
         <Link href="/" style={{ flexShrink: 0, textDecoration: 'none' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{
-              width: 38, height: 38,
-              borderRadius: '10px',
-              background: 'var(--gradient-primary)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: 'var(--glow-blue)',
-              fontSize: '18px', fontWeight: 900,
-              color: '#fff',
-              fontFamily: 'var(--font-heading)',
-            }}>D</div>
-            <span style={{
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: '1.1rem',
-              background: 'var(--gradient-primary)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              letterSpacing: '0.04em',
-            }}>
-              DARRYL<span style={{ opacity: 0.7 }}> PEPTIDES</span>
-            </span>
+            <Image
+              src={Logo}
+              alt="Darryl Peptides Logo"
+              width={38}
+              height={38}
+              style={{
+                borderRadius: '10px',
+                boxShadow: 'var(--glow-blue)',
+              }}
+              priority
+            />
+           
           </div>
         </Link>
 
