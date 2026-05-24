@@ -22,23 +22,29 @@ import {
   ChevronDown,
   X,
 } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
+
 import SectionHeader from '../../components/ui/SectionHeader';
+import Medicine1 from '../../../public/images/medicine1.png';
+import Medicine2 from '../../../public/images/medicine2.png';
+import Medicine3 from '../../../public/images/medicine3.png';
+import Medicine4 from '../../../public/images/medicine4.png';
 
 /* ── Data ────────────────────────────────────────────────── */
 const allProducts = [
-  { id: 1,  name: 'BPC-157',       subtitle: 'Body Protection Compound',   price: 49.99,  badge: 'Best Seller', badgeColor: 'var(--primary-blue)', Icon: FlaskConical, category: 'Healing & Recovery', rating: 4.9, reviews: 214, inStock: true },
-  { id: 2,  name: 'TB-500',        subtitle: 'Thymosin Beta-4',            price: 59.99,  badge: 'Popular',     badgeColor: 'var(--purple)',        Icon: Beaker,       category: 'Healing & Recovery', rating: 4.8, reviews: 178, inStock: true },
-  { id: 3,  name: 'Semaglutide',   subtitle: 'GLP-1 Receptor Agonist',     price: 79.99,  badge: 'New',         badgeColor: 'var(--pink)',          Icon: Pill,         category: 'Metabolic Research', rating: 4.7, reviews: 92,  inStock: true },
-  { id: 4,  name: 'CJC-1295',      subtitle: 'Growth Hormone Releasing',   price: 54.99,  badge: 'Top Rated',   badgeColor: '#34d399',              Icon: Dna,          category: 'Hormonal Research',  rating: 4.8, reviews: 143, inStock: true },
-  { id: 5,  name: 'Ipamorelin',    subtitle: 'GH Secretagogue',            price: 44.99,  badge: null,          badgeColor: 'var(--primary-blue)',  Icon: Microscope,   category: 'Hormonal Research',  rating: 4.6, reviews: 87,  inStock: true },
-  { id: 6,  name: 'Tirzepatide',   subtitle: 'GIP/GLP-1 Agonist',         price: 89.99,  badge: 'New',         badgeColor: 'var(--pink)',          Icon: Zap,          category: 'Metabolic Research', rating: 4.9, reviews: 61,  inStock: true },
-  { id: 7,  name: 'Selank',        subtitle: 'Anxiolytic Peptide',         price: 39.99,  badge: null,          badgeColor: 'var(--purple)',        Icon: Brain,        category: 'Cognitive Peptides', rating: 4.5, reviews: 55,  inStock: false },
-  { id: 8,  name: 'Semax',         subtitle: 'Cognitive Enhancer',         price: 42.99,  badge: null,          badgeColor: 'var(--purple)',        Icon: Brain,        category: 'Cognitive Peptides', rating: 4.7, reviews: 69,  inStock: true },
-  { id: 9,  name: 'Epithalon',     subtitle: 'Telomere Peptide',           price: 64.99,  badge: null,          badgeColor: '#34d399',              Icon: Sparkles,     category: 'Anti-Aging',         rating: 4.6, reviews: 48,  inStock: true },
-  { id: 10, name: 'Follistatin',   subtitle: 'Myostatin Inhibitor',        price: 94.99,  badge: 'Premium',     badgeColor: '#fbbf24',              Icon: Dumbbell,     category: 'Performance',        rating: 4.8, reviews: 33,  inStock: true },
-  { id: 11, name: 'MOTS-c',        subtitle: 'Mitochondrial Peptide',      price: 74.99,  badge: null,          badgeColor: 'var(--primary-blue)',  Icon: HeartPulse,   category: 'Anti-Aging',         rating: 4.5, reviews: 27,  inStock: true },
-  { id: 12, name: 'Hexarelin',     subtitle: 'GH Releasing Peptide',      price: 49.99,  badge: null,          badgeColor: 'var(--secondary-blue)',Icon: FlaskConical, category: 'Hormonal Research',  rating: 4.4, reviews: 41,  inStock: false },
+  { id: 1, name: 'BPC-157', subtitle: 'Body Protection Compound', price: 49.99, badge: 'Best Seller', badgeColor: 'var(--primary-blue)', Icon: FlaskConical, category: 'Healing & Recovery', rating: 4.9, reviews: 214, inStock: true, image: Medicine1, },
+  { id: 2, name: 'TB-500', subtitle: 'Thymosin Beta-4', price: 59.99, badge: 'Popular', badgeColor: 'var(--purple)', Icon: Beaker, category: 'Healing & Recovery', rating: 4.8, reviews: 178, inStock: true, image: Medicine1, },
+  { id: 3, name: 'Semaglutide', subtitle: 'GLP-1 Receptor Agonist', price: 79.99, badge: 'New', badgeColor: 'var(--pink)', Icon: Pill, category: 'Metabolic Research', rating: 4.7, reviews: 92, inStock: true, image: Medicine1, },
+  { id: 4, name: 'CJC-1295', subtitle: 'Growth Hormone Releasing', price: 54.99, badge: 'Top Rated', badgeColor: '#34d399', Icon: Dna, category: 'Hormonal Research', rating: 4.8, reviews: 143, inStock: true, image: Medicine1, },
+  { id: 5, name: 'Ipamorelin', subtitle: 'GH Secretagogue', price: 44.99, badge: null, badgeColor: 'var(--primary-blue)', Icon: Microscope, category: 'Hormonal Research', rating: 4.6, reviews: 87, inStock: true, image: Medicine1, },
+  { id: 6, name: 'Tirzepatide', subtitle: 'GIP/GLP-1 Agonist', price: 89.99, badge: 'New', badgeColor: 'var(--pink)', Icon: Zap, category: 'Metabolic Research', rating: 4.9, reviews: 61, inStock: true, image: Medicine1, },
+  { id: 7, name: 'Selank', subtitle: 'Anxiolytic Peptide', price: 39.99, badge: null, badgeColor: 'var(--purple)', Icon: Brain, category: 'Cognitive Peptides', rating: 4.5, reviews: 55, inStock: false, image: Medicine1, },
+  { id: 8, name: 'Semax', subtitle: 'Cognitive Enhancer', price: 42.99, badge: null, badgeColor: 'var(--purple)', Icon: Brain, category: 'Cognitive Peptides', rating: 4.7, reviews: 69, inStock: true, image: Medicine1, },
+  { id: 9, name: 'Epithalon', subtitle: 'Telomere Peptide', price: 64.99, badge: null, badgeColor: '#34d399', Icon: Sparkles, category: 'Anti-Aging', rating: 4.6, reviews: 48, inStock: true, image: Medicine1, },
+  { id: 10, name: 'Follistatin', subtitle: 'Myostatin Inhibitor', price: 94.99, badge: 'Premium', badgeColor: '#fbbf24', Icon: Dumbbell, category: 'Performance', rating: 4.8, reviews: 33, inStock: true, image: Medicine1, },
+  { id: 11, name: 'MOTS-c', subtitle: 'Mitochondrial Peptide', price: 74.99, badge: null, badgeColor: 'var(--primary-blue)', Icon: HeartPulse, category: 'Anti-Aging', rating: 4.5, reviews: 27, inStock: true, image: Medicine1, },
+  { id: 12, name: 'Hexarelin', subtitle: 'GH Releasing Peptide', price: 49.99, badge: null, badgeColor: 'var(--secondary-blue)', Icon: FlaskConical, category: 'Hormonal Research', rating: 4.4, reviews: 41, inStock: false, image: Medicine1, },
 ];
 
 const categories = [
@@ -52,37 +58,37 @@ const categories = [
 ];
 
 const sortOptions = [
-  { label: 'Featured',       value: 'featured' },
-  { label: 'Price: Low–High',value: 'price-asc' },
-  { label: 'Price: High–Low',value: 'price-desc' },
-  { label: 'Top Rated',      value: 'rating' },
-  { label: 'Most Reviews',   value: 'reviews' },
+  { label: 'Featured', value: 'featured' },
+  { label: 'Price: Low–High', value: 'price-asc' },
+  { label: 'Price: High–Low', value: 'price-desc' },
+  { label: 'Top Rated', value: 'rating' },
+  { label: 'Most Reviews', value: 'reviews' },
 ];
 
 /* ── Page ────────────────────────────────────────────────── */
 export default function ShopPage() {
   const [activeCategory, setActiveCategory] = useState('All');
-  const [sortBy, setSortBy]                 = useState('featured');
-  const [searchQuery, setSearchQuery]       = useState('');
-  const [showFilters, setShowFilters]       = useState(false);
-  const [priceMax, setPriceMax]             = useState(100);
-  const [inStockOnly, setInStockOnly]       = useState(false);
+  const [sortBy, setSortBy] = useState('featured');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showFilters, setShowFilters] = useState(false);
+  const [priceMax, setPriceMax] = useState(100);
+  const [inStockOnly, setInStockOnly] = useState(false);
 
   /* Filter + sort */
   let filtered = allProducts.filter(p => {
-    const matchCat    = activeCategory === 'All' || p.category === activeCategory;
+    const matchCat = activeCategory === 'All' || p.category === activeCategory;
     const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                        p.subtitle.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchPrice  = p.price <= priceMax;
-    const matchStock  = !inStockOnly || p.inStock;
+      p.subtitle.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchPrice = p.price <= priceMax;
+    const matchStock = !inStockOnly || p.inStock;
     return matchCat && matchSearch && matchPrice && matchStock;
   });
 
   filtered = [...filtered].sort((a, b) => {
-    if (sortBy === 'price-asc')  return a.price - b.price;
+    if (sortBy === 'price-asc') return a.price - b.price;
     if (sortBy === 'price-desc') return b.price - a.price;
-    if (sortBy === 'rating')     return b.rating - a.rating;
-    if (sortBy === 'reviews')    return b.reviews - a.reviews;
+    if (sortBy === 'rating') return b.rating - a.rating;
+    if (sortBy === 'reviews') return b.reviews - a.reviews;
     return 0;
   });
 
@@ -443,15 +449,21 @@ function ShopProductCard({ product }) {
           background: `radial-gradient(circle, ${badgeColor}20 0%, transparent 70%)`,
         }} />
 
-        <div style={{
-          width: 72, height: 72,
-          borderRadius: 'var(--radius-lg)',
-          background: `${badgeColor}15`,
-          border: `1px solid ${badgeColor}30`,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          position: 'relative', zIndex: 1,
-        }}>
-          {Icon && <Icon size={32} color={badgeColor} />}
+        <div
+          style={{
+            width: '100%',
+            height: 85,
+            zIndex: 1,
+          }}
+        >
+          <Image
+            src={product.image}
+            alt={name}
+            fill
+            style={{
+              objectFit: 'contain',
+            }}
+          />
         </div>
 
         {/* Wishlist */}
@@ -478,7 +490,7 @@ function ShopProductCard({ product }) {
           <Heart size={14} />
         </button>
 
-    
+
 
         {/* Out of stock */}
         {!inStock && (
@@ -509,7 +521,7 @@ function ShopProductCard({ product }) {
         {/* Rating */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <div style={{ display: 'flex', gap: '2px' }}>
-            {[1,2,3,4,5].map(i => (
+            {[1, 2, 3, 4, 5].map(i => (
               <Star
                 key={i} size={11}
                 fill={i <= Math.round(rating) ? '#fbbf24' : 'none'}
