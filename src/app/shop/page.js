@@ -595,7 +595,7 @@ function ShopProductCard({ product }) {
               textDecoration: 'none',
               whiteSpace: 'nowrap',
             }}>
-              View <ArrowRight size={12} />
+              View
             </Link>
           </div>
         </div>
