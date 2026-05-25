@@ -2,138 +2,17 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
-  FlaskConical, Beaker, Pill, Dna, Microscope,
-  Zap, Brain, HeartPulse, Dumbbell, Sparkles,
   ShoppingCart, Heart, Star, BadgeCheck, ArrowRight,
   ChevronRight, Share2, Shield, Truck, RotateCcw,
-  Plus, Minus, Package, CheckCircle2, Info,
+  Plus, Minus, Package, CheckCircle2, Info, FlaskConical,
 } from 'lucide-react';
+import { allProducts } from '../../../data/products';
+import { getIconByName } from '../../../lib/iconMap';
 
 /* ── Mock product data (replace with real API/DB) ────────── */
-const allProducts = [
-  {
-    id: 1,
-    name: 'BPC-157',
-    subtitle: 'Body Protection Compound',
-    fullName: 'BPC-157 — Body Protection Compound',
-    price: 49.99,
-    originalPrice: 64.99,
-    badge: 'Best Seller',
-    badgeColor: 'var(--primary-blue)',
-    Icon: FlaskConical,
-    category: 'Healing & Recovery',
-    rating: 4.9,
-    reviews: 214,
-    inStock: true,
-    purity: '99.1%',
-    weight: '5mg',
-    sequence: 'Gly-Glu-Pro-Pro-Pro-Gly-Lys-Pro-Ala-Asp-Asp-Ala-Gly-Leu-Val',
-    casNumber: '137525-51-0',
-    desc: 'BPC-157 is a pentadecapeptide composed of 15 amino acids. It is a partial sequence of body protection compound (BPC) that is discovered in and isolated from human gastric juice. Widely studied for its healing and recovery properties.',
-    longDesc: `BPC-157 (Body Protection Compound-157) is a synthetic peptide consisting of 15 amino acids. It has been extensively researched for its potential role in tissue repair and regeneration.
-
-Research has indicated that BPC-157 may support healing of various tissues including muscles, tendons, ligaments, and the gastrointestinal tract. Studies suggest it may work by modulating growth factor signaling pathways and promoting angiogenesis.
-
-This compound is for research purposes only and has not been approved by the FDA for human therapeutic use.`,
-    benefits: [
-      'Promotes tissue and wound healing',
-      'Supports musculoskeletal recovery',
-      'May aid gastrointestinal health',
-      'Studied for anti-inflammatory properties',
-      'Research suggests neuroprotective effects',
-    ],
-    specifications: [
-      { label: 'Purity',      value: '≥99.1% (HPLC)' },
-      { label: 'Form',        value: 'Lyophilized Powder' },
-      { label: 'Weight',      value: '5mg per vial' },
-      { label: 'CAS Number',  value: '137525-51-0' },
-      { label: 'Sequence',    value: 'Gly-Glu-Pro-Pro-Pro-Gly-Lys-Pro-Ala-Asp-Asp-Ala-Gly-Leu-Val' },
-      { label: 'Molecular Weight', value: '1419.53 g/mol' },
-      { label: 'Storage',     value: '-20°C, protect from light' },
-      { label: 'Reconstitution', value: 'Bacteriostatic water' },
-    ],
-    reviewsList: [
-      { author: 'Dr. M. Chen',    rating: 5, date: 'May 2025', text: 'Exceptional purity verified by our lab. Consistent results across multiple research protocols.' },
-      { author: 'R. Thompson',    rating: 5, date: 'Apr 2025', text: 'Fast shipping and the CoA matched our independent testing. Will order again.' },
-      { author: 'S. Patel',       rating: 5, date: 'Mar 2025', text: 'Best source we have found. Dissolved cleanly with no particulate matter.' },
-    ],
-  },
-  {
-    id: 2,
-    name: 'TB-500',
-    subtitle: 'Thymosin Beta-4',
-    fullName: 'TB-500 — Thymosin Beta-4',
-    price: 59.99,
-    originalPrice: null,
-    badge: 'Popular',
-    badgeColor: 'var(--purple)',
-    Icon: Beaker,
-    category: 'Healing & Recovery',
-    rating: 4.8,
-    reviews: 178,
-    inStock: true,
-    purity: '99.3%',
-    weight: '5mg',
-    casNumber: '77591-33-4',
-    desc: 'TB-500 is a synthetic version of Thymosin Beta-4, an actin-sequestering protein. Widely studied for tissue repair and anti-inflammatory properties across multiple tissue types.',
-    longDesc: `TB-500, the synthetic form of the naturally occurring peptide Thymosin Beta-4, has been extensively studied for its potential role in tissue repair and regeneration. It is found in virtually all human and animal cells.
-
-Research suggests TB-500 may promote cell migration and proliferation, support angiogenesis, and modulate inflammatory pathways. Studies have explored its potential applications in muscle, tendon, and cardiac tissue repair.
-
-For research purposes only.`,
-    benefits: [
-      'Studied for muscle tissue repair',
-      'May support tendon and ligament healing',
-      'Research suggests anti-inflammatory properties',
-      'Potential role in cardiac tissue studies',
-      'May promote cell migration and proliferation',
-    ],
-    specifications: [
-      { label: 'Purity',      value: '≥99.3% (HPLC)' },
-      { label: 'Form',        value: 'Lyophilized Powder' },
-      { label: 'Weight',      value: '5mg per vial' },
-      { label: 'CAS Number',  value: '77591-33-4' },
-      { label: 'Molecular Weight', value: '4963.5 g/mol' },
-      { label: 'Storage',     value: '-20°C, protect from light' },
-      { label: 'Reconstitution', value: 'Bacteriostatic water' },
-    ],
-    reviewsList: [
-      { author: 'Lab Research Team', rating: 5, date: 'May 2025', text: 'Consistent quality across all our orders. CoA always matches our verification.' },
-      { author: 'K. Williams',       rating: 4, date: 'Apr 2025', text: 'Good product, fast delivery. Purity confirmed at our facility.' },
-    ],
-  },
-  {
-    id: 3, name: 'Semaglutide', subtitle: 'GLP-1 Receptor Agonist', fullName: 'Semaglutide — GLP-1 Receptor Agonist',
-    price: 79.99, originalPrice: null, badge: 'New', badgeColor: 'var(--pink)', Icon: Pill,
-    category: 'Metabolic Research', rating: 4.7, reviews: 92, inStock: true, purity: '98.9%', weight: '5mg',
-    casNumber: '910463-68-2',
-    desc: 'Semaglutide is a GLP-1 receptor agonist research peptide studied extensively for metabolic research and appetite regulation pathways.',
-    longDesc: 'Semaglutide is a glucagon-like peptide-1 (GLP-1) receptor agonist that has been widely studied in metabolic research. For research purposes only.',
-    benefits: ['Studied for metabolic pathway research', 'GLP-1 receptor binding studies', 'Appetite regulation research', 'Insulin secretion studies'],
-    specifications: [
-      { label: 'Purity', value: '≥98.9% (HPLC)' }, { label: 'Form', value: 'Lyophilized Powder' },
-      { label: 'Weight', value: '5mg per vial' }, { label: 'CAS Number', value: '910463-68-2' },
-      { label: 'Storage', value: '-20°C, protect from light' },
-    ],
-    reviewsList: [{ author: 'Research Lab A', rating: 5, date: 'May 2025', text: 'Excellent purity. Confirmed with our HPLC.' }],
-  },
-  {
-    id: 4, name: 'CJC-1295', subtitle: 'Growth Hormone Releasing', fullName: 'CJC-1295 — GHRH Analogue',
-    price: 54.99, originalPrice: null, badge: 'Top Rated', badgeColor: '#34d399', Icon: Dna,
-    category: 'Hormonal Research', rating: 4.8, reviews: 143, inStock: true, purity: '99.0%', weight: '2mg',
-    casNumber: '863288-34-0',
-    desc: 'CJC-1295 is a synthetic analogue of growth hormone-releasing hormone (GHRH). Studied for its role in stimulating growth hormone secretion.',
-    longDesc: 'CJC-1295 is a tetrasubstituted 30-amino acid peptide hormone, primarily functioning as a GHRH analogue. For research purposes only.',
-    benefits: ['GHRH analogue research', 'Growth hormone secretion studies', 'Pituitary research applications', 'IGF-1 pathway studies'],
-    specifications: [
-      { label: 'Purity', value: '≥99.0% (HPLC)' }, { label: 'Form', value: 'Lyophilized Powder' },
-      { label: 'Weight', value: '2mg per vial' }, { label: 'CAS Number', value: '863288-34-0' },
-      { label: 'Storage', value: '-20°C, protect from light' },
-    ],
-    reviewsList: [{ author: 'Dr. A. Roberts', rating: 5, date: 'Apr 2025', text: 'Consistent and reliable. Our go-to source.' }],
-  },
-];
+const mockProducts = allProducts;
 
 const relatedProducts = allProducts.slice(0, 3);
 
@@ -147,7 +26,8 @@ export default function ProductDetailPage({ params }) {
   const [wishlisted, setWishlisted] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
 
-  const { Icon, badgeColor = 'var(--primary-blue)' } = product;
+  const badgeColor = product.badgeColor || 'var(--primary-blue)';
+  const Icon = getIconByName(product.iconName);
 
   const handleAddToCart = () => {
     setAddedToCart(true);
@@ -201,11 +81,10 @@ export default function ProductDetailPage({ params }) {
               background: 'linear-gradient(135deg, var(--bg-elevated), var(--card-elevated))',
               border: '1px solid var(--glass-border)',
               borderRadius: 'var(--radius-xl)',
-              padding: '60px 40px',
+           
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              minHeight: '380px',
+              justifyContent: 'center', 
               marginBottom: '16px',
               overflow: 'hidden',
             }}>
@@ -217,24 +96,33 @@ export default function ProductDetailPage({ params }) {
                 pointerEvents: 'none',
               }} />
 
-              {/* Grid pattern */}
-              <div style={{
-                position: 'absolute', inset: 0, opacity: 0.03,
-                backgroundImage: `linear-gradient(rgba(0,207,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,207,255,1) 1px, transparent 1px)`,
-                backgroundSize: '32px 32px',
-              }} />
-
-              {/* Icon */}
+             
+              {/* Product Image or Icon */}
               <div style={{
                 position: 'relative', zIndex: 1,
-                width: 140, height: 140,
-                borderRadius: 'var(--radius-xl)',
-                background: `${badgeColor}18`,
-                border: `2px solid ${badgeColor}35`,
+                width: '100%', height: '350px',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                boxShadow: `0 0 40px ${badgeColor}30`,
               }}>
-                {Icon && <Icon size={64} color={badgeColor} />}
+                {product.image ? (
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    width={'100%'}
+                    height={'350px'}
+                    style={{ objectFit: 'contain' }}
+                  />
+                ) : (
+                  <div style={{
+                    width: 140, height: 140,
+                    borderRadius: 'var(--radius-xl)',
+                    background: `${badgeColor}18`,
+                    border: `2px solid ${badgeColor}35`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    boxShadow: `0 0 40px ${badgeColor}30`,
+                  }}>
+                    {Icon && <Icon size={64} color={badgeColor} />}
+                  </div>
+                )}
               </div>
 
               {/* Badge */}

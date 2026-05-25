@@ -2,50 +2,23 @@
 
 import { useState } from 'react';
 import {
-  FlaskConical,
-  Beaker,
-  Pill,
-  Dna,
-  Microscope,
-  Zap,
-  Brain,
-  HeartPulse,
-  Dumbbell,
-  Sparkles,
   SlidersHorizontal,
   Search,
   ShoppingCart,
   Heart,
   BadgeCheck,
-  ArrowRight,
   Star,
   ChevronDown,
   X,
+  Microscope,
+  FlaskConical,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
 import SectionHeader from '../../components/ui/SectionHeader';
-import Medicine1 from '../../../public/images/medicine1.png';
-import Medicine2 from '../../../public/images/medicine2.png';
-import Medicine3 from '../../../public/images/medicine3.png';
-import Medicine4 from '../../../public/images/medicine4.png';
-
-/* ── Data ────────────────────────────────────────────────── */
-const allProducts = [
-  { id: 1, name: 'BPC-157', subtitle: 'Body Protection Compound', price: 49.99, badge: 'Best Seller', badgeColor: 'var(--primary-blue)', Icon: FlaskConical, category: 'Healing & Recovery', rating: 4.9, reviews: 214, inStock: true, image: Medicine1, },
-  { id: 2, name: 'TB-500', subtitle: 'Thymosin Beta-4', price: 59.99, badge: 'Popular', badgeColor: 'var(--purple)', Icon: Beaker, category: 'Healing & Recovery', rating: 4.8, reviews: 178, inStock: true, image: Medicine1, },
-  { id: 3, name: 'Semaglutide', subtitle: 'GLP-1 Receptor Agonist', price: 79.99, badge: 'New', badgeColor: 'var(--pink)', Icon: Pill, category: 'Metabolic Research', rating: 4.7, reviews: 92, inStock: true, image: Medicine1, },
-  { id: 4, name: 'CJC-1295', subtitle: 'Growth Hormone Releasing', price: 54.99, badge: 'Top Rated', badgeColor: '#34d399', Icon: Dna, category: 'Hormonal Research', rating: 4.8, reviews: 143, inStock: true, image: Medicine1, },
-  { id: 5, name: 'Ipamorelin', subtitle: 'GH Secretagogue', price: 44.99, badge: null, badgeColor: 'var(--primary-blue)', Icon: Microscope, category: 'Hormonal Research', rating: 4.6, reviews: 87, inStock: true, image: Medicine1, },
-  { id: 6, name: 'Tirzepatide', subtitle: 'GIP/GLP-1 Agonist', price: 89.99, badge: 'New', badgeColor: 'var(--pink)', Icon: Zap, category: 'Metabolic Research', rating: 4.9, reviews: 61, inStock: true, image: Medicine1, },
-  { id: 7, name: 'Selank', subtitle: 'Anxiolytic Peptide', price: 39.99, badge: null, badgeColor: 'var(--purple)', Icon: Brain, category: 'Cognitive Peptides', rating: 4.5, reviews: 55, inStock: false, image: Medicine1, },
-  { id: 8, name: 'Semax', subtitle: 'Cognitive Enhancer', price: 42.99, badge: null, badgeColor: 'var(--purple)', Icon: Brain, category: 'Cognitive Peptides', rating: 4.7, reviews: 69, inStock: true, image: Medicine1, },
-  { id: 9, name: 'Epithalon', subtitle: 'Telomere Peptide', price: 64.99, badge: null, badgeColor: '#34d399', Icon: Sparkles, category: 'Anti-Aging', rating: 4.6, reviews: 48, inStock: true, image: Medicine1, },
-  { id: 10, name: 'Follistatin', subtitle: 'Myostatin Inhibitor', price: 94.99, badge: 'Premium', badgeColor: '#fbbf24', Icon: Dumbbell, category: 'Performance', rating: 4.8, reviews: 33, inStock: true, image: Medicine1, },
-  { id: 11, name: 'MOTS-c', subtitle: 'Mitochondrial Peptide', price: 74.99, badge: null, badgeColor: 'var(--primary-blue)', Icon: HeartPulse, category: 'Anti-Aging', rating: 4.5, reviews: 27, inStock: true, image: Medicine1, },
-  { id: 12, name: 'Hexarelin', subtitle: 'GH Releasing Peptide', price: 49.99, badge: null, badgeColor: 'var(--secondary-blue)', Icon: FlaskConical, category: 'Hormonal Research', rating: 4.4, reviews: 41, inStock: false, image: Medicine1, },
-];
+import { allProducts } from '../../data/products';
+import { getIconByName } from '../../lib/iconMap';
 
 const categories = [
   'All',
@@ -407,8 +380,10 @@ export default function ShopPage() {
 function ShopProductCard({ product }) {
   const {
     id, name, subtitle, price, badge, badgeColor = 'var(--primary-blue)',
-    Icon, rating, reviews, inStock,
+    iconName, rating, reviews, inStock, image,
   } = product;
+
+  const Icon = getIconByName(iconName);
 
   return (
     <div style={{

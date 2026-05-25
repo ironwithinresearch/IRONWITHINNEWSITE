@@ -2,33 +2,34 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   ShoppingCart, Trash2, Plus, Minus, ArrowRight,
   Tag, Truck, ShieldCheck, RotateCcw, FlaskConical,
   Beaker, Pill, Dna, ChevronRight, Package,
 } from 'lucide-react';
+import { allProducts } from '../../data/products';
+import { getIconByName } from '../../lib/iconMap';
 
 /* ── Mock cart data ──────────────────────────────────────── */
-const initialCart = [
-  {
-    id: 1, name: 'BPC-157', subtitle: 'Body Protection Compound',
-    price: 49.99, qty: 2,
-    badgeColor: 'var(--primary-blue)', Icon: FlaskConical,
-    weight: '5mg', inStock: true,
-  },
-  {
-    id: 3, name: 'Semaglutide', subtitle: 'GLP-1 Receptor Agonist',
-    price: 79.99, qty: 1,
-    badgeColor: 'var(--pink)', Icon: Pill,
-    weight: '5mg', inStock: true,
-  },
-  {
-    id: 4, name: 'CJC-1295', subtitle: 'Growth Hormone Releasing',
-    price: 54.99, qty: 1,
-    badgeColor: '#34d399', Icon: Dna,
-    weight: '2mg', inStock: true,
-  },
-];
+const initialCartItemIds = [1, 3, 4];
+const initialCartQtys = { 1: 2, 3: 1, 4: 1 };
+
+const initialCart = initialCartItemIds.map(id => {
+  const product = allProducts.find(p => p.id === id);
+  return {
+    id: product.id,
+    name: product.name,
+    subtitle: product.subtitle,
+    price: product.price,
+    qty: initialCartQtys[id],
+    badgeColor: product.badgeColor,
+    iconName: product.iconName,
+    image: product.image,
+    weight: product.weight,
+    inStock: product.inStock,
+  };
+});
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState(initialCart);
@@ -363,7 +364,8 @@ export default function CartPage() {
 
 /* ── Cart Item Row ────────────────────────────────────────── */
 function CartItem({ item, onQtyChange, onRemove }) {
-  const { id, name, subtitle, price, qty, badgeColor, Icon, weight } = item;
+  const { id, name, subtitle, price, qty, badgeColor, iconName, image, weight } = item;
+  const Icon = getIconByName(iconName);
 
   return (
     <div style={{
@@ -378,15 +380,26 @@ function CartItem({ item, onQtyChange, onRemove }) {
       onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(0,207,255,0.2)'}
       onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--glass-border)'}
     >
-      {/* Icon */}
+      {/* Icon / Image */}
       <div style={{
         width: 64, height: 64, flexShrink: 0,
         borderRadius: 'var(--radius-md)',
         background: `${badgeColor}15`,
         border: `1px solid ${badgeColor}30`,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
+        overflow: 'hidden',
       }}>
-        {Icon && <Icon size={28} color={badgeColor} />}
+        {image ? (
+          <Image
+            src={image}
+            alt={name}
+            width={'100px'}
+            height={'100px'}
+            style={{ objectFit: 'contain' }}
+          />
+        ) : (
+          Icon && <Icon size={28} color={badgeColor} />
+        )}
       </div>
 
       {/* Info */}

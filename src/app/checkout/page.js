@@ -2,18 +2,32 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   ShieldCheck, CreditCard, Truck, ChevronRight,
   Lock, CheckCircle2, FlaskConical, Pill, Dna,
   Package, ArrowRight, Info, Eye, EyeOff,
 } from 'lucide-react';
+import { allProducts } from '../../data/products';
+import { getIconByName } from '../../lib/iconMap';
 
 /* ── Mock order summary ──────────────────────────────────── */
-const orderItems = [
-  { id: 1, name: 'BPC-157',    subtitle: 'Body Protection Compound', price: 49.99, qty: 2, badgeColor: 'var(--primary-blue)', Icon: FlaskConical },
-  { id: 3, name: 'Semaglutide',subtitle: 'GLP-1 Receptor Agonist',   price: 79.99, qty: 1, badgeColor: 'var(--pink)',         Icon: Pill },
-  { id: 4, name: 'CJC-1295',   subtitle: 'Growth Hormone Releasing', price: 54.99, qty: 1, badgeColor: '#34d399',             Icon: Dna },
-];
+const orderItemIds = [1, 3, 4];
+const orderItemQtys = { 1: 2, 3: 1, 4: 1 };
+
+const orderItems = orderItemIds.map(id => {
+  const product = allProducts.find(p => p.id === id);
+  return {
+    id: product.id,
+    name: product.name,
+    subtitle: product.subtitle,
+    price: product.price,
+    qty: orderItemQtys[id],
+    badgeColor: product.badgeColor,
+    iconName: product.iconName,
+    image: product.image,
+  };
+});
 
 const steps = ['Shipping', 'Payment', 'Review'];
 
@@ -462,8 +476,22 @@ export default function CheckoutPage() {
                           background: `${item.badgeColor}15`,
                           border: `1px solid ${item.badgeColor}30`,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          overflow: 'hidden',
                         }}>
-                          <item.Icon size={18} color={item.badgeColor} />
+                          {item.image ? (
+                            <Image
+                              src={item.image}
+                              alt={item.name}
+                              width={40}
+                              height={40}
+                              style={{ objectFit: 'contain' }}
+                            />
+                          ) : (
+                            (() => {
+                              const Icon = getIconByName(item.iconName);
+                              return <Icon size={18} color={item.badgeColor} />;
+                            })()
+                          )}
                         </div>
                         <div style={{ flex: 1 }}>
                           <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>{item.name}</div>
@@ -548,8 +576,22 @@ export default function CheckoutPage() {
                       borderRadius: 'var(--radius-sm)',
                       background: `${item.badgeColor}15`,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      overflow: 'hidden',
                     }}>
-                      <item.Icon size={14} color={item.badgeColor} />
+                      {item.image ? (
+                        <Image
+                          src={item.image}
+                          alt={item.name}
+                          width={32}
+                          height={32}
+                          style={{ objectFit: 'contain' }}
+                        />
+                      ) : (
+                        (() => {
+                          const Icon = getIconByName(item.iconName);
+                          return <Icon size={14} color={item.badgeColor} />;
+                        })()
+                      )}
                     </div>
                     <span style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {item.name} × {item.qty}
