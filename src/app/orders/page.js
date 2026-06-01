@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Package, ChevronRight, Search, Filter,
   FlaskConical, Beaker, Pill, Dna, Microscope,
@@ -9,6 +10,7 @@ import {
   ArrowRight, Download, RotateCcw, Eye,
   ChevronDown, X,
 } from 'lucide-react';
+import { allProducts, getProductById } from '../../data/products';
 
 /* ── Mock orders data ────────────────────────────────────── */
 const allOrders = [
@@ -18,8 +20,8 @@ const allOrders = [
     status: 'Delivered',
     total: 129.97,
     items: [
-      { name: 'BPC-157',     qty: 2, price: 49.99, Icon: FlaskConical, color: 'var(--primary-blue)' },
-      { name: 'CJC-1295',   qty: 1, price: 54.99, Icon: Dna,          color: '#34d399' },
+      { productId: 1, qty: 2 },
+      { productId: 4, qty: 1 },
     ],
     tracking: 'UPS-1Z999AA10123456784',
     address: '123 Research Blvd, New York, NY 10001',
@@ -30,7 +32,7 @@ const allOrders = [
     status: 'Processing',
     total: 79.99,
     items: [
-      { name: 'Semaglutide', qty: 1, price: 79.99, Icon: Pill, color: 'var(--pink)' },
+      { productId: 3, qty: 1 },
     ],
     tracking: null,
     address: '123 Research Blvd, New York, NY 10001',
@@ -41,8 +43,8 @@ const allOrders = [
     status: 'Delivered',
     total: 164.97,
     items: [
-      { name: 'TB-500',      qty: 2, price: 59.99, Icon: Beaker,      color: 'var(--purple)' },
-      { name: 'Ipamorelin',  qty: 1, price: 44.99, Icon: Microscope,  color: 'var(--primary-blue)' },
+      { productId: 2, qty: 2 },
+      { productId: 5, qty: 1 },
     ],
     tracking: 'UPS-1Z999AA10987654321',
     address: '123 Research Blvd, New York, NY 10001',
@@ -53,7 +55,7 @@ const allOrders = [
     status: 'Shipped',
     total: 49.99,
     items: [
-      { name: 'BPC-157', qty: 1, price: 49.99, Icon: FlaskConical, color: 'var(--primary-blue)' },
+      { productId: 1, qty: 1 },
     ],
     tracking: 'FDX-784513278900',
     address: '123 Research Blvd, New York, NY 10001',
@@ -64,7 +66,7 @@ const allOrders = [
     status: 'Cancelled',
     total: 94.99,
     items: [
-      { name: 'Follistatin', qty: 1, price: 94.99, Icon: Dna, color: '#fbbf24' },
+      { productId: 10, qty: 1 },
     ],
     tracking: null,
     address: '123 Research Blvd, New York, NY 10001',
@@ -301,37 +303,50 @@ export default function OrdersPage() {
                           marginBottom: '12px',
                         }}>Items Ordered</p>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                          {order.items.map(item => (
-                            <div key={item.name} style={{
-                              display: 'flex', alignItems: 'center',
-                              gap: '12px', padding: '12px 14px',
-                              background: 'var(--bg-dark)',
-                              border: '1px solid var(--glass-border)',
-                              borderRadius: 'var(--radius-md)',
-                            }}>
-                              <div style={{
-                                width: 36, height: 36, flexShrink: 0,
-                                borderRadius: 'var(--radius-sm)',
-                                background: `${item.color}15`,
-                                border: `1px solid ${item.color}30`,
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          {order.items.map(orderItem => {
+                            const product = getProductById(orderItem.productId);
+                            if (!product) return null;
+                            return (
+                              <div key={product.id} style={{
+                                display: 'flex', alignItems: 'center',
+                                gap: '12px', padding: '12px 14px',
+                                background: 'var(--bg-dark)',
+                                border: '1px solid var(--glass-border)',
+                                borderRadius: 'var(--radius-md)',
                               }}>
-                                <item.Icon size={16} color={item.color} />
+                                <div style={{
+                                  width: 48, height: 48, flexShrink: 0,
+                                  borderRadius: 'var(--radius-sm)',
+                                  background: 'var(--bg-dark)',
+                                  border: '1px solid var(--glass-border)',
+                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                  overflow: 'hidden',
+                                }}>
+                                  {product.image && (
+                                    <Image
+                                      src={product.image}
+                                      alt={product.name}
+                                      width={48}
+                                      height={48}
+                                      style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                                    />
+                                  )}
+                                </div>
+                                <div style={{ flex: 1 }}>
+                                  <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>{product.name}</div>
+                                  <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>Qty: {orderItem.qty}</div>
+                                </div>
+                                <div style={{
+                                  fontFamily: 'var(--font-heading)',
+                                  fontSize: '0.9rem', fontWeight: 700,
+                                  background: 'var(--gradient-primary)',
+                                  WebkitBackgroundClip: 'text',
+                                  WebkitTextFillColor: 'transparent',
+                                  backgroundClip: 'text',
+                                }}>${(product.price * orderItem.qty).toFixed(2)}</div>
                               </div>
-                              <div style={{ flex: 1 }}>
-                                <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>{item.name}</div>
-                                <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>Qty: {item.qty}</div>
-                              </div>
-                              <div style={{
-                                fontFamily: 'var(--font-heading)',
-                                fontSize: '0.9rem', fontWeight: 700,
-                                background: 'var(--gradient-primary)',
-                                WebkitBackgroundClip: 'text',
-                                WebkitTextFillColor: 'transparent',
-                                backgroundClip: 'text',
-                              }}>${(item.price * item.qty).toFixed(2)}</div>
-                            </div>
-                          ))}
+                            );
+                          })}
                         </div>
                       </div>
 

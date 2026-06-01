@@ -100,8 +100,10 @@ export default function ProductDetailPage({ params }) {
               {/* Product Image or Icon */}
               <div style={{
                 position: 'relative', zIndex: 1,
-                width: '100%', height: '350px',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                width: '100%', height: '200px',
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
               }}>
                 {product.image ? (
                   <Image
@@ -124,37 +126,7 @@ export default function ProductDetailPage({ params }) {
                   </div>
                 )}
               </div>
-
-              {/* Badge */}
-              {product.badge && (
-                <div style={{
-                  position: 'absolute', top: '20px', left: '20px',
-                  padding: '6px 14px',
-                  background: `${badgeColor}20`,
-                  border: `1px solid ${badgeColor}50`,
-                  borderRadius: '999px',
-                  fontSize: '0.72rem', fontWeight: 700,
-                  color: badgeColor, letterSpacing: '0.06em',
-                  textTransform: 'uppercase',
-                }}>{product.badge}</div>
-              )}
-
-              {/* Share */}
-              <button style={{
-                position: 'absolute', top: '20px', right: '20px',
-                width: 36, height: 36,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                background: 'var(--glass-bg)',
-                border: '1px solid var(--glass-border)',
-                borderRadius: '50%',
-                color: 'var(--text-muted)', cursor: 'pointer',
-                transition: 'all var(--transition-fast)',
-              }}
-                onMouseEnter={e => { e.currentTarget.style.color = 'var(--primary-blue)'; e.currentTarget.style.borderColor = 'var(--primary-blue)'; }}
-                onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--glass-border)'; }}
-              >
-                <Share2 size={15} />
-              </button>
+ 
             </div>
 
             {/* Trust row */}

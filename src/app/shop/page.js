@@ -407,77 +407,88 @@ function ShopProductCard({ product }) {
         e.currentTarget.style.boxShadow = 'none';
       }}
     >
-      {/* Image area */}
-      <div style={{
-        position: 'relative',
-        background: 'linear-gradient(135deg, var(--bg-elevated), var(--card-elevated))',
-        padding: '36px 24px',
+    {/* Image area */}
+<div
+  style={{
+    position: 'relative',
+    background:
+      'linear-gradient(135deg, var(--bg-elevated), var(--card-elevated))',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '150px',
+    borderBottom: '1px solid var(--glass-border)',
+  }}
+>
+  <div
+    style={{
+      width: '100%',
+      height: '100px',
+      overflow: 'hidden',
+    }}
+  >
+    <Image
+      src={product.image}
+      alt={name}
+      fill
+      style={{
+        objectFit: 'cover',
+      }}
+    />
+  </div>
+
+  {/* Wishlist */}
+  <button
+    style={{
+      position: 'absolute',
+      top: '10px',
+      right: '10px',
+      zIndex: 999,
+      width: 32,
+      height: 32,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: 'var(--glass-bg)',
+      border: '1px solid var(--glass-border)',
+      borderRadius: '50%',
+      color: 'var(--text-muted)',
+      cursor: 'pointer',
+      transition: 'all var(--transition-fast)',
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.color = 'var(--pink)';
+      e.currentTarget.style.borderColor = 'var(--pink)';
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.color = 'var(--text-muted)';
+      e.currentTarget.style.borderColor = 'var(--glass-border)';
+    }}
+  >
+    <Heart size={14} />
+  </button>
+
+  {/* Out of stock */}
+  {!inStock && (
+    <div
+      style={{
+        position: 'absolute',
+        inset: 0,
+        zIndex: 998,
+        background: 'rgba(2,6,23,0.72)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        minHeight: '150px',
-        borderBottom: '1px solid var(--glass-border)',
-      }}>
-        <div style={{
-          position: 'absolute',
-          width: '90px', height: '90px', borderRadius: '50%',
-          background: `radial-gradient(circle, ${badgeColor}20 0%, transparent 70%)`,
-        }} />
-
-        <div
-          style={{
-            width: '100%',
-            height: 85,
-            zIndex: 1,
-          }}
-        >
-          <Image
-            src={product.image}
-            alt={name}
-            fill
-            style={{
-              objectFit: 'contain',
-            }}
-          />
-        </div>
-
-        {/* Wishlist */}
-        <button style={{
-          position: 'absolute', top: '10px', right: '10px',
-          width: 32, height: 32,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          background: 'var(--glass-bg)',
-          border: '1px solid var(--glass-border)',
-          borderRadius: '50%',
-          color: 'var(--text-muted)',
-          cursor: 'pointer',
-          transition: 'all var(--transition-fast)',
-        }}
-          onMouseEnter={e => {
-            e.currentTarget.style.color = 'var(--pink)';
-            e.currentTarget.style.borderColor = 'var(--pink)';
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.color = 'var(--text-muted)';
-            e.currentTarget.style.borderColor = 'var(--glass-border)';
-          }}
-        >
-          <Heart size={14} />
-        </button>
-
-
-
-        {/* Out of stock */}
-        {!inStock && (
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: 'rgba(2,6,23,0.72)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '0.78rem', fontWeight: 700,
-            color: 'var(--text-muted)', letterSpacing: '0.1em',
-          }}>OUT OF STOCK</div>
-        )}
-      </div>
+        fontSize: '0.78rem',
+        fontWeight: 700,
+        color: 'var(--text-muted)',
+        letterSpacing: '0.1em',
+      }}
+    >
+      OUT OF STOCK
+    </div>
+  )}
+</div>
 
       {/* Content */}
       <div style={{ padding: '18px 20px', flex: 1, display: 'flex', flexDirection: 'column', gap: '10px' }}>

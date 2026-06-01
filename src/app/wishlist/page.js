@@ -2,100 +2,20 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Heart, ShoppingCart, Trash2, ArrowRight,
   FlaskConical, Beaker, Pill, Dna, Brain,
   Sparkles, BadgeCheck, Star, Share2,
   Package,
 } from 'lucide-react';
+import { allProducts, getProductById } from '../../data/products';
 
 /* ── Mock wishlist data ──────────────────────────────────── */
-const initialWishlist = [
-  {
-    id: 1,
-    name: 'BPC-157',
-    subtitle: 'Body Protection Compound',
-    price: 49.99,
-    originalPrice: 64.99,
-    badge: 'Best Seller',
-    badgeColor: 'var(--primary-blue)',
-    Icon: FlaskConical,
-    rating: 4.9,
-    reviews: 214,
-    inStock: true,
-    desc: 'Promotes healing and recovery in muscles, tendons, and ligaments.',
-  },
-  {
-    id: 2,
-    name: 'TB-500',
-    subtitle: 'Thymosin Beta-4',
-    price: 59.99,
-    originalPrice: null,
-    badge: 'Popular',
-    badgeColor: 'var(--purple)',
-    Icon: Beaker,
-    rating: 4.8,
-    reviews: 178,
-    inStock: true,
-    desc: 'Widely studied for tissue repair and anti-inflammatory properties.',
-  },
-  {
-    id: 3,
-    name: 'Semaglutide',
-    subtitle: 'GLP-1 Receptor Agonist',
-    price: 79.99,
-    originalPrice: null,
-    badge: 'New',
-    badgeColor: 'var(--pink)',
-    Icon: Pill,
-    rating: 4.7,
-    reviews: 92,
-    inStock: true,
-    desc: 'Research compound studied for metabolic and appetite regulation.',
-  },
-  {
-    id: 7,
-    name: 'Selank',
-    subtitle: 'Anxiolytic Peptide',
-    price: 39.99,
-    originalPrice: null,
-    badge: null,
-    badgeColor: 'var(--purple)',
-    Icon: Brain,
-    rating: 4.5,
-    reviews: 55,
-    inStock: false,
-    desc: 'Research peptide studied for anxiolytic properties.',
-  },
-  {
-    id: 9,
-    name: 'Epithalon',
-    subtitle: 'Telomere Peptide',
-    price: 64.99,
-    originalPrice: null,
-    badge: null,
-    badgeColor: '#34d399',
-    Icon: Sparkles,
-    rating: 4.6,
-    reviews: 48,
-    inStock: true,
-    desc: 'Studied for its role in telomere elongation and anti-aging research.',
-  },
-  {
-    id: 4,
-    name: 'CJC-1295',
-    subtitle: 'Growth Hormone Releasing',
-    price: 54.99,
-    originalPrice: null,
-    badge: 'Top Rated',
-    badgeColor: '#34d399',
-    Icon: Dna,
-    rating: 4.8,
-    reviews: 143,
-    inStock: true,
-    desc: 'Studied for its role in stimulating growth hormone secretion.',
-  },
-];
+const initialWishlistIds = [1, 2, 3, 7, 9, 4];
+const initialWishlist = initialWishlistIds
+  .map(id => getProductById(id))
+  .filter(Boolean);
 
 export default function WishlistPage() {
   const [items, setItems]   = useState(initialWishlist);
@@ -368,7 +288,7 @@ function WishlistCard({ item, onRemove, onAddToCart, added }) {
   const {
     id, name, subtitle, price, originalPrice,
     badge, badgeColor = 'var(--primary-blue)',
-    Icon, rating, reviews, inStock, desc,
+    image, rating, reviews, inStock, desc,
   } = item;
 
   return (
@@ -397,27 +317,25 @@ function WishlistCard({ item, onRemove, onAddToCart, added }) {
       <div style={{
         position: 'relative',
         background: 'linear-gradient(135deg, var(--bg-elevated), var(--card-elevated))',
-        padding: '36px 24px',
+       
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        minHeight: '140px',
+        minHeight: '160px',
         borderBottom: '1px solid var(--glass-border)',
+        overflow: 'hidden',
       }}>
-        <div style={{
-          position: 'absolute',
-          width: '80px', height: '80px', borderRadius: '50%',
-          background: `radial-gradient(circle, ${badgeColor}22 0%, transparent 70%)`,
-          pointerEvents: 'none',
-        }} />
+         
 
-        <div style={{
-          width: 64, height: 64, borderRadius: 'var(--radius-lg)',
-          background: `${badgeColor}15`,
-          border: `1px solid ${badgeColor}30`,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          position: 'relative', zIndex: 1,
-        }}>
-          {Icon && <Icon size={30} color={badgeColor} />}
-        </div>
+       
+          {image ? (
+            <Image
+              src={image}
+              alt={name}
+              width={'100%'}
+              height={100}
+              style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+            />
+          ) : null}
+        
 
         {/* Remove button */}
         <button
@@ -446,20 +364,8 @@ function WishlistCard({ item, onRemove, onAddToCart, added }) {
           <Trash2 size={13} />
         </button>
 
-        {/* Badge */}
-        {badge && (
-          <div style={{
-            position: 'absolute', top: '10px', left: '10px',
-            padding: '3px 9px',
-            background: `${badgeColor}20`,
-            border: `1px solid ${badgeColor}50`,
-            borderRadius: '999px',
-            fontSize: '0.65rem', fontWeight: 700,
-            color: badgeColor, letterSpacing: '0.06em', textTransform: 'uppercase',
-          }}>{badge}</div>
-        )}
-
-        {/* Out of stock overlay */}
+        
+ 
         {!inStock && (
           <div style={{
             position: 'absolute', inset: 0,
