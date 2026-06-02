@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Logo from '../../public/images/Logo.png';
+import { usePathname } from 'next/navigation';
 
 export default function Navbar() {
-  const [scrolled, setScrolled]     = useState(false);
-  const [menuOpen, setMenuOpen]     = useState(false);
+  const pathname = usePathname();
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -18,11 +20,11 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { label: 'Home',       href: '/' },
-    { label: 'Shop',       href: '/shop' },
+    { label: 'Home', href: '/' },
+    { label: 'Shop', href: '/shop' },
     { label: 'Categories', href: '/categories' },
-    { label: 'Blog',       href: '/blog' },
-    { label: 'Contact',    href: '/contact' },
+    { label: 'Blog', href: '/blog' },
+    { label: 'Contact', href: '/contact' },
   ];
 
   return (
@@ -61,20 +63,28 @@ export default function Navbar() {
               }}
               priority
             />
-           
+
           </div>
         </Link>
 
         {/* ── Center Nav Links (desktop) ── */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '4px',
-          flex: 1,
-          justifyContent: 'center',
-        }} className="nav-desktop">
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
+            flex: 1,
+            justifyContent: 'center',
+          }}
+          className="nav-desktop"
+        >
           {navLinks.map(link => (
-            <NavLink key={link.href} href={link.href} label={link.label} />
+            <NavLink
+              key={link.href}
+              href={link.href}
+              label={link.label}
+              pathname={pathname}
+            />
           ))}
         </div>
 
@@ -93,7 +103,7 @@ export default function Navbar() {
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
           </IconBtn>
 
@@ -103,8 +113,8 @@ export default function Navbar() {
               <IconBtn title="Cart">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                  <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" />
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
                 </svg>
               </IconBtn>
               <span style={{
@@ -139,8 +149,8 @@ export default function Navbar() {
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" strokeWidth="2">
               {menuOpen
-                ? <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
-                : <><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>
+                ? <><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></>
+                : <><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" /></>
               }
             </svg>
           </button>
@@ -187,7 +197,7 @@ export default function Navbar() {
               }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
             </Link>
           </div>
@@ -209,24 +219,37 @@ export default function Navbar() {
           flexDirection: 'column',
           gap: '4px',
         }}>
-          {navLinks.map(link => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
-              style={{
-                padding: '12px 16px',
-                borderRadius: 'var(--radius-md)',
-                color: 'var(--text-light)',
-                fontWeight: 500,
-                textDecoration: 'none',
-                transition: 'all var(--transition-fast)',
-                borderBottom: '1px solid var(--glass-border)',
-              }}
-            >
-              {link.label}
-            </Link>
-          ))}
+        {navLinks.map(link => {
+  const isActive =
+    link.href === '/'
+      ? pathname === '/'
+      : pathname.startsWith(link.href);
+
+  return (
+    <Link
+      key={link.href}
+      href={link.href}
+      onClick={() => setMenuOpen(false)}
+      style={{
+        padding: '12px 16px',
+        borderRadius: 'var(--radius-md)',
+        color: isActive
+          ? 'var(--primary-blue)'
+          : 'var(--text-light)',
+        background: isActive
+          ? 'rgba(0,207,255,0.08)'
+          : 'transparent',
+        border: isActive
+          ? '1px solid var(--primary-blue)'
+          : '1px solid transparent',
+        fontWeight: isActive ? 600 : 500,
+        textDecoration: 'none',
+      }}
+    >
+      {link.label}
+    </Link>
+  );
+})}
           <div style={{ marginTop: 12, display: 'flex', gap: 10 }}>
             <Link href="/login" style={{
               flex: 1, textAlign: 'center',
@@ -263,28 +286,35 @@ export default function Navbar() {
 
 /* ── Sub-components ─────────────────────────────────────── */
 
-function NavLink({ href, label }) {
+function NavLink({ href, label, pathname }) {
+  const isActive =
+    href === '/'
+      ? pathname === '/'
+      : pathname.startsWith(href);
+
   return (
-    <Link href={href} style={{
-      padding: '7px 14px',
-      borderRadius: 'var(--radius-md)',
-      color: 'var(--text-secondary)',
-      fontWeight: 500,
-      fontSize: '0.9rem',
-      textDecoration: 'none',
-      transition: 'all var(--transition-fast)',
-      letterSpacing: '0.01em',
-      border: '1px solid transparent',
-    }}
-      onMouseEnter={e => {
-        e.currentTarget.style.color = 'var(--primary-blue)';
-        e.currentTarget.style.background = 'rgba(0,207,255,0.07)';
-        e.currentTarget.style.borderColor = 'var(--primary-blue)';
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.color = 'var(--text-secondary)';
-        e.currentTarget.style.background = 'transparent';
-        e.currentTarget.style.borderColor = 'transparent';
+    <Link
+      href={href}
+      style={{
+        padding: '7px 14px',
+        borderRadius: 'var(--radius-md)',
+        color: isActive
+          ? 'var(--primary-blue)'
+          : 'var(--text-secondary)',
+        fontWeight: isActive ? 600 : 500,
+        fontSize: '0.9rem',
+        textDecoration: 'none',
+        transition: 'all var(--transition-fast)',
+        letterSpacing: '0.01em',
+        background: isActive
+          ? 'rgba(0,207,255,0.08)'
+          : 'transparent',
+        border: isActive
+          ? '1px solid var(--primary-blue)'
+          : '1px solid transparent',
+        boxShadow: isActive
+          ? '0 0 20px rgba(0,207,255,0.15)'
+          : 'none',
       }}
     >
       {label}
@@ -348,8 +378,8 @@ function LoginBtn() {
       >
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-          <circle cx="12" cy="7" r="4"/>
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
         </svg>
         Login
       </div>
