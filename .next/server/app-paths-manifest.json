@@ -1,9 +1,14 @@
 {
-  "/wishlist/page": "app/wishlist/page.js",
-  "/about/page": "app/about/page.js",
-  "/faq/page": "app/faq/page.js",
-  "/orders/page": "app/orders/page.js",
+  "/page": "app/page.js",
+  "/categories/page": "app/categories/page.js",
   "/blog/page": "app/blog/page.js",
-  "/search/page": "app/search/page.js",
-  "/categories/page": "app/categories/page.js"
+  "/terms/page": "app/terms/page.js",
+  "/privacy/page": "app/privacy/page.js",
+  "/account/page": "app/account/page.js",
+  "/orders/page": "app/orders/page.js",
+  "/wishlist/page": "app/wishlist/page.js",
+  "/contact/page": "app/contact/page.js",
+  "/shop/page": "app/shop/page.js",
+  "/register/page": "app/register/page.js",
+  "/login/page": "app/login/page.js"
 }
