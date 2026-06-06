@@ -10,11 +10,11 @@ import {
 
 /* ── FAQ data ────────────────────────────────────────────── */
 const categories = [
-  { id: 'products',  label: 'Products',  Icon: FlaskConical },
-  { id: 'shipping',  label: 'Shipping',  Icon: Truck },
-  { id: 'ordering',  label: 'Ordering',  Icon: CreditCard },
-  { id: 'quality',   label: 'Quality',   Icon: ShieldCheck },
-  { id: 'returns',   label: 'Returns',   Icon: RotateCcw },
+  { id: 'products', label: 'Products', Icon: FlaskConical },
+  { id: 'shipping', label: 'Shipping', Icon: Truck },
+  { id: 'ordering', label: 'Ordering', Icon: CreditCard },
+  { id: 'quality', label: 'Quality', Icon: ShieldCheck },
+  { id: 'returns', label: 'Returns & Refunds', Icon: RotateCcw },
 ];
 
 const faqs = [
@@ -26,7 +26,7 @@ const faqs = [
   {
     category: 'products',
     q: 'How should I store my peptides?',
-    a: 'Lyophilized (freeze-dried) peptides should be stored at -20°C and protected from light and moisture. Once reconstituted, they should be kept at 4°C and used within 4 weeks. Always follow the storage guidelines included with your Certificate of Analysis.',
+    a: 'Lyophilized (freeze-dried) peptides should be stored at -20°C and protected from light and moisture. Once reconstituted, they should be kept at 4°C and used within 4 weeks. Always follow the storage guidelines provided with your order.',
   },
   {
     category: 'products',
@@ -41,12 +41,7 @@ const faqs = [
   {
     category: 'quality',
     q: 'How do you verify purity?',
-    a: 'Every batch undergoes independent third-party HPLC (High-Performance Liquid Chromatography) and mass spectrometry testing. We target ≥99% purity across all compounds. A Certificate of Analysis (CoA) from the testing laboratory is included with every order.',
-  },
-  {
-    category: 'quality',
-    q: 'What is a Certificate of Analysis (CoA)?',
-    a: 'A CoA is an independent laboratory report that confirms the identity, purity, and potency of a compound. Our CoAs are issued by accredited third-party labs, not generated in-house. You can request a CoA at any time for past orders.',
+    a: 'Every batch undergoes independent third-party HPLC (High-Performance Liquid Chromatography) and mass spectrometry testing. We target ≥99.3% purity across all compounds.',
   },
   {
     category: 'quality',
@@ -56,22 +51,22 @@ const faqs = [
   {
     category: 'shipping',
     q: 'How fast do you ship?',
-    a: 'All orders placed before 2 PM EST ship the same business day. Standard domestic delivery is 2–4 business days. Express options (1–2 days) are available at checkout. International orders typically arrive within 7–14 business days.',
+    a: 'Orders ship between 24–48 hours after placement. Standard domestic delivery is 2–4 business days. Express options (1–2 days) are available at checkout. International orders typically arrive within 7–14 business days.',
   },
   {
     category: 'shipping',
     q: 'Do you ship internationally?',
-    a: 'Yes, we ship to over 40 countries. Import regulations for research compounds vary by country — it is the researcher\'s responsibility to ensure compliance with local laws. We ship with discreet, compliant labelling.',
+    a: 'Yes, we ship to over 40 countries. Import regulations for research compounds vary by country — it is the researcher\'s responsibility to ensure compliance with local laws.',
   },
   {
     category: 'shipping',
     q: 'Is cold-chain shipping available?',
-    a: 'Yes. All orders are shipped with appropriate cold-chain packaging. Lyophilized peptides are stable at room temperature for short transit periods, but we include ice packs for expedited international shipments upon request.',
+    a: 'Cold-chain shipping is not available. All lyophilized peptides are stable at ambient temperature during normal transit periods and do not require cold-chain handling for standard shipping timeframes.',
   },
   {
     category: 'shipping',
     q: 'How much does shipping cost?',
-    a: 'Domestic shipping is free on orders over $100. Below that, a flat $9.99 fee applies. International shipping rates are calculated at checkout based on weight and destination. Express options are available for an additional fee.',
+    a: 'Domestic shipping is free on orders over $225. Below that, a flat shipping fee applies. International shipping rates are calculated at checkout based on weight and destination.',
   },
   {
     category: 'ordering',
@@ -85,33 +80,38 @@ const faqs = [
   },
   {
     category: 'ordering',
-    q: 'Can I change or cancel my order?',
-    a: 'Orders can be modified or cancelled within 2 hours of placement, before they enter our fulfilment queue. Contact our support team immediately via the contact page. Once dispatched, orders cannot be cancelled.',
+    q: 'Can I change or cancel my order after placing it?',
+    a: 'Orders cannot be cancelled once placed. Please review your order carefully before completing your purchase. If you believe there is an error, contact our support team immediately at support@ironwithin.io, though we cannot guarantee any modifications once an order is submitted.',
   },
   {
     category: 'returns',
     q: 'What is your return policy?',
-    a: 'Due to the nature of research compounds, we cannot accept returns of opened products. Unopened items in original packaging may be returned within 30 days for a full refund. Please contact support to initiate a return.',
+    a: 'We do not accept returns. Due to the nature of research compounds and regulatory requirements, all sales are final. We encourage you to review your order carefully before purchase.',
+  },
+  {
+    category: 'returns',
+    q: 'Do you offer refunds?',
+    a: 'Refunds are not offered. In exceptional circumstances — such as a confirmed shipping error, significant product quality issue, or missing item — a refund may be reviewed and issued if approved at our discretion. Please contact support@ironwithin.io with full documentation.',
   },
   {
     category: 'returns',
     q: 'What if my order arrives damaged?',
-    a: 'If your order arrives damaged or compromised, contact us within 48 hours of delivery with photos of the packaging and product. We will arrange a replacement or full refund at no cost to you.',
+    a: 'If your order arrives damaged or compromised, contact us within 48 hours of delivery with photos of the packaging and product. We will review your case and, if approved, may arrange a replacement or store credit.',
   },
   {
     category: 'returns',
-    q: 'How long does a refund take?',
-    a: 'Approved refunds are processed within 2–3 business days. Depending on your payment method and bank, funds typically appear within 5–7 business days after processing.',
+    q: 'How long does a refund take if approved?',
+    a: 'If a refund is approved, it is processed within 2–3 business days. Depending on your payment method and bank, funds typically appear within 5–7 business days after processing.',
   },
 ];
 
 export default function FaqPage() {
   const [activeCategory, setActiveCategory] = useState('products');
-  const [openIndex, setOpenIndex]           = useState(null);
-  const [search, setSearch]                 = useState('');
+  const [openIndex, setOpenIndex] = useState(null);
+  const [search, setSearch] = useState('');
 
   const filtered = faqs.filter(f => {
-    const matchCat    = f.category === activeCategory;
+    const matchCat = f.category === activeCategory;
     const matchSearch = search === '' ||
       f.q.toLowerCase().includes(search.toLowerCase()) ||
       f.a.toLowerCase().includes(search.toLowerCase());
@@ -360,7 +360,13 @@ export default function FaqPage() {
               </h3>
             </div>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-              Our research specialists are available 24/7 to help you.
+              Email our support team at{' '}
+              <a
+                href="mailto:support@ironwithin.io"
+                style={{ color: 'var(--primary-blue)', textDecoration: 'none' }}
+              >
+                support@ironwithin.io
+              </a>
             </p>
           </div>
           <Link href="/contact" style={{
@@ -373,7 +379,7 @@ export default function FaqPage() {
             boxShadow: 'var(--glow-blue)',
             flexShrink: 0, position: 'relative', zIndex: 1,
           }}>
-            Contact Support <ArrowRight size={15} />
+            Email Support <ArrowRight size={15} />
           </Link>
         </div>
       </div>

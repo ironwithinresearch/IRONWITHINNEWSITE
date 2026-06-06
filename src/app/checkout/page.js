@@ -31,11 +31,14 @@ const orderItems = orderItemIds.map(id => {
 
 const steps = ['Shipping', 'Payment', 'Review'];
 
+// Free shipping threshold
+const FREE_SHIPPING_THRESHOLD = 225;
+
 export default function CheckoutPage() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [showCvv, setShowCvv]         = useState(false);
+  const [showCvv, setShowCvv] = useState(false);
   const [placingOrder, setPlacingOrder] = useState(false);
-  const [orderPlaced, setOrderPlaced]   = useState(false);
+  const [orderPlaced, setOrderPlaced] = useState(false);
 
   const [shipping, setShipping] = useState({
     firstName: '', lastName: '', email: '',
@@ -48,9 +51,9 @@ export default function CheckoutPage() {
     method: 'card',
   });
 
-  const subtotal      = orderItems.reduce((s, i) => s + i.price * i.qty, 0);
-  const shippingCost  = subtotal >= 100 ? 0 : 9.99;
-  const total         = subtotal + shippingCost;
+  const subtotal = orderItems.reduce((s, i) => s + i.price * i.qty, 0);
+  const shippingCost = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 9.99;
+  const total = subtotal + shippingCost;
 
   const handleShipping = (e) => {
     e.preventDefault();
@@ -424,103 +427,38 @@ export default function CheckoutPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '28px' }}>
                   <div style={{
                     width: 36, height: 36, borderRadius: 'var(--radius-md)',
-                    background: 'rgba(0,207,255,0.1)',
-                    border: '1px solid rgba(0,207,255,0.25)',
+                    background: 'rgba(52,211,153,0.1)',
+                    border: '1px solid rgba(52,211,153,0.25)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}>
-                    <Package size={17} color="var(--primary-blue)" />
+                    <CheckCircle2 size={17} color="#34d399" />
                   </div>
                   <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', fontWeight: 800 }}>
                     Review Your Order
                   </h2>
                 </div>
 
-                {/* Shipping summary */}
-                <ReviewBlock title="Shipping To" onEdit={() => setCurrentStep(0)}>
-                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.7 }}>
+                <ReviewBlock title="Shipping Address" onEdit={() => setCurrentStep(0)}>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
                     {shipping.firstName} {shipping.lastName}<br />
-                    {shipping.address}, {shipping.city}, {shipping.state} {shipping.zip}<br />
+                    {shipping.address}<br />
+                    {shipping.city}, {shipping.state} {shipping.zip}<br />
                     {shipping.email}
                   </p>
                 </ReviewBlock>
 
-                {/* Payment summary */}
                 <ReviewBlock title="Payment" onEdit={() => setCurrentStep(1)}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <CreditCard size={15} color="var(--primary-blue)" />
-                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>
-                      •••• •••• •••• {payment.cardNumber.slice(-4) || '****'}
-                    </span>
-                  </div>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                    Card ending in {payment.cardNumber.slice(-4) || '****'}
+                  </p>
                 </ReviewBlock>
 
-                {/* Items */}
-                <div style={{ marginBottom: '24px' }}>
-                  <h3 style={{
-                    fontSize: '0.8rem', fontWeight: 700,
-                    color: 'var(--text-muted)', textTransform: 'uppercase',
-                    letterSpacing: '0.07em', marginBottom: '12px',
-                  }}>Items</h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    {orderItems.map(item => (
-                      <div key={item.id} style={{
-                        display: 'flex', alignItems: 'center', gap: '12px',
-                        padding: '12px 14px',
-                        background: 'var(--bg-dark)',
-                        border: '1px solid var(--glass-border)',
-                        borderRadius: 'var(--radius-md)',
-                      }}>
-                        <div style={{
-                          width: 40, height: 40, flexShrink: 0,
-                          borderRadius: 'var(--radius-sm)',
-                          background: `${item.badgeColor}15`,
-                          border: `1px solid ${item.badgeColor}30`,
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          overflow: 'hidden',
-                        }}>
-                          {item.image ? (
-                            <Image
-                              src={item.image}
-                              alt={item.name}
-                              width={40}
-                              height={40}
-                              style={{ objectFit: 'contain' }}
-                            />
-                          ) : (
-                            (() => {
-                              const Icon = getIconByName(item.iconName);
-                              return <Icon size={18} color={item.badgeColor} />;
-                            })()
-                          )}
-                        </div>
-                        <div style={{ flex: 1 }}>
-                          <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>{item.name}</div>
-                          <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>× {item.qty}</div>
-                        </div>
-                        <div style={{
-                          fontFamily: 'var(--font-heading)',
-                          fontSize: '0.95rem', fontWeight: 800,
-                          background: 'var(--gradient-primary)',
-                          WebkitBackgroundClip: 'text',
-                          WebkitTextFillColor: 'transparent',
-                          backgroundClip: 'text',
-                        }}>${(item.price * item.qty).toFixed(2)}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div style={{ display: 'flex', gap: '12px' }}>
-                  <button onClick={() => setCurrentStep(1)} style={{
-                    flex: 1, padding: '13px',
-                    background: 'none',
-                    border: '1px solid var(--glass-border)',
-                    borderRadius: 'var(--radius-md)',
-                    color: 'var(--text-secondary)', fontWeight: 500,
-                    cursor: 'pointer', fontFamily: 'var(--font-body)',
-                  }}>← Back</button>
-                  <button onClick={handlePlaceOrder} disabled={placingOrder} style={{
-                    flex: 2, padding: '13px',
+                {/* Place order */}
+                <button
+                  onClick={handlePlaceOrder}
+                  disabled={placingOrder}
+                  style={{
+                    width: '100%', padding: '15px',
                     background: 'var(--gradient-primary)',
                     border: 'none', borderRadius: 'var(--radius-md)',
                     color: '#fff', fontWeight: 700, fontSize: '1rem',
@@ -530,21 +468,20 @@ export default function CheckoutPage() {
                     boxShadow: 'var(--glow-blue)',
                     opacity: placingOrder ? 0.8 : 1,
                   }}>
-                    {placingOrder ? (
-                      <>
-                        <div style={{
-                          width: 16, height: 16, borderRadius: '50%',
-                          border: '2px solid rgba(255,255,255,0.3)',
-                          borderTopColor: '#fff',
-                          animation: 'spin 0.8s linear infinite',
-                        }} />
-                        Placing Order…
-                      </>
-                    ) : (
-                      <><Lock size={15} /> Place Order — ${total.toFixed(2)}</>
-                    )}
-                  </button>
-                </div>
+                  {placingOrder ? (
+                    <>
+                      <div style={{
+                        width: 16, height: 16, borderRadius: '50%',
+                        border: '2px solid rgba(255,255,255,0.3)',
+                        borderTopColor: '#fff',
+                        animation: 'spin 0.8s linear infinite',
+                      }} />
+                      Placing Order…
+                    </>
+                  ) : (
+                    <><Lock size={15} /> Place Order — ${total.toFixed(2)}</>
+                  )}
+                </button>
               </div>
             )}
           </div>
@@ -607,8 +544,12 @@ export default function CheckoutPage() {
             <div style={{ height: 1, background: 'linear-gradient(90deg,transparent,var(--glass-border),transparent)', marginBottom: '16px' }} />
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px' }}>
-              <SummaryRow label="Subtotal"  value={`$${subtotal.toFixed(2)}`} />
-              <SummaryRow label="Shipping"  value={shippingCost === 0 ? 'FREE' : `$${shippingCost.toFixed(2)}`} valueColor={shippingCost === 0 ? '#34d399' : undefined} />
+              <SummaryRow label="Subtotal" value={`$${subtotal.toFixed(2)}`} />
+              <SummaryRow
+                label={`Shipping (free over $${FREE_SHIPPING_THRESHOLD})`}
+                value={shippingCost === 0 ? 'FREE' : `$${shippingCost.toFixed(2)}`}
+                valueColor={shippingCost === 0 ? '#34d399' : undefined}
+              />
             </div>
 
             <div style={{ height: 1, background: 'linear-gradient(90deg,transparent,var(--glass-border),transparent)', marginBottom: '16px' }} />
@@ -625,7 +566,7 @@ export default function CheckoutPage() {
               }}>${total.toFixed(2)}</span>
             </div>
 
-            {/* Trust */}
+            {/* Trust — COA removed, updated threshold */}
             <div style={{
               padding: '14px',
               background: 'rgba(0,207,255,0.04)',
@@ -634,13 +575,13 @@ export default function CheckoutPage() {
             }}>
               {[
                 { Icon: ShieldCheck, label: 'Secure 256-bit SSL checkout' },
-                { Icon: Package,     label: 'Ships with Certificate of Analysis' },
-                { Icon: Truck,       label: 'Free shipping over $100' },
-              ].map(t => (
+                { Icon: Truck, label: `Free shipping over $${FREE_SHIPPING_THRESHOLD}` },
+                { Icon: Package, label: 'Orders ship in 24–48 hours' },
+              ].map((t, i, arr) => (
                 <div key={t.label} style={{
                   display: 'flex', alignItems: 'center', gap: '8px',
                   padding: '6px 0',
-                  borderBottom: '1px solid var(--glass-border)',
+                  borderBottom: i < arr.length - 1 ? '1px solid var(--glass-border)' : 'none',
                   fontSize: '0.78rem', color: 'var(--text-muted)',
                 }}>
                   <t.Icon size={13} color="var(--primary-blue)" />

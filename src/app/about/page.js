@@ -602,49 +602,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── Certifications ── */}
-      <section style={{ padding: '60px 24px' }}>
-        <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '36px' }}>
-            <h2 style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'clamp(1.4rem, 3vw, 2rem)', fontWeight: 800,
-            }}>
-              Certifications &{' '}
-              <span style={{
-                background: 'var(--gradient-primary)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}>Compliance</span>
-            </h2>
-          </div>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-            gap: '12px',
-          }}>
-            {certifications.map(cert => (
-              <div key={cert} style={{
-                display: 'flex', alignItems: 'center', gap: '10px',
-                padding: '14px 16px',
-                background: 'var(--card-dark)',
-                border: '1px solid var(--glass-border)',
-                borderRadius: 'var(--radius-md)',
-                transition: 'all var(--transition-fast)',
-              }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(52,211,153,0.3)'; e.currentTarget.style.background = 'var(--card-elevated)'; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.background = 'var(--card-dark)'; }}
-              >
-                <CheckCircle2 size={16} color="#34d399" style={{ flexShrink: 0 }} />
-                <span style={{ fontSize: '0.82rem', fontWeight: 500, color: 'var(--text-secondary)' }}>
-                  {cert}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      
 
       {/* ── CTA ── */}
       <section style={{ padding: '60px 24px 80px' }}>

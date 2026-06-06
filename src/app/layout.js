@@ -1,15 +1,16 @@
 import "./globals.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import AgeVerification from "../components/AgeVerification";
 
 export const metadata = {
   title: {
-    default: "Darryl Peptides — Premium Research Peptides",
-    template: "%s | Darryl Peptides",
+    default: "Iron Within Research — Premium Research Peptides",
+    template: "%s | Iron Within Research",
   },
   description:
     "Premium quality research peptides trusted by researchers worldwide. Shop BPC-157, TB-500, Semaglutide, and more with fast shipping.",
-  keywords: ["peptides", "research peptides", "BPC-157", "TB-500", "semaglutide"],
+  keywords: ["peptides", "research peptides", "BPC-157", "TB-500", "semaglutide", "iron within research"],
 };
 
 export const viewport = {
@@ -28,8 +29,10 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
+        {/* Age verification gate — renders before everything else */}
+        <AgeVerification />
         <Navbar />
-        <main style={{ minHeight: '100vh' }}>{children}</main>
+        <main style={{ minHeight: '100vh', paddingTop: 'var(--navbar-height, 68px)' }}>{children}</main>
         <Footer />
       </body>
     </html>
