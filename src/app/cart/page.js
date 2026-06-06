@@ -153,8 +153,8 @@ export default function CartPage() {
             {/* ── Cart Items ── */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
 
-              {/* Free shipping progress */}
-              {subtotal < FREE_SHIPPING_THRESHOLD && (
+             
+              {/* {subtotal < FREE_SHIPPING_THRESHOLD && (
                 <div style={{
                   padding: '16px 20px',
                   background: 'rgba(0,207,255,0.05)',
@@ -193,7 +193,7 @@ export default function CartPage() {
                 }}>
                   <Truck size={15} /> You qualify for free shipping!
                 </div>
-              )}
+              )} */}
 
               {/* Items */}
               {cartItems.map(item => {
@@ -426,7 +426,7 @@ export default function CartPage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {[
                   { Icon: ShieldCheck, label: 'Secure checkout' },
-                  { Icon: Truck, label: `Free shipping over $${FREE_SHIPPING_THRESHOLD}` },
+                  // { Icon: Truck, label: `Free shipping over $${FREE_SHIPPING_THRESHOLD}` },
                   { Icon: Package, label: 'Ships in 24–48 hours' },
                 ].map(({ Icon, label }) => (
                   <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '7px', fontSize: '0.78rem', color: 'var(--text-muted)' }}>

@@ -545,11 +545,11 @@ export default function CheckoutPage() {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px' }}>
               <SummaryRow label="Subtotal" value={`$${subtotal.toFixed(2)}`} />
-              <SummaryRow
+              {/* <SummaryRow
                 label={`Shipping (free over $${FREE_SHIPPING_THRESHOLD})`}
                 value={shippingCost === 0 ? 'FREE' : `$${shippingCost.toFixed(2)}`}
                 valueColor={shippingCost === 0 ? '#34d399' : undefined}
-              />
+              /> */}
             </div>
 
             <div style={{ height: 1, background: 'linear-gradient(90deg,transparent,var(--glass-border),transparent)', marginBottom: '16px' }} />
@@ -575,7 +575,7 @@ export default function CheckoutPage() {
             }}>
               {[
                 { Icon: ShieldCheck, label: 'Secure 256-bit SSL checkout' },
-                { Icon: Truck, label: `Free shipping over $${FREE_SHIPPING_THRESHOLD}` },
+                // { Icon: Truck, label: `Free shipping over $${FREE_SHIPPING_THRESHOLD}` },
                 { Icon: Package, label: 'Orders ship in 24–48 hours' },
               ].map((t, i, arr) => (
                 <div key={t.label} style={{

@@ -381,10 +381,10 @@ export default function ProductDetailPage({ params }) {
             </div>
 
             {/* Free shipping note */}
-            <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '5px' }}>
+            {/* <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '5px' }}>
               <Truck size={13} color="var(--primary-blue)" />
               Free shipping on orders over $225
-            </p>
+            </p> */}
           </div>
         </div>
 
