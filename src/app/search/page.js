@@ -1,492 +1,345 @@
 'use client';
+// src/app/search/page.js
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { useLazyQuery, useQuery } from '@apollo/client';
+import { GET_PRODUCTS, GET_CATEGORIES } from '@/lib/queries/products';
+import { useCart } from '@/context/CartContext';
+import { decodePriceHtml } from '@/lib/utils';
 import {
-  Search, FlaskConical, Beaker, Pill, Dna,
-  Brain, Microscope, Zap, HeartPulse, Sparkles,
-  Dumbbell, BookOpen, ArrowRight, BadgeCheck,
-  Star, SlidersHorizontal, X, Package,
+  Search, FlaskConical, ArrowRight, BadgeCheck,
+  ShoppingCart, X, Loader2, CheckCircle2, Tag,
 } from 'lucide-react';
 
-/* ── Mock search data ────────────────────────────────────── */
-const allProducts = [
-  { id: 1,  name: 'BPC-157',     subtitle: 'Body Protection Compound',  price: 49.99, Icon: FlaskConical, badgeColor: 'var(--primary-blue)', category: 'Healing & Recovery',  rating: 4.9, reviews: 214, inStock: true,  type: 'product' },
-  { id: 2,  name: 'TB-500',      subtitle: 'Thymosin Beta-4',           price: 59.99, Icon: Beaker,       badgeColor: 'var(--purple)',        category: 'Healing & Recovery',  rating: 4.8, reviews: 178, inStock: true,  type: 'product' },
-  { id: 3,  name: 'Semaglutide', subtitle: 'GLP-1 Receptor Agonist',    price: 79.99, Icon: Pill,         badgeColor: 'var(--pink)',          category: 'Metabolic Research',  rating: 4.7, reviews: 92,  inStock: true,  type: 'product' },
-  { id: 4,  name: 'CJC-1295',   subtitle: 'Growth Hormone Releasing',  price: 54.99, Icon: Dna,          badgeColor: '#34d399',              category: 'Hormonal Research',   rating: 4.8, reviews: 143, inStock: true,  type: 'product' },
-  { id: 5,  name: 'Ipamorelin',  subtitle: 'GH Secretagogue',          price: 44.99, Icon: Microscope,   badgeColor: 'var(--primary-blue)', category: 'Hormonal Research',   rating: 4.6, reviews: 87,  inStock: true,  type: 'product' },
-  { id: 6,  name: 'Tirzepatide', subtitle: 'GIP/GLP-1 Agonist',        price: 89.99, Icon: Zap,          badgeColor: 'var(--pink)',          category: 'Metabolic Research',  rating: 4.9, reviews: 61,  inStock: true,  type: 'product' },
-  { id: 7,  name: 'Selank',      subtitle: 'Anxiolytic Peptide',        price: 39.99, Icon: Brain,        badgeColor: 'var(--purple)',        category: 'Cognitive Peptides',  rating: 4.5, reviews: 55,  inStock: false, type: 'product' },
-  { id: 8,  name: 'Semax',       subtitle: 'Cognitive Enhancer',        price: 42.99, Icon: Brain,        badgeColor: 'var(--purple)',        category: 'Cognitive Peptides',  rating: 4.7, reviews: 69,  inStock: true,  type: 'product' },
-  { id: 9,  name: 'Epithalon',   subtitle: 'Telomere Peptide',          price: 64.99, Icon: Sparkles,     badgeColor: '#34d399',              category: 'Anti-Aging',          rating: 4.6, reviews: 48,  inStock: true,  type: 'product' },
-  { id: 10, name: 'Follistatin', subtitle: 'Myostatin Inhibitor',       price: 94.99, Icon: Dumbbell,     badgeColor: '#fbbf24',              category: 'Performance',         rating: 4.8, reviews: 33,  inStock: true,  type: 'product' },
-  { id: 11, name: 'MOTS-c',     subtitle: 'Mitochondrial Peptide',     price: 74.99, Icon: HeartPulse,   badgeColor: 'var(--primary-blue)', category: 'Anti-Aging',          rating: 4.5, reviews: 27,  inStock: true,  type: 'product' },
+const accentColors = [
+  'var(--primary-blue)', 'var(--purple)', 'var(--pink)',
+  '#34d399', '#fbbf24', 'var(--secondary-blue)',
+  '#f87171', '#a78bfa', '#38bdf8',
 ];
-
-const allBlogPosts = [
-  { id: 1, title: 'BPC-157: A Comprehensive Review of Tissue Repair Research', category: 'Research Review', readTime: '8 min', Icon: FlaskConical, iconColor: 'var(--primary-blue)', type: 'blog' },
-  { id: 2, title: 'Understanding GLP-1 Receptor Agonists in Metabolic Research', category: 'Metabolic Research', readTime: '6 min', Icon: Zap, iconColor: 'var(--pink)', type: 'blog' },
-  { id: 3, title: 'Cognitive Peptides: Selank and Semax in Neuroscience Studies', category: 'Neuroscience', readTime: '7 min', Icon: Brain, iconColor: 'var(--purple)', type: 'blog' },
-  { id: 4, title: 'TB-500 and Cardiac Tissue: What the Research Shows', category: 'Cardiac Research', readTime: '9 min', Icon: HeartPulse, iconColor: '#f87171', type: 'blog' },
-  { id: 5, title: 'Proper Reconstitution and Storage of Lyophilized Peptides', category: 'Research Guide', readTime: '4 min', Icon: FlaskConical, iconColor: '#fbbf24', type: 'blog' },
-];
-
-const filterTabs = ['All', 'Products', 'Blog'];
 
 export default function SearchPage() {
-  const searchParams  = useSearchParams();
-  const initialQuery  = searchParams.get('q') || '';
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get('q') || '';
 
-  const [query, setQuery]         = useState(initialQuery);
-  const [inputVal, setInputVal]   = useState(initialQuery);
-  const [activeFilter, setActiveFilter] = useState('All');
+  const [inputVal, setInputVal]             = useState(initialQuery);
+  const [query, setQuery]                   = useState(initialQuery);
+  const [addedItems, setAddedItems]         = useState({});
+  const [activeCategory, setActiveCategory] = useState(null); // stores slug
+  // Track whether the current search is a category-slug search or a text search
+  const [searchMode, setSearchMode]         = useState('text'); // 'text' | 'category'
 
+  const { addToCart } = useCart();
+
+  // ── Fetch categories ──────────────────────────────────────────
+  const { data: catData, loading: catLoading } = useQuery(GET_CATEGORIES, {
+    fetchPolicy: 'cache-first',
+  });
+  const categories = catData?.productCategories?.nodes || [];
+  const popularSearches = categories.slice(0, 5).map(c => c.name);
+
+  // ── Product search ────────────────────────────────────────────
+  const [searchProducts, { data, loading: searchLoading }] = useLazyQuery(GET_PRODUCTS, {
+    fetchPolicy: 'network-only',
+  });
+
+  // Debounce free-text input → text search
   useEffect(() => {
-    const t = setTimeout(() => setQuery(inputVal), 300);
+    const t = setTimeout(() => {
+      if (searchMode === 'text') {
+        setQuery(inputVal);
+      }
+    }, 350);
     return () => clearTimeout(t);
-  }, [inputVal]);
+  }, [inputVal, searchMode]);
 
-  const matchProduct = (p) =>
-    p.name.toLowerCase().includes(query.toLowerCase()) ||
-    p.subtitle.toLowerCase().includes(query.toLowerCase()) ||
-    p.category.toLowerCase().includes(query.toLowerCase());
+  // Fire the correct query whenever query / searchMode changes
+  useEffect(() => {
+    if (query.trim().length > 1) {
+      if (searchMode === 'category') {
+        // Use `category` (slug) variable — proper WooCommerce category filter
+        searchProducts({ variables: { first: 48, category: query.trim() } });
+      } else {
+        // Use `search` variable — full-text search
+        searchProducts({ variables: { first: 24, search: query.trim() } });
+      }
+    }
+  }, [query, searchMode, searchProducts]);
 
-  const matchBlog = (b) =>
-    b.title.toLowerCase().includes(query.toLowerCase()) ||
-    b.category.toLowerCase().includes(query.toLowerCase());
+  const products = data?.products?.nodes || [];
 
-  const productResults = query ? allProducts.filter(matchProduct) : [];
-  const blogResults    = query ? allBlogPosts.filter(matchBlog) : [];
+  const handleAddToCart = async (product) => {
+    const result = await addToCart(product.databaseId, 1);
+    if (result?.success !== false) {
+      setAddedItems(prev => ({ ...prev, [product.id]: true }));
+      setTimeout(() => setAddedItems(prev => ({ ...prev, [product.id]: false })), 2000);
+    }
+  };
 
-  const showProducts = activeFilter === 'All' || activeFilter === 'Products';
-  const showBlog     = activeFilter === 'All' || activeFilter === 'Blog';
+  // Category click → search by slug via `category` variable
+  const handleCategoryClick = (cat) => {
+    setActiveCategory(cat.slug);
+    setInputVal(cat.name);   // show human-readable name in input
+    setSearchMode('category');
+    setQuery(cat.slug);      // query holds the slug for the API call
+  };
 
-  const totalResults =
-    (showProducts ? productResults.length : 0) +
-    (showBlog ? blogResults.length : 0);
+  // Popular search pill → free-text search by name
+  const handlePopularClick = (term) => {
+    setActiveCategory(null);
+    setSearchMode('text');
+    setInputVal(term);
+    setQuery(term);
+  };
+
+  const clearSearch = () => {
+    setInputVal('');
+    setQuery('');
+    setActiveCategory(null);
+    setSearchMode('text');
+  };
+
+  // When user types manually, switch back to text mode
+  const handleInputChange = (e) => {
+    setInputVal(e.target.value);
+    setSearchMode('text');
+    setActiveCategory(null);
+  };
+
+  const hasQuery = query.trim().length > 1;
 
   return (
     <div style={{ minHeight: '100vh', paddingBottom: '80px' }}>
 
       {/* ── Search Hero ── */}
-      <div style={{
-        padding: '80px 24px 48px',
-        textAlign: 'center',
-        position: 'relative', overflow: 'hidden',
-        borderBottom: '1px solid var(--glass-border)',
-      }}>
-        <div style={{
-          position: 'absolute', inset: 0, pointerEvents: 'none',
-          background: 'radial-gradient(ellipse at center top, rgba(0,207,255,0.07) 0%, transparent 65%)',
-        }} />
+      <div style={{ padding: '80px 24px 48px', textAlign: 'center', position: 'relative', overflow: 'hidden', borderBottom: '1px solid var(--glass-border)' }}>
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse at center top, rgba(0,207,255,0.07) 0%, transparent 65%)' }} />
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: '6px',
-            fontSize: '0.72rem', fontWeight: 700,
-            color: 'var(--primary-blue)',
-            letterSpacing: '0.12em', textTransform: 'uppercase',
-            marginBottom: '14px',
-          }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.72rem', fontWeight: 700, color: 'var(--primary-blue)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '14px' }}>
             <Search size={13} /> Site Search
           </div>
-          <h1 style={{
-            fontFamily: 'var(--font-heading)',
-            fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 900,
-            marginBottom: '28px',
-          }}>
+          <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 900, marginBottom: '28px' }}>
             Search{' '}
-            <span style={{
-              background: 'var(--gradient-primary)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}>Darryl Peptides</span>
+            <span style={{ background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Products</span>
           </h1>
 
-          {/* Search input */}
           <div style={{ position: 'relative', maxWidth: '580px', margin: '0 auto' }}>
-            <Search size={18} style={{
-              position: 'absolute', left: '18px', top: '50%',
-              transform: 'translateY(-50%)',
-              color: 'var(--text-muted)', pointerEvents: 'none',
-            }} />
+            <Search size={18} style={{ position: 'absolute', left: '18px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', pointerEvents: 'none' }} />
             <input
               type="text"
               autoFocus
               value={inputVal}
-              onChange={e => setInputVal(e.target.value)}
-              placeholder="Search products, blog, categories…"
-              style={{
-                width: '100%', padding: '16px 50px',
-                background: 'var(--card-dark)',
-                border: '1px solid var(--primary-blue)',
-                borderRadius: 'var(--radius-lg)',
-                color: 'var(--text-light)',
-                fontFamily: 'var(--font-body)', fontSize: '1rem', outline: 'none',
-                boxShadow: 'var(--glow-sm)',
-              }}
+              onChange={handleInputChange}
+              placeholder="Search products…"
+              style={{ width: '100%', padding: '16px 50px', background: 'var(--card-dark)', border: '1px solid var(--primary-blue)', borderRadius: 'var(--radius-lg)', color: 'var(--text-light)', fontFamily: 'var(--font-body)', fontSize: '1rem', outline: 'none', boxShadow: 'var(--glow-sm)', boxSizing: 'border-box' }}
             />
             {inputVal && (
-              <button onClick={() => { setInputVal(''); setQuery(''); }} style={{
-                position: 'absolute', right: '16px', top: '50%',
-                transform: 'translateY(-50%)',
-                background: 'none', border: 'none',
-                color: 'var(--text-muted)', cursor: 'pointer',
-                display: 'flex',
-              }}>
+              <button onClick={clearSearch} style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex' }}>
                 <X size={16} />
               </button>
             )}
           </div>
+
+          {/* Active category badge under input */}
+          {activeCategory && (
+            <div style={{ marginTop: '12px', display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(0,207,255,0.1)', border: '1px solid rgba(0,207,255,0.3)', borderRadius: '999px', fontSize: '0.75rem', color: 'var(--primary-blue)', fontWeight: 600 }}>
+              <Tag size={11} /> Browsing category: {inputVal}
+            </div>
+          )}
         </div>
       </div>
 
       <div className="container" style={{ paddingTop: '36px' }}>
 
-        {!query ? (
-          /* ── Empty / landing state ── */
+        {/* ── Empty / Browse state ── */}
+        {!hasQuery && (
           <div>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '36px', textAlign: 'center' }}>
-              Start typing to search products, blog articles, and more.
+              Start typing or pick a category below.
             </p>
 
             {/* Popular searches */}
-            <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-              <p style={{
-                fontSize: '0.75rem', fontWeight: 700,
-                color: 'var(--text-muted)', textTransform: 'uppercase',
-                letterSpacing: '0.1em', marginBottom: '12px',
-              }}>Popular Searches</p>
-              <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                {['BPC-157', 'Semaglutide', 'TB-500', 'CJC-1295', 'Selank', 'Epithalon'].map(term => (
-                  <button key={term} onClick={() => { setInputVal(term); setQuery(term); }} style={{
-                    padding: '8px 16px',
-                    background: 'var(--card-dark)',
-                    border: '1px solid var(--glass-border)',
-                    borderRadius: '999px',
-                    color: 'var(--text-secondary)',
-                    fontSize: '0.85rem', cursor: 'pointer',
-                    fontFamily: 'var(--font-body)',
-                    transition: 'all var(--transition-fast)',
-                  }}
-                    onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--primary-blue)'; e.currentTarget.style.color = 'var(--primary-blue)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
-                  >{term}</button>
-                ))}
+            {catLoading ? (
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '48px' }}>
+                <Loader2 size={18} color="var(--primary-blue)" style={{ animation: 'spin 1s linear infinite' }} />
               </div>
-            </div>
-
-            {/* Browse categories */}
-            <div>
-              <p style={{
-                fontSize: '0.75rem', fontWeight: 700,
-                color: 'var(--text-muted)', textTransform: 'uppercase',
-                letterSpacing: '0.1em', marginBottom: '16px', textAlign: 'center',
-              }}>Browse Categories</p>
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
-                gap: '12px',
-              }}>
-                {[
-                  { name: 'Healing & Recovery', Icon: HeartPulse,  color: 'var(--primary-blue)' },
-                  { name: 'Metabolic Research', Icon: Zap,          color: 'var(--purple)' },
-                  { name: 'Cognitive Peptides', Icon: Brain,        color: 'var(--pink)' },
-                  { name: 'Anti-Aging',         Icon: Sparkles,     color: '#34d399' },
-                  { name: 'Performance',        Icon: Dumbbell,     color: '#fbbf24' },
-                  { name: 'Hormonal Research',  Icon: Microscope,   color: 'var(--secondary-blue)' },
-                ].map(cat => (
-                  <Link key={cat.name} href="/categories" style={{ textDecoration: 'none' }}>
-                    <div style={{
-                      background: 'var(--card-dark)',
-                      border: '1px solid var(--glass-border)',
-                      borderRadius: 'var(--radius-lg)',
-                      padding: '20px 16px', textAlign: 'center',
-                      transition: 'all var(--transition-base)',
-                    }}
-                      onMouseEnter={e => {
-                        e.currentTarget.style.borderColor = `${cat.color}44`;
-                        e.currentTarget.style.transform = 'translateY(-3px)';
-                        e.currentTarget.style.boxShadow = `0 0 16px ${cat.color}22`;
-                      }}
-                      onMouseLeave={e => {
-                        e.currentTarget.style.borderColor = 'var(--glass-border)';
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = 'none';
-                      }}
-                    >
-                      <div style={{
-                        width: 44, height: 44, borderRadius: '50%',
-                        background: `${cat.color}15`,
-                        border: `1px solid ${cat.color}30`,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        margin: '0 auto 10px',
-                      }}>
-                        <cat.Icon size={20} color={cat.color} />
-                      </div>
-                      <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
-                        {cat.name}
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-        ) : (
-          /* ── Results ── */
-          <div>
-            {/* Results header */}
-            <div style={{
-              display: 'flex', justifyContent: 'space-between',
-              alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '12px',
-            }}>
-              <div>
-                <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', fontWeight: 800, marginBottom: '4px' }}>
-                  {totalResults > 0
-                    ? <>{totalResults} result{totalResults !== 1 ? 's' : ''} for "<span style={{ background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{query}</span>"</>
-                    : <>No results for "<span style={{ color: 'var(--text-muted)' }}>{query}</span>"</>
-                  }
-                </h2>
-              </div>
-
-              {/* Filter tabs */}
-              <div style={{ display: 'flex', gap: '6px' }}>
-                {filterTabs.map(tab => (
-                  <button key={tab} onClick={() => setActiveFilter(tab)} style={{
-                    padding: '7px 16px',
-                    borderRadius: '999px',
-                    border: `1px solid ${activeFilter === tab ? 'var(--primary-blue)' : 'var(--glass-border)'}`,
-                    background: activeFilter === tab ? 'rgba(0,207,255,0.1)' : 'var(--card-dark)',
-                    color: activeFilter === tab ? 'var(--primary-blue)' : 'var(--text-secondary)',
-                    fontSize: '0.82rem',
-                    fontWeight: activeFilter === tab ? 600 : 400,
-                    cursor: 'pointer', fontFamily: 'var(--font-body)',
-                    transition: 'all var(--transition-fast)',
-                  }}>{tab}</button>
-                ))}
-              </div>
-            </div>
-
-            {totalResults === 0 ? (
-              <div style={{
-                textAlign: 'center', padding: '80px 24px',
-                background: 'var(--card-dark)',
-                border: '1px solid var(--glass-border)',
-                borderRadius: 'var(--radius-xl)',
-              }}>
-                <Search size={48} color="var(--text-muted)" style={{ margin: '0 auto 16px', opacity: 0.3 }} />
-                <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', marginBottom: '10px' }}>
-                  No results found
-                </h3>
-                <p style={{ color: 'var(--text-secondary)', marginBottom: '24px', maxWidth: '360px', margin: '0 auto 24px' }}>
-                  Try different keywords or browse our shop directly.
-                </p>
-                <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                  <Link href="/shop" style={{
-                    display: 'inline-flex', alignItems: 'center', gap: '7px',
-                    padding: '11px 22px',
-                    background: 'var(--gradient-primary)',
-                    borderRadius: 'var(--radius-md)',
-                    color: '#fff', fontWeight: 600,
-                    textDecoration: 'none', fontFamily: 'var(--font-body)',
-                  }}>
-                    Browse Shop <ArrowRight size={14} />
-                  </Link>
-                  <Link href="/contact" style={{
-                    display: 'inline-flex', alignItems: 'center', gap: '7px',
-                    padding: '11px 22px',
-                    border: '1px solid var(--glass-border)',
-                    borderRadius: 'var(--radius-md)',
-                    color: 'var(--text-light)', fontWeight: 500,
-                    textDecoration: 'none', fontFamily: 'var(--font-body)',
-                  }}>
-                    Contact Us
-                  </Link>
+            ) : popularSearches.length > 0 && (
+              <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+                <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '12px' }}>Popular Searches</p>
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                  {popularSearches.map(term => (
+                    <button key={term} onClick={() => handlePopularClick(term)}
+                      style={{ padding: '8px 16px', background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: '999px', color: 'var(--text-secondary)', fontSize: '0.85rem', cursor: 'pointer', fontFamily: 'var(--font-body)', transition: 'all 0.15s ease' }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--primary-blue)'; e.currentTarget.style.color = 'var(--primary-blue)'; }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}>
+                      {term}
+                    </button>
+                  ))}
                 </div>
               </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+            )}
 
-                {/* Product results */}
-                {showProducts && productResults.length > 0 && (
-                  <div>
-                    <div style={{
-                      display: 'flex', justifyContent: 'space-between',
-                      alignItems: 'center', marginBottom: '16px',
-                    }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Package size={15} color="var(--primary-blue)" />
-                        <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '0.9rem', fontWeight: 700 }}>
-                          Products
-                        </h3>
-                        <span style={{
-                          padding: '2px 8px',
-                          background: 'rgba(0,207,255,0.1)',
-                          border: '1px solid rgba(0,207,255,0.2)',
-                          borderRadius: '999px',
-                          fontSize: '0.7rem', fontWeight: 700,
-                          color: 'var(--primary-blue)',
-                        }}>{productResults.length}</span>
-                      </div>
-                      <Link href="/shop" style={{
-                        display: 'inline-flex', alignItems: 'center', gap: '5px',
-                        color: 'var(--primary-blue)', fontSize: '0.82rem',
-                        textDecoration: 'none', fontWeight: 500,
-                      }}>
-                        View All <ArrowRight size={13} />
+            {/* Browse Categories */}
+            <div style={{ marginBottom: '48px' }}>
+              <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '16px', textAlign: 'center' }}>Browse by Category</p>
+              {catLoading ? (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px' }}>
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} style={{ height: 70, background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-lg)', opacity: 0.5 }} />
+                  ))}
+                </div>
+              ) : categories.length === 0 ? (
+                <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>No categories found.</p>
+              ) : (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px' }}>
+                  {categories.map(({ id, name, slug, count, image }, idx) => {
+                    const color = accentColors[idx % accentColors.length];
+                    return (
+                      <button key={id} onClick={() => handleCategoryClick({ name, slug, color })}
+                        style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-lg)', cursor: 'pointer', fontFamily: 'var(--font-body)', transition: 'all 0.18s ease', textAlign: 'left', width: '100%' }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor = color; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 0 18px ${color}33`; }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
+                        <div style={{ width: 38, height: 38, borderRadius: 'var(--radius-md)', background: `${color}18`, border: `1px solid ${color}33`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
+                          {image?.sourceUrl ? (
+                            <img src={image.sourceUrl} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          ) : (
+                            <Tag size={16} color={color} />
+                          )}
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-light)', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{name}</span>
+                          {count != null && (
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{count} product{count !== 1 ? 's' : ''}</span>
+                          )}
+                        </div>
+                        <ArrowRight size={14} color="var(--text-muted)" style={{ flexShrink: 0 }} />
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ── Results state ── */}
+        {hasQuery && (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
+              <div>
+                {searchLoading ? (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-secondary)' }}>
+                    <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Searching…
+                  </div>
+                ) : (
+                  <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', fontWeight: 800 }}>
+                    {products.length > 0
+                      ? <>{products.length} result{products.length !== 1 ? 's' : ''} for "<span style={{ background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{inputVal}</span>"</>
+                      : <>No results for "<span style={{ color: 'var(--text-muted)' }}>{inputVal}</span>"</>
+                    }
+                  </h2>
+                )}
+              </div>
+
+              {/* Category filter pills */}
+              {categories.length > 0 && (
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  {categories.map(({ id, name, slug }, idx) => {
+                    const color = accentColors[idx % accentColors.length];
+                    const isActive = activeCategory === slug;
+                    return (
+                      <button key={id} onClick={() => handleCategoryClick({ name, slug, color })}
+                        style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '6px 12px', background: isActive ? `${color}22` : 'var(--card-dark)', border: `1px solid ${isActive ? color : 'var(--glass-border)'}`, borderRadius: '999px', color: isActive ? color : 'var(--text-secondary)', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)', transition: 'all 0.15s ease' }}
+                        onMouseEnter={e => { if (!isActive) { e.currentTarget.style.borderColor = color; e.currentTarget.style.color = color; } }}
+                        onMouseLeave={e => { if (!isActive) { e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.color = 'var(--text-secondary)'; } }}>
+                        <Tag size={10} />
+                        {name}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* No results */}
+            {!searchLoading && products.length === 0 && (
+              <div style={{ textAlign: 'center', padding: '80px 24px', background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-xl)' }}>
+                <Search size={48} color="var(--text-muted)" style={{ margin: '0 auto 16px', opacity: 0.3 }} />
+                <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', marginBottom: '10px' }}>No results found</h3>
+                <p style={{ color: 'var(--text-secondary)', maxWidth: '360px', margin: '0 auto 24px' }}>Try different keywords or browse our shop.</p>
+                <Link href="/shop" style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '11px 22px', background: 'var(--gradient-primary)', borderRadius: 'var(--radius-md)', color: '#fff', fontWeight: 600, textDecoration: 'none', fontFamily: 'var(--font-body)' }}>
+                  Browse Shop <ArrowRight size={14} />
+                </Link>
+              </div>
+            )}
+
+            {/* Product grid */}
+            {products.length > 0 && (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '14px' }}>
+                {products.map(product => {
+                  const isVariable = product.__typename === 'VariableProduct';
+                  const inStock = isVariable
+                    ? product.variations?.nodes?.some(v => v.stockStatus === 'IN_STOCK')
+                    : product.stockStatus === 'IN_STOCK';
+                  const added = addedItems[product.id];
+
+                  return (
+                    <div key={product.id}
+                      style={{ background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-lg)', padding: '16px', display: 'flex', gap: '14px', alignItems: 'center', transition: 'all 0.2s ease' }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(0,207,255,0.3)'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = 'var(--glow-blue)'; }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
+
+                      <Link href={`/product/${product.slug}`} style={{ textDecoration: 'none', flexShrink: 0 }}>
+                        <div style={{ width: 56, height: 56, borderRadius: 'var(--radius-md)', background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                          {product.image?.sourceUrl ? (
+                            <img src={product.image.sourceUrl} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                          ) : (
+                            <FlaskConical size={22} color="var(--primary-blue)" style={{ opacity: 0.4 }} />
+                          )}
+                        </div>
                       </Link>
-                    </div>
 
-                    <div style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-                      gap: '14px',
-                    }}>
-                      {productResults.map(p => (
-                        <Link key={p.id} href={`/product/${p.id}`} style={{ textDecoration: 'none' }}>
-                          <div style={{
-                            background: 'var(--card-dark)',
-                            border: '1px solid var(--glass-border)',
-                            borderRadius: 'var(--radius-lg)',
-                            padding: '16px',
-                            display: 'flex', gap: '14px', alignItems: 'center',
-                            transition: 'all var(--transition-base)',
-                          }}
-                            onMouseEnter={e => {
-                              e.currentTarget.style.borderColor = 'rgba(0,207,255,0.3)';
-                              e.currentTarget.style.transform = 'translateY(-3px)';
-                              e.currentTarget.style.boxShadow = 'var(--glow-blue)';
-                            }}
-                            onMouseLeave={e => {
-                              e.currentTarget.style.borderColor = 'var(--glass-border)';
-                              e.currentTarget.style.transform = 'translateY(0)';
-                              e.currentTarget.style.boxShadow = 'none';
-                            }}
-                          >
-                            <div style={{
-                              width: 48, height: 48, flexShrink: 0,
-                              borderRadius: 'var(--radius-md)',
-                              background: `${p.badgeColor}15`,
-                              border: `1px solid ${p.badgeColor}30`,
-                              display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            }}>
-                              <p.Icon size={22} color={p.badgeColor} />
-                            </div>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '2px' }}>
-                                <span style={{ fontWeight: 700, fontSize: '0.9rem' }}>{p.name}</span>
-                                <BadgeCheck size={12} color="var(--primary-blue)" />
-                              </div>
-                              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '4px' }}>{p.subtitle}</div>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <span style={{
-                                  fontFamily: 'var(--font-heading)',
-                                  fontSize: '0.9rem', fontWeight: 800,
-                                  background: 'var(--gradient-primary)',
-                                  WebkitBackgroundClip: 'text',
-                                  WebkitTextFillColor: 'transparent',
-                                  backgroundClip: 'text',
-                                }}>${p.price.toFixed(2)}</span>
-                                <span style={{
-                                  fontSize: '0.65rem', fontWeight: 600,
-                                  color: p.inStock ? '#34d399' : '#f87171',
-                                }}>{p.inStock ? '● In Stock' : '● Out of Stock'}</span>
-                              </div>
-                            </div>
-                            <ArrowRight size={14} color="var(--text-muted)" />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <Link href={`/product/${product.slug}`} style={{ textDecoration: 'none' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '2px' }}>
+                            <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-light)' }}>{product.name}</span>
+                            <BadgeCheck size={12} color="var(--primary-blue)" />
                           </div>
                         </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Blog results */}
-                {showBlog && blogResults.length > 0 && (
-                  <div>
-                    <div style={{
-                      display: 'flex', justifyContent: 'space-between',
-                      alignItems: 'center', marginBottom: '16px',
-                    }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <BookOpen size={15} color="var(--purple)" />
-                        <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '0.9rem', fontWeight: 700 }}>
-                          Blog Articles
-                        </h3>
-                        <span style={{
-                          padding: '2px 8px',
-                          background: 'rgba(124,58,237,0.1)',
-                          border: '1px solid rgba(124,58,237,0.2)',
-                          borderRadius: '999px',
-                          fontSize: '0.7rem', fontWeight: 700,
-                          color: 'var(--purple)',
-                        }}>{blogResults.length}</span>
+                        {product.shortDescription && (
+                          <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                            dangerouslySetInnerHTML={{ __html: product.shortDescription }} />
+                        )}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ fontFamily: 'var(--font-heading)', fontSize: '0.9rem', fontWeight: 800, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+                            dangerouslySetInnerHTML={{ __html: decodePriceHtml(product.price) || '—' }} />
+                          <span style={{ fontSize: '0.65rem', fontWeight: 600, color: inStock ? '#34d399' : '#f87171' }}>
+                            {inStock ? '● In Stock' : '● Out of Stock'}
+                          </span>
+                        </div>
                       </div>
-                      <Link href="/blog" style={{
-                        display: 'inline-flex', alignItems: 'center', gap: '5px',
-                        color: 'var(--purple)', fontSize: '0.82rem',
-                        textDecoration: 'none', fontWeight: 500,
-                      }}>
-                        View All <ArrowRight size={13} />
-                      </Link>
-                    </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                      {blogResults.map(post => (
-                        <Link key={post.id} href={`/blog/${post.id}`} style={{ textDecoration: 'none' }}>
-                          <div style={{
-                            background: 'var(--card-dark)',
-                            border: '1px solid var(--glass-border)',
-                            borderRadius: 'var(--radius-lg)',
-                            padding: '16px 18px',
-                            display: 'flex', gap: '14px', alignItems: 'center',
-                            transition: 'all var(--transition-base)',
-                          }}
-                            onMouseEnter={e => {
-                              e.currentTarget.style.borderColor = 'rgba(124,58,237,0.3)';
-                              e.currentTarget.style.background = 'var(--card-elevated)';
-                            }}
-                            onMouseLeave={e => {
-                              e.currentTarget.style.borderColor = 'var(--glass-border)';
-                              e.currentTarget.style.background = 'var(--card-dark)';
-                            }}
-                          >
-                            <div style={{
-                              width: 42, height: 42, flexShrink: 0,
-                              borderRadius: 'var(--radius-md)',
-                              background: `${post.iconColor}15`,
-                              border: `1px solid ${post.iconColor}30`,
-                              display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            }}>
-                              <post.Icon size={18} color={post.iconColor} />
-                            </div>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <p style={{
-                                fontWeight: 600, fontSize: '0.9rem',
-                                color: 'var(--text-light)', marginBottom: '3px',
-                                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                              }}>{post.title}</p>
-                              <div style={{ display: 'flex', gap: '10px', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                                <span>{post.category}</span>
-                                <span>·</span>
-                                <span>{post.readTime} read</span>
-                              </div>
-                            </div>
-                            <ArrowRight size={14} color="var(--text-muted)" />
-                          </div>
+                      {isVariable ? (
+                        <Link href={`/product/${product.slug}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 36, height: 36, background: 'var(--card-elevated)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-md)', color: 'var(--text-muted)', textDecoration: 'none', flexShrink: 0 }}>
+                          <ArrowRight size={14} />
                         </Link>
-                      ))}
+                      ) : (
+                        <button onClick={() => handleAddToCart(product)} disabled={!inStock || added}
+                          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 36, height: 36, background: added ? 'rgba(52,211,153,0.15)' : inStock ? 'var(--gradient-primary)' : 'var(--card-elevated)', border: added ? '1px solid rgba(52,211,153,0.4)' : 'none', borderRadius: 'var(--radius-md)', color: added ? '#34d399' : inStock ? '#fff' : 'var(--text-muted)', cursor: inStock ? 'pointer' : 'not-allowed', flexShrink: 0, opacity: !inStock ? 0.5 : 1 }}>
+                          {added ? <CheckCircle2 size={14} /> : <ShoppingCart size={14} />}
+                        </button>
+                      )}
                     </div>
-                  </div>
-                )}
+                  );
+                })}
               </div>
             )}
           </div>
         )}
       </div>
+
+      <style>{`@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
     </div>
   );
 }

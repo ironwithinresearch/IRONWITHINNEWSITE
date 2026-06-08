@@ -10,8 +10,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import { useState } from 'react';
-
-const FREE_SHIPPING_THRESHOLD = 225;
+ 
 
 export default function CartPage() {
   const {
@@ -24,7 +23,7 @@ export default function CartPage() {
   const [couponError, setCouponError] = useState('');
 
   const subtotalNum = parseFloat(cartSubtotal?.replace(/[^0-9.]/g, '') || '0');
-  const shippingFree = subtotalNum >= FREE_SHIPPING_THRESHOLD;
+ 
   const appliedCoupons = cart?.appliedCoupons || [];
 
   const handleApplyCoupon = async () => {
@@ -83,24 +82,7 @@ export default function CartPage() {
             {/* Cart items */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
 
-              {/* Free shipping progress */}
-              {!shippingFree ? (
-                <div style={{ padding: '14px 18px', background: 'rgba(0,207,255,0.05)', border: '1px solid rgba(0,207,255,0.15)', borderRadius: '10px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                    <Truck size={14} color="var(--primary-blue)" />
-                    <span style={{ fontSize: '0.84rem', color: 'var(--text-secondary)' }}>
-                      Add <strong style={{ color: 'var(--primary-blue)' }}>${(FREE_SHIPPING_THRESHOLD - subtotalNum).toFixed(2)}</strong> more for free shipping
-                    </span>
-                  </div>
-                  <div style={{ height: 4, background: 'var(--glass-border)', borderRadius: '2px', overflow: 'hidden' }}>
-                    <div style={{ height: '100%', width: `${Math.min(100, (subtotalNum / FREE_SHIPPING_THRESHOLD) * 100)}%`, background: 'var(--gradient-primary)', borderRadius: '2px' }} />
-                  </div>
-                </div>
-              ) : (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 16px', background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.25)', borderRadius: '10px', color: '#34d399', fontSize: '0.85rem' }}>
-                  <Truck size={14} /> You qualify for free shipping!
-                </div>
-              )}
+              
 
               {/* Items */}
               {cartItems.map(item => {
@@ -180,14 +162,7 @@ export default function CartPage() {
             <div style={{ background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: '20px', padding: '28px', position: 'sticky', top: 'calc(var(--navbar-height) + 20px)' }}>
               <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 800, marginBottom: '20px' }}>Order Summary</h2>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px' }}>
-                <SummaryRow label="Subtotal" rawValue={cartSubtotal} />
-                {appliedCoupons.map(c => (
-                  <SummaryRow key={c.code} label={`Coupon: ${c.code}`} rawValue={`-${c.discountAmount}`} valueColor="#34d399" onRemove={() => removeCoupon(c.code)} />
-                ))}
-                <SummaryRow label={`Shipping (free over $${FREE_SHIPPING_THRESHOLD})`} value={shippingFree ? 'FREE' : '$9.99'} valueColor={shippingFree ? '#34d399' : undefined} />
-              </div>
-
+            
               <div style={{ height: 1, background: 'var(--glass-border)', margin: '14px 0' }} />
 
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
