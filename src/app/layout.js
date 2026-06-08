@@ -1,7 +1,9 @@
+// src/app/layout.js
 import "./globals.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import AgeVerification from "../components/AgeVerification";
+import ApolloWrapper from "../lib/ApolloWrapper";
 
 export const metadata = {
   title: {
@@ -29,11 +31,15 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
-        {/* Age verification gate — renders before everything else */}
-        <AgeVerification />
-        <Navbar />
-        <main style={{ minHeight: '100vh', paddingTop: 'var(--navbar-height, 68px)' }}>{children}</main>
-        <Footer />
+        {/* ApolloWrapper provides: ApolloClient + AuthContext + CartContext */}
+        <ApolloWrapper>
+          <AgeVerification />
+          <Navbar />
+          <main style={{ minHeight: '100vh', paddingTop: 'var(--navbar-height, 68px)' }}>
+            {children}
+          </main>
+          <Footer />
+        </ApolloWrapper>
       </body>
     </html>
   );

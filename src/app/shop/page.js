@@ -1,405 +1,326 @@
 'use client';
+// src/app/shop/page.js
 
-import { useState } from 'react';
-import {
-  SlidersHorizontal,
-  Search,
-  ShoppingCart,
-  Heart,
-  BadgeCheck,
-  Star,
-  ChevronDown,
-  X,
-  Microscope,
-  FlaskConical,
-} from 'lucide-react';
-import Image from 'next/image';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useQuery } from '@apollo/client';
+import { GET_PRODUCTS, GET_CATEGORIES } from '../../lib/queries/products';
+import { useCart } from '../../context/CartContext';
+import {
+  FlaskConical, ShoppingCart, Search,
+  ChevronDown, Loader2, AlertCircle, Package,
+  Wifi, RefreshCw,
+} from 'lucide-react';
 
-import SectionHeader from '../../components/ui/SectionHeader';
-import { allProducts } from '../../data/products';
-import { getIconByName } from '../../lib/iconMap';
-
-const categories = [
-  'All',
-  'Healing & Recovery',
-  'Metabolic Research',
-  'Cognitive Peptides',
-  'Anti-Aging',
-  'Performance',
-  'Hormonal Research',
-];
-
-const sortOptions = [
-  { label: 'Featured', value: 'featured' },
-  { label: 'Price: Low–High', value: 'price-asc' },
-  { label: 'Price: High–Low', value: 'price-desc' },
-  { label: 'Top Rated', value: 'rating' },
-  { label: 'Most Reviews', value: 'reviews' },
-];
-
-/* ── Page ────────────────────────────────────────────────── */
 export default function ShopPage() {
-  const [activeCategory, setActiveCategory] = useState('All');
-  const [sortBy, setSortBy] = useState('featured');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [showFilters, setShowFilters] = useState(false);
-  const [priceMax, setPriceMax] = useState(100);
-  const [inStockOnly, setInStockOnly] = useState(false);
+  const [search, setSearch] = useState('');
+  const [activeCategory, setActiveCategory] = useState('');
 
-  /* Filter + sort */
-  let filtered = allProducts.filter(p => {
-    const matchCat = activeCategory === 'All' || p.category === activeCategory;
-    const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.subtitle.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchPrice = p.price <= priceMax;
-    const matchStock = !inStockOnly || p.inStock;
-    return matchCat && matchSearch && matchPrice && matchStock;
+  const { addToCart, addingToCart, notification } = useCart();
+
+  // Fetch categories
+  const { data: catData } = useQuery(GET_CATEGORIES, {
+    onError: () => {}, // suppress — categories are optional
+  });
+  const categories = catData?.productCategories?.nodes || [];
+
+  // ── Fetch products — simplified query (no status filter) ──
+  const { data, loading, error, refetch } = useQuery(GET_PRODUCTS, {
+    variables: {
+      first: 20,
+      after: null,
+      category: activeCategory || null,
+    },
+    notifyOnNetworkStatusChange: true,
   });
 
-  filtered = [...filtered].sort((a, b) => {
-    if (sortBy === 'price-asc') return a.price - b.price;
-    if (sortBy === 'price-desc') return b.price - a.price;
-    if (sortBy === 'rating') return b.rating - a.rating;
-    if (sortBy === 'reviews') return b.reviews - a.reviews;
-    return 0;
-  });
+  const products = data?.products?.nodes || [];
+  const pageInfo = data?.products?.pageInfo;
+
+  // Client-side search
+  const filtered = products.filter(p =>
+    !search || p.name?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const loadMore = () => {
+    if (!pageInfo?.endCursor) return;
+    refetch({ first: 20, after: pageInfo.endCursor, category: activeCategory || null });
+  };
+
+  // Detect error type
+  const isCorsError = error?.networkError?.message?.includes('allowlist') ||
+    error?.networkError?.statusCode === 0 ||
+    error?.message?.includes('allowlist') ||
+    error?.message?.includes('CORS') ||
+    error?.message?.includes('Failed to fetch') ||
+    error?.networkError?.result === 'Host not in allowlist';
 
   return (
-    <>
-      {/* ── Page Header ── */}
-      <div className="page-header">
-        <div className="container">
+    <div style={{ minHeight: '100vh', paddingBottom: '80px' }}>
+
+      {/* Cart notification */}
+      {notification && (
+        <div style={{
+          position: 'fixed', top: '80px', right: '24px', zIndex: 200,
+          padding: '12px 20px',
+          background: notification.type === 'error' ? 'rgba(239,68,68,0.15)' : 'rgba(52,211,153,0.15)',
+          border: `1px solid ${notification.type === 'error' ? 'rgba(239,68,68,0.4)' : 'rgba(52,211,153,0.4)'}`,
+          borderRadius: '10px',
+          color: notification.type === 'error' ? '#f87171' : '#34d399',
+          fontWeight: 500, fontSize: '0.875rem',
+          backdropFilter: 'blur(12px)',
+        }}>
+          {notification.message}
+        </div>
+      )}
+
+      {/* Header */}
+      <section style={{ padding: '60px 24px 40px', textAlign: 'center', position: 'relative' }}>
+        <div style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          background: 'radial-gradient(ellipse at center top, rgba(0,207,255,0.07) 0%, transparent 60%)',
+        }} />
+        <div style={{ position: 'relative', zIndex: 1 }}>
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: '6px',
-            fontSize: '0.72rem', fontWeight: 700,
-            color: 'var(--primary-blue)',
-            letterSpacing: '0.12em',
-            textTransform: 'uppercase',
-            marginBottom: '12px',
+            fontSize: '0.72rem', fontWeight: 700, color: 'var(--primary-blue)',
+            letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '12px',
           }}>
-            <FlaskConical size={13} /> All Products
+            <FlaskConical size={13} /> Research Catalogue
           </div>
-          <h1 style={{
-            fontFamily: 'var(--font-heading)',
-            fontSize: 'clamp(2rem, 5vw, 3.2rem)',
-            fontWeight: 900,
-            marginBottom: '12px',
-          }}>
-            Research{' '}
+          <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 900, marginBottom: '10px' }}>
+            All{' '}
             <span style={{
               background: 'var(--gradient-primary)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}>Peptide Shop</span>
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+            }}>Products</span>
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1rem' }}>
-            {allProducts.length} premium compounds — all third-party lab verified
+            {loading ? 'Loading…' : `${filtered.length} compounds available · 99.3%+ purity guaranteed`}
           </p>
         </div>
-      </div>
+      </section>
 
-      <div className="container" style={{ paddingBottom: '80px' }}>
+      <div className="container">
 
-        {/* ── Search + Sort bar ── */}
-        <div style={{
-          display: 'flex',
-          gap: '12px',
-          flexWrap: 'wrap',
-          marginBottom: '28px',
-          alignItems: 'center',
-        }}>
-          {/* Search */}
-          <div style={{ position: 'relative', flex: 1, minWidth: '220px' }}>
+        {/* Filters */}
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center', marginBottom: '28px' }}>
+          <div style={{ position: 'relative', flex: 1, minWidth: '200px' }}>
             <Search size={15} style={{
-              position: 'absolute', left: '14px', top: '50%',
-              transform: 'translateY(-50%)',
-              color: 'var(--text-muted)',
-              pointerEvents: 'none',
+              position: 'absolute', left: '12px', top: '50%',
+              transform: 'translateY(-50%)', color: 'var(--text-muted)', pointerEvents: 'none',
             }} />
             <input
-              type="text"
-              placeholder="Search peptides…"
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
+              type="text" placeholder="Search products…"
+              value={search} onChange={e => setSearch(e.target.value)}
               style={{
-                width: '100%',
-                padding: '11px 14px 11px 40px',
-                background: 'var(--card-dark)',
-                border: '1px solid var(--glass-border)',
-                borderRadius: 'var(--radius-md)',
-                color: 'var(--text-light)',
-                fontFamily: 'var(--font-body)',
-                fontSize: '0.9rem',
-                outline: 'none',
-                transition: 'border-color var(--transition-fast)',
+                width: '100%', padding: '10px 14px 10px 36px',
+                background: 'var(--card-dark)', border: '1px solid var(--glass-border)',
+                borderRadius: '10px', color: 'var(--text-light)',
+                fontFamily: 'var(--font-body)', fontSize: '0.875rem', outline: 'none',
               }}
               onFocus={e => e.target.style.borderColor = 'var(--primary-blue)'}
               onBlur={e => e.target.style.borderColor = 'var(--glass-border)'}
             />
-            {searchQuery && (
-              <button onClick={() => setSearchQuery('')} style={{
+          </div>
+
+          {categories.length > 0 && (
+            <div style={{ position: 'relative' }}>
+              <select
+                value={activeCategory}
+                onChange={e => setActiveCategory(e.target.value)}
+                style={{
+                  padding: '10px 36px 10px 14px',
+                  background: 'var(--card-dark)', border: '1px solid var(--glass-border)',
+                  borderRadius: '10px', color: 'var(--text-light)',
+                  fontFamily: 'var(--font-body)', fontSize: '0.875rem',
+                  outline: 'none', cursor: 'pointer', appearance: 'none',
+                }}
+              >
+                <option value="">All Categories</option>
+                {categories.map(c => (
+                  <option key={c.id} value={c.slug}>{c.name} ({c.count})</option>
+                ))}
+              </select>
+              <ChevronDown size={14} style={{
                 position: 'absolute', right: '12px', top: '50%',
-                transform: 'translateY(-50%)',
-                background: 'none', border: 'none',
-                color: 'var(--text-muted)', cursor: 'pointer',
-                display: 'flex', alignItems: 'center',
-              }}>
-                <X size={14} />
-              </button>
-            )}
-          </div>
-
-          {/* Sort */}
-          <div style={{ position: 'relative' }}>
-            <select
-              value={sortBy}
-              onChange={e => setSortBy(e.target.value)}
-              style={{
-                padding: '11px 36px 11px 14px',
-                background: 'var(--card-dark)',
-                border: '1px solid var(--glass-border)',
-                borderRadius: 'var(--radius-md)',
-                color: 'var(--text-light)',
-                fontFamily: 'var(--font-body)',
-                fontSize: '0.88rem',
-                outline: 'none',
-                cursor: 'pointer',
-                appearance: 'none',
-              }}
-            >
-              {sortOptions.map(o => (
-                <option key={o.value} value={o.value}>{o.label}</option>
-              ))}
-            </select>
-            <ChevronDown size={14} style={{
-              position: 'absolute', right: '12px', top: '50%',
-              transform: 'translateY(-50%)',
-              color: 'var(--text-muted)',
-              pointerEvents: 'none',
-            }} />
-          </div>
-
-          {/* Filter toggle */}
-          <button
-            onClick={() => setShowFilters(f => !f)}
-            style={{
-              display: 'flex', alignItems: 'center', gap: '7px',
-              padding: '11px 18px',
-              background: showFilters ? 'rgba(0,207,255,0.1)' : 'var(--card-dark)',
-              border: `1px solid ${showFilters ? 'var(--primary-blue)' : 'var(--glass-border)'}`,
-              borderRadius: 'var(--radius-md)',
-              color: showFilters ? 'var(--primary-blue)' : 'var(--text-secondary)',
-              fontFamily: 'var(--font-body)',
-              fontSize: '0.88rem',
-              fontWeight: 500,
-              cursor: 'pointer',
-              transition: 'all var(--transition-fast)',
-            }}
-          >
-            <SlidersHorizontal size={15} /> Filters
-          </button>
+                transform: 'translateY(-50%)', color: 'var(--text-muted)', pointerEvents: 'none',
+              }} />
+            </div>
+          )}
         </div>
 
-        {/* ── Filter Panel ── */}
-        {showFilters && (
+        {/* ── ERROR STATE — shows specific error message ── */}
+        {error && (
           <div style={{
-            background: 'var(--card-dark)',
-            border: '1px solid var(--glass-border)',
-            borderRadius: 'var(--radius-lg)',
-            padding: '24px',
-            marginBottom: '28px',
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '32px',
-            alignItems: 'flex-start',
+            padding: '28px 24px', marginBottom: '24px',
+            background: 'rgba(239,68,68,0.06)',
+            border: '1px solid rgba(239,68,68,0.25)',
+            borderRadius: '16px',
           }}>
-            {/* Price slider */}
-            <div style={{ minWidth: '200px' }}>
-              <label style={{
-                display: 'block',
-                fontSize: '0.8rem', fontWeight: 600,
-                color: 'var(--text-secondary)',
-                marginBottom: '10px',
-                textTransform: 'uppercase',
-                letterSpacing: '0.06em',
-              }}>
-                Max Price: <span style={{ color: 'var(--primary-blue)' }}>${priceMax}</span>
-              </label>
-              <input
-                type="range"
-                min={30} max={100} step={5}
-                value={priceMax}
-                onChange={e => setPriceMax(Number(e.target.value))}
-                style={{ width: '100%', accentColor: 'var(--primary-blue)' }}
-              />
-              <div style={{
-                display: 'flex', justifyContent: 'space-between',
-                fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px',
-              }}>
-                <span>$30</span><span>$100</span>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+              {isCorsError
+                ? <Wifi size={22} color="#f87171" style={{ flexShrink: 0, marginTop: 2 }} />
+                : <AlertCircle size={22} color="#f87171" style={{ flexShrink: 0, marginTop: 2 }} />
+              }
+              <div style={{ flex: 1 }}>
+                <p style={{ color: '#f87171', fontWeight: 700, marginBottom: '6px', fontSize: '0.95rem' }}>
+                  {isCorsError ? 'CORS Error — Backend Not Whitelisted' : 'GraphQL Error'}
+                </p>
+                <p style={{ color: 'rgba(248,113,113,0.8)', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '12px' }}>
+                  {isCorsError ? (
+                    <>
+                      Your WordPress backend is blocking requests from <code style={{ background: 'rgba(239,68,68,0.1)', padding: '1px 6px', borderRadius: '4px' }}>localhost:3000</code>.
+                      {' '}You need to add it to the CORS allowlist.
+                    </>
+                  ) : (
+                    error.message
+                  )}
+                </p>
+
+                {isCorsError && (
+                  <div style={{
+                    background: 'rgba(0,0,0,0.3)', borderRadius: '10px',
+                    padding: '14px 16px', marginBottom: '14px',
+                  }}>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginBottom: '8px', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                      Fix — Add to WordPress functions.php
+                    </p>
+                    <pre style={{
+                      fontSize: '0.75rem', color: '#34d399', lineHeight: 1.6,
+                      whiteSpace: 'pre-wrap', wordBreak: 'break-all',
+                      fontFamily: 'monospace', margin: 0,
+                    }}>{`add_filter('graphql_response_headers_to_send', function($headers) {
+  $allowed = [
+    'http://localhost:3000',
+    'http://localhost:3001',
+  ];
+  $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+  if (in_array($origin, $allowed)) {
+    $headers['Access-Control-Allow-Origin'] = $origin;
+    $headers['Access-Control-Allow-Credentials'] = 'true';
+    $headers['Access-Control-Allow-Headers'] = 
+      'Authorization, Content-Type, woocommerce-session';
+  }
+  return $headers;
+});`}</pre>
+                  </div>
+                )}
+
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                  <button onClick={() => refetch()} style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '6px',
+                    padding: '8px 16px',
+                    background: 'rgba(239,68,68,0.15)',
+                    border: '1px solid rgba(239,68,68,0.3)',
+                    borderRadius: '8px', color: '#f87171',
+                    fontWeight: 500, fontSize: '0.82rem',
+                    cursor: 'pointer', fontFamily: 'var(--font-body)',
+                  }}>
+                    <RefreshCw size={13} /> Retry
+                  </button>
+                  <a
+                    href="https://bhidasowgm.onrocket.site/wp-admin/admin.php?page=graphql-settings"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '6px',
+                      padding: '8px 16px',
+                      background: 'transparent',
+                      border: '1px solid var(--glass-border)',
+                      borderRadius: '8px', color: 'var(--text-muted)',
+                      fontWeight: 500, fontSize: '0.82rem',
+                      textDecoration: 'none', fontFamily: 'var(--font-body)',
+                    }}
+                  >
+                    Open WPGraphQL Settings ↗
+                  </a>
+                </div>
               </div>
             </div>
-
-            {/* In stock toggle */}
-            <div>
-              <label style={{
-                display: 'block',
-                fontSize: '0.8rem', fontWeight: 600,
-                color: 'var(--text-secondary)',
-                marginBottom: '10px',
-                textTransform: 'uppercase',
-                letterSpacing: '0.06em',
-              }}>Availability</label>
-              <label style={{
-                display: 'flex', alignItems: 'center', gap: '10px',
-                cursor: 'pointer', fontSize: '0.9rem',
-              }}>
-                <div
-                  onClick={() => setInStockOnly(v => !v)}
-                  style={{
-                    width: 40, height: 22,
-                    borderRadius: '999px',
-                    background: inStockOnly ? 'var(--gradient-primary)' : 'var(--card-elevated)',
-                    border: '1px solid var(--glass-border)',
-                    position: 'relative',
-                    cursor: 'pointer',
-                    transition: 'all var(--transition-base)',
-                    flexShrink: 0,
-                  }}
-                >
-                  <div style={{
-                    position: 'absolute',
-                    top: 2, left: inStockOnly ? 20 : 2,
-                    width: 16, height: 16,
-                    borderRadius: '50%',
-                    background: '#fff',
-                    transition: 'left var(--transition-base)',
-                  }} />
-                </div>
-                <span style={{ color: 'var(--text-secondary)' }}>In Stock Only</span>
-              </label>
-            </div>
-
-            {/* Reset */}
-            <button
-              onClick={() => { setPriceMax(100); setInStockOnly(false); }}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '6px',
-                padding: '8px 16px',
-                background: 'none',
-                border: '1px solid var(--glass-border)',
-                borderRadius: 'var(--radius-md)',
-                color: 'var(--text-muted)',
-                fontSize: '0.82rem',
-                cursor: 'pointer',
-                fontFamily: 'var(--font-body)',
-                alignSelf: 'flex-end',
-              }}
-            >
-              <X size={13} /> Reset Filters
-            </button>
           </div>
         )}
 
-        {/* ── Category Pills ── */}
-        <div style={{
-          display: 'flex',
-          gap: '8px',
-          flexWrap: 'wrap',
-          marginBottom: '36px',
-        }}>
-          {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              style={{
-                padding: '8px 18px',
-                borderRadius: '999px',
-                border: `1px solid ${activeCategory === cat ? 'var(--primary-blue)' : 'var(--glass-border)'}`,
-                background: activeCategory === cat
-                  ? 'rgba(0,207,255,0.12)'
-                  : 'var(--card-dark)',
-                color: activeCategory === cat
-                  ? 'var(--primary-blue)'
-                  : 'var(--text-secondary)',
-                fontSize: '0.85rem',
-                fontWeight: activeCategory === cat ? 600 : 400,
-                cursor: 'pointer',
-                fontFamily: 'var(--font-body)',
-                transition: 'all var(--transition-fast)',
-              }}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
+        {/* Loading */}
+        {loading && products.length === 0 && (
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}>
+            <div style={{ textAlign: 'center' }}>
+              <Loader2 size={36} color="var(--primary-blue)" style={{ margin: '0 auto 12px', animation: 'spin 1s linear infinite' }} />
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Connecting to backend…</p>
+            </div>
+          </div>
+        )}
 
-        {/* ── Results count ── */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '24px',
-        }}>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
-            Showing <span style={{ color: 'var(--text-light)', fontWeight: 600 }}>{filtered.length}</span> results
-            {activeCategory !== 'All' && (
-              <> in <span style={{ color: 'var(--primary-blue)' }}>{activeCategory}</span></>
-            )}
-          </p>
-        </div>
-
-        {/* ── Product Grid ── */}
-        {filtered.length > 0 ? (
+        {/* Products grid */}
+        {filtered.length > 0 && (
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(270px, 1fr))',
-            gap: '24px',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+            gap: '20px', marginBottom: '40px',
           }}>
-            {filtered.map(p => <ShopProductCard key={p.id} product={p} />)}
+            {filtered.map(product => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onAddToCart={() => addToCart(product.databaseId, 1)}
+                addingToCart={addingToCart}
+              />
+            ))}
           </div>
-        ) : (
-          <div style={{
-            textAlign: 'center',
-            padding: '80px 24px',
-            color: 'var(--text-muted)',
-          }}>
-            <Microscope size={48} style={{ margin: '0 auto 16px', opacity: 0.3 }} />
-            <p style={{ fontSize: '1.1rem', marginBottom: '8px' }}>No products found</p>
-            <p style={{ fontSize: '0.875rem' }}>Try adjusting your filters or search query</p>
+        )}
+
+        {/* Empty — no error, just no products */}
+        {!loading && !error && filtered.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '80px 24px' }}>
+            <Package size={48} color="var(--text-muted)" style={{ margin: '0 auto 16px', opacity: 0.3 }} />
+            <p style={{ color: 'var(--text-secondary)', marginBottom: '16px' }}>No products found</p>
+            <button onClick={() => { setSearch(''); setActiveCategory(''); }} style={{
+              padding: '10px 24px', background: 'var(--gradient-primary)',
+              border: 'none', borderRadius: '10px',
+              color: '#fff', fontWeight: 600, cursor: 'pointer',
+              fontFamily: 'var(--font-body)',
+            }}>Clear Filters</button>
+          </div>
+        )}
+
+        {/* Load more */}
+        {pageInfo?.hasNextPage && !error && (
+          <div style={{ textAlign: 'center' }}>
+            <button onClick={loadMore} disabled={loading} style={{
+              padding: '12px 32px',
+              background: 'transparent', border: '1px solid var(--glass-border)',
+              borderRadius: '10px', color: 'var(--text-light)',
+              fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)',
+              display: 'inline-flex', alignItems: 'center', gap: '8px',
+            }}>
+              {loading ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : null}
+              Load More
+            </button>
           </div>
         )}
       </div>
-    </>
+
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+    </div>
   );
 }
 
-/* ── Shop Product Card ───────────────────────────────────── */
-function ShopProductCard({ product }) {
-  const {
-    id, name, subtitle, price, badge, badgeColor = 'var(--primary-blue)',
-    iconName, rating, reviews, inStock, image,
-  } = product;
-
-  const Icon = getIconByName(iconName);
+/* ── Product Card ── */
+function ProductCard({ product, onAddToCart, addingToCart }) {
+  const price = product.price || '';
+  const inStock = product.__typename === 'SimpleProduct'
+    ? product.stockStatus === 'IN_STOCK'
+    : true;
 
   return (
     <div style={{
-      background: 'var(--card-dark)',
-      border: '1px solid var(--glass-border)',
-      borderRadius: 'var(--radius-lg)',
-      overflow: 'hidden',
-      display: 'flex',
-      flexDirection: 'column',
-      position: 'relative',
-      transition: 'all var(--transition-base)',
+      background: 'var(--card-dark)', border: '1px solid var(--glass-border)',
+      borderRadius: '16px', overflow: 'hidden', transition: 'all 0.2s ease',
     }}
       onMouseEnter={e => {
         e.currentTarget.style.borderColor = 'rgba(0,207,255,0.3)';
-        e.currentTarget.style.transform = 'translateY(-5px)';
-        e.currentTarget.style.boxShadow = '0 16px 40px rgba(0,0,0,0.35), 0 0 20px rgba(0,207,255,0.12)';
+        e.currentTarget.style.transform = 'translateY(-4px)';
+        e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.3)';
       }}
       onMouseLeave={e => {
         e.currentTarget.style.borderColor = 'var(--glass-border)';
@@ -407,183 +328,81 @@ function ShopProductCard({ product }) {
         e.currentTarget.style.boxShadow = 'none';
       }}
     >
-    {/* Image area */}
-<div
-  style={{
-    position: 'relative',
-    background:
-      'linear-gradient(135deg, var(--bg-elevated), var(--card-elevated))',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '150px',
-    borderBottom: '1px solid var(--glass-border)',
-  }}
->
-  <div
-    style={{
-      width: '100%',
-      height: '100px',
-      overflow: 'hidden',
-    }}
-  >
-    <Image
-      src={product.image}
-      alt={name}
-      fill
-      style={{
-        objectFit: 'cover',
-      }}
-    />
-  </div>
-
-  {/* Wishlist */}
-  <button
-    style={{
-      position: 'absolute',
-      top: '10px',
-      right: '10px',
-      zIndex: 999,
-      width: 32,
-      height: 32,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: 'var(--glass-bg)',
-      border: '1px solid var(--glass-border)',
-      borderRadius: '50%',
-      color: 'var(--text-muted)',
-      cursor: 'pointer',
-      transition: 'all var(--transition-fast)',
-    }}
-    onMouseEnter={(e) => {
-      e.currentTarget.style.color = 'var(--pink)';
-      e.currentTarget.style.borderColor = 'var(--pink)';
-    }}
-    onMouseLeave={(e) => {
-      e.currentTarget.style.color = 'var(--text-muted)';
-      e.currentTarget.style.borderColor = 'var(--glass-border)';
-    }}
-  >
-    <Heart size={14} />
-  </button>
-
-  {/* Out of stock */}
-  {!inStock && (
-    <div
-      style={{
-        position: 'absolute',
-        inset: 0,
-        zIndex: 998,
-        background: 'rgba(2,6,23,0.72)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '0.78rem',
-        fontWeight: 700,
-        color: 'var(--text-muted)',
-        letterSpacing: '0.1em',
-      }}
-    >
-      OUT OF STOCK
-    </div>
-  )}
-</div>
-
-      {/* Content */}
-      <div style={{ padding: '18px 20px', flex: 1, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '3px' }}>
-            <h3 style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: '1rem', fontWeight: 800,
-              color: 'var(--text-light)',
-            }}>{name}</h3>
-            <BadgeCheck size={13} color="var(--primary-blue)" />
-          </div>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>{subtitle}</p>
-        </div>
-
-        {/* Rating */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <div style={{ display: 'flex', gap: '2px' }}>
-            {[1, 2, 3, 4, 5].map(i => (
-              <Star
-                key={i} size={11}
-                fill={i <= Math.round(rating) ? '#fbbf24' : 'none'}
-                color={i <= Math.round(rating) ? '#fbbf24' : 'var(--text-muted)'}
-              />
-            ))}
-          </div>
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-            {rating} ({reviews})
-          </span>
-        </div>
-
-        {/* Stock indicator */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-          <div style={{
-            width: 7, height: 7, borderRadius: '50%',
-            background: inStock ? '#34d399' : '#f87171',
-            boxShadow: inStock ? '0 0 6px #34d399' : '0 0 6px #f87171',
-          }} />
-          <span style={{
-            fontSize: '0.75rem',
-            color: inStock ? '#34d399' : '#f87171',
-          }}>
-            {inStock ? 'In Stock' : 'Out of Stock'}
-          </span>
-        </div>
-
-        {/* Price + actions */}
+      {/* Image */}
+      <Link href={`/product/${product.slug}`}>
         <div style={{
-          display: 'flex', alignItems: 'center',
-          justifyContent: 'space-between',
-          paddingTop: '12px',
-          borderTop: '1px solid var(--glass-border)',
-          marginTop: 'auto',
-          gap: '8px',
+          height: '180px',
+          background: 'linear-gradient(135deg, var(--bg-elevated), var(--card-elevated))',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          position: 'relative', overflow: 'hidden', cursor: 'pointer',
         }}>
-          <span style={{
-            fontFamily: 'var(--font-heading)',
-            fontSize: '1.2rem', fontWeight: 900,
-            background: 'var(--gradient-primary)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-          }}>${price.toFixed(2)}</span>
+          {product.image?.sourceUrl ? (
+            <img
+              src={product.image.sourceUrl}
+              alt={product.image.altText || product.name}
+              style={{ maxHeight: '150px', objectFit: 'contain' }}
+            />
+          ) : (
+            <FlaskConical size={52} color="var(--primary-blue)" style={{ opacity: 0.3 }} />
+          )}
+          {!inStock && (
+            <div style={{
+              position: 'absolute', top: '10px', right: '10px',
+              padding: '3px 10px',
+              background: 'rgba(239,68,68,0.2)', border: '1px solid rgba(239,68,68,0.4)',
+              borderRadius: '999px', fontSize: '0.65rem', fontWeight: 700, color: '#f87171',
+            }}>Out of Stock</div>
+          )}
+        </div>
+      </Link>
 
-          <div style={{ display: 'flex', gap: '7px' }}>
-            <button style={{
-              width: 34, height: 34,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              background: 'rgba(0,207,255,0.08)',
-              border: '1px solid rgba(0,207,255,0.2)',
-              borderRadius: 'var(--radius-md)',
-              color: 'var(--primary-blue)',
-              cursor: inStock ? 'pointer' : 'not-allowed',
-              opacity: inStock ? 1 : 0.4,
-              transition: 'all var(--transition-fast)',
-            }}
-              onMouseEnter={e => { if (inStock) e.currentTarget.style.background = 'rgba(0,207,255,0.18)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(0,207,255,0.08)'; }}
-            >
-              <ShoppingCart size={14} />
-            </button>
+      {/* Info */}
+      <div style={{ padding: '18px' }}>
+        <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
+          {product.productCategories?.nodes?.[0]?.name || 'Research'}
+        </span>
+        <Link href={`/product/${product.slug}`} style={{ textDecoration: 'none' }}>
+          <h3 style={{
+            fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 800,
+            margin: '4px 0', color: 'var(--text-light)',
+          }}>{product.name}</h3>
+        </Link>
+        <p style={{
+          color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: 1.5,
+          marginBottom: '14px',
+          display: '-webkit-box', WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical', overflow: 'hidden',
+        }}>
+          {product.shortDescription?.replace(/<[^>]+>/g, '') || ''}
+        </p>
 
-            <Link href={`/product/${id}`} style={{
-              display: 'inline-flex', alignItems: 'center', gap: '4px',
-              padding: '0 13px', height: 34,
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span
+            style={{
+              fontFamily: 'var(--font-heading)', fontSize: '1.2rem', fontWeight: 900,
               background: 'var(--gradient-primary)',
-              borderRadius: 'var(--radius-md)',
-              color: '#fff',
-              fontSize: '0.8rem', fontWeight: 600,
-              textDecoration: 'none',
-              whiteSpace: 'nowrap',
-            }}>
-              View
-            </Link>
-          </div>
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+            }}
+            dangerouslySetInnerHTML={{ __html: price }}
+          />
+          <button
+            onClick={onAddToCart}
+            disabled={!inStock || addingToCart}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '6px',
+              padding: '8px 16px',
+              background: inStock ? 'var(--gradient-primary)' : 'var(--card-elevated)',
+              border: 'none', borderRadius: '8px',
+              color: inStock ? '#fff' : 'var(--text-muted)',
+              fontWeight: 600, fontSize: '0.8rem',
+              cursor: inStock ? 'pointer' : 'not-allowed',
+              fontFamily: 'var(--font-body)',
+              opacity: addingToCart ? 0.7 : 1,
+            }}
+          >
+            <ShoppingCart size={13} />
+            {inStock ? 'Add' : 'Sold Out'}
+          </button>
         </div>
       </div>
     </div>
