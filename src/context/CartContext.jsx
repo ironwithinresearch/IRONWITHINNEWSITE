@@ -1,36 +1,36 @@
 'use client';
 // src/context/CartContext.jsx
-// FIX: Removed onError from useQuery (deprecated in Apollo 3.14+)
-// Use the returned `error` value + useEffect for side effects instead.
 
-import { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
+import { createContext, useContext, useState, useCallback } from 'react';
+import { useQuery, useMutation, useApolloClient } from '@apollo/client';
 import {
   GET_CART,
   ADD_TO_CART,
-  ADD_VARIABLE_TO_CART,
   UPDATE_CART_ITEM,
   REMOVE_CART_ITEM,
   APPLY_COUPON,
   REMOVE_COUPON,
 } from '../lib/queries/cart';
 
-const CartContext = createContext(null);
+const CartContext = createContext({});
 
 export function CartProvider({ children }) {
+  const client = useApolloClient();
   const [notification, setNotification] = useState(null);
 
-  // ── FIX: No onError callback — use returned error instead ──
-  const { data, loading: cartLoading, error: cartError, refetch } = useQuery(GET_CART, {
-    fetchPolicy: 'network-only',
-  });
+  const showNotification = (message, type = 'success') => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 3000);
+  };
 
-  // Log cart errors via useEffect (correct Apollo 3.14+ pattern)
-  useEffect(() => {
-    if (cartError) {
-      console.error('[Cart] Fetch error:', cartError.message);
-    }
-  }, [cartError]);
+  // GET_CART — always fetch fresh from network
+  const { data, loading: cartLoading, refetch: refetchCart } = useQuery(GET_CART, {
+    fetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: true,
+    onError: (err) => {
+      console.error('Cart fetch error:', err.message);
+    },
+  });
 
   const cart = data?.cart || null;
   const cartItems = cart?.contents?.nodes || [];
@@ -38,67 +38,103 @@ export function CartProvider({ children }) {
   const cartTotal = cart?.total || '$0.00';
   const cartSubtotal = cart?.subtotal || '$0.00';
 
-  const showNotification = useCallback((message, type = 'success') => {
-    setNotification({ message, type });
-    setTimeout(() => setNotification(null), 3000);
-  }, []);
-
+  // ── ADD TO CART ──
   const [addToCartMutation, { loading: addingToCart }] = useMutation(ADD_TO_CART, {
-    onCompleted: () => { refetch(); showNotification('Added to cart!'); },
-    onError: (err) => showNotification(err.message, 'error'),
+    onCompleted: (data) => {
+      const newCart = data?.addToCart?.cart;
+      if (newCart) {
+        // Write updated cart to cache so /cart page updates instantly
+        client.writeQuery({ query: GET_CART, data: { cart: newCart } });
+      }
+      // Also refetch to make sure session is in sync
+      refetchCart();
+      showNotification('Added to cart!');
+    },
+    onError: (err) => {
+      console.error('Add to cart error:', err.message);
+      showNotification('Failed to add to cart', 'error');
+    },
   });
 
-  const [addVariableMutation] = useMutation(ADD_VARIABLE_TO_CART, {
-    onCompleted: () => { refetch(); showNotification('Added to cart!'); },
-    onError: (err) => showNotification(err.message, 'error'),
-  });
-
-  const [updateItemMutation] = useMutation(UPDATE_CART_ITEM, {
-    onCompleted: () => refetch(),
-    onError: (err) => console.error('[Cart] Update error:', err.message),
-  });
-
-  const [removeItemMutation] = useMutation(REMOVE_CART_ITEM, {
-    onCompleted: () => refetch(),
-    onError: (err) => console.error('[Cart] Remove error:', err.message),
-  });
-
-  const [applyCouponMutation, { loading: applyingCoupon }] = useMutation(APPLY_COUPON, {
-    onCompleted: () => { refetch(); showNotification('Coupon applied!'); },
-    onError: (err) => showNotification(err.message, 'error'),
-  });
-
-  const [removeCouponMutation] = useMutation(REMOVE_COUPON, {
-    onCompleted: () => refetch(),
-    onError: (err) => console.error('[Cart] Remove coupon error:', err.message),
-  });
-
-  const addToCart = useCallback((productId, quantity = 1) => {
-    addToCartMutation({ variables: { productId, quantity } });
+  const addToCart = useCallback(async (productId, quantity = 1, variationId = null) => {
+    try {
+      const variables = { productId: parseInt(productId), quantity };
+      if (variationId) variables.variationId = parseInt(variationId);
+      await addToCartMutation({ variables });
+      return { success: true };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
   }, [addToCartMutation]);
 
-  const addVariableToCart = useCallback((productId, variationId, quantity = 1) => {
-    addVariableMutation({ variables: { productId, variationId, quantity } });
-  }, [addVariableMutation]);
+  // ── UPDATE QUANTITY ──
+  const [updateItemMutation] = useMutation(UPDATE_CART_ITEM, {
+    onCompleted: (data) => {
+      const newCart = data?.updateItemQuantities?.cart;
+      if (newCart) client.writeQuery({ query: GET_CART, data: { cart: newCart } });
+      refetchCart();
+    },
+    onError: (err) => console.error('Update cart error:', err.message),
+  });
 
-  const updateQuantity = useCallback((key, quantity) => {
-    if (quantity < 1) {
-      removeItemMutation({ variables: { key } });
-      return;
+  const updateQuantity = useCallback(async (key, quantity) => {
+    if (quantity < 1) return removeItem(key);
+    try {
+      await updateItemMutation({ variables: { key, quantity } });
+    } catch (err) {
+      console.error(err);
     }
-    updateItemMutation({ variables: { key, quantity } });
-  }, [updateItemMutation, removeItemMutation]);
+  }, [updateItemMutation]);
 
-  const removeItem = useCallback((key) => {
-    removeItemMutation({ variables: { key } });
+  // ── REMOVE ITEM ──
+  const [removeItemMutation] = useMutation(REMOVE_CART_ITEM, {
+    onCompleted: (data) => {
+      const newCart = data?.removeItemsFromCart?.cart;
+      if (newCart) client.writeQuery({ query: GET_CART, data: { cart: newCart } });
+      refetchCart();
+      showNotification('Item removed');
+    },
+    onError: (err) => console.error('Remove cart error:', err.message),
+  });
+
+  const removeItem = useCallback(async (key) => {
+    try {
+      await removeItemMutation({ variables: { key } });
+    } catch (err) {
+      console.error(err);
+    }
   }, [removeItemMutation]);
 
-  const applyCoupon = useCallback((code) => {
-    applyCouponMutation({ variables: { code } });
+  // ── APPLY COUPON ──
+  const [applyCouponMutation, { loading: applyingCoupon }] = useMutation(APPLY_COUPON, {
+    onCompleted: (data) => {
+      const newCart = data?.applyCoupon?.cart;
+      if (newCart) client.writeQuery({ query: GET_CART, data: { cart: newCart } });
+      refetchCart();
+      showNotification('Coupon applied!');
+    },
+    onError: (err) => {
+      showNotification('Invalid coupon code', 'error');
+      throw err;
+    },
+  });
+
+  const applyCoupon = useCallback(async (code) => {
+    await applyCouponMutation({ variables: { code } });
   }, [applyCouponMutation]);
 
-  const removeCoupon = useCallback((code) => {
-    removeCouponMutation({ variables: { code } });
+  // ── REMOVE COUPON ──
+  const [removeCouponMutation] = useMutation(REMOVE_COUPON, {
+    onCompleted: (data) => {
+      const newCart = data?.removeCoupons?.cart;
+      if (newCart) client.writeQuery({ query: GET_CART, data: { cart: newCart } });
+      refetchCart();
+    },
+    onError: (err) => console.error('Remove coupon error:', err.message),
+  });
+
+  const removeCoupon = useCallback(async (code) => {
+    await removeCouponMutation({ variables: { code } });
   }, [removeCouponMutation]);
 
   return (
@@ -109,17 +145,15 @@ export function CartProvider({ children }) {
       cartTotal,
       cartSubtotal,
       cartLoading,
-      cartError,
       addingToCart,
       applyingCoupon,
       notification,
       addToCart,
-      addVariableToCart,
       updateQuantity,
       removeItem,
       applyCoupon,
       removeCoupon,
-      refetchCart: refetch,
+      refetchCart,
     }}>
       {children}
     </CartContext.Provider>
@@ -127,7 +161,5 @@ export function CartProvider({ children }) {
 }
 
 export function useCart() {
-  const ctx = useContext(CartContext);
-  if (!ctx) throw new Error('useCart must be used inside CartProvider');
-  return ctx;
+  return useContext(CartContext);
 }

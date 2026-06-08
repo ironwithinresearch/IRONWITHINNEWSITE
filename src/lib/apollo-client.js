@@ -1,51 +1,66 @@
+'use client';
 // src/lib/apollo-client.js
-import {
-  ApolloClient,
-  InMemoryCache,
-  createHttpLink,
-  ApolloLink,
-} from "@apollo/client";
-import { setContext } from "@apollo/client/link/context";
 
-const httpLink = createHttpLink({
-  uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
-  credentials: "include", // Required for WooCommerce session cookies
-});
+import { ApolloClient, InMemoryCache, createHttpLink, ApolloLink } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
 
-// Attach JWT token and WooCommerce session to every request
-const authLink = setContext((_, { headers }) => {
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("jwt_token") : null;
-  const wooSession =
-    typeof window !== "undefined"
-      ? localStorage.getItem("woo_session")
-      : null;
-
-  return {
-    headers: {
-      ...headers,
-      ...(token && { Authorization: `Bearer ${token}` }),
-      ...(wooSession && { "woocommerce-session": `Session ${wooSession}` }),
-    },
-  };
-});
-
-// Capture WooCommerce session token from response headers
-const sessionLink = new ApolloLink((operation, forward) => {
-  return forward(operation).map((response) => {
-    const context = operation.getContext();
-    const sessionToken =
-      context.response?.headers?.get("woocommerce-session");
-    if (sessionToken && typeof window !== "undefined") {
-      localStorage.setItem("woo_session", sessionToken);
-    }
-    return response;
+export function makeClient() {
+  const httpLink = createHttpLink({
+    uri: process.env.NEXT_PUBLIC_GRAPHQL_URL || 'https://bhidasowgm.onrocket.site/graphql',
+    credentials: 'include',
   });
-});
 
-const client = new ApolloClient({
-  link: ApolloLink.from([sessionLink, authLink, httpLink]),
-  cache: new InMemoryCache(),
-});
+  // Reads token + session FRESH on every single request
+  const authLink = setContext((_, { headers }) => {
+    let token = null;
+    let wooSession = null;
 
-export default client;
+    if (typeof window !== 'undefined') {
+      token = localStorage.getItem('jwt_token');
+      wooSession = localStorage.getItem('woo_session');
+    }
+
+    return {
+      headers: {
+        ...headers,
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(wooSession ? { 'woocommerce-session': `Session ${wooSession}` } : {}),
+      },
+    };
+  });
+
+  // Captures NEW session token from WooCommerce response and saves it
+  const sessionLink = new ApolloLink((operation, forward) => {
+    return forward(operation).map((response) => {
+      try {
+        const context = operation.getContext();
+        const headers = context?.response?.headers;
+        if (headers && typeof window !== 'undefined') {
+          const sessionToken = headers.get('woocommerce-session');
+          if (sessionToken) {
+            // WooCommerce sends it as "Session <token>" or just "<token>"
+            const clean = sessionToken.startsWith('Session ')
+              ? sessionToken.replace('Session ', '')
+              : sessionToken;
+            localStorage.setItem('woo_session', clean);
+          }
+        }
+      } catch (e) {
+        // silently ignore
+      }
+      return response;
+    });
+  });
+
+  return new ApolloClient({
+    link: ApolloLink.from([sessionLink, authLink, httpLink]),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Cart: { keyFields: [] }, // treat cart as a singleton
+      },
+    }),
+    defaultOptions: {
+      watchQuery: { fetchPolicy: 'cache-and-network' },
+    },
+  });
+}

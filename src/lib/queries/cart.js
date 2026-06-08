@@ -1,5 +1,5 @@
 // src/lib/queries/cart.js
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
 export const GET_CART = gql`
   query GetCart {
@@ -26,16 +26,9 @@ export const GET_CART = gql`
               databaseId
               name
               slug
-              image {
-                sourceUrl
-                altText
-              }
-              ... on SimpleProduct {
-                price
-              }
-              ... on VariableProduct {
-                price
-              }
+              image { sourceUrl altText }
+              ... on SimpleProduct { price stockStatus }
+              ... on VariableProduct { price }
             }
           }
           variation {
@@ -43,12 +36,7 @@ export const GET_CART = gql`
               id
               name
               price
-              attributes {
-                nodes {
-                  name
-                  value
-                }
-              }
+              attributes { nodes { name value } }
             }
           }
         }
@@ -58,43 +46,45 @@ export const GET_CART = gql`
 `;
 
 export const ADD_TO_CART = gql`
-  mutation AddToCart($productId: Int!, $quantity: Int!) {
-    addToCart(input: { productId: $productId, quantity: $quantity }) {
+  mutation AddToCart($productId: Int!, $quantity: Int!, $variationId: Int) {
+    addToCart(input: {
+      productId: $productId
+      quantity: $quantity
+      variationId: $variationId
+    }) {
       cartItem {
         key
         quantity
       }
       cart {
+        subtotal
         total
         contents {
           itemCount
-        }
-      }
-    }
-  }
-`;
-
-export const ADD_VARIABLE_TO_CART = gql`
-  mutation AddVariableToCart(
-    $productId: Int!
-    $variationId: Int!
-    $quantity: Int!
-  ) {
-    addToCart(
-      input: {
-        productId: $productId
-        variationId: $variationId
-        quantity: $quantity
-      }
-    ) {
-      cartItem {
-        key
-        quantity
-      }
-      cart {
-        total
-        contents {
-          itemCount
+          nodes {
+            key
+            quantity
+            total
+            product {
+              node {
+                id
+                databaseId
+                name
+                slug
+                image { sourceUrl }
+                ... on SimpleProduct { price }
+                ... on VariableProduct { price }
+              }
+            }
+            variation {
+              node {
+                id
+                name
+                price
+                attributes { nodes { name value } }
+              }
+            }
+          }
         }
       }
     }
@@ -103,18 +93,21 @@ export const ADD_VARIABLE_TO_CART = gql`
 
 export const UPDATE_CART_ITEM = gql`
   mutation UpdateCartItem($key: ID!, $quantity: Int!) {
-    updateItemQuantities(
-      input: { items: [{ key: $key, quantity: $quantity }] }
-    ) {
+    updateItemQuantities(input: {
+      items: [{ key: $key, quantity: $quantity }]
+    }) {
       cart {
+        subtotal
         total
         contents {
           itemCount
+          nodes {
+            key
+            quantity
+            total
+            product { node { id name image { sourceUrl } } }
+          }
         }
-      }
-      items {
-        key
-        quantity
       }
     }
   }
@@ -124,9 +117,16 @@ export const REMOVE_CART_ITEM = gql`
   mutation RemoveCartItem($key: ID!) {
     removeItemsFromCart(input: { keys: [$key] }) {
       cart {
+        subtotal
         total
         contents {
           itemCount
+          nodes {
+            key
+            quantity
+            total
+            product { node { id name image { sourceUrl } } }
+          }
         }
       }
     }
@@ -137,11 +137,13 @@ export const APPLY_COUPON = gql`
   mutation ApplyCoupon($code: String!) {
     applyCoupon(input: { code: $code }) {
       cart {
+        subtotal
         total
         discountTotal
-        appliedCoupons {
-          code
-          discountAmount
+        appliedCoupons { code discountAmount }
+        contents {
+          itemCount
+          nodes { key quantity total product { node { id name } } }
         }
       }
     }
@@ -152,38 +154,14 @@ export const REMOVE_COUPON = gql`
   mutation RemoveCoupon($code: String!) {
     removeCoupons(input: { codes: [$code] }) {
       cart {
+        subtotal
         total
         discountTotal
-      }
-    }
-  }
-`;
-
-export const GET_SHIPPING_METHODS = gql`
-  query GetShippingMethods {
-    cart {
-      availableShippingMethods {
-        packageDetails
-        rates {
-          id
-          instanceId
-          methodId
-          label
-          cost
+        appliedCoupons { code discountAmount }
+        contents {
+          itemCount
+          nodes { key quantity total product { node { id name } } }
         }
-      }
-      chosenShippingMethods
-    }
-  }
-`;
-
-export const UPDATE_SHIPPING_METHOD = gql`
-  mutation UpdateShippingMethod($shippingMethod: [String]) {
-    updateShippingMethod(input: { shippingMethods: $shippingMethod }) {
-      cart {
-        total
-        shippingTotal
-        chosenShippingMethods
       }
     }
   }

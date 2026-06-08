@@ -1,12 +1,15 @@
 // src/lib/queries/products.js
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
 export const GET_PRODUCTS = gql`
-  query GetProducts($first: Int, $after: String, $category: String) {
+  query GetProducts($first: Int, $after: String, $category: String, $search: String) {
     products(
       first: $first
       after: $after
-      where: { category: $category, status: PUBLISH }
+      where: {
+        category: $category
+        search: $search
+      }
     ) {
       pageInfo {
         hasNextPage
@@ -23,34 +26,29 @@ export const GET_PRODUCTS = gql`
           altText
         }
         productCategories {
-          nodes {
-            name
-            slug
-          }
+          nodes { name slug }
         }
         ... on SimpleProduct {
           price
           salePrice
           regularPrice
           stockStatus
-          stockQuantity
         }
         ... on VariableProduct {
           price
           variations {
             nodes {
               id
-              name
               price
               stockStatus
-              attributes {
-                nodes {
-                  name
-                  value
-                }
-              }
             }
           }
+        }
+        ... on ExternalProduct {
+          price
+        }
+        ... on GroupProduct {
+          price
         }
       }
     }
@@ -63,6 +61,7 @@ export const GET_PRODUCT = gql`
       id
       databaseId
       name
+      slug
       description
       shortDescription
       sku
@@ -71,25 +70,19 @@ export const GET_PRODUCT = gql`
         altText
       }
       galleryImages {
-        nodes {
-          sourceUrl
-          altText
-        }
+        nodes { sourceUrl altText }
       }
       productCategories {
-        nodes {
-          name
-          slug
-        }
+        nodes { name slug }
       }
-      related {
+      related(first: 4) {
         nodes {
           id
           name
           slug
-          image {
-            sourceUrl
-          }
+          image { sourceUrl }
+          ... on SimpleProduct { price }
+          ... on VariableProduct { price }
         }
       }
       ... on SimpleProduct {
@@ -116,14 +109,9 @@ export const GET_PRODUCT = gql`
             price
             salePrice
             stockStatus
-            image {
-              sourceUrl
-            }
+            image { sourceUrl }
             attributes {
-              nodes {
-                name
-                value
-              }
+              nodes { name value }
             }
           }
         }
@@ -140,16 +128,7 @@ export const GET_CATEGORIES = gql`
         name
         slug
         count
-        image {
-          sourceUrl
-        }
-        children {
-          nodes {
-            id
-            name
-            slug
-          }
-        }
+        image { sourceUrl altText }
       }
     }
   }
@@ -157,20 +136,14 @@ export const GET_CATEGORIES = gql`
 
 export const SEARCH_PRODUCTS = gql`
   query SearchProducts($search: String!) {
-    products(where: { search: $search, status: PUBLISH }) {
+    products(where: { search: $search }, first: 20) {
       nodes {
         id
         name
         slug
-        image {
-          sourceUrl
-        }
-        ... on SimpleProduct {
-          price
-        }
-        ... on VariableProduct {
-          price
-        }
+        image { sourceUrl }
+        ... on SimpleProduct { price stockStatus }
+        ... on VariableProduct { price }
       }
     }
   }
