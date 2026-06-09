@@ -94,7 +94,12 @@ export const UPDATE_CUSTOMER = gql`
         lastName
         email
         billing {
-          address1 city state postcode country phone
+          firstName lastName email phone
+          address1 address2 city state postcode country
+        }
+        shipping {
+          firstName lastName
+          address1 address2 city state postcode country
         }
       }
     }
