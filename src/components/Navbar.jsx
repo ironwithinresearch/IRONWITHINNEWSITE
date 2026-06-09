@@ -13,24 +13,29 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 
 const navLinks = [
-  { href: '/shop', label: 'Shop' },
-  { href: '/categories', label: 'Categories' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/contact', label: 'Contact' },
+  { href: '/shop',      label: 'Shop'       },
+  { href: '/categories',label: 'Categories' },
+  { href: '/blog',      label: 'Blog'       },
+  { href: '/contact',   label: 'Contact'    },
   { href: '/affiliate', label: 'Affiliates' },
 ];
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [theme, setTheme] = useState('dark');
+  const [menuOpen,    setMenuOpen]    = useState(false);
+  const [scrolled,    setScrolled]    = useState(false);
+  const [theme,       setTheme]       = useState('dark');
   const [accountOpen, setAccountOpen] = useState(false);
 
-  const { isLoggedIn, user, logout } = useAuth();
-  const { itemCount } = useCart();
-  const { wishlistCount } = useWishlist();
+  // badge bump animations
+  const [cartBump,    setCartBump]    = useState(false);
+  const [wishBump,    setWishBump]    = useState(false);
 
+  const { isLoggedIn, user, logout }                   = useAuth();
+  const { itemCount }                                   = useCart();
+  const { wishlistCount }                               = useWishlist();
+
+  // ── theme ──
   useEffect(() => {
     const stored = localStorage.getItem('iwr-theme') || 'dark';
     setTheme(stored);
@@ -44,21 +49,39 @@ export default function Navbar() {
     document.documentElement.setAttribute('data-theme', next);
   };
 
+  // ── scroll ──
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // ── close menu on route change ──
   useEffect(() => setMenuOpen(false), [pathname]);
 
-  // Close account dropdown on outside click
+  // ── close account dropdown on outside click ──
   useEffect(() => {
     if (!accountOpen) return;
     const close = () => setAccountOpen(false);
     document.addEventListener('click', close);
     return () => document.removeEventListener('click', close);
   }, [accountOpen]);
+
+  // ── bump cart badge when count changes ──
+  useEffect(() => {
+    if (!itemCount) return;
+    setCartBump(true);
+    const t = setTimeout(() => setCartBump(false), 350);
+    return () => clearTimeout(t);
+  }, [itemCount]);
+
+  // ── bump wishlist badge when count changes ──
+  useEffect(() => {
+    if (!wishlistCount) return;
+    setWishBump(true);
+    const t = setTimeout(() => setWishBump(false), 350);
+    return () => clearTimeout(t);
+  }, [wishlistCount]);
 
   const displayName = user?.firstName || user?.name || user?.username || 'Account';
 
@@ -115,31 +138,55 @@ export default function Navbar() {
               {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
             </button>
 
-            {/* Wishlist with count */}
-            <Link href="/wishlist" style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-md)', color: 'var(--text-secondary)', textDecoration: 'none', transition: 'all 0.15s ease', position: 'relative' }}
+            {/* ── Wishlist with animated count badge ── */}
+            <Link href="/wishlist" style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-md)', color: wishlistCount > 0 ? 'var(--pink)' : 'var(--text-secondary)', textDecoration: 'none', transition: 'all 0.15s ease', position: 'relative', background: wishlistCount > 0 ? 'rgba(236,72,153,0.08)' : 'transparent' }}
               onMouseEnter={e => { e.currentTarget.style.color = 'var(--pink)'; e.currentTarget.style.background = 'rgba(236,72,153,0.08)'; }}
-              onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.background = 'transparent'; }}>
-              <Heart size={17} />
+              onMouseLeave={e => { e.currentTarget.style.color = wishlistCount > 0 ? 'var(--pink)' : 'var(--text-secondary)'; e.currentTarget.style.background = wishlistCount > 0 ? 'rgba(236,72,153,0.08)' : 'transparent'; }}>
+              <Heart size={17} fill={wishlistCount > 0 ? 'currentColor' : 'none'} />
               {wishlistCount > 0 && (
-                <span style={{ position: 'absolute', top: '2px', right: '2px', minWidth: 16, height: 16, borderRadius: '999px', background: 'var(--pink)', color: '#fff', fontSize: '0.6rem', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 3px' }}>
-                  {wishlistCount}
+                <span style={{
+                  position: 'absolute', top: '1px', right: '1px',
+                  minWidth: 17, height: 17,
+                  borderRadius: '999px',
+                  background: 'linear-gradient(135deg, #ec4899, #db2777)',
+                  color: '#fff', fontSize: '0.58rem', fontWeight: 800,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  padding: '0 4px',
+                  boxShadow: '0 0 8px rgba(236,72,153,0.7)',
+                  border: '1.5px solid var(--bg-dark, #05070f)',
+                  animation: wishBump ? 'badgeBump 0.35s ease' : 'none',
+                  lineHeight: 1,
+                }}>
+                  {wishlistCount > 99 ? '99+' : wishlistCount}
                 </span>
               )}
             </Link>
 
-            {/* Cart with count */}
-            <Link href="/cart" style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-md)', color: 'var(--text-secondary)', textDecoration: 'none', position: 'relative', transition: 'all 0.15s ease' }}
+            {/* ── Cart with animated count badge ── */}
+            <Link href="/cart" style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-md)', color: itemCount > 0 ? 'var(--primary-blue)' : 'var(--text-secondary)', textDecoration: 'none', position: 'relative', transition: 'all 0.15s ease', background: itemCount > 0 ? 'rgba(0,207,255,0.08)' : 'transparent' }}
               onMouseEnter={e => { e.currentTarget.style.color = 'var(--primary-blue)'; e.currentTarget.style.background = 'rgba(0,207,255,0.08)'; }}
-              onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.background = 'transparent'; }}>
+              onMouseLeave={e => { e.currentTarget.style.color = itemCount > 0 ? 'var(--primary-blue)' : 'var(--text-secondary)'; e.currentTarget.style.background = itemCount > 0 ? 'rgba(0,207,255,0.08)' : 'transparent'; }}>
               <ShoppingCart size={17} />
               {itemCount > 0 && (
-                <span style={{ position: 'absolute', top: '2px', right: '2px', minWidth: 16, height: 16, borderRadius: '999px', background: 'var(--gradient-primary)', color: '#fff', fontSize: '0.6rem', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 3px', boxShadow: '0 0 6px rgba(0,207,255,0.6)' }}>
+                <span style={{
+                  position: 'absolute', top: '1px', right: '1px',
+                  minWidth: 17, height: 17,
+                  borderRadius: '999px',
+                  background: 'var(--gradient-primary)',
+                  color: '#fff', fontSize: '0.58rem', fontWeight: 800,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  padding: '0 4px',
+                  boxShadow: '0 0 8px rgba(0,207,255,0.7)',
+                  border: '1.5px solid var(--bg-dark, #05070f)',
+                  animation: cartBump ? 'badgeBump 0.35s ease' : 'none',
+                  lineHeight: 1,
+                }}>
                   {itemCount > 99 ? '99+' : itemCount}
                 </span>
               )}
             </Link>
 
-            {/* Account — shows username if logged in */}
+            {/* Account */}
             {isLoggedIn ? (
               <div style={{ position: 'relative' }} className="desktop-nav">
                 <button
@@ -153,9 +200,9 @@ export default function Navbar() {
                 {accountOpen && (
                   <div style={{ position: 'absolute', top: 'calc(100% + 8px)', right: 0, minWidth: 180, background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-lg)', padding: '8px', boxShadow: '0 12px 32px rgba(0,0,0,0.4)', zIndex: 200 }}>
                     {[
-                      { href: '/account', label: 'My Account' },
-                      { href: '/orders', label: 'My Orders' },
-                      { href: '/wishlist', label: 'Wishlist' },
+                      { href: '/account',  label: 'My Account' },
+                      { href: '/orders',   label: 'My Orders'  },
+                      { href: '/wishlist', label: 'Wishlist'   },
                     ].map(({ href, label }) => (
                       <Link key={href} href={href} style={{ display: 'block', padding: '9px 12px', borderRadius: 'var(--radius-md)', color: 'var(--text-secondary)', fontSize: '0.875rem', textDecoration: 'none', transition: 'all 0.15s ease' }}
                         onMouseEnter={e => { e.currentTarget.style.background = 'rgba(0,207,255,0.06)'; e.currentTarget.style.color = 'var(--text-light)'; }}
@@ -196,7 +243,20 @@ export default function Navbar() {
               {label}
             </Link>
           ))}
-          <div style={{ height: 1, background: 'var(--glass-border)', margin: '12px 0' }} />
+
+          {/* Mobile wishlist + cart counts */}
+          <div style={{ display: 'flex', gap: '10px', padding: '14px 18px' }}>
+            <Link href="/wishlist" style={{ display: 'flex', alignItems: 'center', gap: '7px', padding: '10px 16px', background: 'rgba(236,72,153,0.1)', border: '1px solid rgba(236,72,153,0.25)', borderRadius: 'var(--radius-md)', color: 'var(--pink)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none', flex: 1, justifyContent: 'center' }}>
+              <Heart size={15} fill={wishlistCount > 0 ? 'currentColor' : 'none'} />
+              Wishlist {wishlistCount > 0 && `(${wishlistCount})`}
+            </Link>
+            <Link href="/cart" style={{ display: 'flex', alignItems: 'center', gap: '7px', padding: '10px 16px', background: 'rgba(0,207,255,0.1)', border: '1px solid rgba(0,207,255,0.25)', borderRadius: 'var(--radius-md)', color: 'var(--primary-blue)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none', flex: 1, justifyContent: 'center' }}>
+              <ShoppingCart size={15} />
+              Cart {itemCount > 0 && `(${itemCount})`}
+            </Link>
+          </div>
+
+          <div style={{ height: 1, background: 'var(--glass-border)', margin: '4px 0' }} />
           {isLoggedIn ? (
             <>
               <Link href="/account" style={{ padding: '14px 18px', borderRadius: 'var(--radius-md)', color: 'var(--text-light)', fontSize: '1rem', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -217,9 +277,17 @@ export default function Navbar() {
 
       <style>{`
         :root { --navbar-height: 68px; }
+
+        @keyframes badgeBump {
+          0%   { transform: scale(1);    }
+          40%  { transform: scale(1.45); }
+          70%  { transform: scale(0.9);  }
+          100% { transform: scale(1);    }
+        }
+
         @media (max-width: 768px) {
-          .desktop-nav { display: none !important; }
-          .mobile-menu-btn { display: flex !important; }
+          .desktop-nav       { display: none !important; }
+          .mobile-menu-btn   { display: flex !important; }
         }
         @media (min-width: 769px) {
           .logo-text { display: block !important; }
@@ -230,7 +298,7 @@ export default function Navbar() {
           --text-muted: #64748b; --glass-bg: rgba(255,255,255,0.8);
           --glass-border: rgba(15,23,42,0.12);
         }
-        [data-theme="light"] body { background: var(--bg-dark); color: var(--text-light); }
+        [data-theme="light"] body   { background: var(--bg-dark); color: var(--text-light); }
         [data-theme="light"] header { background: rgba(241,245,249,0.92) !important; }
       `}</style>
     </>

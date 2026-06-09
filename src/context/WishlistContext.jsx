@@ -1,64 +1,85 @@
 'use client';
 // src/context/WishlistContext.jsx
-// Wishlist stored in localStorage — persists across sessions
 
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
-const WishlistContext = createContext({});
+const WishlistContext = createContext(null);
+
+const STORAGE_KEY = 'iwr_wishlist';
 
 export function WishlistProvider({ children }) {
   const [wishlistItems, setWishlistItems] = useState([]);
+  const [mounted, setMounted] = useState(false);
 
-  // Load from localStorage on mount
+  // ── Load from localStorage on mount ──
   useEffect(() => {
     try {
-      const saved = localStorage.getItem('wishlist');
-      if (saved) setWishlistItems(JSON.parse(saved));
-    } catch (e) {}
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) setWishlistItems(parsed);
+      }
+    } catch {
+      // corrupted storage — start fresh
+      localStorage.removeItem(STORAGE_KEY);
+    }
+    setMounted(true);
   }, []);
 
-  // Save to localStorage whenever wishlist changes
+  // ── Persist to localStorage whenever items change (after mount) ──
   useEffect(() => {
+    if (!mounted) return;
     try {
-      localStorage.setItem('wishlist', JSON.stringify(wishlistItems));
-    } catch (e) {}
-  }, [wishlistItems]);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(wishlistItems));
+    } catch {
+      // storage full or unavailable — silently ignore
+    }
+  }, [wishlistItems, mounted]);
 
+  // ── Add to wishlist ──
   const addToWishlist = useCallback((product) => {
+    if (!product?.id) return;
     setWishlistItems(prev => {
-      if (prev.find(i => i.id === product.id)) return prev;
-      return [...prev, {
-        id: product.id,
-        databaseId: product.databaseId,
-        name: product.name,
-        slug: product.slug,
-        price: product.price,
-        image: product.image?.sourceUrl || null,
-        stockStatus: product.stockStatus,
-      }];
+      if (prev.some(item => item.id === product.id)) return prev; // already in list
+      return [...prev, normalizeProduct(product)];
     });
   }, []);
 
+  // ── Remove from wishlist ──
   const removeFromWishlist = useCallback((productId) => {
-    setWishlistItems(prev => prev.filter(i => i.id !== productId));
+    setWishlistItems(prev => prev.filter(item => item.id !== productId));
   }, []);
 
-  const isWishlisted = useCallback((productId) => {
-    return wishlistItems.some(i => i.id === productId);
-  }, [wishlistItems]);
+  // ── Toggle ──
+  const toggleWishlist = useCallback((product) => {
+    if (!product?.id) return;
+    setWishlistItems(prev => {
+      const exists = prev.some(item => item.id === product.id);
+      if (exists) return prev.filter(item => item.id !== product.id);
+      return [...prev, normalizeProduct(product)];
+    });
+  }, []);
 
+  // ── Clear all ──
   const clearWishlist = useCallback(() => {
     setWishlistItems([]);
   }, []);
 
+  // ── Check if product is wishlisted ──
+  const isWishlisted = useCallback((productId) => {
+    return wishlistItems.some(item => item.id === productId);
+  }, [wishlistItems]);
+
   return (
     <WishlistContext.Provider value={{
       wishlistItems,
+      wishlistCount: wishlistItems.length,
       addToWishlist,
       removeFromWishlist,
-      isWishlisted,
+      toggleWishlist,
       clearWishlist,
-      wishlistCount: wishlistItems.length,
+      isWishlisted,
+      mounted,
     }}>
       {children}
     </WishlistContext.Provider>
@@ -66,5 +87,21 @@ export function WishlistProvider({ children }) {
 }
 
 export function useWishlist() {
-  return useContext(WishlistContext);
+  const ctx = useContext(WishlistContext);
+  if (!ctx) throw new Error('useWishlist must be used inside WishlistProvider');
+  return ctx;
+}
+
+// ── Normalize product shape from any source (shop, product page, home) ──
+function normalizeProduct(product) {
+  return {
+    id:           product.id,
+    databaseId:   product.databaseId,
+    slug:         product.slug         || '',
+    name:         product.name         || '',
+    price:        product.price        || '',
+    image:        product.image?.sourceUrl || product.image || null,
+    stockStatus:  product.stockStatus  || 'IN_STOCK',
+    __typename:   product.__typename   || 'SimpleProduct',
+  };
 }

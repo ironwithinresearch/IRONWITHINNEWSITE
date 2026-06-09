@@ -15,10 +15,6 @@ import {
   Mail, ArrowRight, CheckCircle2, Star, BadgeCheck,
   ShoppingCart, Heart, Loader2,
 } from 'lucide-react';
-import Medicine1 from '../../public/images/medicine1.png';
-import Medicine2 from '../../public/images/medicine2.png';
-import Medicine3 from '../../public/images/medicine3.png';
-import Medicine4 from '../../public/images/medicine4.png';
 
 const categories = [
   { name: 'Healing & Recovery', Icon: HeartPulse, count: 12, href: '/categories', color: 'var(--primary-blue)' },
