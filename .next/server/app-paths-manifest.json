@@ -1,7 +1,0 @@
-{
-  "/shop/page": "app/shop/page.js",
-  "/product/[slug]/page": "app/product/[slug]/page.js",
-  "/cart/page": "app/cart/page.js",
-  "/categories/page": "app/categories/page.js",
-  "/wishlist/page": "app/wishlist/page.js"
-}
