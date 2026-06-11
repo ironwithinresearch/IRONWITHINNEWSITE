@@ -4,11 +4,54 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { FlaskConical, Mail, Lock, ArrowRight, Eye, EyeOff, AlertCircle } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
+import { FlaskConical, Mail, Lock, ArrowRight, Eye, EyeOff, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+
+// Strip HTML tags from WordPress error messages like:
+// "<strong>Error:</strong> The password you entered ... <a href=...>Lost your password?</a>"
+function cleanErrorMessage(msg) {
+  if (!msg) return '';
+  // Remove all HTML tags
+  let clean = msg.replace(/<[^>]+>/g, '');
+  // Decode HTML entities
+  clean = clean.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '"');
+  // Remove "Error:" prefix WordPress adds
+  clean = clean.replace(/^Error:\s*/i, '').trim();
+  return clean;
+}
+
+// Map common WordPress JWT error messages to friendly text
+function getFriendlyError(raw) {
+  const clean = cleanErrorMessage(raw).toLowerCase();
+
+  if (clean.includes('incorrect') || clean.includes('password you entered') || clean.includes('wrong password')) {
+    return 'Incorrect password. Please try again.';
+  }
+  if (clean.includes('no account') || clean.includes('not registered') || clean.includes('invalid username') || clean.includes('no user')) {
+    return 'No account found with that email or username.';
+  }
+  if (clean.includes('empty') || clean.includes('required')) {
+    return 'Please enter your email and password.';
+  }
+  if (clean.includes('too many') || clean.includes('locked') || clean.includes('blocked')) {
+    return 'Too many failed attempts. Please wait a few minutes and try again.';
+  }
+  if (clean.includes('network') || clean.includes('fetch') || clean.includes('failed to fetch')) {
+    return 'Connection error. Please check your internet and try again.';
+  }
+
+  // Fallback — show cleaned message (no HTML)
+  const cleaned = cleanErrorMessage(raw);
+  return cleaned || 'Sign in failed. Please check your credentials and try again.';
+}
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = typeof window !== 'undefined'
+    ? new URLSearchParams(window.location.search)
+    : null;
+  const resetSuccess = searchParams?.get('reset') === 'success';
+
   const { login, loading } = useAuth();
 
   const [form, setForm] = useState({ username: '', password: '' });
@@ -18,11 +61,15 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    const result = await login(form.username, form.password);
+
+    if (!form.username.trim()) { setError('Please enter your email or username.'); return; }
+    if (!form.password) { setError('Please enter your password.'); return; }
+
+    const result = await login(form.username.trim(), form.password);
     if (result.success) {
       router.push('/account');
     } else {
-      setError(result.error || 'Invalid email or password');
+      setError(getFriendlyError(result.error));
     }
   };
 
@@ -32,7 +79,6 @@ export default function LoginPage() {
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       padding: '40px 24px',
     }}>
-      {/* Background */}
       <div style={{
         position: 'fixed', inset: 0, pointerEvents: 'none',
         background: `
@@ -41,9 +87,8 @@ export default function LoginPage() {
         `,
       }} />
 
-      <div style={{
-        width: '100%', maxWidth: 440, position: 'relative', zIndex: 1,
-      }}>
+      <div style={{ width: '100%', maxWidth: 440, position: 'relative', zIndex: 1 }}>
+
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: '36px' }}>
           <div style={{
@@ -55,10 +100,9 @@ export default function LoginPage() {
           }}>
             <FlaskConical size={26} color="#fff" />
           </div>
-          <h1 style={{
-            fontFamily: 'var(--font-heading)',
-            fontSize: '1.7rem', fontWeight: 900, marginBottom: '6px',
-          }}>Welcome Back</h1>
+          <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.7rem', fontWeight: 900, marginBottom: '6px' }}>
+            Welcome Back
+          </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
             Sign in to your researcher account
           </p>
@@ -71,23 +115,38 @@ export default function LoginPage() {
           borderRadius: '20px',
           padding: '36px',
         }}>
-          {/* Error */}
-          {error && (
+
+          {/* Password reset success banner */}
+          {resetSuccess && (
             <div style={{
               display: 'flex', alignItems: 'center', gap: '8px',
+              padding: '12px 14px', marginBottom: '20px',
+              background: 'rgba(52,211,153,0.1)',
+              border: '1px solid rgba(52,211,153,0.3)',
+              borderRadius: '10px', color: '#34d399', fontSize: '0.875rem',
+            }}>
+              <CheckCircle2 size={15} />
+              Password updated! Sign in with your new password.
+            </div>
+          )}
+
+          {/* Error — plain text, no HTML */}
+          {error && (
+            <div style={{
+              display: 'flex', alignItems: 'flex-start', gap: '8px',
               padding: '12px 14px', marginBottom: '20px',
               background: 'rgba(239,68,68,0.1)',
               border: '1px solid rgba(239,68,68,0.3)',
               borderRadius: '10px',
-              color: '#f87171', fontSize: '0.875rem',
+              color: '#f87171', fontSize: '0.875rem', lineHeight: 1.5,
             }}>
-              <AlertCircle size={15} />
-              {error}
+              <AlertCircle size={15} style={{ flexShrink: 0, marginTop: 1 }} />
+              <span>{error}</span>
             </div>
           )}
 
           <form onSubmit={handleSubmit}>
-            {/* Email/Username */}
+            {/* Email / Username */}
             <div style={{ marginBottom: '18px' }}>
               <label style={{
                 display: 'block', fontSize: '0.82rem', fontWeight: 500,
@@ -98,8 +157,7 @@ export default function LoginPage() {
               <div style={{ position: 'relative' }}>
                 <Mail size={15} style={{
                   position: 'absolute', left: '14px', top: '50%',
-                  transform: 'translateY(-50%)', color: 'var(--text-muted)',
-                  pointerEvents: 'none',
+                  transform: 'translateY(-50%)', color: 'var(--text-muted)', pointerEvents: 'none',
                 }} />
                 <input
                   type="text"
@@ -107,10 +165,11 @@ export default function LoginPage() {
                   onChange={e => setForm(f => ({ ...f, username: e.target.value }))}
                   placeholder="you@example.com"
                   required
+                  autoComplete="username"
                   style={{
                     width: '100%', padding: '11px 14px 11px 40px',
                     background: 'var(--bg-dark)',
-                    border: '1px solid var(--glass-border)',
+                    border: `1px solid ${error && !form.username ? 'rgba(239,68,68,0.5)' : 'var(--glass-border)'}`,
                     borderRadius: '10px',
                     color: 'var(--text-light)',
                     fontFamily: 'var(--font-body)', fontSize: '0.9rem', outline: 'none',
@@ -136,8 +195,7 @@ export default function LoginPage() {
               <div style={{ position: 'relative' }}>
                 <Lock size={15} style={{
                   position: 'absolute', left: '14px', top: '50%',
-                  transform: 'translateY(-50%)', color: 'var(--text-muted)',
-                  pointerEvents: 'none',
+                  transform: 'translateY(-50%)', color: 'var(--text-muted)', pointerEvents: 'none',
                 }} />
                 <input
                   type={showPass ? 'text' : 'password'}
@@ -145,10 +203,11 @@ export default function LoginPage() {
                   onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
                   placeholder="••••••••"
                   required
+                  autoComplete="current-password"
                   style={{
                     width: '100%', padding: '11px 40px 11px 40px',
                     background: 'var(--bg-dark)',
-                    border: '1px solid var(--glass-border)',
+                    border: 'var(--glass-border) 1px solid',
                     borderRadius: '10px',
                     color: 'var(--text-light)',
                     fontFamily: 'var(--font-body)', fontSize: '0.9rem', outline: 'none',
@@ -160,8 +219,7 @@ export default function LoginPage() {
                   position: 'absolute', right: '12px', top: '50%',
                   transform: 'translateY(-50%)',
                   background: 'none', border: 'none',
-                  color: 'var(--text-muted)', cursor: 'pointer',
-                  display: 'flex', alignItems: 'center',
+                  color: 'var(--text-muted)', cursor: 'pointer', display: 'flex',
                 }}>
                   {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
@@ -208,7 +266,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      <style>{`@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }

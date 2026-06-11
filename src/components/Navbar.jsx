@@ -13,9 +13,9 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 
 const navLinks = [
+   { href: '/',      label: 'Home'       },
   { href: '/shop',      label: 'Shop'       },
   { href: '/categories',label: 'Categories' },
-  { href: '/blog',      label: 'Blog'       },
   { href: '/contact',   label: 'Contact'    },
   { href: '/affiliate', label: 'Affiliates' },
 ];

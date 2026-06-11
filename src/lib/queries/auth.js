@@ -62,6 +62,8 @@ export const GET_CUSTOMER = gql`
   }
 `;
 
+// Step 1 — sends reset email to user
+// WordPress emails a link: /reset-password?key=XXX&login=username
 export const SEND_PASSWORD_RESET = gql`
   mutation SendPasswordReset($username: String!) {
     sendPasswordResetEmail(input: { username: $username }) {
@@ -70,6 +72,8 @@ export const SEND_PASSWORD_RESET = gql`
   }
 `;
 
+// Step 2 — user clicks link in email, lands on /reset-password?key=XXX&login=username
+// This mutation sets the new password using the key from the URL
 export const RESET_USER_PASSWORD = gql`
   mutation ResetUserPassword($key: String!, $login: String!, $password: String!) {
     resetUserPassword(input: {
