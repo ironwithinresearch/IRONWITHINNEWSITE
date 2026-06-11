@@ -281,7 +281,7 @@ export default function ProductPage() {
                 )}
               </button>
 
-              <button onClick={() => setWishlisted(v => !v)} style={{
+              {/* <button onClick={() => setWishlisted(v => !v)} style={{
                 width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center',
                 background: wishlisted ? 'rgba(236,72,153,0.12)' : 'var(--card-dark)',
                 border: `1px solid ${wishlisted ? 'rgba(236,72,153,0.4)' : 'var(--glass-border)'}`,
@@ -289,12 +289,12 @@ export default function ProductPage() {
                 cursor: 'pointer', flexShrink: 0,
               }}>
                 <Heart size={18} fill={wishlisted ? 'currentColor' : 'none'} />
-              </button>
+              </button> */}
             </div>
 
-            <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '5px' }}>
+            {/* <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '5px' }}>
               <Truck size={13} color="var(--primary-blue)" /> Free shipping on orders over $225
-            </p>
+            </p> */}
           </div>
         </div>
 

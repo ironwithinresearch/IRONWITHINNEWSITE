@@ -537,7 +537,7 @@ function SecurityPanel({ customer }) {
         <p style={sectionHeadStyle}>Change Password</p>
 
         {/* Current password */}
-        <div style={{ marginBottom: '14px' }}>
+        {/* <div style={{ marginBottom: '14px' }}>
           <label style={labelStyle}>Current Password</label>
           <div style={{ position: 'relative' }}>
             <input
@@ -552,7 +552,7 @@ function SecurityPanel({ customer }) {
               {show.current ? <EyeOff size={15} /> : <Eye size={15} />}
             </button>
           </div>
-        </div>
+        </div> */}
 
         {/* New password */}
         <div style={{ marginBottom: '14px' }}>
