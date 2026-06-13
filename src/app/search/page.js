@@ -1,7 +1,7 @@
 'use client';
 // src/app/search/page.js
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useLazyQuery, useQuery } from '@apollo/client';
@@ -19,16 +19,16 @@ const accentColors = [
   '#f87171', '#a78bfa', '#38bdf8',
 ];
 
-export default function SearchPage() {
+// ── Inner component that uses useSearchParams ──
+function SearchInner() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get('q') || '';
 
   const [inputVal, setInputVal]             = useState(initialQuery);
   const [query, setQuery]                   = useState(initialQuery);
   const [addedItems, setAddedItems]         = useState({});
-  const [activeCategory, setActiveCategory] = useState(null); // stores slug
-  // Track whether the current search is a category-slug search or a text search
-  const [searchMode, setSearchMode]         = useState('text'); // 'text' | 'category'
+  const [activeCategory, setActiveCategory] = useState(null);
+  const [searchMode, setSearchMode]         = useState('text');
 
   const { addToCart } = useCart();
 
@@ -58,10 +58,8 @@ export default function SearchPage() {
   useEffect(() => {
     if (query.trim().length > 1) {
       if (searchMode === 'category') {
-        // Use `category` (slug) variable — proper WooCommerce category filter
         searchProducts({ variables: { first: 48, category: query.trim() } });
       } else {
-        // Use `search` variable — full-text search
         searchProducts({ variables: { first: 24, search: query.trim() } });
       }
     }
@@ -77,15 +75,13 @@ export default function SearchPage() {
     }
   };
 
-  // Category click → search by slug via `category` variable
   const handleCategoryClick = (cat) => {
     setActiveCategory(cat.slug);
-    setInputVal(cat.name);   // show human-readable name in input
+    setInputVal(cat.name);
     setSearchMode('category');
-    setQuery(cat.slug);      // query holds the slug for the API call
+    setQuery(cat.slug);
   };
 
-  // Popular search pill → free-text search by name
   const handlePopularClick = (term) => {
     setActiveCategory(null);
     setSearchMode('text');
@@ -100,7 +96,6 @@ export default function SearchPage() {
     setSearchMode('text');
   };
 
-  // When user types manually, switch back to text mode
   const handleInputChange = (e) => {
     setInputVal(e.target.value);
     setSearchMode('text');
@@ -141,7 +136,6 @@ export default function SearchPage() {
             )}
           </div>
 
-          {/* Active category badge under input */}
           {activeCategory && (
             <div style={{ marginTop: '12px', display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(0,207,255,0.1)', border: '1px solid rgba(0,207,255,0.3)', borderRadius: '999px', fontSize: '0.75rem', color: 'var(--primary-blue)', fontWeight: 600 }}>
               <Tag size={11} /> Browsing category: {inputVal}
@@ -159,7 +153,6 @@ export default function SearchPage() {
               Start typing or pick a category below.
             </p>
 
-            {/* Popular searches */}
             {catLoading ? (
               <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '48px' }}>
                 <Loader2 size={18} color="var(--primary-blue)" style={{ animation: 'spin 1s linear infinite' }} />
@@ -180,7 +173,6 @@ export default function SearchPage() {
               </div>
             )}
 
-            {/* Browse Categories */}
             <div style={{ marginBottom: '48px' }}>
               <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '16px', textAlign: 'center' }}>Browse by Category</p>
               {catLoading ? (
@@ -242,7 +234,6 @@ export default function SearchPage() {
                 )}
               </div>
 
-              {/* Category filter pills */}
               {categories.length > 0 && (
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                   {categories.map(({ id, name, slug }, idx) => {
@@ -262,7 +253,6 @@ export default function SearchPage() {
               )}
             </div>
 
-            {/* No results */}
             {!searchLoading && products.length === 0 && (
               <div style={{ textAlign: 'center', padding: '80px 24px', background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-xl)' }}>
                 <Search size={48} color="var(--text-muted)" style={{ margin: '0 auto 16px', opacity: 0.3 }} />
@@ -274,7 +264,6 @@ export default function SearchPage() {
               </div>
             )}
 
-            {/* Product grid */}
             {products.length > 0 && (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '14px' }}>
                 {products.map(product => {
@@ -341,5 +330,22 @@ export default function SearchPage() {
 
       <style>{`@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
     </div>
+  );
+}
+
+// ── Default export wrapped in Suspense ──
+export default function SearchPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+          <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
+          Loading…
+        </div>
+        <style>{`@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
+      </div>
+    }>
+      <SearchInner />
+    </Suspense>
   );
 }

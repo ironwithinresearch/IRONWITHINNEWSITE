@@ -1,46 +1,41 @@
 'use client';
 // src/app/reset-password/page.js
-//
-// ── HOW THIS WORKS ────────────────────────────────────────────
-// 1. User clicks link in email:
-//    https://yoursite.com/reset-password?key=RESET_KEY&login=username
-//
-// 2. This page reads `key` and `login` from the URL params
-//
-// 3. User enters new password → RESET_USER_PASSWORD mutation runs
-//
-// 4. On success → redirect to /login with success message
-//
-// ── IMPORTANT: WordPress must redirect to your Next.js domain ─
-// By default WordPress sends links to wp-admin/reset-password.
-// You need to tell WordPress to send links to your Next.js domain.
-// Add this to your WordPress functions.php:
-//
-// add_filter('lostpassword_url', function($url, $redirect) {
-//   return 'https://your-nextjs-domain.com/reset-password';
-// }, 10, 2);
-//
-// For localhost dev, add:
-// add_filter('lostpassword_url', function($url, $redirect) {
-//   return 'http://localhost:3000/reset-password';
-// }, 10, 2);
-// ──────────────────────────────────────────────────────────────
 
-import { useState, useEffect } from 'react';
+import { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMutation } from '@apollo/client';
 import { RESET_USER_PASSWORD } from '../../lib/queries/auth';
 import {
   Lock, Eye, EyeOff, CheckCircle2, ArrowRight,
-  AlertCircle, ShieldCheck, KeyRound,
+  AlertCircle, ShieldCheck,
 } from 'lucide-react';
 
-export default function ResetPasswordPage() {
+// ── Password strength helper ──
+function getPasswordStrength(password) {
+  if (!password) return { score: 0, label: '', color: 'var(--glass-border)' };
+
+  let score = 0;
+  if (password.length >= 8) score++;
+  if (password.length >= 12) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^a-zA-Z0-9]/.test(password)) score++;
+
+  const levels = [
+    { score: 1, label: 'Weak', color: '#f87171' },
+    { score: 2, label: 'Fair', color: '#fbbf24' },
+    { score: 3, label: 'Good', color: '#34d399' },
+    { score: 4, label: 'Strong', color: '#10b981' },
+  ];
+
+  return levels[Math.min(score, 4) - 1] || { score: 0, label: 'Too short', color: '#f87171' };
+}
+
+// ── Inner component that uses useSearchParams ──
+function ResetPasswordInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // These come from the email link: /reset-password?key=XXX&login=username
   const key = searchParams.get('key') || '';
   const login = searchParams.get('login') || '';
 
@@ -51,14 +46,12 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
-  // Password strength
   const strength = getPasswordStrength(password);
 
   const [resetPassword, { loading }] = useMutation(RESET_USER_PASSWORD, {
     onCompleted: (data) => {
       if (data?.resetUserPassword?.user) {
         setSuccess(true);
-        // Redirect to login after 2 seconds
         setTimeout(() => router.push('/login?reset=success'), 2000);
       } else {
         setError('Password reset failed. Please try again or request a new link.');
@@ -82,17 +75,14 @@ export default function ResetPasswordPage() {
       setError('Invalid reset link. Please request a new password reset.');
       return;
     }
-
     if (password.length < 8) {
       setError('Password must be at least 8 characters.');
       return;
     }
-
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
       return;
     }
-
     if (strength.score < 2) {
       setError('Password is too weak. Add numbers or symbols.');
       return;
@@ -191,7 +181,6 @@ export default function ResetPasswordPage() {
 
               /* ── FORM ── */
               <>
-                {/* Icon + heading */}
                 <div style={{
                   width: 56, height: 56, borderRadius: '14px',
                   background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.25)',
@@ -209,7 +198,6 @@ export default function ResetPasswordPage() {
                   <strong style={{ color: 'var(--primary-blue)' }}>{login}</strong>
                 </p>
 
-                {/* Error */}
                 {error && (
                   <div style={{
                     display: 'flex', alignItems: 'flex-start', gap: '8px',
@@ -259,16 +247,13 @@ export default function ResetPasswordPage() {
                       </button>
                     </div>
 
-                    {/* Password strength bar */}
                     {password && (
                       <div style={{ marginTop: '8px' }}>
                         <div style={{ display: 'flex', gap: '4px', marginBottom: '4px' }}>
                           {[0, 1, 2, 3].map(i => (
                             <div key={i} style={{
                               flex: 1, height: 3, borderRadius: '2px',
-                              background: i < strength.score
-                                ? strength.color
-                                : 'var(--glass-border)',
+                              background: i < strength.score ? strength.color : 'var(--glass-border)',
                               transition: 'background 0.2s ease',
                             }} />
                           ))}
@@ -319,7 +304,6 @@ export default function ResetPasswordPage() {
                         {showConfirm ? <EyeOff size={15} /> : <Eye size={15} />}
                       </button>
                     </div>
-                    {/* Match indicator */}
                     {confirmPassword && (
                       <p style={{
                         fontSize: '0.72rem', marginTop: '5px',
@@ -362,7 +346,6 @@ export default function ResetPasswordPage() {
                   </button>
                 </form>
 
-                {/* Expired link help */}
                 <div style={{ textAlign: 'center', marginTop: '20px' }}>
                   <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
                     Link expired?{' '}
@@ -385,22 +368,15 @@ export default function ResetPasswordPage() {
   );
 }
 
-/* ── Password strength helper ── */
-function getPasswordStrength(password) {
-  if (!password) return { score: 0, label: '', color: 'var(--glass-border)' };
-
-  let score = 0;
-  if (password.length >= 8) score++;
-  if (password.length >= 12) score++;
-  if (/[0-9]/.test(password)) score++;
-  if (/[^a-zA-Z0-9]/.test(password)) score++;
-
-  const levels = [
-    { score: 1, label: 'Weak', color: '#f87171' },
-    { score: 2, label: 'Fair', color: '#fbbf24' },
-    { score: 3, label: 'Good', color: '#34d399' },
-    { score: 4, label: 'Strong', color: '#10b981' },
-  ];
-
-  return levels[Math.min(score, 4) - 1] || { score: 0, label: 'Too short', color: '#f87171' };
+// ── Default export wrapped in Suspense ──
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Loading…</div>
+      </div>
+    }>
+      <ResetPasswordInner />
+    </Suspense>
+  );
 }
