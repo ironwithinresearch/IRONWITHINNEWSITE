@@ -1,4 +1,5 @@
 import "./globals.css";
+import AnnouncementBar from "../components/AnnouncementBar";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import AgeVerification from "../components/AgeVerification";
@@ -10,8 +11,9 @@ export default function RootLayout({ children }) {
       <body>
         <ApolloWrapper>
           <AgeVerification />
+          <AnnouncementBar />
           <Navbar />
-          <main style={{ minHeight: '100vh', paddingTop: 'var(--navbar-height, 68px)' }}>
+          <main style={{ minHeight: '100vh', paddingTop: 'calc(var(--navbar-height, 68px) + 36px)' }}>
             {children}
           </main>
           <Footer />

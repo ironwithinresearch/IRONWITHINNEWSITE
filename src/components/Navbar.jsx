@@ -89,7 +89,7 @@ export default function Navbar() {
   return (
     <>
       <header style={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
+        position: 'fixed', top: 36, left: 0, right: 0, zIndex: 100,
         height: 'var(--navbar-height, 68px)',
         background: scrolled ? 'rgba(5,7,18,0.92)' : 'rgba(5,7,18,0.6)',
         backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
