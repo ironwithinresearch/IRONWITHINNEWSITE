@@ -7,11 +7,13 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useQuery } from '@apollo/client';
 import { GET_PRODUCT } from '@/lib/queries/products';
+import { getCoa } from '@/data/coas';
 import { useCart } from '@/context/CartContext';
 import {
   FlaskConical, ShoppingCart, Heart, ChevronRight,
   Shield, Truck, BadgeCheck, Minus, Plus,
   Loader2, CheckCircle2, AlertCircle, Info, Package,
+  FileText, Download,
 } from 'lucide-react';
 
 export default function ProductPage() {
@@ -33,6 +35,7 @@ export default function ProductPage() {
   });
 
   const product = data?.product;
+  const coa = getCoa(slug);
 
   if (loading) {
     return (
@@ -221,6 +224,25 @@ export default function ProductPage() {
                     </button>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {/* Certificate of Analysis (COA) */}
+            {coa && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '14px 16px', background: 'rgba(0,207,255,0.05)', border: '1px solid rgba(0,207,255,0.25)', borderRadius: '12px' }}>
+                <span style={{ width: 40, height: 40, flexShrink: 0, borderRadius: '10px', background: 'rgba(0,207,255,0.12)', color: 'var(--primary-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <FileText size={20} />
+                </span>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-light)' }}>Certificate of Analysis</div>
+                  <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
+                    3rd-party tested{coa.batchDate ? ` · batch ${coa.batchDate}` : ''}
+                  </div>
+                </div>
+                <a href={coa.coaFile} target="_blank" rel="noopener noreferrer"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', borderRadius: '8px', background: 'var(--gradient-primary)', color: '#001018', fontWeight: 700, fontSize: '0.8rem', textDecoration: 'none', flexShrink: 0 }}>
+                  <Download size={14} /> View COA
+                </a>
               </div>
             )}
 

@@ -17,6 +17,7 @@ const footerLinks = {
     { label: 'Affiliates', href: '/affiliate' },
   ],
   Support: [
+    { label: 'Lab Reports & COAs', href: '/lab-reports' },
     { label: 'FAQ', href: '/faq' },
     { label: 'Shipping Info', href: '/shipping' },
     { label: 'Refund Policy', href: '/refund' },
