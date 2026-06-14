@@ -177,8 +177,8 @@ export default function Home() {
             <Link href="/shop" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 32px', background: 'var(--gradient-primary)', borderRadius: 'var(--radius-md)', color: '#fff', fontWeight: 700, fontSize: '1rem', textDecoration: 'none', boxShadow: '0 0 24px rgba(0,207,255,0.45)', fontFamily: 'var(--font-body)' }}>
               Shop Now <ArrowRight size={16} />
             </Link>
-            <Link href="/about" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 32px', background: 'transparent', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-md)', color: 'var(--text-light)', fontWeight: 600, fontSize: '1rem', textDecoration: 'none', fontFamily: 'var(--font-body)' }}>
-              Learn More
+            <Link href="/lab-reports" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 32px', background: 'transparent', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-md)', color: 'var(--text-light)', fontWeight: 600, fontSize: '1rem', textDecoration: 'none', fontFamily: 'var(--font-body)' }}>
+              <FlaskConical size={16} /> Lab Reports
             </Link>
           </div>
           <div style={{ display: 'flex', gap: '28px', justifyContent: 'center', flexWrap: 'wrap', marginTop: '48px' }}>
