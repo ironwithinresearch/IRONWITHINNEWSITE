@@ -36,7 +36,7 @@ export const GET_PRODUCTS = gql`
         }
         ... on VariableProduct {
           price
-          variations {
+          variations(first: 100) {
             nodes {
               id
               price
@@ -101,7 +101,7 @@ export const GET_PRODUCT = gql`
             variation
           }
         }
-        variations {
+        variations(first: 100) {
           nodes {
             id
             databaseId
