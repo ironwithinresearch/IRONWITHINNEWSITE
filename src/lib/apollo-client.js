@@ -57,6 +57,12 @@ export function makeClient() {
     cache: new InMemoryCache({
       typePolicies: {
         Cart: { keyFields: [] }, // treat cart as a singleton
+        // Keep each product variation distinct (key by its own databaseId)...
+        SimpleProductVariation: { keyFields: ['databaseId'] },
+        // ...and do NOT normalize variation attributes: WooGraphQL gives them
+        // colliding cache ids, so Apollo was merging every variation's
+        // attributes into one set (breaking dose/quantity-tier resolution).
+        VariationAttribute: { keyFields: false },
       },
     }),
     defaultOptions: {
