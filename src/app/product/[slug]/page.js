@@ -91,21 +91,26 @@ export default function ProductPage() {
   const doseInStock = (d) => variations.some(v => doseOf(v) === d && v.stockStatus === 'IN_STOCK');
   const effectiveDose = hasDoses ? (selectedDose || doses.find(doseInStock) || doses[0]) : null;
 
-  const tierRe = qty >= 3 ? /3[\s-]*unit/i : qty >= 2 ? /2[\s-]*unit/i : /1[\s-]*unit/i;
   const poolFor = (d) => hasDoses ? variations.filter(v => doseOf(v) === d) : variations.slice();
+  // Quantity tiers selected by PRICE RANK, not by attribute text: variation
+  // attributes can collapse through the GraphQL cache, but per-variation prices
+  // stay distinct. 1-unit (standard) is the most expensive; more units = cheaper
+  // per unit. So sort a dose's variations by price DESC and map quantity to rank.
+  const pricedSorted = (d) => poolFor(d)
+    .filter(v => !isNaN(parseNum(v.price)))
+    .sort((a, b) => parseNum(b.price) - parseNum(a.price));
   function pickVariation(d) {
     if (!isVariable) return null;
     const pool = poolFor(d);
     if (!pool.length) return null;
-    if (!hasTiers) return pool[0];
-    const exact = pool.find(v => tierRe.test(tierOf(v)) && !isNaN(parseNum(v.price)));
-    if (exact) return exact;
-    const one = pool.find(v => /1[\s-]*unit/i.test(tierOf(v)) && !isNaN(parseNum(v.price)));
-    return one || pool.find(v => !isNaN(parseNum(v.price))) || pool[0];
+    const ps = pricedSorted(d);
+    if (!ps.length) return pool[0];
+    const idx = Math.min(Math.max(qty, 1) - 1, ps.length - 1);
+    return ps[idx];
   }
   const resolvedVariation = pickVariation(effectiveDose);
   const baseVariation = isVariable
-    ? (poolFor(effectiveDose).find(v => /1[\s-]*unit/i.test(tierOf(v))) || resolvedVariation)
+    ? (pricedSorted(effectiveDose)[0] || resolvedVariation)
     : null;
 
   const unitPrice = isVariable ? parseNum(resolvedVariation?.price) : parseNum(product.price);
