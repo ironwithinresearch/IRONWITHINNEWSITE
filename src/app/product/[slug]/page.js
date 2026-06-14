@@ -32,6 +32,10 @@ export default function ProductPage() {
   const { data, loading, error } = useQuery(GET_PRODUCT, {
     variables: { slug },
     skip: !slug,
+    // Bypass the normalized cache: WooGraphQL variation attributes collide in
+    // Apollo's cache and collapse across variations, which broke dose/quantity
+    // price resolution. The raw network response keeps each variation intact.
+    fetchPolicy: 'no-cache',
   });
 
   const product = data?.product;
