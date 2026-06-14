@@ -22,7 +22,7 @@ export default function ProductPage() {
   const { addToCart } = useCart();
 
   const [qty, setQty] = useState(1);
-  const [selectedVariation, setSelectedVariation] = useState(null);
+  const [selectedDose, setSelectedDose] = useState(null);
   const [addingToCart, setAddingToCart] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
   const [wishlisted, setWishlisted] = useState(false);
@@ -63,19 +63,62 @@ export default function ProductPage() {
     ...(product.galleryImages?.nodes?.map(g => g.sourceUrl) || []),
   ].filter(Boolean);
 
-  const price = isVariable
-    ? (selectedVariation?.price || product.price)
-    : product.price;
+  // ---- Dose + volume-tier model (matches the legacy ironwithinlabs UX) ----
+  // Doses come from the "variant-options" attribute (e.g. 10mg/15mg/30mg).
+  // The "bundle-save" attribute holds quantity tiers (1-unit / 2-units / 3-units),
+  // each already priced with its volume discount baked in. We show dose buttons +
+  // a quantity stepper, and auto-select the tier-variation matching the quantity.
+  const money = (n) => '$' + (Number.isFinite(n) ? n.toFixed(2) : '0.00');
+  const parseNum = (s) => {
+    if (s == null) return NaN;
+    const n = parseFloat(String(s).replace(/&nbsp;|&#160;|,/g, '').replace(/[^0-9.]/g, ''));
+    return Number.isFinite(n) ? n : NaN;
+  };
+  const valsOf = (v) => (v.attributes?.nodes || []).map(a => a.value || '');
+  const doseOf = (v) => valsOf(v).find(x => /\d\s*mg/i.test(x)) || '';
+  const tierOf = (v) => valsOf(v).find(x => /unit/i.test(x)) || '';
+  const doseNum = (d) => { const m = String(d).match(/(\d+(?:\.\d+)?)/); return m ? parseFloat(m[1]) : 9999; };
+
+  const doses = isVariable
+    ? [...new Set(variations.map(doseOf).filter(Boolean))].sort((a, b) => doseNum(a) - doseNum(b))
+    : [];
+  const hasDoses = doses.length > 0;
+  const hasTiers = isVariable && variations.some(v => tierOf(v));
+  const doseInStock = (d) => variations.some(v => doseOf(v) === d && v.stockStatus === 'IN_STOCK');
+  const effectiveDose = hasDoses ? (selectedDose || doses.find(doseInStock) || doses[0]) : null;
+
+  const tierRe = qty >= 3 ? /3[\s-]*unit/i : qty >= 2 ? /2[\s-]*unit/i : /1[\s-]*unit/i;
+  const poolFor = (d) => hasDoses ? variations.filter(v => doseOf(v) === d) : variations.slice();
+  function pickVariation(d) {
+    if (!isVariable) return null;
+    const pool = poolFor(d);
+    if (!pool.length) return null;
+    if (!hasTiers) return pool[0];
+    const exact = pool.find(v => tierRe.test(tierOf(v)) && !isNaN(parseNum(v.price)));
+    if (exact) return exact;
+    const one = pool.find(v => /1[\s-]*unit/i.test(tierOf(v)) && !isNaN(parseNum(v.price)));
+    return one || pool.find(v => !isNaN(parseNum(v.price))) || pool[0];
+  }
+  const resolvedVariation = pickVariation(effectiveDose);
+  const baseVariation = isVariable
+    ? (poolFor(effectiveDose).find(v => /1[\s-]*unit/i.test(tierOf(v))) || resolvedVariation)
+    : null;
+
+  const unitPrice = isVariable ? parseNum(resolvedVariation?.price) : parseNum(product.price);
+  const basePrice = isVariable ? parseNum(baseVariation?.price) : parseNum(product.regularPrice || product.price);
+  const totalPrice = (Number.isFinite(unitPrice) ? unitPrice : 0) * qty;
+  const savePct = (Number.isFinite(basePrice) && Number.isFinite(unitPrice) && basePrice > unitPrice + 0.001)
+    ? Math.round((1 - unitPrice / basePrice) * 100) : 0;
 
   const inStock = isVariable
-    ? (selectedVariation ? selectedVariation.stockStatus === 'IN_STOCK' : variations.some(v => v.stockStatus === 'IN_STOCK'))
+    ? (resolvedVariation ? resolvedVariation.stockStatus === 'IN_STOCK' : variations.some(v => v.stockStatus === 'IN_STOCK'))
     : product.stockStatus === 'IN_STOCK';
 
   const handleAddToCart = async () => {
     setCartError('');
 
-    if (isVariable && !selectedVariation) {
-      setCartError('Please select an option before adding to cart.');
+    if (isVariable && !resolvedVariation) {
+      setCartError('Please select a dose before adding to cart.');
       return;
     }
 
@@ -83,7 +126,7 @@ export default function ProductPage() {
     const result = await addToCart(
       product.databaseId,
       qty,
-      selectedVariation?.databaseId || null
+      resolvedVariation?.databaseId || null
     );
     setAddingToCart(false);
 
@@ -185,11 +228,17 @@ export default function ProductPage() {
 
             {/* Price */}
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' }}>
-              <span style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', fontWeight: 900, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
-                dangerouslySetInnerHTML={{ __html: price || 'Contact for price' }} />
-              {product.regularPrice && product.salePrice && (
-                <span style={{ color: 'var(--text-muted)', fontSize: '1rem', textDecoration: 'line-through' }}
-                  dangerouslySetInnerHTML={{ __html: product.regularPrice }} />
+              <span style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', fontWeight: 900, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+                {Number.isFinite(unitPrice) ? money(unitPrice) : 'Contact for price'}
+              </span>
+              {isVariable && <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>/ unit</span>}
+              {savePct > 0 && Number.isFinite(basePrice) && (
+                <span style={{ color: 'var(--text-muted)', fontSize: '1rem', textDecoration: 'line-through' }}>{money(basePrice)}</span>
+              )}
+              {savePct > 0 && (
+                <span style={{ padding: '3px 10px', background: 'rgba(52,211,153,0.14)', border: '1px solid rgba(52,211,153,0.35)', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 700, color: '#34d399' }}>
+                  Save {savePct}%
+                </span>
               )}
               <span style={{ padding: '3px 10px', background: inStock ? 'rgba(52,211,153,0.12)' : 'rgba(239,68,68,0.12)', border: `1px solid ${inStock ? 'rgba(52,211,153,0.3)' : 'rgba(239,68,68,0.3)'}`, borderRadius: '999px', fontSize: '0.72rem', fontWeight: 600, color: inStock ? '#34d399' : '#f87171' }}>
                 {inStock ? 'In Stock' : 'Out of Stock'}
@@ -201,28 +250,31 @@ export default function ProductPage() {
                 dangerouslySetInnerHTML={{ __html: product.shortDescription }} />
             )}
 
-            {/* Variation selector */}
-            {isVariable && variations.length > 0 && (
+            {/* Dose selector */}
+            {isVariable && hasDoses && (
               <div>
                 <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                  Select Option
+                  Dose
                 </label>
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                  {variations.map(v => (
-                    <button key={v.id} onClick={() => setSelectedVariation(v)} style={{
-                      padding: '8px 16px',
-                      background: selectedVariation?.id === v.id ? 'var(--gradient-primary)' : 'var(--card-dark)',
-                      border: `1px solid ${selectedVariation?.id === v.id ? 'transparent' : 'var(--glass-border)'}`,
-                      borderRadius: '8px',
-                      color: selectedVariation?.id === v.id ? '#fff' : 'var(--text-light)',
-                      fontWeight: 500, fontSize: '0.85rem', cursor: 'pointer',
-                      fontFamily: 'var(--font-body)',
-                      opacity: v.stockStatus !== 'IN_STOCK' ? 0.5 : 1,
-                    }}>
-                      {v.attributes?.nodes?.map(a => a.value).join(' / ')}
-                      {v.stockStatus !== 'IN_STOCK' && ' (Out of Stock)'}
-                    </button>
-                  ))}
+                  {doses.map(d => {
+                    const ok = doseInStock(d);
+                    const active = effectiveDose === d;
+                    return (
+                      <button key={d} onClick={() => ok && setSelectedDose(d)} disabled={!ok} style={{
+                        padding: '9px 18px',
+                        background: active ? 'var(--gradient-primary)' : 'var(--card-dark)',
+                        border: `1px solid ${active ? 'transparent' : 'var(--glass-border)'}`,
+                        borderRadius: '8px',
+                        color: active ? '#001018' : 'var(--text-light)',
+                        fontWeight: 700, fontSize: '0.9rem', cursor: ok ? 'pointer' : 'not-allowed',
+                        fontFamily: 'var(--font-body)',
+                        opacity: ok ? 1 : 0.45,
+                      }}>
+                        {d}{!ok && ' · Out'}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -268,6 +320,37 @@ export default function ProductPage() {
                   <Plus size={14} />
                 </button>
               </div>
+
+              {/* Volume tiers — click to jump quantity; discount deepens automatically */}
+              {hasTiers && (
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '12px' }}>
+                  {[{ n: 1, label: '1 unit', off: 'Standard' }, { n: 2, label: '2 units', off: 'Save 2.5%' }, { n: 3, label: '3+ units', off: 'Save 5%' }].map(t => {
+                    const active = t.n === 3 ? qty >= 3 : qty === t.n;
+                    return (
+                      <button key={t.n} onClick={() => setQty(t.n)} style={{
+                        padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', minWidth: 78,
+                        background: active ? 'rgba(0,207,255,0.12)' : 'var(--card-dark)',
+                        border: `1px solid ${active ? 'var(--primary-blue)' : 'var(--glass-border)'}`,
+                        color: active ? 'var(--primary-blue)' : 'var(--text-secondary)',
+                        fontFamily: 'var(--font-body)', fontWeight: 600,
+                        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px',
+                      }}>
+                        <span style={{ fontSize: '0.8rem' }}>{t.label}</span>
+                        <span style={{ fontSize: '0.7rem', opacity: 0.9 }}>{t.off}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Running total */}
+              {Number.isFinite(totalPrice) && totalPrice > 0 && (
+                <div style={{ marginTop: '12px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                  Total:{' '}
+                  <strong style={{ color: 'var(--text-light)', fontSize: '1.05rem' }}>{money(totalPrice)}</strong>
+                  {qty > 1 && <span style={{ color: 'var(--text-muted)' }}> ({qty} × {money(unitPrice)})</span>}
+                </div>
+              )}
             </div>
 
             {/* Cart error */}
@@ -280,7 +363,7 @@ export default function ProductPage() {
             {/* Add to cart + wishlist */}
             <div style={{ display: 'flex', gap: '12px' }}>
               <button onClick={handleAddToCart}
-                disabled={!inStock || addingToCart || (isVariable && !selectedVariation)}
+                disabled={!inStock || addingToCart || (isVariable && !resolvedVariation)}
                 style={{
                   flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
                   padding: '14px 24px',
@@ -288,10 +371,10 @@ export default function ProductPage() {
                   border: addedToCart ? '1px solid rgba(52,211,153,0.4)' : 'none',
                   borderRadius: '10px',
                   color: addedToCart ? '#34d399' : '#fff',
-                  fontWeight: 700, fontSize: '0.95rem', cursor: (!inStock || (isVariable && !selectedVariation)) ? 'not-allowed' : 'pointer',
+                  fontWeight: 700, fontSize: '0.95rem', cursor: (!inStock || (isVariable && !resolvedVariation)) ? 'not-allowed' : 'pointer',
                   fontFamily: 'var(--font-body)',
                   boxShadow: addedToCart ? 'none' : 'var(--glow-blue)',
-                  opacity: (!inStock || (isVariable && !selectedVariation)) ? 0.6 : 1,
+                  opacity: (!inStock || (isVariable && !resolvedVariation)) ? 0.6 : 1,
                   transition: 'all 0.2s ease',
                 }}>
                 {addedToCart ? (
