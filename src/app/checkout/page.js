@@ -222,6 +222,15 @@ export default function CheckoutPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '14px' }}>
               {/* ── Fixed subtotal ── */}
               <SummaryRow label="Subtotal" htmlValue={cartSubtotal} />
+              {(cart?.appliedCoupons || []).map((c) => (
+                <SummaryRow
+                  key={c.code}
+                  label={`Coupon: ${(c.code || '').toUpperCase()}`}
+                  htmlValue={c.discountAmount ? `- ${c.discountAmount}` : null}
+                  value={c.discountAmount ? undefined : 'Applied'}
+                  valueColor="#34d399"
+                />
+              ))}
               
             </div>
 

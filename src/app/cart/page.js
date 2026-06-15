@@ -163,6 +163,21 @@ export default function CartPage() {
               <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 800, marginBottom: '20px' }}>Order Summary</h2>
 
             
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <SummaryRow label="Subtotal" rawValue={cartSubtotal} />
+
+                {appliedCoupons.map((c) => (
+                  <SummaryRow
+                    key={c.code}
+                    label={`Coupon: ${(c.code || '').toUpperCase()}`}
+                    rawValue={c.discountAmount ? `- ${c.discountAmount}` : null}
+                    value={c.discountAmount ? undefined : 'Applied'}
+                    valueColor="#34d399"
+                    onRemove={() => removeCoupon(c.code)}
+                  />
+                ))}
+              </div>
+
               <div style={{ height: 1, background: 'var(--glass-border)', margin: '14px 0' }} />
 
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
