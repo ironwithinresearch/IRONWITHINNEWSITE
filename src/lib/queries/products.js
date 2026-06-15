@@ -2,13 +2,14 @@
 import { gql } from '@apollo/client';
 
 export const GET_PRODUCTS = gql`
-  query GetProducts($first: Int, $after: String, $category: String, $search: String) {
+  query GetProducts($first: Int, $after: String, $category: String, $search: String, $slugIn: [String]) {
     products(
       first: $first
       after: $after
       where: {
         category: $category
         search: $search
+        slugIn: $slugIn
       }
     ) {
       pageInfo {

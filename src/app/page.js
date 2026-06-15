@@ -52,12 +52,19 @@ function FeaturedProducts() {
   const { addToWishlist, removeFromWishlist, isWishlisted } = useWishlist();
   const [addedItems, setAddedItems] = useState({});
 
+  // Curated "Top Research Compounds" — pinned, in this exact order
+  const FEATURED_SLUGS = ['rt-3', 'mots-c', 'cjc-ipa', 'glow-bundle'];
+
   const { data, loading } = useQuery(GET_PRODUCTS, {
-    variables: { first: 4 },
+    variables: { first: FEATURED_SLUGS.length, slugIn: FEATURED_SLUGS },
     fetchPolicy: 'cache-and-network',
   });
 
-  const products = data?.products?.nodes || [];
+  // Backend ignores slugIn order, so reorder to match FEATURED_SLUGS
+  const fetched = data?.products?.nodes || [];
+  const products = FEATURED_SLUGS
+    .map(slug => fetched.find(p => p.slug === slug))
+    .filter(Boolean);
 
   const handleAddToCart = async (product) => {
     if (product.__typename === 'VariableProduct') return; // redirect to product page
