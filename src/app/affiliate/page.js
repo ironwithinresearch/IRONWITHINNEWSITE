@@ -12,7 +12,7 @@ const benefits = [
     Icon: DollarSign,
     color: '#34d399',
     title: 'Competitive Commission',
-    desc: 'Earn generous commissions on every sale you refer. Payments are processed automatically each month.',
+    desc: 'Earn generous commissions on every sale you refer. Payments are processed automatically each week.',
   },
   {
     Icon: BarChart3,
@@ -56,7 +56,7 @@ const steps = [
 const faqs = [
   { q: 'Who can apply to the affiliate program?', a: 'Anyone with a website, blog, social media account, or email list relevant to research, health, fitness, or biohacking is welcome to apply.' },
   { q: 'How are commissions calculated?', a: 'Commissions are calculated as a percentage of the order subtotal (excluding shipping and taxes). The exact rate is displayed in your affiliate dashboard after approval.' },
-  { q: 'When do I get paid?', a: 'Affiliate payouts are processed monthly once you reach the minimum payout threshold. Payment methods include PayPal, bank transfer, and crypto.' },
+  { q: 'When do I get paid?', a: 'Affiliate payouts are processed weekly once you reach the minimum payout threshold. Payment methods include PayPal, bank transfer, and crypto.' },
   { q: 'Is there a cost to join?', a: 'No — joining the Iron Within Research affiliate program is completely free.' },
 ];
 
@@ -171,7 +171,7 @@ export default function AffiliatePage() {
             {[
               { Icon: ShieldCheck, label: 'Free to Join' },
               { Icon: Star, label: 'Fast Approval' },
-              { Icon: DollarSign, label: 'Monthly Payouts' },
+              { Icon: DollarSign, label: 'Weekly Payouts' },
             ].map(({ Icon, label }) => (
               <span key={label} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
                 <Icon size={13} color="var(--primary-blue)" /> {label}
