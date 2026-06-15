@@ -56,7 +56,7 @@ const steps = [
 const faqs = [
   { q: 'Who can apply to the affiliate program?', a: 'Anyone with a website, blog, social media account, or email list relevant to research, health, fitness, or biohacking is welcome to apply.' },
   { q: 'How are commissions calculated?', a: 'Commissions are calculated as a percentage of the order subtotal (excluding shipping and taxes). The exact rate is displayed in your affiliate dashboard after approval.' },
-  { q: 'When do I get paid?', a: 'Affiliate payouts are processed weekly once you reach the minimum payout threshold. Payment methods include PayPal, bank transfer, and crypto.' },
+  { q: 'When do I get paid?', a: 'Affiliate payouts are processed weekly via Everee once you reach the minimum payout threshold. Paying through Everee lets us properly issue your 1099 for tax purposes.' },
   { q: 'Is there a cost to join?', a: 'No — joining the Iron Within Research affiliate program is completely free.' },
 ];
 
