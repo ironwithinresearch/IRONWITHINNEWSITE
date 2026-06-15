@@ -15,7 +15,7 @@ import {
   Info, Loader2,
 } from 'lucide-react';
  
-const steps = ['Shipping', 'Payment', 'Review'];
+const steps = ['Shipping', 'Review'];
 
 // Helper: strip all HTML from price for plain text use (e.g. button label)
 function plainPrice(price) {
@@ -159,36 +159,12 @@ export default function CheckoutPage() {
                   <div style={{ height: 18 }} />
                   <Disclaimer />
                   <div style={{ height: 18 }} />
-                  <SubmitBtn>Continue to Payment <ArrowRight size={16} /></SubmitBtn>
+                  <SubmitBtn>Continue to Review <ArrowRight size={16} /></SubmitBtn>
                 </form>
               </FormCard>
             )}
 
             {currentStep === 1 && (
-              <FormCard icon={<CreditCard size={17} color="var(--primary-blue)" />} title="Payment Details">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', background: 'rgba(52,211,153,0.06)', border: '1px solid rgba(52,211,153,0.2)', borderRadius: '10px', marginBottom: '20px' }}>
-                  <Lock size={13} color="#34d399" />
-                  <span style={{ fontSize: '0.8rem', color: '#34d399' }}>256-bit SSL encrypted · Card info never stored</span>
-                </div>
-                <form onSubmit={e => { e.preventDefault(); setCurrentStep(2); }}>
-                  <Field label="Cardholder Name *" value={payment.cardName} onChange={v => setPayment(p => ({ ...p, cardName: v }))} placeholder="John Doe" required />
-                  <div style={{ height: 14 }} />
-                  <Field label="Card Number *" value={payment.cardNumber} onChange={v => setPayment(p => ({ ...p, cardNumber: v }))} placeholder="1234 5678 9012 3456" required maxLength={19} />
-                  <div style={{ height: 14 }} />
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
-                    <Field label="Expiry *" value={payment.expiry} onChange={v => setPayment(p => ({ ...p, expiry: v }))} placeholder="MM / YY" required />
-                    <Field label="CVV *" type="password" value={payment.cvv} onChange={v => setPayment(p => ({ ...p, cvv: v }))} placeholder="•••" required maxLength={4} />
-                  </div>
-                  <div style={{ height: 18 }} />
-                  <div style={{ display: 'flex', gap: '10px' }}>
-                    <button type="button" onClick={() => setCurrentStep(0)} style={{ flex: 1, padding: '12px', background: 'none', border: '1px solid var(--glass-border)', borderRadius: '10px', color: 'var(--text-secondary)', cursor: 'pointer', fontFamily: 'var(--font-body)' }}>← Back</button>
-                    <SubmitBtn style={{ flex: 2 }}>Review Order <ArrowRight size={15} /></SubmitBtn>
-                  </div>
-                </form>
-              </FormCard>
-            )}
-
-            {currentStep === 2 && (
               <FormCard icon={<CheckCircle2 size={17} color="#34d399" />} title="Review Your Order">
                 <ReviewBlock title="Shipping Address" onEdit={() => setCurrentStep(0)}>
                   <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
@@ -198,9 +174,9 @@ export default function CheckoutPage() {
                     {shipping.email}
                   </p>
                 </ReviewBlock>
-                <ReviewBlock title="Payment" onEdit={() => setCurrentStep(1)}>
+                <ReviewBlock title="Payment">
                   <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                    Card ending in {payment.cardNumber.slice(-4) || '****'}
+                    Secure card payment — you&apos;ll enter your card on our encrypted payment page after placing the order.
                   </p>
                 </ReviewBlock>
                 <button onClick={handlePlaceOrder} disabled={placingOrder}
@@ -209,7 +185,7 @@ export default function CheckoutPage() {
                     <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Placing Order…</>
                   ) : (
                     // ── Fixed: use plainPrice() so no &nbsp; shows in button ──
-                    <><Lock size={15} /> Place Order — {plainPrice(cartTotal)}</>
+                    <><Lock size={15} /> Continue to Secure Payment — {plainPrice(cartTotal)}</>
                   )}
                 </button>
               </FormCard>
