@@ -28,7 +28,7 @@ export default function ShopPage() {
 
   const { data, loading, error } = useQuery(GET_PRODUCTS, {
     variables: {
-      first: 24,
+      first: 100,
       category: activeCategory || undefined,
       search: search || undefined,
     },
