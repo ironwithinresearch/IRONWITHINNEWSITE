@@ -45,6 +45,11 @@ export default function CheckoutPage() {
   const [checkoutMutation, { loading: placingOrder }] = useMutation(CHECKOUT, {
     onCompleted: (data) => {
       const result = data?.checkout;
+      // Clean-rail gateway returns a redirect to the secure payment page.
+      if (result?.redirect) {
+        window.location.href = result.redirect;
+        return;
+      }
       if (result?.result === 'success' || result?.order) {
         setOrderNumber(result.order?.orderNumber || result.order?.id || '');
         setOrderPlaced(true);
@@ -62,6 +67,7 @@ export default function CheckoutPage() {
       billing: { ...billingInfo, email: shipping.email },
       shipping,
       transactionId: '',
+      paymentMethod: 'iwr_rail',
     });
     checkoutMutation({ variables: input });
   };
