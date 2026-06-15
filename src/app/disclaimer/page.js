@@ -14,7 +14,7 @@ const sections = [
     icon: FlaskConical,
     title: 'Research Use Only',
     content:
-      'All products offered by Darryl Peptides are intended exclusively for laboratory research and scientific investigation. Products are not intended for human consumption, medical use, veterinary use, or therapeutic applications.',
+      'All products offered by Iron Within Research are intended exclusively for laboratory research and scientific investigation. Products are not intended for human consumption, medical use, veterinary use, or therapeutic applications.',
   },
   {
     icon: ShieldAlert,
@@ -38,7 +38,7 @@ const sections = [
     icon: Scale,
     title: 'Limitation of Liability',
     content:
-      'Darryl Peptides shall not be liable for any direct, indirect, incidental, consequential, special, or punitive damages arising from the use, misuse, handling, storage, transportation, or application of products purchased through this website.',
+      'Iron Within Research shall not be liable for any direct, indirect, incidental, consequential, special, or punitive damages arising from the use, misuse, handling, storage, transportation, or application of products purchased through this website.',
   },
   {
     icon: ExternalLink,
@@ -130,7 +130,7 @@ export default function DisclaimerPage() {
                 >
                   The statements made on this website have not been
                   evaluated by the Food and Drug Administration (FDA).
-                  Products offered by Darryl Peptides are intended solely
+                  Products offered by Iron Within Research are intended solely
                   for research purposes and are not intended to diagnose,
                   treat, cure, or prevent any disease.
                 </p>
@@ -235,7 +235,7 @@ export default function DisclaimerPage() {
                   lineHeight: 1.8,
                 }}
               >
-                By purchasing products from Darryl Peptides, customers
+                By purchasing products from Iron Within Research, customers
                 acknowledge that they possess the necessary knowledge,
                 expertise, facilities, and qualifications required for
                 handling laboratory research compounds and assume all

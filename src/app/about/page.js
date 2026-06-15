@@ -75,7 +75,7 @@ const team = [
 ];
 
 const milestones = [
-  { year: '2012', event: 'Darryl Peptides founded in San Diego, CA with a focus on BPC-157 research.' },
+  { year: '2012', event: 'Iron Within Research founded in San Diego, CA with a focus on BPC-157 research.' },
   { year: '2015', event: 'Expanded catalogue to 50+ compounds. Established first third-party lab partnership.' },
   { year: '2018', event: 'Reached 10,000 researchers served. Launched international shipping to 25 countries.' },
   { year: '2020', event: 'ISO-certified manufacturing facility opened. Purity standards raised to ≥99%.' },
@@ -156,7 +156,7 @@ export default function AboutPage() {
             lineHeight: 1.8, marginBottom: '36px',
             maxWidth: '600px', margin: '0 auto 36px',
           }}>
-            Since 2012, Darryl Peptides has been the trusted source for pharmaceutical-grade
+            Since 2012, Iron Within Research has been the trusted source for pharmaceutical-grade
             research peptides — built on transparency, purity, and an unwavering commitment
             to the scientific community.
           </p>

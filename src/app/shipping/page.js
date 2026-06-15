@@ -267,7 +267,7 @@ export default function ShippingPage() {
                   lineHeight: 1.8,
                 }}
               >
-                Darryl Peptides reserves the right to refuse shipment to
+                Iron Within Research reserves the right to refuse shipment to
                 locations where applicable laws, regulations, or restrictions
                 prohibit the delivery of research compounds.
               </p>

@@ -6,12 +6,12 @@ const sections = [
   {
     title: 'Acceptance of Terms',
     content:
-      'By accessing and using the Darryl Peptides website, you agree to comply with and be bound by these Terms & Conditions. If you do not agree with any part of these terms, you should discontinue use of the website immediately.',
+      'By accessing and using the Iron Within Research website, you agree to comply with and be bound by these Terms & Conditions. If you do not agree with any part of these terms, you should discontinue use of the website immediately.',
   },
   {
     title: 'Research Use Only',
     content:
-      'All products sold by Darryl Peptides are intended solely for laboratory and research purposes. Products are not intended for human consumption, medical use, veterinary use, diagnosis, treatment, or prevention of any disease.',
+      'All products sold by Iron Within Research are intended solely for laboratory and research purposes. Products are not intended for human consumption, medical use, veterinary use, diagnosis, treatment, or prevention of any disease.',
   },
   {
     title: 'Eligibility',
@@ -41,12 +41,12 @@ const sections = [
   {
     title: 'Limitation of Liability',
     content:
-      'Darryl Peptides shall not be liable for any indirect, incidental, consequential, or special damages arising from the use of our products or website.',
+      'Iron Within Research shall not be liable for any indirect, incidental, consequential, or special damages arising from the use of our products or website.',
   },
   {
     title: 'Intellectual Property',
     content:
-      'All content on this website, including logos, graphics, text, and designs, is the property of Darryl Peptides and may not be reproduced without permission.',
+      'All content on this website, including logos, graphics, text, and designs, is the property of Iron Within Research and may not be reproduced without permission.',
   },
   {
     title: 'Changes to Terms',
