@@ -4,7 +4,7 @@
    The navbar (top: 36) and main padding are offset to match. */
 
 const MESSAGES = [
-  '🏷️  Site-wide sale — 15% off everything, no code needed',
+  "🏷️  Father's Day Sale — 15% off everything, no code needed",
   '🔬  Certificate of Analysis available for every product',
   '🧪  Research-grade peptides, independently lab-tested',
 ];
