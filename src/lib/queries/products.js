@@ -33,14 +33,18 @@ export const GET_PRODUCTS = gql`
           price
           salePrice
           regularPrice
+          onSale
           stockStatus
         }
         ... on VariableProduct {
           price
+          regularPrice
+          onSale
           variations(first: 100) {
             nodes {
               id
               price
+              regularPrice
               stockStatus
             }
           }
@@ -90,11 +94,14 @@ export const GET_PRODUCT = gql`
         price
         salePrice
         regularPrice
+        onSale
         stockStatus
         stockQuantity
       }
       ... on VariableProduct {
         price
+        regularPrice
+        onSale
         attributes {
           nodes {
             name
@@ -109,6 +116,7 @@ export const GET_PRODUCT = gql`
             name
             price
             salePrice
+            regularPrice
             stockStatus
             stockQuantity
             image { sourceUrl }

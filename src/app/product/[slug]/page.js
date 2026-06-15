@@ -134,6 +134,11 @@ export default function ProductPage() {
   const totalPrice = (Number.isFinite(unitPrice) ? unitPrice : 0) * qty;
   const savePct = (Number.isFinite(basePrice) && Number.isFinite(unitPrice) && basePrice > unitPrice + 0.001)
     ? Math.round((1 - unitPrice / basePrice) * 100) : 0;
+  // Regular (pre-sale) unit price, to show struck-through when on a site-wide sale
+  const regularUnit = isVariable
+    ? parseNum(resolvedVariation?.regularPrice)
+    : parseNum(product.regularPrice);
+  const onSale = !!product.onSale && Number.isFinite(regularUnit) && regularUnit > unitPrice + 0.001;
 
   const inStock = isVariable
     ? (resolvedVariation ? resolvedVariation.stockStatus === 'IN_STOCK' : variations.some(v => v.stockStatus === 'IN_STOCK'))
@@ -261,8 +266,8 @@ export default function ProductPage() {
                 {Number.isFinite(unitPrice) ? money(unitPrice) : 'Contact for price'}
               </span>
               {isVariable && <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>/ unit</span>}
-              {savePct > 0 && Number.isFinite(basePrice) && (
-                <span style={{ color: 'var(--text-muted)', fontSize: '1rem', textDecoration: 'line-through' }}>{money(basePrice)}</span>
+              {onSale && (
+                <span style={{ color: 'var(--text-muted)', fontSize: '1rem', textDecoration: 'line-through' }}>{money(regularUnit)}</span>
               )}
               {savePct > 0 && (
                 <span style={{ padding: '3px 10px', background: 'rgba(52,211,153,0.14)', border: '1px solid rgba(52,211,153,0.35)', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 700, color: '#34d399' }}>

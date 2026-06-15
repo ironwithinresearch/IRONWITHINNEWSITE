@@ -136,8 +136,14 @@ function FeaturedProducts() {
               )}
 
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto', gap: '10px' }}>
-                <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 900, fontSize: '1.1rem', background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
-                  dangerouslySetInnerHTML={{ __html: decodePriceHtml(product.price) || 'View' }} />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
+                  {product.onSale && product.regularPrice && (
+                    <span style={{ fontSize: '0.74rem', fontWeight: 600, color: 'var(--text-muted)', textDecoration: 'line-through' }}
+                      dangerouslySetInnerHTML={{ __html: decodePriceHtml(product.regularPrice) }} />
+                  )}
+                  <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 900, fontSize: '1.1rem', background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+                    dangerouslySetInnerHTML={{ __html: decodePriceHtml(product.price) || 'View' }} />
+                </div>
 
                 {isVariable ? (
                   <Link href={`/product/${product.slug}`} style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '8px 14px', background: 'var(--gradient-primary)', borderRadius: '8px', color: '#fff', fontWeight: 600, fontSize: '0.8rem', textDecoration: 'none', fontFamily: 'var(--font-body)' }}>
