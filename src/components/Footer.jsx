@@ -11,8 +11,6 @@ const footerLinks = {
     { label: 'Best Sellers', href: '/shop' },
   ],
   Company: [
-    { label: 'About Us', href: '/about' },
-    { label: 'Blog', href: '/blog' },
     { label: 'Contact', href: '/contact' },
     { label: 'Affiliates', href: '/affiliate' },
   ],
