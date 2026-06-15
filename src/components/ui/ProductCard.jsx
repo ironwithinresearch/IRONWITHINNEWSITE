@@ -101,7 +101,7 @@ export default function ProductCard({ product, variant = 'default' }) {
           background: 'var(--glass-bg)',
           border: '1px solid var(--glass-border)',
           borderRadius: '50%',
-          color: 'var(--text-muted)',
+          color: 'var(--pink)',
           cursor: 'pointer',
           transition: 'all var(--transition-fast)',
         }}
@@ -111,7 +111,7 @@ export default function ProductCard({ product, variant = 'default' }) {
             e.currentTarget.style.background = 'rgba(236,72,153,0.1)';
           }}
           onMouseLeave={e => {
-            e.currentTarget.style.color = 'var(--text-muted)';
+            e.currentTarget.style.color = 'var(--pink)';
             e.currentTarget.style.borderColor = 'var(--glass-border)';
             e.currentTarget.style.background = 'var(--glass-bg)';
           }}
