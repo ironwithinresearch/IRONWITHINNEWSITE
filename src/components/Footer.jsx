@@ -47,7 +47,7 @@ export default function Footer() {
         {/* ── Top: Brand + Links ── */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: '1.4fr repeat(4, 1fr)',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
           gap: '40px',
           marginBottom: '48px',
         }}>
