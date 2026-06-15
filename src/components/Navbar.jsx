@@ -103,7 +103,7 @@ export default function Navbar() {
             <div style={{ width: 34, height: 34, borderRadius: 'var(--radius-md)', background: 'var(--gradient-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'var(--glow-blue)', flexShrink: 0 }}>
               <FlaskConical size={17} color="#fff" />
             </div>
-            <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '0.95rem', letterSpacing: '-0.01em', color: 'var(--text-light)', display: 'none' }} className="logo-text">
+            <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '0.95rem', letterSpacing: '-0.01em', background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', display: 'none' }} className="logo-text">
               Iron Within Research
             </span>
           </Link>
