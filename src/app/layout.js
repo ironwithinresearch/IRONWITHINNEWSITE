@@ -3,6 +3,7 @@ import AnnouncementBar from "../components/AnnouncementBar";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import AgeVerification from "../components/AgeVerification";
+import AffiliateTracker from "../components/AffiliateTracker";
 import ApolloWrapper from "../lib/ApolloWrapper";
 
 export default function RootLayout({ children }) {
@@ -10,6 +11,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <ApolloWrapper>
+          <AffiliateTracker />
           <AgeVerification />
           <AnnouncementBar />
           <Navbar />

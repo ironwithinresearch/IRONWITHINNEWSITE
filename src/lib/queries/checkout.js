@@ -44,7 +44,7 @@ export const CHECKOUT = gql`
 // Build the checkout input object for the mutation
 // paymentMethod: 'cod' for Cash on Delivery (no Stripe needed to test)
 // paymentMethod: 'stripe' when Stripe is integrated
-export function buildCheckoutInput({ billing, shipping, transactionId = '', paymentMethod = 'cod', customerNote = '' }) {
+export function buildCheckoutInput({ billing, shipping, transactionId = '', paymentMethod = 'cod', customerNote = '', affiliateRef = '' }) {
   const billingAddress = {
     firstName: billing.firstName || '',
     lastName: billing.lastName || '',
@@ -69,12 +69,20 @@ export function buildCheckoutInput({ billing, shipping, transactionId = '', paym
     country: shipping.country || 'US',
   };
 
+  // Stamp the GoAffPro affiliate referral onto the order so GoAffPro's
+  // WooCommerce sync can attribute the commission server-side (cross-domain
+  // JS conversion tracking isn't reliable here — storefront vs. rail).
+  const metaData = affiliateRef
+    ? [{ key: 'goaffpro_ref', value: String(affiliateRef) }]
+    : undefined;
+
   return {
     input: {
       paymentMethod,
       isPaid: paymentMethod === 'stripe' && !!transactionId,
       transactionId: transactionId || undefined,
       customerNote,
+      ...(metaData ? { metaData } : {}),
       billing: billingAddress,
       shipping: shippingAddress,
       shipToDifferentAddress: false,

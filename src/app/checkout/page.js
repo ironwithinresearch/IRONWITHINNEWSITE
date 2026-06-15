@@ -9,6 +9,7 @@ import { CHECKOUT, buildCheckoutInput } from '../../lib/queries/checkout';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { decodePriceHtml } from '../../lib/utils';
+import { getAffiliateRef } from '../../lib/affiliate';
 import {
   ShieldCheck, CreditCard, Truck, ChevronRight,
   Lock, CheckCircle2, Package, ArrowRight,
@@ -68,6 +69,7 @@ export default function CheckoutPage() {
       shipping,
       transactionId: '',
       paymentMethod: 'iwr_rail',
+      affiliateRef: getAffiliateRef(),
     });
     checkoutMutation({ variables: input });
   };
