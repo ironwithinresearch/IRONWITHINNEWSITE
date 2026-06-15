@@ -159,9 +159,9 @@ export default function ShopPage() {
                     <button
                       onClick={(e) => handleWishlist(e, product)}
                       title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-                      style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 2, width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', background: wishlisted ? 'rgba(236,72,153,0.15)' : 'rgba(5,7,18,0.55)', border: `1px solid ${wishlisted ? 'rgba(236,72,153,0.5)' : 'var(--glass-border)'}`, borderRadius: '8px', color: wishlisted ? 'var(--pink, #ec4899)' : 'var(--text-muted)', cursor: 'pointer', backdropFilter: 'blur(8px)', transition: 'all 0.15s ease' }}
+                      style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 2, width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', background: wishlisted ? 'rgba(236,72,153,0.15)' : 'rgba(5,7,18,0.55)', border: `1px solid ${wishlisted ? 'rgba(236,72,153,0.5)' : 'var(--glass-border)'}`, borderRadius: '8px', color: wishlisted ? 'var(--pink, #ec4899)' : '#ec4899', cursor: 'pointer', backdropFilter: 'blur(8px)', transition: 'all 0.15s ease' }}
                       onMouseEnter={e => { e.currentTarget.style.background = 'rgba(236,72,153,0.15)'; e.currentTarget.style.borderColor = 'rgba(236,72,153,0.5)'; e.currentTarget.style.color = '#ec4899'; }}
-                      onMouseLeave={e => { if (!wishlisted) { e.currentTarget.style.background = 'rgba(5,7,18,0.55)'; e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.color = 'var(--text-muted)'; } }}>
+                      onMouseLeave={e => { if (!wishlisted) { e.currentTarget.style.background = 'rgba(5,7,18,0.55)'; e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.color = '#ec4899'; } }}>
                       <Heart size={14} fill={wishlisted ? 'currentColor' : 'none'} />
                     </button>
 

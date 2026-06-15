@@ -93,7 +93,7 @@ function FeaturedProducts() {
 
             {/* Wishlist button */}
             <button onClick={() => wishlisted ? removeFromWishlist(product.id) : addToWishlist(product)}
-              style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 2, width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--glass-bg)', border: `1px solid ${wishlisted ? 'rgba(236,72,153,0.4)' : 'var(--glass-border)'}`, borderRadius: '8px', color: wishlisted ? 'var(--pink)' : 'var(--text-muted)', cursor: 'pointer', backdropFilter: 'blur(8px)' }}>
+              style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 2, width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--glass-bg)', border: `1px solid ${wishlisted ? 'rgba(236,72,153,0.4)' : 'var(--glass-border)'}`, borderRadius: '8px', color: wishlisted ? 'var(--pink)' : '#ec4899', cursor: 'pointer', backdropFilter: 'blur(8px)' }}>
               <Heart size={14} fill={wishlisted ? 'currentColor' : 'none'} />
             </button>
 
