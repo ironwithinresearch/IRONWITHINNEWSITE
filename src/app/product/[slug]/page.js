@@ -109,12 +109,28 @@ export default function ProductPage() {
     return ps[idx];
   }
   const resolvedVariation = pickVariation(effectiveDose);
-  const baseVariation = isVariable
-    ? (pricedSorted(effectiveDose)[0] || resolvedVariation)
-    : null;
+  const doseTiers = isVariable ? pricedSorted(effectiveDose) : [];
+  // Two structures supported during migration:
+  //  • dose-only (1 variation/dose): volume discount applied by quantity here +
+  //    server-side by the IW Volume Pricing mu-plugin (2.5% @2, 5% @3+).
+  //  • legacy tiers (>1 variation/dose): discount is baked into the tier prices,
+  //    picked by price rank above.
+  const volPct = qty >= 3 ? 0.05 : qty >= 2 ? 0.025 : 0;
+  const isDoseOnly = isVariable && doseTiers.length <= 1;
 
-  const unitPrice = isVariable ? parseNum(resolvedVariation?.price) : parseNum(product.price);
-  const basePrice = isVariable ? parseNum(baseVariation?.price) : parseNum(product.regularPrice || product.price);
+  let unitPrice, basePrice;
+  if (!isVariable) {
+    unitPrice = parseNum(product.price);
+    basePrice = parseNum(product.regularPrice || product.price);
+  } else if (isDoseOnly) {
+    basePrice = parseNum(resolvedVariation?.price);
+    unitPrice = volPct > 0 && Number.isFinite(basePrice)
+      ? Math.round(basePrice * (1 - volPct) * 100) / 100
+      : basePrice;
+  } else {
+    unitPrice = parseNum(resolvedVariation?.price);
+    basePrice = parseNum(doseTiers[0]?.price);
+  }
   const totalPrice = (Number.isFinite(unitPrice) ? unitPrice : 0) * qty;
   const savePct = (Number.isFinite(basePrice) && Number.isFinite(unitPrice) && basePrice > unitPrice + 0.001)
     ? Math.round((1 - unitPrice / basePrice) * 100) : 0;
