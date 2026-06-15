@@ -173,12 +173,11 @@ export default function ShopPage() {
                         ) : (
                           <FlaskConical size={52} color="var(--primary-blue)" style={{ opacity: 0.25 }} />
                         )}
-                        {!inStock && (
+                        {!inStock ? (
                           <div style={{ position: 'absolute', top: '10px', left: '10px', padding: '3px 10px', background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '999px', fontSize: '0.68rem', fontWeight: 600, color: '#f87171' }}>Out of Stock</div>
-                        )}
-                        {isVariable && (
+                        ) : isVariable ? (
                           <div style={{ position: 'absolute', top: '10px', left: '10px', padding: '3px 10px', background: 'rgba(124,58,237,0.15)', border: '1px solid rgba(124,58,237,0.3)', borderRadius: '999px', fontSize: '0.68rem', fontWeight: 600, color: 'var(--purple)' }}>Options</div>
-                        )}
+                        ) : null}
                       </div>
                     </Link>
 
