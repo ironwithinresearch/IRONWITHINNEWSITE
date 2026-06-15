@@ -33,7 +33,7 @@ export default function AnnouncementBar() {
         {track.map((msg, i) => (
           <span
             key={i}
-            style={{ display: 'inline-flex', alignItems: 'center', padding: '0 34px', fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.01em' }}
+            style={{ display: 'inline-flex', alignItems: 'center', padding: '0 34px', fontSize: '0.92rem', fontWeight: 700, letterSpacing: '0.01em' }}
           >
             {msg}
           </span>
