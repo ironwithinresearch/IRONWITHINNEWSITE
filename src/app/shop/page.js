@@ -35,7 +35,9 @@ export default function ShopPage() {
     fetchPolicy: 'cache-and-network',
   });
 
-  const products = data?.products?.nodes || [];
+  const products = [...(data?.products?.nodes || [])].sort((a, b) =>
+    (a.name || '').localeCompare(b.name || '', undefined, { numeric: true, sensitivity: 'base' })
+  );
 
   const handleSearch = (e) => {
     e.preventDefault();
