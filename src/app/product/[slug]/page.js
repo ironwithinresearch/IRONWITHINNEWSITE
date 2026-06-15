@@ -458,8 +458,8 @@ export default function ProductPage() {
                     ['SKU', product.sku],
                     ['Category', product.productCategories?.nodes?.[0]?.name],
                     ['Type', isVariable ? 'Variable Product' : 'Simple Product'],
-                    ['Stock Status', product.stockStatus === 'IN_STOCK' ? 'In Stock' : 'Out of Stock'],
-                    ['Price', price],
+                    ['Stock Status', inStock ? (hasCount ? `${stockQty} in stock` : 'In Stock') : 'Out of Stock'],
+                    ['Price', Number.isFinite(unitPrice) ? money(unitPrice) : ''],
                   ].filter(([, v]) => v).map(([k, v]) => (
                     <tr key={k} style={{ borderBottom: '1px solid var(--glass-border)' }}>
                       <td style={{ padding: '12px 0', fontWeight: 600, color: 'var(--text-light)', width: '40%' }}>{k}</td>
