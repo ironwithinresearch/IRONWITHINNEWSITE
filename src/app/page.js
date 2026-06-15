@@ -177,6 +177,9 @@ export default function Home() {
             IRON WITHIN{' '}
             <span style={{ background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>RESEARCH</span>
           </h1>
+          <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '0.35em', color: 'var(--primary-blue)', textAlign: 'center', marginBottom: '24px' }}>
+            EST 2026
+          </div>
           <p style={{ fontSize: 'clamp(1rem, 2.5vw, 1.2rem)', color: 'var(--text-secondary)', maxWidth: '560px', margin: '0 auto 36px', lineHeight: 1.7 }}>
             Pharmaceutical-grade purity. Independently verified. Trusted by researchers and scientists across the globe.
           </p>
