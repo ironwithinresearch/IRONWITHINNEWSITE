@@ -109,6 +109,7 @@ export const GET_PRODUCT = gql`
             price
             salePrice
             stockStatus
+            stockQuantity
             image { sourceUrl }
             attributes {
               nodes { name value }

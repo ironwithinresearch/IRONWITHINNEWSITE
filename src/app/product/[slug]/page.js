@@ -139,6 +139,10 @@ export default function ProductPage() {
     ? (resolvedVariation ? resolvedVariation.stockStatus === 'IN_STOCK' : variations.some(v => v.stockStatus === 'IN_STOCK'))
     : product.stockStatus === 'IN_STOCK';
 
+  // Live vial count for the selected dose (null = untracked)
+  const stockQty = isVariable ? resolvedVariation?.stockQuantity : product.stockQuantity;
+  const hasCount = Number.isFinite(stockQty);
+
   const handleAddToCart = async () => {
     setCartError('');
 
@@ -266,7 +270,7 @@ export default function ProductPage() {
                 </span>
               )}
               <span style={{ padding: '3px 10px', background: inStock ? 'rgba(52,211,153,0.12)' : 'rgba(239,68,68,0.12)', border: `1px solid ${inStock ? 'rgba(52,211,153,0.3)' : 'rgba(239,68,68,0.3)'}`, borderRadius: '999px', fontSize: '0.72rem', fontWeight: 600, color: inStock ? '#34d399' : '#f87171' }}>
-                {inStock ? 'In Stock' : 'Out of Stock'}
+                {inStock ? (hasCount ? `${stockQty} in stock` : 'In Stock') : 'Out of Stock'}
               </span>
             </div>
 

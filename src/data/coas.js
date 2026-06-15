@@ -3,6 +3,7 @@
    survive the old ironwithinlabs.com store being retired). */
 
 export const coaBySlug = {
+  'ss-31': { coaFile: '/coas/ss-31.pdf', batchDate: '6/8/2026', productName: 'SS-31' },
   'thymosin-alpha-1': { coaFile: '/coas/thymosin-alpha-1.pdf', batchDate: '5/6/2026', productName: 'Thymosin Alpha 1' },
   'bpc-157': { coaFile: '/coas/bpc-157.pdf', batchDate: '4/16/2026', productName: 'BPC-157' },
   'dsip-10mg': { coaFile: '/coas/dsip-10mg.pdf', batchDate: '2/22/2026', productName: 'DSIP' },

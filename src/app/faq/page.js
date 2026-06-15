@@ -66,7 +66,7 @@ const faqs = [
   {
     category: 'shipping',
     q: 'How much does shipping cost?',
-    a: 'Domestic shipping is free on orders over $225. Below that, a flat shipping fee applies. International shipping rates are calculated at checkout based on weight and destination.',
+    a: 'A flat domestic shipping fee applies to all orders, calculated at checkout. International shipping rates are calculated at checkout based on weight and destination.',
   },
   {
     category: 'ordering',
