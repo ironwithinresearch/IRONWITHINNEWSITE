@@ -347,7 +347,7 @@ export default function ProductPage() {
               </div>
 
               {/* Volume tiers — click to jump quantity; discount deepens automatically */}
-              {hasTiers && (
+              {(hasTiers || isDoseOnly) && (
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '12px' }}>
                   {[{ n: 1, label: '1 unit', off: 'Standard' }, { n: 2, label: '2 units', off: 'Save 2.5%' }, { n: 3, label: '3+ units', off: 'Save 5%' }].map(t => {
                     const active = t.n === 3 ? qty >= 3 : qty === t.n;
