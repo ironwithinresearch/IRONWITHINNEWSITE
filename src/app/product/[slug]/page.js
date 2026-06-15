@@ -191,7 +191,7 @@ export default function ProductPage() {
         {/* Main layout */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
           gap: '48px', marginBottom: '64px', alignItems: 'start',
         }}>
 
