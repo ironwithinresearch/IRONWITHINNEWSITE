@@ -17,9 +17,15 @@ export async function POST(request) {
     if (website) {
       return NextResponse.json({ success: true });
     }
-    if (!email || !message || message.trim().length < 5) {
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email).trim())) {
       return NextResponse.json(
-        { success: false, error: 'Please enter a valid email and a short message.' },
+        { success: false, field: 'email', error: 'Please enter a valid email address.' },
+        { status: 400 }
+      );
+    }
+    if (!message || message.trim().length < 2) {
+      return NextResponse.json(
+        { success: false, field: 'message', error: 'Please enter a message.' },
         { status: 400 }
       );
     }

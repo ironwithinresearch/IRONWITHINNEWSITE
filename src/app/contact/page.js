@@ -31,8 +31,12 @@ export default function ContactPage() {
 
   const handleSend = async () => {
     setError('');
-    if (!email || !message.trim()) {
-      setError('Please enter your email and a message.');
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+    if (message.trim().length < 2) {
+      setError('Please enter a message.');
       return;
     }
     if (!captchaAnswer.trim()) {
