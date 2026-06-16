@@ -11,7 +11,7 @@ const WP_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://bhidasowgm.onro
 
 export async function POST(request) {
   try {
-    const { name = '', email = '', message = '', website = '' } = await request.json();
+    const { name = '', email = '', message = '', website = '', captcha_token = '', captcha_answer = '' } = await request.json();
 
     // Honeypot — bots fill the hidden field. Pretend success, send nothing.
     if (website) {
@@ -27,13 +27,13 @@ export async function POST(request) {
     const res = await fetch(`${WP_URL}/wp-json/iw/v1/contact`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, message }),
+      body: JSON.stringify({ name, email, message, captcha_token, captcha_answer }),
     });
 
     const data = await res.json().catch(() => ({}));
     if (!res.ok || !data.success) {
       return NextResponse.json(
-        { success: false, error: data.error || 'Message could not be sent. Please email support@ironwithin.io directly.' },
+        { success: false, captcha: !!data.captcha, error: data.error || 'Message could not be sent. Please email support@ironwithin.io directly.' },
         { status: res.status || 500 }
       );
     }
