@@ -1,7 +1,7 @@
 'use client';
 // src/app/checkout/page.js
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@apollo/client';
@@ -19,6 +19,16 @@ import {
  
 const steps = ['Shipping', 'Review'];
 
+// Payment methods. iwr_rail = card (via the rail). The rest are manual P2P
+// gateways (registered on the WooCommerce backend in iw-p2p-pay.php) — the order
+// is placed on-hold and the buyer is shown send-to instructions.
+const PAY_METHODS = [
+  { id: 'iwr_rail',    label: 'Credit / Debit Card', desc: 'Pay by card on our secure encrypted payment page.' },
+  { id: 'iwr_zelle',   label: 'Zelle',    handle: '8508980623' },
+  { id: 'iwr_venmo',   label: 'Venmo',    handle: '@iwrpay' },
+  { id: 'iwr_cashapp', label: 'Cash App', handle: '$ironwithinresearch' },
+];
+
 // Helper: strip all HTML from price for plain text use (e.g. button label)
 function plainPrice(price) {
   if (!price) return '';
@@ -33,6 +43,9 @@ export default function CheckoutPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
+  const [payMethod, setPayMethod] = useState('iwr_rail');
+  const [p2pInfo, setP2pInfo] = useState(null);
+  const payMethodRef = useRef('iwr_rail');
 
   const [shipping, setShipping] = useState({
     firstName: '', lastName: '', email: user?.email || '',
@@ -47,16 +60,26 @@ export default function CheckoutPage() {
   const [checkoutMutation, { loading: placingOrder }] = useMutation(CHECKOUT, {
     onCompleted: (data) => {
       const result = data?.checkout;
-      // Clean-rail gateway returns a redirect to the secure payment page.
-      if (result?.redirect) {
+      const method = payMethodRef.current;
+      // Card: clean-rail gateway returns a redirect to the secure payment page.
+      if (method === 'iwr_rail' && result?.redirect) {
         window.location.href = result.redirect;
         return;
       }
-      if (result?.result === 'success' || result?.order) {
-        setOrderNumber(result.order?.orderNumber || result.order?.id || '');
-        setOrderPlaced(true);
-        refetchCart();
+      // P2P (Zelle/Venmo/Cash App): order placed on-hold — show pay-to instructions.
+      const num = result?.order?.orderNumber || result?.order?.databaseId || '';
+      setOrderNumber(num);
+      if (method !== 'iwr_rail') {
+        const m = PAY_METHODS.find((x) => x.id === method);
+        setP2pInfo({
+          label: m?.label || 'P2P',
+          handle: m?.handle || '',
+          total: plainPrice(result?.order?.total || cartTotal),
+          orderNumber: num,
+        });
       }
+      setOrderPlaced(true);
+      refetchCart();
     },
     onError: (err) => {
       alert(`Checkout error: ${err.message}`);
@@ -64,12 +87,13 @@ export default function CheckoutPage() {
   });
 
   const handlePlaceOrder = () => {
+    payMethodRef.current = payMethod;
     const billingInfo = billing.sameAsShipping ? shipping : billing;
     const input = buildCheckoutInput({
       billing: { ...billingInfo, email: shipping.email },
       shipping,
       transactionId: '',
-      paymentMethod: 'iwr_rail',
+      paymentMethod: payMethod,
       affiliateRef: getAffiliateRef(),
     });
     checkoutMutation({ variables: input });
@@ -85,14 +109,34 @@ export default function CheckoutPage() {
             <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'rgba(52,211,153,0.15)', border: '2px solid rgba(52,211,153,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
               <CheckCircle2 size={40} color="#34d399" />
             </div>
-            <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '2rem', fontWeight: 900, marginBottom: '12px' }}>Order Confirmed!</h1>
+            <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '2rem', fontWeight: 900, marginBottom: '12px' }}>
+              {p2pInfo ? 'Order Placed!' : 'Order Confirmed!'}
+            </h1>
             <p style={{ color: 'var(--text-secondary)', marginBottom: '8px' }}>
-              Thank you for your order. Your research peptides are being prepared for shipment.
+              {p2pInfo
+                ? 'One more step — send your payment below. Your order ships as soon as payment is received.'
+                : 'Thank you for your order. Your research peptides are being prepared for shipment.'}
             </p>
             {orderNumber && (
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '32px' }}>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: p2pInfo ? '20px' : '32px' }}>
                 Order #{orderNumber} · Confirmation sent to {shipping.email}
               </p>
+            )}
+            {p2pInfo && (
+              <div style={{ textAlign: 'left', background: 'var(--bg-dark)', border: '1px solid var(--primary-blue)', borderRadius: '14px', padding: '20px', marginBottom: '28px' }}>
+                <p style={{ fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', fontWeight: 700, marginBottom: '10px' }}>
+                  Complete your {p2pInfo.label} payment
+                </p>
+                <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>
+                  Send <strong style={{ color: 'var(--text-light)' }}>{p2pInfo.total}</strong> via <strong style={{ color: 'var(--text-light)' }}>{p2pInfo.label}</strong> to:
+                </p>
+                <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', fontWeight: 900, color: 'var(--primary-blue)', background: 'rgba(0,207,255,0.08)', borderRadius: '10px', padding: '12px 14px', textAlign: 'center', marginBottom: '12px', wordBreak: 'break-all' }}>
+                  {p2pInfo.handle}
+                </div>
+                <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                  Include <strong style={{ color: 'var(--text-secondary)' }}>order #{p2pInfo.orderNumber}</strong> in the payment note so we can match your payment. Questions? Email support@ironwithin.io.
+                </p>
+              </div>
             )}
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
               <Link href="/orders" style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '12px 24px', background: 'var(--gradient-primary)', borderRadius: '10px', color: '#fff', fontWeight: 600, textDecoration: 'none', fontFamily: 'var(--font-body)' }}>
@@ -177,18 +221,45 @@ export default function CheckoutPage() {
                     {shipping.email}
                   </p>
                 </ReviewBlock>
-                <ReviewBlock title="Payment">
-                  <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                    Secure card payment — you&apos;ll enter your card on our encrypted payment page after placing the order.
-                  </p>
+                <ReviewBlock title="Payment Method">
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {PAY_METHODS.map((m) => {
+                      const active = payMethod === m.id;
+                      return (
+                        <button
+                          key={m.id}
+                          type="button"
+                          onClick={() => setPayMethod(m.id)}
+                          style={{
+                            textAlign: 'left', padding: '12px 14px', borderRadius: '10px', cursor: 'pointer',
+                            background: active ? 'rgba(0,207,255,0.08)' : 'var(--bg-dark)',
+                            border: `1px solid ${active ? 'var(--primary-blue)' : 'var(--glass-border)'}`,
+                            display: 'flex', alignItems: 'center', gap: '10px', fontFamily: 'var(--font-body)',
+                          }}
+                        >
+                          <span style={{ width: 16, height: 16, borderRadius: '50%', flexShrink: 0, border: `2px solid ${active ? 'var(--primary-blue)' : 'var(--text-muted)'}`, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                            {active && <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--primary-blue)' }} />}
+                          </span>
+                          <span style={{ flex: 1 }}>
+                            <span style={{ display: 'block', fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-light)' }}>{m.label}</span>
+                            <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                              {m.id === 'iwr_rail' ? m.desc : `Send your payment to ${m.handle} after placing the order`}
+                            </span>
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </ReviewBlock>
                 <button onClick={handlePlaceOrder} disabled={placingOrder}
                   style={{ width: '100%', padding: '14px', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: placingOrder ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: 'var(--glow-blue)', opacity: placingOrder ? 0.8 : 1 }}>
                   {placingOrder ? (
                     <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Placing Order…</>
-                  ) : (
+                  ) : payMethod === 'iwr_rail' ? (
                     // ── Fixed: use plainPrice() so no &nbsp; shows in button ──
                     <><Lock size={15} /> Continue to Secure Payment — {plainPrice(cartTotal)}</>
+                  ) : (
+                    <><Lock size={15} /> Place Order — Pay by {PAY_METHODS.find((x) => x.id === payMethod)?.label}</>
                   )}
                 </button>
               </FormCard>

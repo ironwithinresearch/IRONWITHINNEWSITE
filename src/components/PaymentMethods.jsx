@@ -65,10 +65,11 @@ const LOGOS = {
 };
 
 const CARD_NETWORKS = ['visa', 'mastercard', 'amex', 'discover'];
+const ALL_METHODS = ['visa', 'mastercard', 'amex', 'discover', 'cashapp', 'venmo', 'zelle'];
 
 export default function PaymentMethods({
   label = 'We Accept',
-  methods = CARD_NETWORKS,
+  methods = ALL_METHODS,
   align = 'flex-start',
 }) {
   return (
