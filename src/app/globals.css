@@ -293,6 +293,20 @@ img {
     }
 }
 
+/* Checkout & cart: two-column on desktop, stacked on mobile */
+.checkout-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: 32px;
+    align-items: start;
+}
+
+@media (max-width: 768px) {
+    .checkout-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 @media (max-width: 640px) {
 
     .grid-4,
