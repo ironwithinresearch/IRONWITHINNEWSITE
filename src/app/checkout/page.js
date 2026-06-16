@@ -296,15 +296,21 @@ export default function CheckoutPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '14px' }}>
               {/* ── Fixed subtotal ── */}
               <SummaryRow label="Subtotal" htmlValue={cartSubtotal} />
-              {(cart?.appliedCoupons || []).map((c) => (
-                <SummaryRow
-                  key={c.code}
-                  label={`Coupon: ${(c.code || '').toUpperCase()}`}
-                  htmlValue={c.discountAmount ? `- ${c.discountAmount}` : null}
-                  value={c.discountAmount ? undefined : 'Applied'}
-                  valueColor="#34d399"
-                />
-              ))}
+              {(cart?.appliedCoupons || []).map((c, _i, arr) => {
+                // WooGraphQL sometimes returns an empty per-coupon discountAmount mid-recalc,
+                // which would render a bare "Applied". Fall back to the cart's discountTotal
+                // (exact when a single coupon is applied) so the subtracted amount always shows.
+                const amount = c.discountAmount || (arr.length === 1 ? cart?.discountTotal : null);
+                return (
+                  <SummaryRow
+                    key={c.code}
+                    label={`Coupon: ${(c.code || '').toUpperCase()}`}
+                    htmlValue={amount ? `- ${amount}` : null}
+                    value={amount ? undefined : 'Applied'}
+                    valueColor="#34d399"
+                  />
+                );
+              })}
               
             </div>
 
