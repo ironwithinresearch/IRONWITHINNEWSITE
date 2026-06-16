@@ -167,16 +167,22 @@ export default function CartPage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <SummaryRow label="Subtotal" rawValue={cartSubtotal} />
 
-                {appliedCoupons.map((c) => (
-                  <SummaryRow
-                    key={c.code}
-                    label={`Coupon: ${(c.code || '').toUpperCase()}`}
-                    rawValue={c.discountAmount ? `- ${c.discountAmount}` : null}
-                    value={c.discountAmount ? undefined : 'Applied'}
-                    valueColor="#34d399"
-                    onRemove={() => removeCoupon(c.code)}
-                  />
-                ))}
+                {appliedCoupons.map((c) => {
+                  // WooGraphQL sometimes returns an empty per-coupon discountAmount mid-recalc,
+                  // which would render a bare "Applied". Fall back to the cart's discountTotal
+                  // (exact when a single coupon is applied) so the subtracted amount always shows.
+                  const amount = c.discountAmount || (appliedCoupons.length === 1 ? cart?.discountTotal : null);
+                  return (
+                    <SummaryRow
+                      key={c.code}
+                      label={`Coupon: ${(c.code || '').toUpperCase()}`}
+                      rawValue={amount ? `- ${amount}` : null}
+                      value={amount ? undefined : 'Applied'}
+                      valueColor="#34d399"
+                      onRemove={() => removeCoupon(c.code)}
+                    />
+                  );
+                })}
               </div>
 
               <div style={{ height: 1, background: 'var(--glass-border)', margin: '14px 0' }} />
