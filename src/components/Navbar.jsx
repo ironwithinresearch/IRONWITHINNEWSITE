@@ -276,7 +276,9 @@ export default function Navbar() {
         </div>
       )}
 
-      <style>{`
+      {/* Inline via dangerouslySetInnerHTML: the [data-theme="light"] quotes would otherwise be
+          HTML-escaped on the server (&quot;) but not on the client, causing a hydration mismatch. */}
+      <style dangerouslySetInnerHTML={{ __html: `
         :root { --navbar-height: 68px; }
 
         @keyframes badgeBump {
@@ -301,7 +303,7 @@ export default function Navbar() {
         }
         [data-theme="light"] body   { background: var(--bg-dark); color: var(--text-light); }
         [data-theme="light"] header { background: rgba(241,245,249,0.92) !important; }
-      `}</style>
+      ` }} />
     </>
   );
 }
