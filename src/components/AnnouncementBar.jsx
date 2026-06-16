@@ -1,18 +1,31 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+
 /* Scrolling announcement ticker, fixed above the navbar (height 36px).
    The navbar (top: 36) and main padding are offset to match. */
 
-const MESSAGES = [
-  "🏷️  Father's Day Sale — 15% off everything, no code needed",
+// Father's Day sale ends 11:59pm Central, Sun 6/21/2026 == 04:59:59 UTC Mon 6/22.
+// The sale message auto-disappears after this; product prices revert via the
+// WooCommerce sale schedule (date_on_sale_to) at the same moment.
+const SALE_ENDS = Date.parse('2026-06-22T04:59:59Z');
+const SALE_MESSAGE = "🏷️  Father's Day Sale — 15% off everything, no code needed";
+const BASE_MESSAGES = [
   '🔬  Certificate of Analysis available for every product',
   '🧪  Research-grade peptides, independently lab-tested',
 ];
 
 export default function AnnouncementBar() {
+  // Start with the sale message (matches the server render while the sale is on),
+  // then drop it on the client once the sale has ended — no hydration mismatch.
+  const [messages, setMessages] = useState([SALE_MESSAGE, ...BASE_MESSAGES]);
+  useEffect(() => {
+    if (Date.now() >= SALE_ENDS) setMessages(BASE_MESSAGES);
+  }, []);
+
   // Repeat the message set so the track is wide enough, then render it twice
   // for a seamless -50% loop.
-  const base = [...MESSAGES, ...MESSAGES, ...MESSAGES];
+  const base = [...messages, ...messages, ...messages];
   const track = [...base, ...base];
 
   return (
