@@ -1,6 +1,22 @@
 'use client';
 
+import { useState } from 'react';
+
 export default function ContactPage() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleSend = () => {
+    const subject = `Website inquiry${name ? ` from ${name}` : ''}`;
+    const body =
+      `Name: ${name}\n` +
+      `Email: ${email}\n\n` +
+      `${message}`;
+    window.location.href =
+      `mailto:support@ironwithin.io?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -26,7 +42,7 @@ export default function ContactPage() {
         }}>
           Have questions about our peptides? We're here to help. Reach out to us and we'll respond within 24 hours.
         </p>
-        
+
         <div style={{
           display: 'flex',
           flexDirection: 'column',
@@ -39,7 +55,7 @@ export default function ContactPage() {
               color: 'var(--text-light)',
               fontWeight: 600,
             }}>Name</label>
-            <input type="text" placeholder="Your name" style={{
+            <input type="text" placeholder="Your name" value={name} onChange={e => setName(e.target.value)} style={{
               width: '100%',
               padding: '12px 16px',
               background: 'var(--card-dark)',
@@ -59,7 +75,7 @@ export default function ContactPage() {
               color: 'var(--text-light)',
               fontWeight: 600,
             }}>Email</label>
-            <input type="email" placeholder="your@email.com" style={{
+            <input type="email" placeholder="your@email.com" value={email} onChange={e => setEmail(e.target.value)} style={{
               width: '100%',
               padding: '12px 16px',
               background: 'var(--card-dark)',
@@ -79,7 +95,7 @@ export default function ContactPage() {
               color: 'var(--text-light)',
               fontWeight: 600,
             }}>Message</label>
-            <textarea placeholder="Your message..." rows={5} style={{
+            <textarea placeholder="Your message..." rows={5} value={message} onChange={e => setMessage(e.target.value)} style={{
               width: '100%',
               padding: '12px 16px',
               background: 'var(--card-dark)',
@@ -93,7 +109,7 @@ export default function ContactPage() {
             }} />
           </div>
 
-          <button style={{
+          <button onClick={handleSend} style={{
             padding: '14px 32px',
             background: 'var(--gradient-primary)',
             border: 'none',

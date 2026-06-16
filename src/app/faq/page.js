@@ -44,11 +44,6 @@ const faqs = [
     a: 'Every batch undergoes independent third-party HPLC (High-Performance Liquid Chromatography) and mass spectrometry testing. We target ≥99.3% purity across all compounds.',
   },
   {
-    category: 'quality',
-    q: 'Are your products GMP compliant?',
-    a: 'Yes. Our manufacturing partner operates a GMP (Good Manufacturing Practice) compliant facility. We also hold ISO 9001:2015 certification and are registered with the FDA as a research compound supplier.',
-  },
-  {
     category: 'shipping',
     q: 'How fast do you ship?',
     a: 'Orders ship between 24–48 hours after placement. Standard domestic delivery is 2–4 business days. Express options (1–2 days) are available at checkout. International orders typically arrive within 7–14 business days.',
@@ -76,7 +71,7 @@ const faqs = [
   {
     category: 'ordering',
     q: 'What payment methods do you accept?',
-    a: 'We accept all major credit cards (Visa, Mastercard, Amex), bank transfers, and cryptocurrency (Bitcoin, Ethereum). All card transactions are protected by 256-bit SSL encryption. We never store card details.',
+    a: 'We accept all major credit and debit cards (Visa, Mastercard, Amex, Discover), as well as Cash App, Venmo, and Zelle. All card transactions are protected by 256-bit SSL encryption, and we never store card details.',
   },
   {
     category: 'ordering',
