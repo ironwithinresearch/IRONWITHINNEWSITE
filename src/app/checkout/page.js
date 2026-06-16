@@ -180,7 +180,7 @@ export default function CheckoutPage() {
           ))}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,3fr) minmax(0,2fr)', gap: '32px', alignItems: 'start' }}>
+        <div className="checkout-grid">
 
           {/* ── Left: Form ── */}
           <div>
