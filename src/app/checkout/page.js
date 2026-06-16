@@ -10,6 +10,7 @@ import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { decodePriceHtml } from '../../lib/utils';
 import { getAffiliateRef } from '../../lib/affiliate';
+import PaymentMethods from '../../components/PaymentMethods';
 import {
   ShieldCheck, CreditCard, Truck, ChevronRight,
   Lock, CheckCircle2, Package, ArrowRight,
@@ -247,13 +248,17 @@ export default function CheckoutPage() {
 
             {[
               { Icon: ShieldCheck, label: 'Secure SSL checkout' },
- 
+
               { Icon: Package, label: 'Ships in 24–48 hours' },
             ].map(({ Icon, label }) => (
               <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '7px', fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '6px' }}>
                 <Icon size={12} color="var(--primary-blue)" /> {label}
               </div>
             ))}
+
+            <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--glass-border)' }}>
+              <PaymentMethods />
+            </div>
           </div>
         </div>
       </div>

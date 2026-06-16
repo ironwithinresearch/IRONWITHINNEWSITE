@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { FlaskConical, Mail, ArrowRight, ShieldCheck, Truck, Star } from 'lucide-react';
+import PaymentMethods from './PaymentMethods';
 
 const footerLinks = {
   Shop: [
@@ -152,6 +153,11 @@ export default function Footer() {
               {label}
             </span>
           ))}
+        </div>
+
+        {/* ── We Accept ── */}
+        <div style={{ paddingBottom: '28px' }}>
+          <PaymentMethods />
         </div>
 
         {/* ── Bottom bar ── */}

@@ -4,6 +4,7 @@
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { decodePriceHtml } from '@/lib/utils';
+import PaymentMethods from '@/components/PaymentMethods';
 import {
   ShoppingCart, Trash2, Plus, Minus, ArrowRight,
   Tag, Truck, ShieldCheck, Package, ChevronRight,
@@ -210,6 +211,10 @@ export default function CartPage() {
                   <Icon size={12} color="var(--primary-blue)" /> {label}
                 </div>
               ))}
+
+              <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--glass-border)' }}>
+                <PaymentMethods />
+              </div>
             </div>
           </div>
         )}
