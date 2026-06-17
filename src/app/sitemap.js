@@ -14,13 +14,13 @@ export default async function sitemap() {
       next: { revalidate: 3600 },
     });
     const json = await res.json();
-    slugs = (json?.data?.products?.nodes || []).map((n) => n.slug).filter(Boolean);
+    slugs = (json?.data?.products?.nodes || []).map((n) => n.slug).filter(Boolean).filter((s) => s !== 'gift-card');
   } catch {
     slugs = [];
   }
 
   const now = new Date();
-  const staticRoutes = ["", "/shop", "/categories", "/lab-reports", "/faq", "/contact", "/affiliate", "/shipping", "/refund", "/terms", "/privacy", "/disclaimer"];
+  const staticRoutes = ["", "/shop", "/categories", "/gift-cards", "/lab-reports", "/faq", "/contact", "/affiliate", "/shipping", "/refund", "/terms", "/privacy", "/disclaimer"];
 
   return [
     ...staticRoutes.map((path) => ({

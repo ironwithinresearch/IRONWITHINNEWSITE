@@ -56,10 +56,14 @@ export function CartProvider({ children }) {
     },
   });
 
-  const addToCart = useCallback(async (productId, quantity = 1, variationId = null) => {
+  const addToCart = useCallback(async (productId, quantity = 1, variationId = null, extraData = null) => {
     try {
       const variables = { productId: parseInt(productId), quantity };
       if (variationId) variables.variationId = parseInt(variationId);
+      // extraData: a plain object (e.g. gift-card recipient details) serialized
+      // to JSON; WooGraphQL stores each key as cart-item metadata, which a backend
+      // hook copies onto the order line item.
+      if (extraData && typeof extraData === 'object') variables.extraData = JSON.stringify(extraData);
       await addToCartMutation({ variables });
       return { success: true };
     } catch (err) {

@@ -17,7 +17,8 @@ export async function generateStaticParams() {
       next: { revalidate: 3600 },
     });
     const nodes = (await res.json())?.data?.products?.nodes || [];
-    return nodes.filter((n) => n?.slug).map((n) => ({ slug: n.slug }));
+    // The gift card has its own /gift-cards page; don't prerender it here.
+    return nodes.filter((n) => n?.slug && n.slug !== 'gift-card').map((n) => ({ slug: n.slug }));
   } catch {
     return []; // fall back to on-demand rendering if GraphQL is unreachable at build
   }

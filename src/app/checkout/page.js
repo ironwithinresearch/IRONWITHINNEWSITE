@@ -56,7 +56,12 @@ export default function CheckoutPage() {
   const [payment, setPayment] = useState({ cardName: '', cardNumber: '', expiry: '', cvv: '' });
 
   const subtotalNum = parseFloat(cartSubtotal?.replace(/[^0-9.]/g, '') || '0');
- 
+  // When a gift card fully covers the order, nothing is due. We complete the $0
+  // order through the backend gift-card gateway instead of the card rail.
+  const totalNum = parseFloat((cartTotal || '').replace(/[^0-9.]/g, '') || '0');
+  const isZeroDue = (cartItems?.length || 0) > 0 && totalNum <= 0;
+  const effectiveMethod = isZeroDue ? 'iw_giftcard' : payMethod;
+
   const [checkoutMutation, { loading: placingOrder }] = useMutation(CHECKOUT, {
     onCompleted: (data) => {
       const result = data?.checkout;
@@ -67,9 +72,10 @@ export default function CheckoutPage() {
         return;
       }
       // P2P (Zelle/Venmo/Cash App): order placed on-hold — show pay-to instructions.
+      // Gift-card-paid ($0 due) orders are complete already — no P2P instructions.
       const num = result?.order?.orderNumber || result?.order?.databaseId || '';
       setOrderNumber(num);
-      if (method !== 'iwr_rail') {
+      if (method !== 'iwr_rail' && method !== 'iw_giftcard') {
         const m = PAY_METHODS.find((x) => x.id === method);
         setP2pInfo({
           label: m?.label || 'P2P',
@@ -87,13 +93,13 @@ export default function CheckoutPage() {
   });
 
   const handlePlaceOrder = () => {
-    payMethodRef.current = payMethod;
+    payMethodRef.current = effectiveMethod;
     const billingInfo = billing.sameAsShipping ? shipping : billing;
     const input = buildCheckoutInput({
       billing: { ...billingInfo, email: shipping.email },
       shipping,
       transactionId: '',
-      paymentMethod: payMethod,
+      paymentMethod: effectiveMethod,
       affiliateRef: getAffiliateRef(),
     });
     checkoutMutation({ variables: input });
@@ -222,6 +228,12 @@ export default function CheckoutPage() {
                   </p>
                 </ReviewBlock>
                 <ReviewBlock title="Payment Method">
+                  {isZeroDue ? (
+                    <div style={{ padding: '14px', borderRadius: '10px', background: 'rgba(0,207,255,0.08)', border: '1px solid var(--primary-blue)', fontFamily: 'var(--font-body)' }}>
+                      <span style={{ display: 'block', fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-light)' }}>Paid in full by gift card 🎁</span>
+                      <span style={{ display: 'block', fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: 2 }}>Your gift card covers this order — nothing due. No card needed.</span>
+                    </div>
+                  ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     {PAY_METHODS.map((m) => {
                       const active = payMethod === m.id;
@@ -250,11 +262,14 @@ export default function CheckoutPage() {
                       );
                     })}
                   </div>
+                  )}
                 </ReviewBlock>
                 <button onClick={handlePlaceOrder} disabled={placingOrder}
                   style={{ width: '100%', padding: '14px', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: placingOrder ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: 'var(--glow-blue)', opacity: placingOrder ? 0.8 : 1 }}>
                   {placingOrder ? (
                     <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Placing Order…</>
+                  ) : isZeroDue ? (
+                    <><Lock size={15} /> Complete Order — $0.00 due</>
                   ) : payMethod === 'iwr_rail' ? (
                     // ── Fixed: use plainPrice() so no &nbsp; shows in button ──
                     <><Lock size={15} /> Continue to Secure Payment — {plainPrice(cartTotal)}</>

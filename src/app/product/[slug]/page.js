@@ -2,7 +2,7 @@
 // src/app/product/[slug]/page.js
 // NOTE: Rename folder from [id] to [slug]
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useQuery } from '@apollo/client';
@@ -28,6 +28,11 @@ export default function ProductPage() {
   const [wishlisted, setWishlisted] = useState(false);
   const [activeTab, setActiveTab] = useState('description');
   const [cartError, setCartError] = useState('');
+
+  // The gift card has a dedicated page; never show it on the generic product page.
+  useEffect(() => {
+    if (slug === 'gift-card') router.replace('/gift-cards');
+  }, [slug, router]);
 
   const { data, loading, error } = useQuery(GET_PRODUCT, {
     variables: { slug },
