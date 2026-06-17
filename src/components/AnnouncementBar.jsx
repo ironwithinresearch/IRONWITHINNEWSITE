@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react';
 // The sale message auto-disappears after this; product prices revert via the
 // WooCommerce sale schedule (date_on_sale_to) at the same moment.
 const SALE_ENDS = Date.parse('2026-06-22T04:59:59Z');
-const SALE_MESSAGE = "🏷️  Father's Day Sale — 15% off everything, no code needed";
+const SALE_MESSAGE = "🏷️  Father's Day Sale — 15% off everything, no code needed — use your favorite affiliate code for an additional discount";
 const BASE_MESSAGES = [
   '🔬  Certificate of Analysis available for every product',
   '🧪  Research-grade peptides, independently lab-tested',
