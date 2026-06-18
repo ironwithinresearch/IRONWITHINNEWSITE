@@ -221,6 +221,9 @@ export default function CartPage() {
                   </button>
                 </div>
                 {couponError && <p style={{ color: '#f87171', fontSize: '0.75rem', marginTop: '5px' }}>{couponError}</p>}
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.72rem', marginTop: '6px' }}>
+                  Gift cards can&apos;t be combined with discount codes.
+                </p>
               </div>
 
               <Link href="/checkout" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '13px', background: 'var(--gradient-primary)', borderRadius: '10px', color: '#fff', fontWeight: 700, fontSize: '1rem', textDecoration: 'none', fontFamily: 'var(--font-body)', boxShadow: 'var(--glow-blue)', marginBottom: '14px' }}>
