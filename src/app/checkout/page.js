@@ -29,6 +29,31 @@ const PAY_METHODS = [
   { id: 'iwr_cashapp', label: 'Cash App', handle: '$ironwithinresearch' },
 ];
 
+// Countries for the checkout address (ISO 3166-1 alpha-2 codes — WooCommerce format).
+// US/CA/GB/AU surfaced first, then the rest alphabetically.
+const COUNTRIES = [
+  { code: 'US', name: 'United States' }, { code: 'CA', name: 'Canada' },
+  { code: 'GB', name: 'United Kingdom' }, { code: 'AU', name: 'Australia' },
+  { code: 'AE', name: 'United Arab Emirates' }, { code: 'AR', name: 'Argentina' },
+  { code: 'AT', name: 'Austria' }, { code: 'BE', name: 'Belgium' }, { code: 'BR', name: 'Brazil' },
+  { code: 'BG', name: 'Bulgaria' }, { code: 'CL', name: 'Chile' }, { code: 'CN', name: 'China' },
+  { code: 'CO', name: 'Colombia' }, { code: 'HR', name: 'Croatia' }, { code: 'CZ', name: 'Czechia' },
+  { code: 'DK', name: 'Denmark' }, { code: 'EG', name: 'Egypt' }, { code: 'EE', name: 'Estonia' },
+  { code: 'FI', name: 'Finland' }, { code: 'FR', name: 'France' }, { code: 'DE', name: 'Germany' },
+  { code: 'GR', name: 'Greece' }, { code: 'HK', name: 'Hong Kong' }, { code: 'HU', name: 'Hungary' },
+  { code: 'IS', name: 'Iceland' }, { code: 'IN', name: 'India' }, { code: 'ID', name: 'Indonesia' },
+  { code: 'IE', name: 'Ireland' }, { code: 'IL', name: 'Israel' }, { code: 'IT', name: 'Italy' },
+  { code: 'JP', name: 'Japan' }, { code: 'KR', name: 'South Korea' }, { code: 'LV', name: 'Latvia' },
+  { code: 'LT', name: 'Lithuania' }, { code: 'LU', name: 'Luxembourg' }, { code: 'MY', name: 'Malaysia' },
+  { code: 'MX', name: 'Mexico' }, { code: 'NL', name: 'Netherlands' }, { code: 'NZ', name: 'New Zealand' },
+  { code: 'NO', name: 'Norway' }, { code: 'PH', name: 'Philippines' }, { code: 'PL', name: 'Poland' },
+  { code: 'PT', name: 'Portugal' }, { code: 'RO', name: 'Romania' }, { code: 'SA', name: 'Saudi Arabia' },
+  { code: 'SG', name: 'Singapore' }, { code: 'SK', name: 'Slovakia' }, { code: 'SI', name: 'Slovenia' },
+  { code: 'ZA', name: 'South Africa' }, { code: 'ES', name: 'Spain' }, { code: 'SE', name: 'Sweden' },
+  { code: 'CH', name: 'Switzerland' }, { code: 'TW', name: 'Taiwan' }, { code: 'TH', name: 'Thailand' },
+  { code: 'TR', name: 'Turkey' }, { code: 'UA', name: 'Ukraine' }, { code: 'VN', name: 'Vietnam' },
+];
+
 // Helper: strip all HTML from price for plain text use (e.g. button label)
 function plainPrice(price) {
   if (!price) return '';
@@ -237,10 +262,12 @@ export default function CheckoutPage() {
                   <div style={{ height: 14 }} />
                   <Field label="Street Address *" value={shipping.address} onChange={v => setShipping(s => ({ ...s, address: v }))} placeholder="123 Research Blvd" required />
                   <div style={{ height: 14 }} />
+                  <SelectField label="Country *" value={shipping.country} onChange={v => setShipping(s => ({ ...s, country: v }))} options={COUNTRIES} required />
+                  <div style={{ height: 14 }} />
                   <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '14px' }}>
-                    <Field label="City *" value={shipping.city} onChange={v => setShipping(s => ({ ...s, city: v }))} placeholder="New York" required />
-                    <Field label="State *" value={shipping.state} onChange={v => setShipping(s => ({ ...s, state: v }))} placeholder="NY" required />
-                    <Field label="ZIP *" value={shipping.zip} onChange={v => setShipping(s => ({ ...s, zip: v }))} placeholder="10001" required />
+                    <Field label="City *" value={shipping.city} onChange={v => setShipping(s => ({ ...s, city: v }))} placeholder="City" required />
+                    <Field label="State / Province" value={shipping.state} onChange={v => setShipping(s => ({ ...s, state: v }))} placeholder="State / Province" />
+                    <Field label="Postal Code *" value={shipping.zip} onChange={v => setShipping(s => ({ ...s, zip: v }))} placeholder="Postal code" required />
                   </div>
                   <div style={{ height: 18 }} />
                   <Disclaimer />
@@ -256,7 +283,8 @@ export default function CheckoutPage() {
                   <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
                     {shipping.firstName} {shipping.lastName}<br />
                     {shipping.address}<br />
-                    {shipping.city}, {shipping.state} {shipping.zip}<br />
+                    {shipping.city}{shipping.state ? `, ${shipping.state}` : ''} {shipping.zip}<br />
+                    {(COUNTRIES.find(c => c.code === shipping.country)?.name) || shipping.country}<br />
                     {shipping.email}
                   </p>
                 </ReviewBlock>
@@ -426,6 +454,20 @@ function Field({ label, type = 'text', value, onChange, placeholder, required, m
         style={{ width: '100%', padding: '11px 14px', background: 'var(--bg-dark)', border: '1px solid var(--glass-border)', borderRadius: '10px', color: 'var(--text-light)', fontFamily: 'var(--font-body)', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }}
         onFocus={e => e.target.style.borderColor = 'var(--primary-blue)'}
         onBlur={e => e.target.style.borderColor = 'var(--glass-border)'} />
+    </div>
+  );
+}
+
+function SelectField({ label, value, onChange, options, required }) {
+  return (
+    <div>
+      <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 500, color: 'var(--text-secondary)', marginBottom: '6px' }}>{label}</label>
+      <select value={value} onChange={e => onChange(e.target.value)} required={required}
+        style={{ width: '100%', padding: '11px 14px', background: 'var(--bg-dark)', border: '1px solid var(--glass-border)', borderRadius: '10px', color: 'var(--text-light)', fontFamily: 'var(--font-body)', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box', appearance: 'none', cursor: 'pointer' }}
+        onFocus={e => e.target.style.borderColor = 'var(--primary-blue)'}
+        onBlur={e => e.target.style.borderColor = 'var(--glass-border)'}>
+        {options.map(o => <option key={o.code} value={o.code} style={{ background: 'var(--bg-dark)', color: 'var(--text-light)' }}>{o.name}</option>)}
+      </select>
     </div>
   );
 }
