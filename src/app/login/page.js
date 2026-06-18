@@ -51,6 +51,9 @@ export default function LoginPage() {
     ? new URLSearchParams(window.location.search)
     : null;
   const resetSuccess = searchParams?.get('reset') === 'success';
+  // Where to go after signing in (e.g. back to /checkout). Only allow same-site paths.
+  const rawRedirect = searchParams?.get('redirect') || '';
+  const redirectTo = rawRedirect.startsWith('/') ? rawRedirect : '/account';
 
   const { login, loading } = useAuth();
 
@@ -67,7 +70,7 @@ export default function LoginPage() {
 
     const result = await login(form.username.trim(), form.password);
     if (result.success) {
-      router.push('/account');
+      router.push(redirectTo);
     } else {
       setError(getFriendlyError(result.error));
     }
@@ -259,7 +262,7 @@ export default function LoginPage() {
             fontSize: '0.875rem', color: 'var(--text-muted)',
           }}>
             Don't have an account?{' '}
-            <Link href="/register" style={{ color: 'var(--primary-blue)', fontWeight: 500 }}>
+            <Link href={rawRedirect ? `/register?redirect=${encodeURIComponent(rawRedirect)}` : '/register'} style={{ color: 'var(--primary-blue)', fontWeight: 500 }}>
               Create one
             </Link>
           </div>

@@ -15,6 +15,10 @@ import { useAuth } from '../../context/AuthContext';
 export default function RegisterPage() {
   const router = useRouter();
   const { login } = useAuth();
+  // Where to go after signing up (e.g. back to /checkout). Only allow same-site paths.
+  const _rawRedirect = typeof window !== 'undefined'
+    ? (new URLSearchParams(window.location.search).get('redirect') || '') : '';
+  const redirectTo = _rawRedirect.startsWith('/') ? _rawRedirect : '/account';
 
   const [form, setForm] = useState({
     firstName: '', lastName: '', email: '', password: '', confirmPassword: '',
@@ -34,7 +38,7 @@ export default function RegisterPage() {
         try {
           const result = await login(form.email, form.password);
           if (result.success) {
-            setTimeout(() => router.push('/account'), 1000);
+            setTimeout(() => router.push(redirectTo), 1000);
           } else {
             // Registration worked but auto-login failed — send to login page
             setTimeout(() => router.push('/login'), 1500);
@@ -268,7 +272,7 @@ export default function RegisterPage() {
             fontSize: '0.875rem', color: 'var(--text-muted)',
           }}>
             Already have an account?{' '}
-            <Link href="/login" style={{ color: 'var(--primary-blue)', fontWeight: 500 }}>
+            <Link href={_rawRedirect ? `/login?redirect=${encodeURIComponent(_rawRedirect)}` : '/login'} style={{ color: 'var(--primary-blue)', fontWeight: 500 }}>
               Sign in
             </Link>
           </div>
