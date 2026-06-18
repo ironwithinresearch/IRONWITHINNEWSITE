@@ -320,7 +320,9 @@ export default function CheckoutPage() {
 
             {/* Items */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px' }}>
-              {cartItems.map(item => (
+              {cartItems.map(item => {
+                const isFreeGift = (item.extraData || []).some(e => e.key === 'iw_free_gift' && e.value === '1');
+                return (
                 <div key={item.key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, minWidth: 0 }}>
                     <div style={{ width: 32, height: 32, flexShrink: 0, borderRadius: '8px', background: 'var(--bg-elevated)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -331,12 +333,22 @@ export default function CheckoutPage() {
                     <span style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {item.product?.node?.name} × {item.quantity}
                     </span>
+                    {isFreeGift && (
+                      <span style={{ padding: '1px 7px', background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.5)', borderRadius: '999px', fontSize: '0.62rem', fontWeight: 800, color: '#34d399', textTransform: 'uppercase', flexShrink: 0, whiteSpace: 'nowrap' }}>
+                        🎁 Free
+                      </span>
+                    )}
                   </div>
-                  {/* ── Fixed item total price ── */}
-                  <span style={{ fontWeight: 600, fontSize: '0.85rem', flexShrink: 0 }}
-                    dangerouslySetInnerHTML={{ __html: decodePriceHtml(item.total) }} />
+                  {/* ── item total ("FREE" for the gift) ── */}
+                  {isFreeGift ? (
+                    <span style={{ fontWeight: 700, fontSize: '0.85rem', flexShrink: 0, color: '#34d399' }}>FREE</span>
+                  ) : (
+                    <span style={{ fontWeight: 600, fontSize: '0.85rem', flexShrink: 0 }}
+                      dangerouslySetInnerHTML={{ __html: decodePriceHtml(item.total) }} />
+                  )}
                 </div>
-              ))}
+                );
+              })}
             </div>
 
             <div style={{ height: 1, background: 'var(--glass-border)', marginBottom: '14px' }} />

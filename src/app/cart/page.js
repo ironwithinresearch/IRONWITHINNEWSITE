@@ -91,6 +91,7 @@ export default function CartPage() {
                 const variation = item.variation?.node;
                 // Get variation attributes for display
                 const variationAttrs = variation?.attributes?.nodes || [];
+                const isFreeGift = (item.extraData || []).some(e => e.key === 'iw_free_gift' && e.value === '1');
 
                 return (
                   <div key={item.key} style={{ background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: '16px', padding: '18px', display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
@@ -107,14 +108,23 @@ export default function CartPage() {
                     {/* Details */}
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                        <Link href={`/product/${product?.slug}`} style={{ textDecoration: 'none' }}>
-                          <h3 style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--text-light)' }}>{product?.name}</h3>
-                        </Link>
-                        <button onClick={() => removeItem(item.key)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex' }}
-                          onMouseEnter={e => e.currentTarget.style.color = '#f87171'}
-                          onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}>
-                          <Trash2 size={15} />
-                        </button>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                          <Link href={`/product/${product?.slug}`} style={{ textDecoration: 'none' }}>
+                            <h3 style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--text-light)' }}>{product?.name}</h3>
+                          </Link>
+                          {isFreeGift && (
+                            <span style={{ padding: '2px 9px', background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.5)', borderRadius: '999px', fontSize: '0.68rem', fontWeight: 800, letterSpacing: '0.03em', color: '#34d399', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+                              🎁 Free Gift
+                            </span>
+                          )}
+                        </div>
+                        {!isFreeGift && (
+                          <button onClick={() => removeItem(item.key)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex' }}
+                            onMouseEnter={e => e.currentTarget.style.color = '#f87171'}
+                            onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}>
+                            <Trash2 size={15} />
+                          </button>
+                        )}
                       </div>
 
                       {/* ── VARIATION ATTRIBUTES — show size/color/etc ── */}
@@ -136,20 +146,28 @@ export default function CartPage() {
                       )}
 
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
-                        {/* Qty */}
-                        <div style={{ display: 'flex', alignItems: 'center', border: '1px solid var(--glass-border)', borderRadius: '8px', overflow: 'hidden' }}>
-                          <button onClick={() => updateQuantity(item.key, item.quantity - 1)} style={{ width: 32, height: 32, background: 'var(--bg-dark)', border: 'none', color: 'var(--text-light)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <Minus size={12} />
-                          </button>
-                          <span style={{ width: 40, textAlign: 'center', fontWeight: 600, fontSize: '0.9rem', background: 'var(--bg-dark)' }}>{item.quantity}</span>
-                          <button onClick={() => updateQuantity(item.key, item.quantity + 1)} style={{ width: 32, height: 32, background: 'var(--bg-dark)', border: 'none', color: 'var(--text-light)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <Plus size={12} />
-                          </button>
-                        </div>
+                        {/* Qty — free gift is auto-managed, so show a static label */}
+                        {isFreeGift ? (
+                          <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)' }}>Qty 1 · added automatically</span>
+                        ) : (
+                          <div style={{ display: 'flex', alignItems: 'center', border: '1px solid var(--glass-border)', borderRadius: '8px', overflow: 'hidden' }}>
+                            <button onClick={() => updateQuantity(item.key, item.quantity - 1)} style={{ width: 32, height: 32, background: 'var(--bg-dark)', border: 'none', color: 'var(--text-light)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              <Minus size={12} />
+                            </button>
+                            <span style={{ width: 40, textAlign: 'center', fontWeight: 600, fontSize: '0.9rem', background: 'var(--bg-dark)' }}>{item.quantity}</span>
+                            <button onClick={() => updateQuantity(item.key, item.quantity + 1)} style={{ width: 32, height: 32, background: 'var(--bg-dark)', border: 'none', color: 'var(--text-light)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              <Plus size={12} />
+                            </button>
+                          </div>
+                        )}
 
-                        {/* Price — fixed HTML entity rendering */}
-                        <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', fontWeight: 800, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
-                          dangerouslySetInnerHTML={{ __html: decodePriceHtml(item.total) }} />
+                        {/* Price — "FREE" for the gift, otherwise the line total */}
+                        {isFreeGift ? (
+                          <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', fontWeight: 800, color: '#34d399' }}>FREE</span>
+                        ) : (
+                          <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', fontWeight: 800, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+                            dangerouslySetInnerHTML={{ __html: decodePriceHtml(item.total) }} />
+                        )}
                       </div>
                     </div>
                   </div>

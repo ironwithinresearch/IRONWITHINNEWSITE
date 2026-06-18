@@ -10,17 +10,28 @@ import { useState, useEffect } from 'react';
 // WooCommerce sale schedule (date_on_sale_to) at the same moment.
 const SALE_ENDS = Date.parse('2026-06-22T04:59:59Z');
 const SALE_MESSAGE = "🏷️  Father's Day Sale — 15% off everything, no code needed — use your favorite affiliate code for an additional discount";
+
+// July 4th: free MOTS-C 10mg on orders $250+. Window Jul 3 00:00 → Jul 5 11:59pm
+// Central (== 05:00 UTC Jul 3 → 04:59:59 UTC Jul 6), matching the backend promo.
+const J4_START = Date.parse('2026-07-03T05:00:00Z');
+const J4_END = Date.parse('2026-07-06T04:59:59Z');
+const J4_MESSAGE = '🇺🇸  4th of July — get a FREE MOTS-C 10mg on every order over $250';
+
 const BASE_MESSAGES = [
   '🔬  Certificate of Analysis available for every product',
   '🧪  Research-grade peptides, independently lab-tested',
 ];
 
 export default function AnnouncementBar() {
-  // Start with the sale message (matches the server render while the sale is on),
-  // then drop it on the client once the sale has ended — no hydration mismatch.
+  // Start with the Father's Day message (matches the server render while it's on),
+  // then recompute on the client by date — no hydration mismatch.
   const [messages, setMessages] = useState([SALE_MESSAGE, ...BASE_MESSAGES]);
   useEffect(() => {
-    if (Date.now() >= SALE_ENDS) setMessages(BASE_MESSAGES);
+    const now = Date.now();
+    const promos = [];
+    if (now < SALE_ENDS) promos.push(SALE_MESSAGE);
+    if (now >= J4_START && now <= J4_END) promos.push(J4_MESSAGE);
+    setMessages([...promos, ...BASE_MESSAGES]);
   }, []);
 
   // Repeat the message set so the track is wide enough, then render it twice

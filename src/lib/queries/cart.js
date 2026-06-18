@@ -20,6 +20,7 @@ export const GET_CART = gql`
           quantity
           subtotal
           total
+          extraData { key value }
           product {
             node {
               id
