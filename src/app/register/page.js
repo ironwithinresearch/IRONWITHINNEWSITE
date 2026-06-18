@@ -1,7 +1,7 @@
 'use client';
 // src/app/register/page.js
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -15,10 +15,17 @@ import { useAuth } from '../../context/AuthContext';
 export default function RegisterPage() {
   const router = useRouter();
   const { login } = useAuth();
-  // Where to go after signing up (e.g. back to /checkout). Only allow same-site paths.
-  const _rawRedirect = typeof window !== 'undefined'
-    ? (new URLSearchParams(window.location.search).get('redirect') || '') : '';
-  const redirectTo = _rawRedirect.startsWith('/') ? _rawRedirect : '/account';
+  // Where to go after signing up (e.g. back to /checkout). Read after mount to
+  // avoid a static-prerender/hydration mismatch; only allow same-site paths.
+  const [redirectTo, setRedirectTo] = useState('/account');
+  const [loginHref, setLoginHref] = useState('/login');
+  useEffect(() => {
+    const rd = new URLSearchParams(window.location.search).get('redirect') || '';
+    if (rd.startsWith('/')) {
+      setRedirectTo(rd);
+      setLoginHref(`/login?redirect=${encodeURIComponent(rd)}`);
+    }
+  }, []);
 
   const [form, setForm] = useState({
     firstName: '', lastName: '', email: '', password: '', confirmPassword: '',
@@ -272,7 +279,7 @@ export default function RegisterPage() {
             fontSize: '0.875rem', color: 'var(--text-muted)',
           }}>
             Already have an account?{' '}
-            <Link href={_rawRedirect ? `/login?redirect=${encodeURIComponent(_rawRedirect)}` : '/login'} style={{ color: 'var(--primary-blue)', fontWeight: 500 }}>
+            <Link href={loginHref} style={{ color: 'var(--primary-blue)', fontWeight: 500 }}>
               Sign in
             </Link>
           </div>

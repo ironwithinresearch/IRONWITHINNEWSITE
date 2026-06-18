@@ -1,7 +1,7 @@
 'use client';
 // src/app/login/page.js
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FlaskConical, Mail, Lock, ArrowRight, Eye, EyeOff, AlertCircle, CheckCircle2 } from 'lucide-react';
@@ -51,9 +51,17 @@ export default function LoginPage() {
     ? new URLSearchParams(window.location.search)
     : null;
   const resetSuccess = searchParams?.get('reset') === 'success';
-  // Where to go after signing in (e.g. back to /checkout). Only allow same-site paths.
-  const rawRedirect = searchParams?.get('redirect') || '';
-  const redirectTo = rawRedirect.startsWith('/') ? rawRedirect : '/account';
+  // Where to go after signing in (e.g. back to /checkout). Read after mount to
+  // avoid a static-prerender/hydration mismatch; only allow same-site paths.
+  const [redirectTo, setRedirectTo] = useState('/account');
+  const [registerHref, setRegisterHref] = useState('/register');
+  useEffect(() => {
+    const rd = new URLSearchParams(window.location.search).get('redirect') || '';
+    if (rd.startsWith('/')) {
+      setRedirectTo(rd);
+      setRegisterHref(`/register?redirect=${encodeURIComponent(rd)}`);
+    }
+  }, []);
 
   const { login, loading } = useAuth();
 
@@ -262,7 +270,7 @@ export default function LoginPage() {
             fontSize: '0.875rem', color: 'var(--text-muted)',
           }}>
             Don't have an account?{' '}
-            <Link href={rawRedirect ? `/register?redirect=${encodeURIComponent(rawRedirect)}` : '/register'} style={{ color: 'var(--primary-blue)', fontWeight: 500 }}>
+            <Link href={registerHref} style={{ color: 'var(--primary-blue)', fontWeight: 500 }}>
               Create one
             </Link>
           </div>
