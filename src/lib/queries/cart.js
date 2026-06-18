@@ -9,6 +9,10 @@ export const GET_CART = gql`
       totalTax
       shippingTotal
       discountTotal
+      chosenShippingMethods
+      availableShippingMethods {
+        rates { id label cost }
+      }
       appliedCoupons {
         code
         discountAmount
@@ -165,6 +169,31 @@ export const REMOVE_COUPON = gql`
           nodes { key quantity total product { node { id name } } }
         }
       }
+    }
+  }
+`;
+
+// Set the customer's shipping (and billing) address so WooCommerce can pick the
+// shipping zone and calculate rates for the cart.
+export const UPDATE_CUSTOMER_ADDRESS = gql`
+  mutation UpdateCustomerAddress(
+    $country: CountriesEnum, $state: String, $postcode: String, $city: String,
+    $address1: String, $firstName: String, $lastName: String
+  ) {
+    updateCustomer(input: {
+      shipping: { country: $country, state: $state, postcode: $postcode, city: $city, address1: $address1, firstName: $firstName, lastName: $lastName }
+      billing:  { country: $country, state: $state, postcode: $postcode, city: $city }
+    }) {
+      customer { shipping { country } }
+    }
+  }
+`;
+
+// Choose a shipping rate (e.g. "flat_rate:2").
+export const UPDATE_SHIPPING_METHOD = gql`
+  mutation UpdateShippingMethod($methods: [String]) {
+    updateShippingMethod(input: { shippingMethods: $methods }) {
+      cart { shippingTotal total chosenShippingMethods }
     }
   }
 `;

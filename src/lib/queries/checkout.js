@@ -44,7 +44,7 @@ export const CHECKOUT = gql`
 // Build the checkout input object for the mutation
 // paymentMethod: 'cod' for Cash on Delivery (no Stripe needed to test)
 // paymentMethod: 'stripe' when Stripe is integrated
-export function buildCheckoutInput({ billing, shipping, transactionId = '', paymentMethod = 'cod', customerNote = '', affiliateRef = '' }) {
+export function buildCheckoutInput({ billing, transactionId = '', paymentMethod = 'cod', customerNote = '', affiliateRef = '', shippingMethod = '' }) {
   const billingAddress = {
     firstName: billing.firstName || '',
     lastName: billing.lastName || '',
@@ -58,33 +58,29 @@ export function buildCheckoutInput({ billing, shipping, transactionId = '', paym
     phone: billing.phone || '',
   };
 
-  const shippingAddress = {
-    firstName: shipping.firstName || '',
-    lastName: shipping.lastName || '',
-    address1: shipping.address || shipping.address1 || '',
-    address2: shipping.address2 || '',
-    city: shipping.city || '',
-    state: shipping.state || '',
-    postcode: shipping.zip || shipping.postcode || '',
-    country: shipping.country || 'US',
-  };
+  // Order meta:
+  // - goaffpro_ref: affiliate referral, so GoAffPro can attribute server-side.
+  // - _iw_ship_rate: the chosen shipping rate id; a backend plugin enforces the
+  //   correct shipping line/cost from it (WooGraphQL's own chosen method is flaky).
+  const metaData = [];
+  if (affiliateRef) metaData.push({ key: 'goaffpro_ref', value: String(affiliateRef) });
+  if (shippingMethod) metaData.push({ key: '_iw_ship_rate', value: String(shippingMethod) });
 
-  // Stamp the GoAffPro affiliate referral onto the order so GoAffPro's
-  // WooCommerce sync can attribute the commission server-side (cross-domain
-  // JS conversion tracking isn't reliable here — storefront vs. rail).
-  const metaData = affiliateRef
-    ? [{ key: 'goaffpro_ref', value: String(affiliateRef) }]
-    : undefined;
-
+  // NOTE: we deliberately do NOT pass a `shipping` address here. The ship-to
+  // address is set on the session beforehand (updateCustomer), and with
+  // shipToDifferentAddress=false the order ships to billing. Re-sending the
+  // shipping address in this mutation makes WooGraphQL recalculate and reset the
+  // chosen shipping method to the cheapest — so we pass the chosen rate via
+  // `shippingMethod` instead, which is honored.
   return {
     input: {
       paymentMethod,
       isPaid: paymentMethod === 'stripe' && !!transactionId,
       transactionId: transactionId || undefined,
       customerNote,
-      ...(metaData ? { metaData } : {}),
+      ...(metaData.length ? { metaData } : {}),
+      ...(shippingMethod ? { shippingMethod: [shippingMethod] } : {}),
       billing: billingAddress,
-      shipping: shippingAddress,
       shipToDifferentAddress: false,
     },
   };

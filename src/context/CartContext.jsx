@@ -10,6 +10,8 @@ import {
   REMOVE_CART_ITEM,
   APPLY_COUPON,
   REMOVE_COUPON,
+  UPDATE_CUSTOMER_ADDRESS,
+  UPDATE_SHIPPING_METHOD,
 } from '../lib/queries/cart';
 
 const CartContext = createContext({});
@@ -141,6 +143,40 @@ export function CartProvider({ children }) {
     await removeCouponMutation({ variables: { code } });
   }, [removeCouponMutation]);
 
+  // ── SHIPPING: set address (so rates calculate), then choose a rate ──
+  const [updateAddressMutation, { loading: updatingAddress }] = useMutation(UPDATE_CUSTOMER_ADDRESS);
+  const [updateShippingMutation, { loading: updatingShipping }] = useMutation(UPDATE_SHIPPING_METHOD);
+
+  const setShippingAddress = useCallback(async (addr) => {
+    try {
+      await updateAddressMutation({ variables: {
+        country: addr.country || 'US',
+        state: addr.state || '',
+        postcode: addr.zip || addr.postcode || '',
+        city: addr.city || '',
+        address1: addr.address || addr.address1 || '',
+        firstName: addr.firstName || '',
+        lastName: addr.lastName || '',
+      } });
+      await refetchCart(); // pulls availableShippingMethods + recalculated totals
+      return { success: true };
+    } catch (err) {
+      console.error('Set shipping address error:', err.message);
+      return { success: false, error: err.message };
+    }
+  }, [updateAddressMutation, refetchCart]);
+
+  const setShippingMethod = useCallback(async (rateId) => {
+    try {
+      await updateShippingMutation({ variables: { methods: [rateId] } });
+      await refetchCart();
+      return { success: true };
+    } catch (err) {
+      console.error('Set shipping method error:', err.message);
+      return { success: false, error: err.message };
+    }
+  }, [updateShippingMutation, refetchCart]);
+
   return (
     <CartContext.Provider value={{
       cart,
@@ -148,15 +184,22 @@ export function CartProvider({ children }) {
       itemCount,
       cartTotal,
       cartSubtotal,
+      shippingTotal: cart?.shippingTotal || null,
+      availableShippingRates: cart?.availableShippingMethods?.[0]?.rates || [],
+      chosenShippingMethods: cart?.chosenShippingMethods || [],
       cartLoading,
       addingToCart,
       applyingCoupon,
+      updatingAddress,
+      updatingShipping,
       notification,
       addToCart,
       updateQuantity,
       removeItem,
       applyCoupon,
       removeCoupon,
+      setShippingAddress,
+      setShippingMethod,
       refetchCart,
     }}>
       {children}

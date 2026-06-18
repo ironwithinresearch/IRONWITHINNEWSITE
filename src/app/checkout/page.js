@@ -1,7 +1,7 @@
 'use client';
 // src/app/checkout/page.js
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@apollo/client';
@@ -62,7 +62,9 @@ function plainPrice(price) {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cart, cartItems, cartTotal, cartSubtotal, refetchCart } = useCart();
+  const { cart, cartItems, cartTotal, cartSubtotal, refetchCart,
+    setShippingAddress, setShippingMethod, availableShippingRates, chosenShippingMethods, shippingTotal,
+    updatingAddress, updatingShipping } = useCart();
   const { isLoggedIn, user, mounted: authMounted } = useAuth();
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -80,11 +82,31 @@ export default function CheckoutPage() {
   const [billing, setBilling] = useState({ sameAsShipping: true });
   const [payment, setPayment] = useState({ cardName: '', cardNumber: '', expiry: '', cvv: '' });
 
-  const subtotalNum = parseFloat(cartSubtotal?.replace(/[^0-9.]/g, '') || '0');
-  // When a gift card fully covers the order, nothing is due. We complete the $0
-  // order through the backend gift-card gateway instead of the card rail.
-  const totalNum = parseFloat((cartTotal || '').replace(/[^0-9.]/g, '') || '0');
-  const isZeroDue = (cartItems?.length || 0) > 0 && totalNum <= 0;
+  // Locally-tracked shipping choice (WooGraphQL's session "chosen method" is flaky;
+  // we drive both the displayed cost and the charged cost from this selection).
+  const [shipRate, setShipRate] = useState('');
+  useEffect(() => {
+    if (!availableShippingRates.length) return;
+    if (!availableShippingRates.some(r => r.id === shipRate)) {
+      setShipRate(chosenShippingMethods[0] || availableShippingRates[0].id);
+    }
+  }, [availableShippingRates, chosenShippingMethods, shipRate]);
+
+  const money = (s) => parseFloat(String(s || '').replace(/&nbsp;/g, '').replace(/[^0-9.]/g, '') || '0');
+  const fmt = (n) => `$${n.toFixed(2)}`;
+
+  const subtotalNum = money(cartSubtotal);
+  const selectedRate = availableShippingRates.find(r => r.id === shipRate) || null;
+  const shipCostNum = selectedRate ? money(selectedRate.cost) : money(shippingTotal);
+  const shipDisplay = selectedRate ? selectedRate.cost : shippingTotal;
+  // Total = cart total minus whatever shipping the cart auto-applied, plus the
+  // rate the customer actually selected — so the display always matches the charge.
+  const computedTotalNum = Math.max(0, money(cartTotal) - money(shippingTotal) + shipCostNum);
+  const displayTotal = fmt(computedTotalNum);
+
+  // When a gift card fully covers the order (incl. shipping), nothing is due — we
+  // complete the $0 order through the backend gift-card gateway, not the card rail.
+  const isZeroDue = (cartItems?.length || 0) > 0 && computedTotalNum <= 0;
   const effectiveMethod = isZeroDue ? 'iw_giftcard' : payMethod;
 
   const [checkoutMutation, { loading: placingOrder }] = useMutation(CHECKOUT, {
@@ -122,10 +144,10 @@ export default function CheckoutPage() {
     const billingInfo = billing.sameAsShipping ? shipping : billing;
     const input = buildCheckoutInput({
       billing: { ...billingInfo, email: shipping.email },
-      shipping,
       transactionId: '',
       paymentMethod: effectiveMethod,
       affiliateRef: getAffiliateRef(),
+      shippingMethod: shipRate,
     });
     checkoutMutation({ variables: input });
   };
@@ -250,7 +272,7 @@ export default function CheckoutPage() {
           <div>
             {currentStep === 0 && (
               <FormCard icon={<Truck size={17} color="var(--primary-blue)" />} title="Shipping Information">
-                <form onSubmit={e => { e.preventDefault(); setCurrentStep(1); }}>
+                <form onSubmit={async e => { e.preventDefault(); await setShippingAddress(shipping); setCurrentStep(1); }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                     <Field label="First Name *" value={shipping.firstName} onChange={v => setShipping(s => ({ ...s, firstName: v }))} placeholder="John" required />
                     <Field label="Last Name *" value={shipping.lastName} onChange={v => setShipping(s => ({ ...s, lastName: v }))} placeholder="Doe" required />
@@ -288,6 +310,35 @@ export default function CheckoutPage() {
                     {shipping.email}
                   </p>
                 </ReviewBlock>
+                {availableShippingRates.length > 0 && (
+                  <ReviewBlock title="Shipping Method">
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {availableShippingRates.map((r) => {
+                        const active = shipRate === r.id;
+                        return (
+                          <button
+                            key={r.id}
+                            type="button"
+                            onClick={() => setShipRate(r.id)}
+                            style={{
+                              textAlign: 'left', padding: '12px 14px', borderRadius: '10px', cursor: 'pointer',
+                              background: active ? 'rgba(0,207,255,0.08)' : 'var(--bg-dark)',
+                              border: `1px solid ${active ? 'var(--primary-blue)' : 'var(--glass-border)'}`,
+                              display: 'flex', alignItems: 'center', gap: '10px', fontFamily: 'var(--font-body)',
+                            }}
+                          >
+                            <span style={{ width: 16, height: 16, borderRadius: '50%', flexShrink: 0, border: `2px solid ${active ? 'var(--primary-blue)' : 'var(--text-muted)'}`, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                              {active && <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--primary-blue)' }} />}
+                            </span>
+                            <span style={{ flex: 1, fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-light)' }}>{r.label}</span>
+                            <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-light)' }}
+                              dangerouslySetInnerHTML={{ __html: decodePriceHtml(r.cost) }} />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </ReviewBlock>
+                )}
                 <ReviewBlock title="Payment Method">
                   {isZeroDue ? (
                     <div style={{ padding: '14px', borderRadius: '10px', background: 'rgba(0,207,255,0.08)', border: '1px solid var(--primary-blue)', fontFamily: 'var(--font-body)' }}>
@@ -332,8 +383,7 @@ export default function CheckoutPage() {
                   ) : isZeroDue ? (
                     <><Lock size={15} /> Complete Order — $0.00 due</>
                   ) : payMethod === 'iwr_rail' ? (
-                    // ── Fixed: use plainPrice() so no &nbsp; shows in button ──
-                    <><Lock size={15} /> Continue to Secure Payment — {plainPrice(cartTotal)}</>
+                    <><Lock size={15} /> Continue to Secure Payment — {displayTotal}</>
                   ) : (
                     <><Lock size={15} /> Place Order — Pay by {PAY_METHODS.find((x) => x.id === payMethod)?.label}</>
                   )}
@@ -399,16 +449,19 @@ export default function CheckoutPage() {
                   />
                 );
               })}
-              
+              {/* Shipping — shows the selected rate once the address step is done */}
+              {availableShippingRates.length > 0 && (
+                <SummaryRow label="Shipping" htmlValue={shipDisplay} value={undefined} />
+              )}
             </div>
 
             <div style={{ height: 1, background: 'var(--glass-border)', marginBottom: '14px' }} />
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
               <span style={{ fontWeight: 700 }}>Total</span>
-              {/* ── Fixed total ── */}
-              <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: 900, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
-                dangerouslySetInnerHTML={{ __html: decodePriceHtml(cartTotal) }} />
+              {/* Computed so it reflects the selected shipping rate exactly */}
+              <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: 900, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+                {displayTotal}</span>
             </div>
 
             {[
