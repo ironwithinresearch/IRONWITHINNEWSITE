@@ -97,8 +97,11 @@ export default function CheckoutPage() {
 
   const subtotalNum = money(cartSubtotal);
   const selectedRate = availableShippingRates.find(r => r.id === shipRate) || null;
-  const shipCostNum = selectedRate ? money(selectedRate.cost) : money(shippingTotal);
-  const shipDisplay = selectedRate ? selectedRate.cost : shippingTotal;
+  // Shipping stays $0.00 until the customer reaches the review/order step (where
+  // they pick a method); only then does it count toward the displayed total.
+  const showShipping = currentStep >= 1;
+  const shipCostNum = showShipping ? (selectedRate ? money(selectedRate.cost) : money(shippingTotal)) : 0;
+  const shipDisplay = showShipping ? (selectedRate ? selectedRate.cost : (shippingTotal || '$0.00')) : '$0.00';
   // Total = cart total minus whatever shipping the cart auto-applied, plus the
   // rate the customer actually selected — so the display always matches the charge.
   const computedTotalNum = Math.max(0, money(cartTotal) - money(shippingTotal) + shipCostNum);
@@ -449,10 +452,8 @@ export default function CheckoutPage() {
                   />
                 );
               })}
-              {/* Shipping — shows the selected rate once the address step is done */}
-              {availableShippingRates.length > 0 && (
-                <SummaryRow label="Shipping" htmlValue={shipDisplay} value={undefined} />
-              )}
+              {/* Shipping — $0.00 until the review step, then the selected rate */}
+              <SummaryRow label="Shipping" htmlValue={shipDisplay} value={undefined} />
             </div>
 
             <div style={{ height: 1, background: 'var(--glass-border)', marginBottom: '14px' }} />
