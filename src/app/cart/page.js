@@ -15,7 +15,7 @@ import { useState } from 'react';
 
 export default function CartPage() {
   const {
-    cartItems, cartTotal, cartSubtotal, cartLoading,
+    cartItems, cartTotal, cartSubtotal, cartLoading, shippingTotal,
     updateQuantity, removeItem, applyCoupon, removeCoupon,
     applyingCoupon, cart, notification,
   } = useCart();
@@ -24,6 +24,10 @@ export default function CartPage() {
   const [couponError, setCouponError] = useState('');
 
   const subtotalNum = parseFloat(cartSubtotal?.replace(/[^0-9.]/g, '') || '0');
+  // Cart total EXCLUDING shipping — shipping is chosen at checkout review, so the
+  // cart shouldn't show it (the WC session may already carry a default rate).
+  const num = (s) => parseFloat(String(s || '').replace(/&nbsp;/g, '').replace(/[^0-9.]/g, '') || '0');
+  const cartTotalNoShipping = `$${Math.max(0, num(cartTotal) - num(shippingTotal)).toFixed(2)}`;
  
   const appliedCoupons = cart?.appliedCoupons || [];
 
@@ -205,11 +209,14 @@ export default function CartPage() {
 
               <div style={{ height: 1, background: 'var(--glass-border)', margin: '14px 0' }} />
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
                 <span style={{ fontWeight: 700 }}>Total</span>
-                <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: 900, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
-                  dangerouslySetInnerHTML={{ __html: decodePriceHtml(cartTotal) }} />
+                <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: 900, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+                  {cartTotalNoShipping}</span>
               </div>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.72rem', margin: '0 0 20px' }}>
+                Shipping calculated at checkout.
+              </p>
 
               {/* Coupon */}
               <div style={{ marginBottom: '18px' }}>
