@@ -88,9 +88,13 @@ export default function CheckoutPage() {
   useEffect(() => {
     if (!availableShippingRates.length) return;
     if (!availableShippingRates.some(r => r.id === shipRate)) {
-      setShipRate(chosenShippingMethods[0] || availableShippingRates[0].id);
+      // Default to the cheapest available rate, so US carts over $225 default to
+      // Free Shipping rather than a paid option.
+      const cost = (c) => parseFloat(String(c || '').replace(/[^0-9.]/g, '')) || 0;
+      const cheapest = [...availableShippingRates].sort((a, b) => cost(a.cost) - cost(b.cost))[0];
+      setShipRate(cheapest.id);
     }
-  }, [availableShippingRates, chosenShippingMethods, shipRate]);
+  }, [availableShippingRates, shipRate]);
 
   const money = (s) => parseFloat(String(s || '').replace(/&nbsp;/g, '').replace(/[^0-9.]/g, '') || '0');
   const fmt = (n) => `$${n.toFixed(2)}`;
