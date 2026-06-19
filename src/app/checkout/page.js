@@ -212,38 +212,11 @@ export default function CheckoutPage() {
     );
   }
 
-  // ── Require an account to check out ──
-  // Guests are prompted to sign in or create an account first, then returned
-  // here (cart preserved — same WooCommerce session). This ties every order to
-  // a customer account so they can come back and view it under "My Orders".
-  if (authMounted && !isLoggedIn) {
-    return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px' }}>
-        <div style={{ maxWidth: 480, width: '100%', textAlign: 'center', background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: '24px', padding: '48px 36px' }}>
-          <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'rgba(0,207,255,0.12)', border: '2px solid rgba(0,207,255,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 22px' }}>
-            <Lock size={32} color="var(--primary-blue)" />
-          </div>
-          <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.6rem', fontWeight: 900, marginBottom: '10px' }}>
-            Sign in to check out
-          </h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.55, marginBottom: '28px' }}>
-            Create an account or sign in to complete your order. You'll be able to track shipments, view past orders, and reorder in one click. Your cart is saved.
-          </p>
-          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/register?redirect=/checkout" style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '13px 26px', background: 'var(--gradient-primary)', borderRadius: '10px', color: '#fff', fontWeight: 700, textDecoration: 'none', fontFamily: 'var(--font-body)', boxShadow: 'var(--glow-blue)' }}>
-              Create Account
-            </Link>
-            <Link href="/login?redirect=/checkout" style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '13px 26px', border: '1px solid var(--glass-border)', borderRadius: '10px', color: 'var(--text-light)', fontWeight: 600, textDecoration: 'none', fontFamily: 'var(--font-body)' }}>
-              Sign In
-            </Link>
-          </div>
-          <Link href="/cart" style={{ display: 'inline-block', marginTop: '22px', color: 'var(--text-muted)', fontSize: '0.85rem', textDecoration: 'none' }}>
-            ← Back to cart
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  // ── Guest checkout enabled ──
+  // No login wall — guests check out with just their email (collected in the
+  // form below). The backend (iw-guest-account.php) auto-creates an account from
+  // that email so order history still works. Logged-out users see an optional,
+  // non-blocking sign-in nudge near the top of the form.
 
   return (
     <div style={{ minHeight: '100vh', paddingBottom: '80px' }}>
@@ -272,6 +245,16 @@ export default function CheckoutPage() {
             </div>
           ))}
         </div>
+
+        {/* Optional sign-in nudge — never blocks guest checkout */}
+        {authMounted && !isLoggedIn && (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flexWrap: 'wrap', background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: '12px', padding: '12px 18px', marginBottom: '28px', fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
+            <span>Checking out as guest — just add your email below.</span>
+            <Link href="/login?redirect=/checkout" style={{ color: 'var(--primary-blue)', fontWeight: 600, textDecoration: 'none' }}>
+              Have an account? Sign in →
+            </Link>
+          </div>
+        )}
 
         <div className="checkout-grid">
 
