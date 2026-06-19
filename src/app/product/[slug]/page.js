@@ -138,7 +138,7 @@ export default function ProductPage() {
     unitPrice = parseNum(resolvedVariation?.price);
     basePrice = parseNum(doseTiers[0]?.price);
   }
-  const totalPrice = (Number.isFinite(unitPrice) ? unitPrice : 0) * qty;
+  const totalPrice = (Number.isFinite(unitPrice) ? unitPrice : 0) * qty * (subscribe ? 0.9 : 1);
   const savePct = (Number.isFinite(basePrice) && Number.isFinite(unitPrice) && basePrice > unitPrice + 0.001)
     ? Math.round((1 - unitPrice / basePrice) * 100) : 0;
   // Regular (pre-sale) unit price, to show struck-through when on a site-wide sale
