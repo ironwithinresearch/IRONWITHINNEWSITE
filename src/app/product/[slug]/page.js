@@ -416,8 +416,15 @@ export default function ProductPage() {
                   style={{ textAlign: 'left', display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '12px 14px', borderRadius: '10px', cursor: 'pointer', background: subscribe ? 'rgba(0,207,255,0.06)' : 'transparent', border: `1px solid ${subscribe ? 'var(--primary-blue)' : 'var(--glass-border)'}`, color: 'var(--text-light)', fontFamily: 'var(--font-body)' }}>
                   <span style={{ width: 16, height: 16, borderRadius: '50%', border: `2px solid ${subscribe ? 'var(--primary-blue)' : 'var(--text-muted)'}`, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>{subscribe && <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--primary-blue)' }} />}</span>
                   <span style={{ flex: 1 }}>
-                    <span style={{ fontSize: '0.9rem', fontWeight: 700 }}>🔁 Subscribe &amp; Save 10%</span>
-                    <span style={{ display: 'block', fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: 2 }}>10% off + free US shipping · cancel anytime</span>
+                    <span style={{ fontSize: '0.9rem', fontWeight: 700 }}>
+                      🔁 Subscribe &amp; Save 10%
+                      {Number.isFinite(unitPrice) && (
+                        <span style={{ color: 'var(--primary-blue)' }}> — {money(unitPrice * 0.9)}</span>
+                      )}
+                    </span>
+                    <span style={{ display: 'block', fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: 2 }}>
+                      {Number.isFinite(unitPrice) ? `${money(unitPrice * 0.9)} now (10% off${onSale ? ' the sale price' : ''}) + free US shipping. Renews at the price each cycle.` : '10% off + free US shipping · cancel anytime'}
+                    </span>
                     {subscribe && (
                       <span style={{ display: 'flex', alignItems: 'center', gap: '7px', marginTop: 10 }} onClick={(e) => e.stopPropagation()}>
                         <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Deliver every</span>
