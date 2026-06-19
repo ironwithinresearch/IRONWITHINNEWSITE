@@ -273,17 +273,23 @@ export default function ProductPage() {
             {/* Price */}
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' }}>
               <span style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', fontWeight: 900, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-                {Number.isFinite(unitPrice) ? money(unitPrice) : 'Contact for price'}
+                {Number.isFinite(unitPrice) ? money(subscribe ? unitPrice * 0.9 : unitPrice) : 'Contact for price'}
               </span>
               {isVariable && <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>/ unit</span>}
-              {onSale && (
+              {subscribe && Number.isFinite(unitPrice) ? (
+                <span style={{ color: 'var(--text-muted)', fontSize: '1rem', textDecoration: 'line-through' }}>{money(unitPrice)}</span>
+              ) : onSale ? (
                 <span style={{ color: 'var(--text-muted)', fontSize: '1rem', textDecoration: 'line-through' }}>{money(regularUnit)}</span>
-              )}
-              {savePct > 0 && (
+              ) : null}
+              {subscribe ? (
+                <span style={{ padding: '3px 10px', background: 'rgba(0,207,255,0.14)', border: '1px solid rgba(0,207,255,0.35)', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 700, color: 'var(--primary-blue)' }}>
+                  🔁 Subscribe &amp; Save
+                </span>
+              ) : savePct > 0 ? (
                 <span style={{ padding: '3px 10px', background: 'rgba(52,211,153,0.14)', border: '1px solid rgba(52,211,153,0.35)', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 700, color: '#34d399' }}>
                   Save {savePct}%
                 </span>
-              )}
+              ) : null}
               <span style={{ padding: '3px 10px', background: inStock ? 'rgba(52,211,153,0.12)' : 'rgba(239,68,68,0.12)', border: `1px solid ${inStock ? 'rgba(52,211,153,0.3)' : 'rgba(239,68,68,0.3)'}`, borderRadius: '999px', fontSize: '0.72rem', fontWeight: 600, color: inStock ? '#34d399' : '#f87171' }}>
                 {inStock ? (hasCount ? `${stockQty} in stock` : 'In Stock') : 'Out of Stock'}
               </span>
