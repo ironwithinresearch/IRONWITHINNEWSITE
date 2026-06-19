@@ -9,6 +9,7 @@ import { GET_PRODUCTS } from '@/lib/queries/products';
 import { decodePriceHtml } from '@/lib/utils';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
+import GuaranteeBadge from '@/components/GuaranteeBadge';
 import {
   FlaskConical, Beaker, Pill, Dna, HeartPulse, Zap, Brain,
   Sparkles, Dumbbell, Microscope, Trophy, Rocket, ShieldCheck,
@@ -246,6 +247,13 @@ export default function Home() {
               View All Products <ArrowRight size={15} />
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* ══ GUARANTEE ══ */}
+      <section style={{ padding: '20px 24px 60px' }}>
+        <div style={{ maxWidth: 760, margin: '0 auto' }}>
+          <GuaranteeBadge />
         </div>
       </section>
 

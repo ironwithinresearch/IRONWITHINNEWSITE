@@ -9,6 +9,7 @@ import { useQuery } from '@apollo/client';
 import { GET_PRODUCT } from '@/lib/queries/products';
 import { getCoa } from '@/data/coas';
 import { useCart } from '@/context/CartContext';
+import GuaranteeBadge from '@/components/GuaranteeBadge';
 import {
   FlaskConical, ShoppingCart, Heart, ChevronRight,
   Shield, Truck, BadgeCheck, Minus, Plus,
@@ -484,9 +485,8 @@ export default function ProductPage() {
               </button> */}
             </div>
 
-            {/* <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <Truck size={13} color="var(--primary-blue)" /> Free shipping on orders over $225
-            </p> */}
+            {/* Guarantee + proof (risk reversal) */}
+            <GuaranteeBadge style={{ marginTop: '20px' }} />
           </div>
         </div>
 
