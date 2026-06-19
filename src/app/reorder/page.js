@@ -11,7 +11,7 @@ import { useCart } from '../../context/CartContext';
 
 export default function ReorderPage() {
   const router = useRouter();
-  const { addToCart, applyCoupon } = useCart();
+  const { addToCart } = useCart();
   const [status, setStatus] = useState('loading');
   const [error, setError] = useState('');
 
@@ -26,11 +26,10 @@ export default function ReorderPage() {
         if (!r.ok || !Array.isArray(d.items) || !d.items.length) throw new Error('We couldn’t find that subscription.');
         if (d.status === 'cancelled') throw new Error('This subscription has been cancelled.');
         for (const it of d.items) {
-          await addToCart(it.product_id, it.quantity || 1, it.variation_id || null);
+          // iw_sub_reorder tags the line for the 10% price override + free US
+          // shipping, WITHOUT creating a new subscription (it already exists).
+          await addToCart(it.product_id, it.quantity || 1, it.variation_id || null, { iw_sub_reorder: '1' });
         }
-        // Reorder pays an EXISTING subscription — apply the discount only; do not
-        // re-tag as a new subscription (that already exists in the backend).
-        try { await applyCoupon(d.code || 'SUBSCRIBE10'); } catch { /* coupon optional if already applied */ }
         if (!cancelled) router.replace('/checkout');
       } catch (e) {
         if (!cancelled) { setStatus('error'); setError(e.message || 'Something went wrong.'); }

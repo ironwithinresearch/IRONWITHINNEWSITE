@@ -9,7 +9,6 @@ import { useQuery } from '@apollo/client';
 import { GET_PRODUCT } from '@/lib/queries/products';
 import { getCoa } from '@/data/coas';
 import { useCart } from '@/context/CartContext';
-import { SUBSCRIBE_CODE } from '@/lib/subscriptions';
 import {
   FlaskConical, ShoppingCart, Heart, ChevronRight,
   Shield, Truck, BadgeCheck, Minus, Plus,
@@ -20,7 +19,7 @@ import {
 export default function ProductPage() {
   const { slug } = useParams();
   const router = useRouter();
-  const { addToCart, applyCoupon } = useCart();
+  const { addToCart } = useCart();
 
   const [qty, setQty] = useState(1);
   const [selectedDose, setSelectedDose] = useState(null);
@@ -174,10 +173,8 @@ export default function ProductPage() {
     setAddingToCart(false);
 
     if (result?.success !== false) {
-      // Subscribe & Save: the item is tagged via extraData above; apply the discount coupon.
-      if (subscribe) {
-        try { await applyCoupon(SUBSCRIBE_CODE); } catch { /* already applied is fine */ }
-      }
+      // Subscribe & Save: the item is tagged via extraData above; the 10% comes
+      // from a server-side price override (no coupon).
       setAddedToCart(true);
       setTimeout(() => setAddedToCart(false), 2500);
     } else {
