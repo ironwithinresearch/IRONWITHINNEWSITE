@@ -9,6 +9,7 @@ import { useQuery } from '@apollo/client';
 import { GET_PRODUCT } from '@/lib/queries/products';
 import { getCoa } from '@/data/coas';
 import { useCart } from '@/context/CartContext';
+import { setSubItem, SUBSCRIBE_CODE } from '@/lib/subscriptions';
 import {
   FlaskConical, ShoppingCart, Heart, ChevronRight,
   Shield, Truck, BadgeCheck, Minus, Plus,
@@ -19,7 +20,7 @@ import {
 export default function ProductPage() {
   const { slug } = useParams();
   const router = useRouter();
-  const { addToCart } = useCart();
+  const { addToCart, applyCoupon } = useCart();
 
   const [qty, setQty] = useState(1);
   const [selectedDose, setSelectedDose] = useState(null);
@@ -28,6 +29,8 @@ export default function ProductPage() {
   const [wishlisted, setWishlisted] = useState(false);
   const [activeTab, setActiveTab] = useState('description');
   const [cartError, setCartError] = useState('');
+  const [subscribe, setSubscribe] = useState(false);   // Subscribe & Save
+  const [subCadence, setSubCadence] = useState(30);
 
   // The gift card has a dedicated page; never show it on the generic product page.
   useEffect(() => {
@@ -170,6 +173,11 @@ export default function ProductPage() {
     setAddingToCart(false);
 
     if (result?.success !== false) {
+      // Subscribe & Save: record this product as a subscription + apply the discount.
+      if (subscribe) {
+        setSubItem(product.databaseId, resolvedVariation?.databaseId || 0, subCadence);
+        try { await applyCoupon(SUBSCRIBE_CODE); } catch { /* already applied is fine */ }
+      }
       setAddedToCart(true);
       setTimeout(() => setAddedToCart(false), 2500);
     } else {
@@ -396,6 +404,36 @@ export default function ProductPage() {
             {cartError && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '8px', color: '#f87171', fontSize: '0.85rem' }}>
                 <AlertCircle size={14} /> {cartError}
+              </div>
+            )}
+
+            {/* Subscribe & Save — per product */}
+            {inStock && slug !== 'gift-card' && (
+              <div style={{ display: 'grid', gap: '8px', marginBottom: '14px' }}>
+                <button type="button" onClick={() => setSubscribe(false)}
+                  style={{ textAlign: 'left', display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 14px', borderRadius: '10px', cursor: 'pointer', background: !subscribe ? 'rgba(0,207,255,0.06)' : 'transparent', border: `1px solid ${!subscribe ? 'var(--primary-blue)' : 'var(--glass-border)'}`, color: 'var(--text-light)', fontFamily: 'var(--font-body)' }}>
+                  <span style={{ width: 16, height: 16, borderRadius: '50%', border: `2px solid ${!subscribe ? 'var(--primary-blue)' : 'var(--text-muted)'}`, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{!subscribe && <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--primary-blue)' }} />}</span>
+                  <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>One-time purchase</span>
+                </button>
+                <button type="button" onClick={() => setSubscribe(true)}
+                  style={{ textAlign: 'left', display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '12px 14px', borderRadius: '10px', cursor: 'pointer', background: subscribe ? 'rgba(0,207,255,0.06)' : 'transparent', border: `1px solid ${subscribe ? 'var(--primary-blue)' : 'var(--glass-border)'}`, color: 'var(--text-light)', fontFamily: 'var(--font-body)' }}>
+                  <span style={{ width: 16, height: 16, borderRadius: '50%', border: `2px solid ${subscribe ? 'var(--primary-blue)' : 'var(--text-muted)'}`, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>{subscribe && <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--primary-blue)' }} />}</span>
+                  <span style={{ flex: 1 }}>
+                    <span style={{ fontSize: '0.9rem', fontWeight: 700 }}>🔁 Subscribe &amp; Save 10%</span>
+                    <span style={{ display: 'block', fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: 2 }}>10% off + free US shipping · cancel anytime</span>
+                    {subscribe && (
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '7px', marginTop: 10 }} onClick={(e) => e.stopPropagation()}>
+                        <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Deliver every</span>
+                        <select value={subCadence} onChange={(e) => setSubCadence(parseInt(e.target.value, 10))}
+                          style={{ padding: '5px 9px', background: 'var(--bg-dark)', border: '1px solid var(--glass-border)', borderRadius: '7px', color: 'var(--text-light)', fontFamily: 'var(--font-body)', fontSize: '0.8rem', outline: 'none', cursor: 'pointer' }}>
+                          <option value={30}>30 days</option>
+                          <option value={60}>60 days</option>
+                          <option value={90}>90 days</option>
+                        </select>
+                      </span>
+                    )}
+                  </span>
+                </button>
               </div>
             )}
 

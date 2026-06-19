@@ -28,7 +28,8 @@ export default function ReorderPage() {
         for (const it of d.items) {
           await addToCart(it.product_id, it.quantity || 1, it.variation_id || null);
         }
-        try { if (d.cadence_days) localStorage.setItem('iw_sub_cadence', String(d.cadence_days)); } catch { /* ignore */ }
+        // Reorder pays an EXISTING subscription — apply the discount only; do not
+        // re-tag as a new subscription (that already exists in the backend).
         try { await applyCoupon(d.code || 'SUBSCRIBE10'); } catch { /* coupon optional if already applied */ }
         if (!cancelled) router.replace('/checkout');
       } catch (e) {

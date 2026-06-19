@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@apollo/client';
 import { CHECKOUT, buildCheckoutInput } from '../../lib/queries/checkout';
+import { subscribeItemsFromCart } from '../../lib/subscriptions';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { decodePriceHtml } from '../../lib/utils';
@@ -149,17 +150,15 @@ export default function CheckoutPage() {
   const handlePlaceOrder = () => {
     payMethodRef.current = effectiveMethod;
     const billingInfo = billing.sameAsShipping ? shipping : billing;
-    // Subscribe & Save: only tag the cadence if SUBSCRIBE10 is actually applied.
-    const subOn = (cart?.appliedCoupons || []).some((c) => (c.code || '').toLowerCase() === 'subscribe10');
-    let subscribeCadence = 0;
-    if (subOn) { try { subscribeCadence = parseInt(localStorage.getItem('iw_sub_cadence') || '30', 10) || 30; } catch { subscribeCadence = 30; } }
+    // Subscribe & Save: per-product list, reconciled against the actual cart.
+    const subscribeItems = subscribeItemsFromCart(cartItems || []);
     const input = buildCheckoutInput({
       billing: { ...billingInfo, email: shipping.email },
       transactionId: '',
       paymentMethod: effectiveMethod,
       affiliateRef: getAffiliateRef(),
       shippingMethod: shipRate,
-      subscribeCadence,
+      subscribeItems,
     });
     checkoutMutation({ variables: input });
   };
