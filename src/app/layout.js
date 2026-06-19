@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import AgeVerification from "../components/AgeVerification";
 import AffiliateTracker from "../components/AffiliateTracker";
+import LeadCapture from "../components/LeadCapture";
 import ApolloWrapper from "../lib/ApolloWrapper";
 
 const SITE_NAME = "Iron Within Research";
@@ -48,6 +49,7 @@ export default function RootLayout({ children }) {
             {children}
           </main>
           <Footer />
+          <LeadCapture />
         </ApolloWrapper>
       </body>
     </html>
