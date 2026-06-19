@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@apollo/client';
 import { CHECKOUT, buildCheckoutInput } from '../../lib/queries/checkout';
-import { subscribeItemsFromCart } from '../../lib/subscriptions';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { decodePriceHtml } from '../../lib/utils';
@@ -150,15 +149,14 @@ export default function CheckoutPage() {
   const handlePlaceOrder = () => {
     payMethodRef.current = effectiveMethod;
     const billingInfo = billing.sameAsShipping ? shipping : billing;
-    // Subscribe & Save: per-product list, reconciled against the actual cart.
-    const subscribeItems = subscribeItemsFromCart(cartItems || []);
+    // Subscribe & Save items are tagged on the cart lines (extraData iw_subscribe),
+    // which flow to the order line items automatically — nothing to pass here.
     const input = buildCheckoutInput({
       billing: { ...billingInfo, email: shipping.email },
       transactionId: '',
       paymentMethod: effectiveMethod,
       affiliateRef: getAffiliateRef(),
       shippingMethod: shipRate,
-      subscribeItems,
     });
     checkoutMutation({ variables: input });
   };

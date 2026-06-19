@@ -9,7 +9,7 @@ import { useQuery } from '@apollo/client';
 import { GET_PRODUCT } from '@/lib/queries/products';
 import { getCoa } from '@/data/coas';
 import { useCart } from '@/context/CartContext';
-import { setSubItem, SUBSCRIBE_CODE } from '@/lib/subscriptions';
+import { SUBSCRIBE_CODE } from '@/lib/subscriptions';
 import {
   FlaskConical, ShoppingCart, Heart, ChevronRight,
   Shield, Truck, BadgeCheck, Minus, Plus,
@@ -168,14 +168,14 @@ export default function ProductPage() {
     const result = await addToCart(
       product.databaseId,
       qty,
-      resolvedVariation?.databaseId || null
+      resolvedVariation?.databaseId || null,
+      subscribe ? { iw_subscribe: String(subCadence) } : null   // tags the cart item as a subscription
     );
     setAddingToCart(false);
 
     if (result?.success !== false) {
-      // Subscribe & Save: record this product as a subscription + apply the discount.
+      // Subscribe & Save: the item is tagged via extraData above; apply the discount coupon.
       if (subscribe) {
-        setSubItem(product.databaseId, resolvedVariation?.databaseId || 0, subCadence);
         try { await applyCoupon(SUBSCRIBE_CODE); } catch { /* already applied is fine */ }
       }
       setAddedToCart(true);

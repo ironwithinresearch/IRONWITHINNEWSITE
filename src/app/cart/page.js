@@ -4,14 +4,13 @@
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { decodePriceHtml } from '@/lib/utils';
-import { isItemSubscribed } from '@/lib/subscriptions';
 import PaymentMethods from '@/components/PaymentMethods';
 import {
   ShoppingCart, Trash2, Plus, Minus, ArrowRight,
   Tag, Truck, ShieldCheck, Package, ChevronRight,
   Loader2,
 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
  
 
 export default function CartPage() {
@@ -32,9 +31,12 @@ export default function CartPage() {
  
   const appliedCoupons = cart?.appliedCoupons || [];
 
-  // Subscribe & Save: count cart items the shopper subscribed to (per product).
-  const [subscribedCount, setSubscribedCount] = useState(0);
-  useEffect(() => { setSubscribedCount((cartItems || []).filter(isItemSubscribed).length); }, [cartItems]);
+  // Subscribe & Save: read the cadence tag straight off each cart item's extraData.
+  const subCadenceOf = (item) => {
+    const e = (item.extraData || []).find((x) => x.key === 'iw_subscribe');
+    return e ? parseInt(e.value, 10) || 0 : 0;
+  };
+  const subscribedCount = (cartItems || []).filter((i) => subCadenceOf(i) > 0).length;
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return;
@@ -101,6 +103,7 @@ export default function CartPage() {
                 // Get variation attributes for display
                 const variationAttrs = variation?.attributes?.nodes || [];
                 const isFreeGift = (item.extraData || []).some(e => e.key === 'iw_free_gift' && e.value === '1');
+                const subCadence = subCadenceOf(item);
 
                 return (
                   <div key={item.key} style={{ background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: '16px', padding: '18px', display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
@@ -124,6 +127,11 @@ export default function CartPage() {
                           {isFreeGift && (
                             <span style={{ padding: '2px 9px', background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.5)', borderRadius: '999px', fontSize: '0.68rem', fontWeight: 800, letterSpacing: '0.03em', color: '#34d399', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
                               🎁 Free Gift
+                            </span>
+                          )}
+                          {subCadence > 0 && (
+                            <span style={{ padding: '2px 9px', background: 'rgba(0,207,255,0.12)', border: '1px solid var(--primary-blue)', borderRadius: '999px', fontSize: '0.68rem', fontWeight: 700, color: 'var(--primary-blue)', whiteSpace: 'nowrap' }}>
+                              🔁 Subscribe &amp; Save · every {subCadence}d
                             </span>
                           )}
                         </div>

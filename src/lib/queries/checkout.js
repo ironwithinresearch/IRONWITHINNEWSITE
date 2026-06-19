@@ -44,7 +44,7 @@ export const CHECKOUT = gql`
 // Build the checkout input object for the mutation
 // paymentMethod: 'cod' for Cash on Delivery (no Stripe needed to test)
 // paymentMethod: 'stripe' when Stripe is integrated
-export function buildCheckoutInput({ billing, transactionId = '', paymentMethod = 'cod', customerNote = '', affiliateRef = '', shippingMethod = '', subscribeItems = [] }) {
+export function buildCheckoutInput({ billing, transactionId = '', paymentMethod = 'cod', customerNote = '', affiliateRef = '', shippingMethod = '' }) {
   const billingAddress = {
     firstName: billing.firstName || '',
     lastName: billing.lastName || '',
@@ -65,12 +65,8 @@ export function buildCheckoutInput({ billing, transactionId = '', paymentMethod 
   const metaData = [];
   if (affiliateRef) metaData.push({ key: 'goaffpro_ref', value: String(affiliateRef) });
   if (shippingMethod) metaData.push({ key: '_iw_ship_rate', value: String(shippingMethod) });
-  // Subscribe & Save: tag the order with the per-product subscription list
-  // [{product_id,variation_id,cadence,quantity}] so the backend creates one
-  // subscription per subscribed product (iw-subscriptions.php).
-  if (Array.isArray(subscribeItems) && subscribeItems.length) {
-    metaData.push({ key: '_iw_subscribe_items', value: JSON.stringify(subscribeItems) });
-  }
+  // Subscribe & Save items are tagged at the cart-line level (extraData iw_subscribe)
+  // and flow to the order line items, so no order-level meta is needed here.
 
   // NOTE: we deliberately do NOT pass a `shipping` address here. The ship-to
   // address is set on the session beforehand (updateCustomer), and with
