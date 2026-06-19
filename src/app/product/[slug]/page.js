@@ -252,6 +252,9 @@ export default function ProductPage() {
                 </div>
               ))}
             </div>
+
+            {/* Guarantee + proof (risk reversal) — under the vial */}
+            <GuaranteeBadge style={{ marginTop: '16px' }} />
           </div>
 
           {/* ── Right: Info ── */}
@@ -484,9 +487,6 @@ export default function ProductPage() {
                 <Heart size={18} fill={wishlisted ? 'currentColor' : 'none'} />
               </button> */}
             </div>
-
-            {/* Guarantee + proof (risk reversal) */}
-            <GuaranteeBadge style={{ marginTop: '20px' }} />
           </div>
         </div>
 
