@@ -165,6 +165,12 @@ export default function OrdersPage() {
                         <div style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>
                           {formatDate(order.date)} · {lineItems.length} item{lineItems.length !== 1 ? 's' : ''}
                         </div>
+                        {order.trackingNumber && (
+                          <a href={order.trackingUrl || '#'} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', marginTop: '5px', color: '#34d399', fontSize: '0.76rem', fontWeight: 700, textDecoration: 'none' }}>
+                            <Truck size={13} /> Track shipment →
+                          </a>
+                        )}
                       </div>
                     </div>
 
@@ -178,6 +184,27 @@ export default function OrdersPage() {
                   {/* Expanded details */}
                   {isOpen && (
                     <div style={{ borderTop: '1px solid var(--glass-border)', padding: '20px 22px' }}>
+
+                      {/* Shipment tracking — appears once ShipStation sends a tracking number */}
+                      {order.trackingNumber && (
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap', padding: '14px 16px', background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.35)', borderRadius: 'var(--radius-md)', marginBottom: '20px' }}>
+                          <div>
+                            <p style={{ fontSize: '0.72rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              <Truck size={14} /> Shipment Tracking
+                            </p>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--text-light)', margin: 0 }}>
+                              {order.trackingProvider ? <span style={{ textTransform: 'uppercase', color: 'var(--text-muted)', marginRight: 6 }}>{order.trackingProvider}</span> : null}
+                              <span style={{ fontFamily: 'monospace', fontWeight: 600 }}>{order.trackingNumber}</span>
+                            </p>
+                          </div>
+                          {order.trackingUrl && (
+                            <a href={order.trackingUrl} target="_blank" rel="noopener noreferrer"
+                              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '10px 18px', background: '#34d399', color: '#04130c', borderRadius: 'var(--radius-md)', fontWeight: 700, fontSize: '0.82rem', textDecoration: 'none', whiteSpace: 'nowrap' }}>
+                              Track Package →
+                            </a>
+                          )}
+                        </div>
+                      )}
 
                       {/* Line items */}
                       <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '12px' }}>Items Ordered</p>

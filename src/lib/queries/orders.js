@@ -15,6 +15,9 @@ export const GET_ORDERS = gql`
           subtotal
           shippingTotal
           paymentMethodTitle
+          trackingNumber
+          trackingProvider
+          trackingUrl
           lineItems {
             nodes {
               quantity
@@ -47,6 +50,9 @@ export const GET_ORDER = gql`
       totalTax
       shippingTotal
       paymentMethodTitle
+      trackingNumber
+      trackingProvider
+      trackingUrl
       customerNote
       billing {
         firstName
