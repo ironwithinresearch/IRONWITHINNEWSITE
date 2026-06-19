@@ -15,16 +15,17 @@ import {
 } from 'lucide-react';
 
 const statusConfig = {
-  COMPLETED:  { label: 'Delivered',  color: '#34d399',             bg: 'rgba(52,211,153,0.12)',  border: 'rgba(52,211,153,0.3)',  Icon: CheckCircle2 },
   PROCESSING: { label: 'Processing', color: '#fbbf24',             bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.3)', Icon: Clock },
+  SHIPPED:    { label: 'Shipped',    color: '#00CFFF',             bg: 'rgba(0,207,255,0.12)',  border: 'rgba(0,207,255,0.3)',  Icon: Truck },
+  COMPLETED:  { label: 'Delivered',  color: '#34d399',             bg: 'rgba(52,211,153,0.12)',  border: 'rgba(52,211,153,0.3)',  Icon: CheckCircle2 },
   ON_HOLD:    { label: 'On Hold',    color: '#fbbf24',             bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.3)', Icon: Clock },
-  PENDING:    { label: 'Pending',    color: 'var(--primary-blue)', bg: 'rgba(0,207,255,0.12)',  border: 'rgba(0,207,255,0.3)',  Icon: Truck },
+  PENDING:    { label: 'Pending',    color: 'var(--primary-blue)', bg: 'rgba(0,207,255,0.12)',  border: 'rgba(0,207,255,0.3)',  Icon: Clock },
   CANCELLED:  { label: 'Cancelled',  color: '#f87171',             bg: 'rgba(239,68,68,0.12)',  border: 'rgba(239,68,68,0.3)',  Icon: XCircle },
   REFUNDED:   { label: 'Refunded',   color: '#f87171',             bg: 'rgba(239,68,68,0.12)',  border: 'rgba(239,68,68,0.3)',  Icon: XCircle },
   FAILED:     { label: 'Failed',     color: '#f87171',             bg: 'rgba(239,68,68,0.12)',  border: 'rgba(239,68,68,0.3)',  Icon: XCircle },
 };
 
-const filterOptions = ['All', 'Delivered', 'Processing', 'On Hold', 'Cancelled'];
+const filterOptions = ['All', 'Processing', 'Shipped', 'Delivered', 'On Hold', 'Cancelled'];
 
 function formatDate(dateStr) {
   if (!dateStr) return '';
