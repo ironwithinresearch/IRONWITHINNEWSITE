@@ -10,7 +10,7 @@ import {
   Tag, Truck, ShieldCheck, Package, ChevronRight,
   Loader2,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
  
 
 export default function CartPage() {
@@ -30,6 +30,25 @@ export default function CartPage() {
   const cartTotalNoShipping = `$${Math.max(0, num(cartTotal) - num(shippingTotal)).toFixed(2)}`;
  
   const appliedCoupons = cart?.appliedCoupons || [];
+
+  // ── Subscribe & Save ── (SUBSCRIBE10 = 10% + free US shipping)
+  const [subCadence, setSubCadence] = useState(30);
+  useEffect(() => {
+    try { const c = parseInt(localStorage.getItem('iw_sub_cadence') || '30', 10); if (c) setSubCadence(c); } catch { /* ignore */ }
+  }, []);
+  const subOn = appliedCoupons.some((c) => (c.code || '').toLowerCase() === 'subscribe10');
+  const toggleSubscribe = async () => {
+    try {
+      if (subOn) {
+        await removeCoupon('SUBSCRIBE10');
+        try { localStorage.removeItem('iw_sub_cadence'); localStorage.removeItem('iw_sub_on'); } catch { /* ignore */ }
+      } else {
+        try { localStorage.setItem('iw_sub_cadence', String(subCadence)); localStorage.setItem('iw_sub_on', '1'); } catch { /* ignore */ }
+        await applyCoupon('SUBSCRIBE10');
+      }
+    } catch { /* ignore */ }
+  };
+  const changeCadence = (v) => { setSubCadence(v); try { if (subOn) localStorage.setItem('iw_sub_cadence', String(v)); } catch { /* ignore */ } };
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return;
@@ -231,6 +250,28 @@ export default function CartPage() {
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.72rem', marginTop: '6px' }}>
                   Gift cards can&apos;t be combined with discount codes.
                 </p>
+              </div>
+
+              {/* Subscribe & Save */}
+              <div style={{ marginBottom: '18px', padding: '14px', borderRadius: '12px', border: `1px solid ${subOn ? 'var(--primary-blue)' : 'var(--glass-border)'}`, background: subOn ? 'rgba(0,207,255,0.06)' : 'transparent' }}>
+                <label style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', cursor: 'pointer' }}>
+                  <input type="checkbox" checked={subOn} onChange={toggleSubscribe} disabled={applyingCoupon} style={{ marginTop: '3px', width: 16, height: 16, accentColor: 'var(--primary-blue)', cursor: 'pointer' }} />
+                  <span style={{ fontSize: '0.85rem', lineHeight: 1.45 }}>
+                    <strong style={{ color: 'var(--text-light)' }}>🔁 Subscribe &amp; Save 10%</strong>
+                    <span style={{ color: 'var(--text-muted)' }}> — 10% off + free US shipping, delivered on your schedule. Cancel anytime.</span>
+                  </span>
+                </label>
+                {subOn && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px', paddingLeft: '26px' }}>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Deliver every</span>
+                    <select value={subCadence} onChange={(e) => changeCadence(parseInt(e.target.value, 10))}
+                      style={{ padding: '6px 10px', background: 'var(--bg-dark)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'var(--text-light)', fontFamily: 'var(--font-body)', fontSize: '0.82rem', outline: 'none', cursor: 'pointer' }}>
+                      <option value={30}>30 days</option>
+                      <option value={60}>60 days</option>
+                      <option value={90}>90 days</option>
+                    </select>
+                  </div>
+                )}
               </div>
 
               <Link href="/checkout" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '13px', background: 'var(--gradient-primary)', borderRadius: '10px', color: '#fff', fontWeight: 700, fontSize: '1rem', textDecoration: 'none', fontFamily: 'var(--font-body)', boxShadow: 'var(--glow-blue)', marginBottom: '14px' }}>
