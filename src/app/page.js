@@ -179,7 +179,7 @@ export default function Home() {
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '820px', margin: '0 auto' }}>
           {/* proof pill */}
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', padding: '7px 18px', background: 'rgba(0,207,255,0.08)', border: '1px solid rgba(0,207,255,0.25)', borderRadius: '999px', marginBottom: '26px', fontSize: '0.82rem', color: 'var(--text-light)', fontWeight: 600 }}>
-            <span style={{ color: '#fbbf24', letterSpacing: '2px', fontSize: '0.8rem' }}>★★★★★</span> 4.9/5 &nbsp;·&nbsp; Trusted by 10,000+ researchers
+            <span style={{ color: '#fbbf24', letterSpacing: '2px', fontSize: '0.8rem' }}>★★★★★</span> 4.9/5 &nbsp;·&nbsp; Trusted by 3,000+ researchers
           </div>
           <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(2.4rem, 6.5vw, 4.6rem)', fontWeight: 900, lineHeight: 1.08, marginBottom: '20px', letterSpacing: '-0.03em' }}>
             Research Peptides You Can{' '}
