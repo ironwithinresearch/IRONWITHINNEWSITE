@@ -2,7 +2,7 @@
 
 import { BookOpen, ArrowRight, Smartphone } from 'lucide-react';
 
-const APP_URL = 'https://peptide-paradigm.vercel.app';
+const APP_URL = 'https://apps.apple.com/us/app/peptide-paradigm/id6761913077';
 
 /* Homepage band promoting the Peptide Paradigm research app. Keeps research
    reference material off the store (compliance) by pointing to the app. */
@@ -22,7 +22,7 @@ export default function AppPromo() {
               Look up compounds, mechanisms of action, and the latest research in one place — built for researchers, free to start. The reference layer that pairs with your bench work.
             </p>
             <a href={APP_URL} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 9, padding: '14px 32px', background: 'linear-gradient(90deg,#7c3aed,#c026d3)', borderRadius: 12, color: '#fff', fontWeight: 800, fontSize: '1rem', textDecoration: 'none', boxShadow: '0 0 26px rgba(124,58,237,0.45)' }}>
-              Get the App <ArrowRight size={17} />
+               Download on the App Store <ArrowRight size={17} />
             </a>
           </div>
           <div style={{ flex: '0 0 auto' }}>

@@ -257,7 +257,7 @@ export default function ProductPage() {
             {/* Guarantee + proof (risk reversal) — under the vial */}
             <GuaranteeBadge style={{ marginTop: '16px' }} />
 
-            <a href="https://peptide-paradigm.vercel.app" target="_blank" rel="noopener noreferrer"
+            <a href="https://apps.apple.com/us/app/peptide-paradigm/id6761913077" target="_blank" rel="noopener noreferrer"
               style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px', padding: '11px 14px', background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.3)', borderRadius: '10px', color: 'var(--text-light)', textDecoration: 'none', fontSize: '0.85rem' }}>
               <BookOpen size={15} color="#a78bfa" />
               <span>Research this compound in the <strong>Peptide Paradigm app</strong></span>
