@@ -238,6 +238,7 @@ export default function Home() {
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 18px' }}>
                 Our 3 most-requested research sets in one — <strong style={{ color: 'var(--text-light)' }}>RT-3</strong> (30mg) + <strong style={{ color: 'var(--text-light)' }}>GLOW</strong> + <strong style={{ color: 'var(--text-light)' }}>CJC/IPA</strong> (10+10). 99%+ purity, COA on every vial.
               </p>
+              <div style={{ fontSize: '0.82rem', color: '#fbbf24', fontWeight: 600, margin: '0 0 16px' }}>🎁 Includes a FREE bac water · FREE U.S. shipping · +250 bonus points</div>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap', marginBottom: '20px' }}>
                 <span style={{ fontFamily: 'var(--font-heading)', fontSize: '2.1rem', fontWeight: 900, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>$267.66</span>
                 <span style={{ color: 'var(--text-muted)', fontSize: '1.1rem', textDecoration: 'line-through' }}>$314.90</span>
@@ -261,6 +262,7 @@ export default function Home() {
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 18px' }}>
                 Our longevity research stack — <strong style={{ color: 'var(--text-light)' }}>NAD+</strong> (1000mg ×2) + <strong style={{ color: 'var(--text-light)' }}>GHK-Cu</strong> (100mg) + <strong style={{ color: 'var(--text-light)' }}>Thymosin Alpha-1</strong> (5mg ×2). 99%+ purity, COA on every vial.
               </p>
+              <div style={{ fontSize: '0.82rem', color: '#fbbf24', fontWeight: 600, margin: '0 0 16px' }}>🎁 Includes a FREE bac water · FREE U.S. shipping · +250 bonus points</div>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap', marginBottom: '20px' }}>
                 <span style={{ fontFamily: 'var(--font-heading)', fontSize: '2.1rem', fontWeight: 900, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>$245.44</span>
                 <span style={{ color: 'var(--text-muted)', fontSize: '1.1rem', textDecoration: 'line-through' }}>$288.75</span>

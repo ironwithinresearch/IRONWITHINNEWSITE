@@ -11,6 +11,7 @@ import { pickUpsellSlug } from '@/lib/upsell';
 import PreCheckoutUpsell from '@/components/PreCheckoutUpsell';
 import FreeShippingBar from '@/components/FreeShippingBar';
 import CartRewards from '@/components/CartRewards';
+import SaleCountdown from '@/components/SaleCountdown';
 import PaymentMethods from '@/components/PaymentMethods';
 import {
   ShoppingCart, Trash2, Plus, Minus, ArrowRight,
@@ -131,7 +132,7 @@ export default function CartPage() {
                 const variation = item.variation?.node;
                 // Get variation attributes for display
                 const variationAttrs = variation?.attributes?.nodes || [];
-                const isFreeGift = (item.extraData || []).some(e => e.key === 'iw_free_gift' && e.value === '1');
+                const isFreeGift = (item.extraData || []).some(e => (e.key === 'iw_free_gift' || e.key === 'iw_bundle_gift') && e.value === '1');
                 const subCadence = subCadenceOf(item);
 
                 return (
@@ -227,6 +228,7 @@ export default function CartPage() {
             <div style={{ background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: '20px', padding: '28px', position: 'sticky', top: 'calc(var(--navbar-height) + 20px)' }}>
               <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 800, marginBottom: '20px' }}>Order Summary</h2>
 
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}><SaleCountdown /></div>
               <FreeShippingBar subtotal={subtotalNum} alreadyFree={subscribedCount > 0} />
               <CartRewards subtotal={subtotalNum} onApplyCode={applyCoupon} />
 

@@ -46,6 +46,7 @@ export const GET_PRODUCTS = gql`
               price
               regularPrice
               stockStatus
+              stockQuantity
             }
           }
         }

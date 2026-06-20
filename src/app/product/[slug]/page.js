@@ -10,6 +10,7 @@ import { GET_PRODUCT } from '@/lib/queries/products';
 import { getCoa } from '@/data/coas';
 import { useCart } from '@/context/CartContext';
 import GuaranteeBadge from '@/components/GuaranteeBadge';
+import SaleCountdown from '@/components/SaleCountdown';
 import {
   FlaskConical, ShoppingCart, Heart, ChevronRight,
   Shield, Truck, BadgeCheck, Minus, Plus,
@@ -459,6 +460,8 @@ export default function ProductPage() {
                 </button>
               </div>
             )}
+
+            <div style={{ marginBottom: '12px' }}><SaleCountdown /></div>
 
             {/* Add to cart + wishlist */}
             <div style={{ display: 'flex', gap: '12px' }}>

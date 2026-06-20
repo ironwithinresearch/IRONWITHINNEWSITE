@@ -8,6 +8,7 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { GET_PRODUCTS, GET_CATEGORIES } from '@/lib/queries/products';
 import { decodePriceHtml } from '@/lib/utils';
+import { lowStockCount } from '@/lib/stock';
 import {
   FlaskConical, Search, ShoppingCart, Package,
   Loader2, ChevronRight, AlertCircle,
@@ -151,6 +152,7 @@ export default function ShopPage() {
                   : product.stockStatus === 'IN_STOCK';
                 const added = addedItems[product.id];
                 const wishlisted = isWishlisted(product.id);
+                const low = lowStockCount(product);
 
                 return (
                   <div key={product.id} style={{ background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column', transition: 'all 0.2s ease', position: 'relative' }}
@@ -166,6 +168,12 @@ export default function ShopPage() {
                       onMouseLeave={e => { if (!wishlisted) { e.currentTarget.style.background = 'rgba(5,7,18,0.55)'; e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.color = '#ec4899'; } }}>
                       <Heart size={14} fill={wishlisted ? 'currentColor' : 'none'} />
                     </button>
+
+                    {low && (
+                      <span style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 2, padding: '3px 9px', background: 'rgba(245,158,11,0.16)', border: '1px solid rgba(245,158,11,0.5)', borderRadius: '8px', fontSize: '0.66rem', fontWeight: 800, color: '#fbbf24', backdropFilter: 'blur(8px)', whiteSpace: 'nowrap' }}>
+                        🔥 Only {low} left
+                      </span>
+                    )}
 
                     {/* Image */}
                     <Link href={`/product/${product.slug}`} style={{ textDecoration: 'none' }}>
