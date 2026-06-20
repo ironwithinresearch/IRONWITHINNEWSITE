@@ -3,6 +3,7 @@
 
 import { ApolloClient, InMemoryCache, createHttpLink, ApolloLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
+import { onError } from '@apollo/client/link/error';
 
 export function makeClient() {
   const httpLink = createHttpLink({
@@ -29,6 +30,41 @@ export function makeClient() {
     };
   });
 
+  // Recovers from an expired/invalid WooCommerce session token.
+  // WooGraphQL hands out a `woocommerce-session` JWT that expires after ~48h.
+  // When a stale token is sent, the server replies with an error and NO new
+  // token, so the dead token would otherwise stay pinned in localStorage
+  // forever — breaking cart reads ("invalid_token: Expired token") and
+  // checkout ("Sorry, no session found"). This link detects that error class,
+  // drops the stale token(s), and retries ONCE so the server mints a fresh
+  // session transparently.
+  const errorLink = onError(({ graphQLErrors, operation, forward }) => {
+    if (!graphQLErrors || typeof window === 'undefined') return;
+    const isStaleSession = graphQLErrors.some((e) =>
+      /invalid[_ ]token|expired token|no session found/i.test(e?.message || '')
+    );
+    if (!isStaleSession) return;
+
+    // Guard against a retry loop: only retry the first time per operation.
+    const ctx = operation.getContext();
+    if (ctx._sessionRetried) return;
+
+    const hadSession = !!localStorage.getItem('woo_session');
+    localStorage.removeItem('woo_session'); // drop the dead cart session
+    // If the auth JWT is what expired, clear it too (mirrors logoutUser()).
+    const isAuthError = graphQLErrors.some((e) =>
+      /jwt|authorization|wp_jwt|signature/i.test(e?.message || '')
+    );
+    if (isAuthError) {
+      localStorage.removeItem('jwt_token');
+      localStorage.removeItem('iwr_user');
+    }
+
+    if (!hadSession && !isAuthError) return; // nothing to clear → don't loop
+    operation.setContext({ ...ctx, _sessionRetried: true });
+    return forward(operation); // retry → server issues a fresh session token
+  });
+
   // Captures NEW session token from WooCommerce response and saves it
   const sessionLink = new ApolloLink((operation, forward) => {
     return forward(operation).map((response) => {
@@ -53,7 +89,7 @@ export function makeClient() {
   });
 
   return new ApolloClient({
-    link: ApolloLink.from([sessionLink, authLink, httpLink]),
+    link: ApolloLink.from([errorLink, sessionLink, authLink, httpLink]),
     cache: new InMemoryCache({
       typePolicies: {
         Cart: { keyFields: [] }, // treat cart as a singleton
