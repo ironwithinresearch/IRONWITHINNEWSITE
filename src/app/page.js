@@ -16,6 +16,7 @@ import {
   Mail, ArrowRight, CheckCircle2, Star, BadgeCheck,
   ShoppingCart, Heart, Loader2,
 } from 'lucide-react';
+import SaleCountdown from '@/components/SaleCountdown';
 
 const categories = [
   { name: 'Healing & Recovery', Icon: HeartPulse, count: 12, href: '/categories', color: 'var(--primary-blue)' },
@@ -188,6 +189,7 @@ export default function Home() {
           <p style={{ fontSize: 'clamp(1.05rem, 2.4vw, 1.25rem)', color: 'var(--text-secondary)', maxWidth: '630px', margin: '0 auto 32px', lineHeight: 1.6 }}>
             99%+ purity, independently third-party lab-tested, with a Certificate of Analysis on every vial — shipped in 24 hours.
           </p>
+          <div><SaleCountdown /></div>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
             <Link href="/product/grand-slam-bundle" style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', padding: '16px 38px', background: 'var(--gradient-primary)', borderRadius: 'var(--radius-md)', color: '#fff', fontWeight: 800, fontSize: '1.05rem', textDecoration: 'none', boxShadow: '0 0 30px rgba(0,207,255,0.5)', fontFamily: 'var(--font-body)' }}>
               Shop the Grand Slam Bundle — Save 15% <ArrowRight size={17} />

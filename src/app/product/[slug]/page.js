@@ -294,9 +294,18 @@ export default function ProductPage() {
                   Save {savePct}%
                 </span>
               ) : null}
-              <span style={{ padding: '3px 10px', background: inStock ? 'rgba(52,211,153,0.12)' : 'rgba(239,68,68,0.12)', border: `1px solid ${inStock ? 'rgba(52,211,153,0.3)' : 'rgba(239,68,68,0.3)'}`, borderRadius: '999px', fontSize: '0.72rem', fontWeight: 600, color: inStock ? '#34d399' : '#f87171' }}>
-                {inStock ? (hasCount ? `${stockQty} in stock` : 'In Stock') : 'Out of Stock'}
-              </span>
+              {(() => {
+                const low = inStock && hasCount && stockQty > 0 && stockQty <= 10;
+                const color = !inStock ? '#f87171' : low ? '#fbbf24' : '#34d399';
+                const bg = !inStock ? 'rgba(239,68,68,0.12)' : low ? 'rgba(245,158,11,0.14)' : 'rgba(52,211,153,0.12)';
+                const bd = !inStock ? 'rgba(239,68,68,0.3)' : low ? 'rgba(245,158,11,0.45)' : 'rgba(52,211,153,0.3)';
+                const label = !inStock ? 'Out of Stock' : low ? `🔥 Only ${stockQty} left` : 'In Stock';
+                return (
+                  <span style={{ padding: '3px 10px', background: bg, border: `1px solid ${bd}`, borderRadius: '999px', fontSize: '0.72rem', fontWeight: 600, color }}>
+                    {label}
+                  </span>
+                );
+              })()}
             </div>
 
             {product.shortDescription && (
