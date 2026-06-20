@@ -2,7 +2,8 @@
 
 import { BookOpen, ArrowRight, Smartphone } from 'lucide-react';
 
-const APP_URL = 'https://apps.apple.com/us/app/peptide-paradigm/id6761913077';
+const APPLE_URL = 'https://apps.apple.com/us/app/peptide-paradigm/id6761913077';
+const PLAY_URL = 'https://play.google.com/store/apps/details?id=com.ironsearch.peptide';
 
 /* Homepage band promoting the Peptide Paradigm research app. Keeps research
    reference material off the store (compliance) by pointing to the app. */
@@ -21,9 +22,14 @@ export default function AppPromo() {
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 20px', maxWidth: 540 }}>
               Look up compounds, mechanisms of action, and the latest research in one place — built for researchers, free to start. The reference layer that pairs with your bench work.
             </p>
-            <a href={APP_URL} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 9, padding: '14px 32px', background: 'linear-gradient(90deg,#7c3aed,#c026d3)', borderRadius: 12, color: '#fff', fontWeight: 800, fontSize: '1rem', textDecoration: 'none', boxShadow: '0 0 26px rgba(124,58,237,0.45)' }}>
-               Download on the App Store <ArrowRight size={17} />
-            </a>
+            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+              <a href={APPLE_URL} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 9, padding: '13px 26px', background: 'linear-gradient(90deg,#7c3aed,#c026d3)', borderRadius: 12, color: '#fff', fontWeight: 800, fontSize: '0.95rem', textDecoration: 'none', boxShadow: '0 0 26px rgba(124,58,237,0.4)' }}>
+                <Smartphone size={16} /> App Store
+              </a>
+              <a href={PLAY_URL} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 9, padding: '13px 26px', background: 'var(--card-elevated)', border: '1px solid rgba(124,58,237,0.4)', borderRadius: 12, color: 'var(--text-light)', fontWeight: 800, fontSize: '0.95rem', textDecoration: 'none' }}>
+                <Smartphone size={16} color="#a78bfa" /> Google Play
+              </a>
+            </div>
           </div>
           <div style={{ flex: '0 0 auto' }}>
             <div style={{ width: 120, height: 120, borderRadius: 28, background: 'radial-gradient(circle at 30% 30%, rgba(124,58,237,0.35), rgba(0,207,255,0.15))', border: '1px solid rgba(124,58,237,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

@@ -13,7 +13,7 @@ const footerLinks = {
   ],
   Company: [
     { label: 'Contact', href: '/contact' },
-    { label: 'Research App (iOS)', href: 'https://apps.apple.com/us/app/peptide-paradigm/id6761913077' },
+    { label: 'Research App', href: 'https://peptide-paradigm.vercel.app' },
     { label: 'Refer & Earn $25', href: '/refer' },
     { label: 'Rewards', href: '/rewards' },
     { label: 'Affiliates', href: '/affiliate' },
