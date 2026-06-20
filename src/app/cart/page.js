@@ -18,7 +18,8 @@ import {
   Tag, Truck, ShieldCheck, Package, ChevronRight,
   Loader2,
 } from 'lucide-react';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { getReferCookie } from '@/lib/referral';
 
 
 export default function CartPage() {
@@ -38,6 +39,15 @@ export default function CartPage() {
   const cartTotalNoShipping = `$${Math.max(0, num(cartTotal) - num(shippingTotal)).toFixed(2)}`;
  
   const appliedCoupons = cart?.appliedCoupons || [];
+
+  // Referred friends: auto-apply REFER25 ($25 off, min $75) once their cart qualifies.
+  useEffect(() => {
+    const code = getReferCookie();
+    if (!code || subtotalNum < 75) return;
+    if (appliedCoupons.some((c) => (c.code || '').toUpperCase() === 'REFER25')) return;
+    applyCoupon('REFER25').catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subtotalNum]);
 
   // Subscribe & Save: read the cadence tag straight off each cart item's extraData.
   const subCadenceOf = (item) => {

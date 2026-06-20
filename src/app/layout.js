@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import AgeVerification from "../components/AgeVerification";
 import AffiliateTracker from "../components/AffiliateTracker";
+import ReferralCapture from "../components/ReferralCapture";
 import LeadCapture from "../components/LeadCapture";
 import ApolloWrapper from "../lib/ApolloWrapper";
 
@@ -42,6 +43,7 @@ export default function RootLayout({ children }) {
       <body>
         <ApolloWrapper>
           <AffiliateTracker />
+          <ReferralCapture />
           <AgeVerification />
           <AnnouncementBar />
           <Navbar />

@@ -13,6 +13,8 @@ const footerLinks = {
   ],
   Company: [
     { label: 'Contact', href: '/contact' },
+    { label: 'Refer & Earn $25', href: '/refer' },
+    { label: 'Rewards', href: '/rewards' },
     { label: 'Affiliates', href: '/affiliate' },
   ],
   Support: [

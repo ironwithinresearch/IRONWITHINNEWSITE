@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useMutation } from '@apollo/client';
 import { CHECKOUT, buildCheckoutInput } from '../../lib/queries/checkout';
 import { useCart } from '../../context/CartContext';
+import OrderBump from '@/components/OrderBump';
 import { useAuth } from '../../context/AuthContext';
 import { decodePriceHtml } from '../../lib/utils';
 import { getAffiliateRef } from '../../lib/affiliate';
@@ -62,7 +63,7 @@ function plainPrice(price) {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cart, cartItems, cartTotal, cartSubtotal, refetchCart,
+  const { cart, cartItems, cartTotal, cartSubtotal, refetchCart, addToCart, removeItem,
     setShippingAddress, setShippingMethod, availableShippingRates, chosenShippingMethods, shippingTotal,
     updatingAddress, updatingShipping } = useCart();
   const { isLoggedIn, user, mounted: authMounted } = useAuth();
@@ -394,6 +395,7 @@ export default function CheckoutPage() {
                   </div>
                   )}
                 </ReviewBlock>
+                <OrderBump cartItems={cartItems} onAdd={addToCart} onRemove={removeItem} />
                 <button onClick={handlePlaceOrder} disabled={placingOrder}
                   style={{ width: '100%', padding: '14px', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: placingOrder ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: 'var(--glow-blue)', opacity: placingOrder ? 0.8 : 1 }}>
                   {placingOrder ? (
