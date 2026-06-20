@@ -168,6 +168,27 @@ export default function CheckoutPage() {
     refetchCart();
   };
 
+  // Fire a Klaviyo "Started Checkout" event (powers the abandoned-cart flow). Once per session.
+  const startedCheckoutFired = useRef(false);
+  const fireStartedCheckout = () => {
+    if (startedCheckoutFired.current || !shipping.email) return;
+    startedCheckoutFired.current = true;
+    try {
+      const num = (s) => parseFloat(String(s || '').replace(/[^0-9.]/g, '')) || 0;
+      const items = (cartItems || []).map((i) => ({
+        name: i.product?.node?.name || '',
+        quantity: i.quantity,
+        price: num(i.total),
+        image: i.product?.node?.image?.sourceUrl || '',
+        url: i.product?.node?.slug ? `https://www.ironwithin.io/product/${i.product.node.slug}` : '',
+      }));
+      fetch('/api/klaviyo-checkout', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: shipping.email, first_name: shipping.firstName, items, value: num(cartTotal), checkout_url: 'https://www.ironwithin.io/cart' }),
+      }).catch(() => {});
+    } catch {}
+  };
+
   const handlePlaceOrder = async () => {
     payMethodRef.current = effectiveMethod;
     const billingInfo = billing.sameAsShipping ? shipping : billing;
@@ -229,6 +250,16 @@ export default function CheckoutPage() {
                 </p>
               </div>
             )}
+            <div style={{ textAlign: 'left', background: 'var(--bg-dark)', border: '1px solid rgba(0,207,255,0.25)', borderRadius: '14px', padding: '18px 20px', marginBottom: '26px' }}>
+              <div style={{ fontWeight: 800, color: '#fff', fontSize: '1rem', marginBottom: '6px' }}>🎁 Give $25, get $25</div>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.87rem', lineHeight: 1.55, margin: '0 0 12px' }}>
+                You just earned <strong style={{ color: 'var(--text-light)' }}>IWR Rewards points</strong> on this order. Want more? Share your referral link — your friend gets <strong style={{ color: 'var(--text-light)' }}>$25 off</strong> their first order and you earn <strong style={{ color: 'var(--text-light)' }}>$25</strong> when they buy.
+              </p>
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                <Link href="/refer" style={{ padding: '9px 18px', background: 'var(--gradient-primary)', borderRadius: '9px', color: '#fff', fontWeight: 700, fontSize: '0.85rem', textDecoration: 'none' }}>Get your referral link</Link>
+                <Link href="/rewards" style={{ padding: '9px 18px', border: '1px solid var(--glass-border)', borderRadius: '9px', color: 'var(--text-light)', fontWeight: 600, fontSize: '0.85rem', textDecoration: 'none' }}>View your rewards</Link>
+              </div>
+            </div>
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
               <Link href="/orders" style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '12px 24px', background: 'var(--gradient-primary)', borderRadius: '10px', color: '#fff', fontWeight: 600, textDecoration: 'none', fontFamily: 'var(--font-body)' }}>
                 View Orders <ArrowRight size={15} />
@@ -293,7 +324,7 @@ export default function CheckoutPage() {
           <div>
             {currentStep === 0 && (
               <FormCard icon={<Truck size={17} color="var(--primary-blue)" />} title="Shipping Information">
-                <form onSubmit={async e => { e.preventDefault(); await setShippingAddress(shipping); setCurrentStep(1); }}>
+                <form onSubmit={async e => { e.preventDefault(); fireStartedCheckout(); await setShippingAddress(shipping); setCurrentStep(1); }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                     <Field label="First Name *" value={shipping.firstName} onChange={v => setShipping(s => ({ ...s, firstName: v }))} placeholder="John" required />
                     <Field label="Last Name *" value={shipping.lastName} onChange={v => setShipping(s => ({ ...s, lastName: v }))} placeholder="Doe" required />
