@@ -17,6 +17,7 @@ import {
   ShoppingCart, Heart, Loader2,
 } from 'lucide-react';
 import SaleCountdown from '@/components/SaleCountdown';
+import AppPromo from '@/components/AppPromo';
 
 const categories = [
   { name: 'Healing & Recovery', Icon: HeartPulse, count: 12, href: '/categories', color: 'var(--primary-blue)' },
@@ -306,6 +307,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ══ RESEARCH APP ══ */}
+      <AppPromo />
 
       {/* ══ GUARANTEE ══ */}
       <section style={{ padding: '20px 24px 60px' }}>

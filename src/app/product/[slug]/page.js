@@ -15,7 +15,7 @@ import {
   FlaskConical, ShoppingCart, Heart, ChevronRight,
   Shield, Truck, BadgeCheck, Minus, Plus,
   Loader2, CheckCircle2, AlertCircle, Info, Package,
-  FileText, Download,
+  FileText, Download, BookOpen, ArrowRight,
 } from 'lucide-react';
 
 export default function ProductPage() {
@@ -256,6 +256,13 @@ export default function ProductPage() {
 
             {/* Guarantee + proof (risk reversal) — under the vial */}
             <GuaranteeBadge style={{ marginTop: '16px' }} />
+
+            <a href="https://peptide-paradigm.vercel.app" target="_blank" rel="noopener noreferrer"
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px', padding: '11px 14px', background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.3)', borderRadius: '10px', color: 'var(--text-light)', textDecoration: 'none', fontSize: '0.85rem' }}>
+              <BookOpen size={15} color="#a78bfa" />
+              <span>Research this compound in the <strong>Peptide Paradigm app</strong></span>
+              <ArrowRight size={14} color="#a78bfa" style={{ marginLeft: 'auto' }} />
+            </a>
           </div>
 
           {/* ── Right: Info ── */}
