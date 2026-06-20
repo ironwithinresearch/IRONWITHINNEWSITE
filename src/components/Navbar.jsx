@@ -102,9 +102,7 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
-            <div style={{ width: 34, height: 34, borderRadius: 'var(--radius-md)', background: 'var(--gradient-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'var(--glow-blue)', flexShrink: 0 }}>
-              <FlaskConical size={17} color="#fff" />
-            </div>
+            <img src="/logo-mark.png" alt="Iron Within Research" width={36} height={36} style={{ width: 36, height: 36, borderRadius: 'var(--radius-md)', boxShadow: 'var(--glow-blue)', flexShrink: 0, display: 'block' }} />
             <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '1.1rem', letterSpacing: '-0.01em', background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', display: 'none' }} className="logo-text">
               Iron Within Research
             </span>
