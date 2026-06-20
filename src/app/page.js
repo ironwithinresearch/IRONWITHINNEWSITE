@@ -227,7 +227,7 @@ export default function Home() {
         <div className="container" style={{ maxWidth: 1000 }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '32px', alignItems: 'center', background: 'var(--card-dark)', border: '1px solid rgba(0,207,255,0.3)', borderRadius: '24px', padding: '32px', boxShadow: '0 0 0 1px rgba(0,207,255,0.05), 0 20px 60px rgba(0,0,0,0.3)' }}>
             <div style={{ flex: '1 1 280px', minWidth: 240 }}>
-              <img src="https://bhidasowgm.onrocket.site/wp-content/uploads/2026/06/grand-slam-real.png" alt="The Grand Slam Bundle" style={{ width: '100%', borderRadius: '16px', display: 'block' }} />
+              <img src="https://bhidasowgm.onrocket.site/wp-content/uploads/2026/06/grand-slam-flagship.png" alt="The Grand Slam Bundle" style={{ width: '100%', borderRadius: '16px', display: 'block' }} />
             </div>
             <div style={{ flex: '1 1 320px' }}>
               <span style={{ display: 'inline-block', padding: '5px 14px', background: 'var(--gradient-primary)', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#fff', marginBottom: '14px' }}>★ Flagship Bundle</span>
