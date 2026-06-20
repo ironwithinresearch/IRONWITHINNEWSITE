@@ -8,6 +8,7 @@ import { useMutation } from '@apollo/client';
 import { CHECKOUT, buildCheckoutInput } from '../../lib/queries/checkout';
 import { useCart } from '../../context/CartContext';
 import OrderBump from '@/components/OrderBump';
+import { getReferCookie } from '@/lib/referral';
 import { useAuth } from '../../context/AuthContext';
 import { decodePriceHtml } from '../../lib/utils';
 import { getAffiliateRef } from '../../lib/affiliate';
@@ -177,6 +178,7 @@ export default function CheckoutPage() {
       transactionId: '',
       paymentMethod: effectiveMethod,
       affiliateRef: getAffiliateRef(),
+      referrerCode: getReferCookie(),
       shippingMethod: shipRate,
     });
     try {
