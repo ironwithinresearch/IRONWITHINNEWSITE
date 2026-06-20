@@ -10,6 +10,7 @@ import { GET_PRODUCT } from '@/lib/queries/products';
 import { pickUpsellSlug } from '@/lib/upsell';
 import PreCheckoutUpsell from '@/components/PreCheckoutUpsell';
 import FreeShippingBar from '@/components/FreeShippingBar';
+import CartRewards from '@/components/CartRewards';
 import PaymentMethods from '@/components/PaymentMethods';
 import {
   ShoppingCart, Trash2, Plus, Minus, ArrowRight,
@@ -227,6 +228,7 @@ export default function CartPage() {
               <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 800, marginBottom: '20px' }}>Order Summary</h2>
 
               <FreeShippingBar subtotal={subtotalNum} alreadyFree={subscribedCount > 0} />
+              <CartRewards subtotal={subtotalNum} onApplyCode={applyCoupon} />
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <SummaryRow label="Subtotal" rawValue={cartSubtotal} />
