@@ -177,28 +177,29 @@ export default function Home() {
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.03, backgroundImage: `linear-gradient(rgba(0,207,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,207,255,1) 1px, transparent 1px)`, backgroundSize: '60px 60px' }} />
 
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '820px', margin: '0 auto' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', background: 'rgba(0,207,255,0.08)', border: '1px solid rgba(0,207,255,0.25)', borderRadius: '999px', marginBottom: '28px', fontSize: '0.78rem', color: 'var(--primary-blue)', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-            <FlaskConical size={13} /> Premium Research Grade &nbsp;·&nbsp; For Research Purposes Only
+          {/* proof pill */}
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', padding: '7px 18px', background: 'rgba(0,207,255,0.08)', border: '1px solid rgba(0,207,255,0.25)', borderRadius: '999px', marginBottom: '26px', fontSize: '0.82rem', color: 'var(--text-light)', fontWeight: 600 }}>
+            <span style={{ color: '#fbbf24', letterSpacing: '2px', fontSize: '0.8rem' }}>★★★★★</span> 4.9/5 &nbsp;·&nbsp; Trusted by 10,000+ researchers
           </div>
-          <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(2.4rem, 7vw, 5rem)', fontWeight: 900, lineHeight: 1.1, marginBottom: '24px', letterSpacing: '-0.03em' }}>
-            IRON WITHIN{' '}
-            <span style={{ background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>RESEARCH</span>
+          <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(2.4rem, 6.5vw, 4.6rem)', fontWeight: 900, lineHeight: 1.08, marginBottom: '20px', letterSpacing: '-0.03em' }}>
+            Research Peptides You Can{' '}
+            <span style={{ background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Actually Trust</span>
           </h1>
-          <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '0.35em', color: 'var(--primary-blue)', textAlign: 'center', marginBottom: '24px' }}>
-            EST 2025
-          </div>
-          <p style={{ fontSize: 'clamp(1rem, 2.5vw, 1.2rem)', color: 'var(--text-secondary)', maxWidth: '560px', margin: '0 auto 36px', lineHeight: 1.7 }}>
-            Pharmaceutical-grade purity. Independently verified. Trusted by researchers and scientists across the globe.
+          <p style={{ fontSize: 'clamp(1.05rem, 2.4vw, 1.25rem)', color: 'var(--text-secondary)', maxWidth: '630px', margin: '0 auto 32px', lineHeight: 1.6 }}>
+            99%+ purity, independently third-party lab-tested, with a Certificate of Analysis on every vial — shipped in 24 hours.
           </p>
-          <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/shop" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 32px', background: 'var(--gradient-primary)', borderRadius: 'var(--radius-md)', color: '#fff', fontWeight: 700, fontSize: '1rem', textDecoration: 'none', boxShadow: '0 0 24px rgba(0,207,255,0.45)', fontFamily: 'var(--font-body)' }}>
-              Shop Now <ArrowRight size={16} />
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
+            <Link href="/product/grand-slam-bundle" style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', padding: '16px 38px', background: 'var(--gradient-primary)', borderRadius: 'var(--radius-md)', color: '#fff', fontWeight: 800, fontSize: '1.05rem', textDecoration: 'none', boxShadow: '0 0 30px rgba(0,207,255,0.5)', fontFamily: 'var(--font-body)' }}>
+              Shop the Grand Slam Bundle — Save 15% <ArrowRight size={17} />
             </Link>
-            <Link href="/lab-reports" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 32px', background: 'transparent', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-md)', color: 'var(--text-light)', fontWeight: 600, fontSize: '1rem', textDecoration: 'none', fontFamily: 'var(--font-body)' }}>
-              <FlaskConical size={16} /> Lab Reports
+            <Link href="/shop" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '12px 14px', background: 'transparent', color: 'var(--text-secondary)', fontWeight: 600, fontSize: '0.95rem', textDecoration: 'none', fontFamily: 'var(--font-body)' }}>
+              or browse all compounds →
             </Link>
           </div>
-          <div style={{ display: 'flex', gap: '28px', justifyContent: 'center', flexWrap: 'wrap', marginTop: '48px' }}>
+          <div style={{ marginTop: '22px', display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '0.92rem', color: 'var(--text-light)', fontWeight: 500 }}>
+            <ShieldCheck size={16} color="#34d399" /> Order risk-free — 99%+ purity guaranteed, or we replace it.
+          </div>
+          <div style={{ display: 'flex', gap: '28px', justifyContent: 'center', flexWrap: 'wrap', marginTop: '42px' }}>
             {trustBadges.map(({ Icon, label }) => (
               <span key={label} style={{ fontSize: '0.82rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Icon size={14} color="var(--primary-blue)" /> {label}
