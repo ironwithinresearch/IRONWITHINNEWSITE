@@ -2,21 +2,26 @@
 // src/app/cart/page.js
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useQuery } from '@apollo/client';
 import { useCart } from '@/context/CartContext';
 import { decodePriceHtml } from '@/lib/utils';
+import { GET_PRODUCT } from '@/lib/queries/products';
+import { pickUpsellSlug } from '@/lib/upsell';
+import PreCheckoutUpsell from '@/components/PreCheckoutUpsell';
 import PaymentMethods from '@/components/PaymentMethods';
 import {
   ShoppingCart, Trash2, Plus, Minus, ArrowRight,
   Tag, Truck, ShieldCheck, Package, ChevronRight,
   Loader2,
 } from 'lucide-react';
-import { useState } from 'react';
- 
+import { useState, useMemo } from 'react';
+
 
 export default function CartPage() {
   const {
     cartItems, cartTotal, cartSubtotal, cartLoading, shippingTotal,
-    updateQuantity, removeItem, applyCoupon, removeCoupon,
+    updateQuantity, removeItem, applyCoupon, removeCoupon, addToCart,
     applyingCoupon, cart, notification,
   } = useCart();
 
@@ -37,6 +42,28 @@ export default function CartPage() {
     return e ? parseInt(e.value, 10) || 0 : 0;
   };
   const subscribedCount = (cartItems || []).filter((i) => subCadenceOf(i) > 0).length;
+
+  // ── Pre-checkout upsell (rotating, cart-aware, 5% off, coupon-free) ──
+  const router = useRouter();
+  const cartSlugs = (cartItems || []).map((i) => i.product?.node?.slug).filter(Boolean);
+  const cartKey = cartSlugs.slice().sort().join(',');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const upsellSlug = useMemo(() => pickUpsellSlug(cartSlugs), [cartKey]);
+  const { data: upsellData } = useQuery(GET_PRODUCT, { variables: { slug: upsellSlug }, skip: !upsellSlug });
+  const upsellProduct = upsellData?.product || null;
+  const [upsellOpen, setUpsellOpen] = useState(false);
+  const [upsellShown, setUpsellShown] = useState(false);
+
+  const goCheckout = () => router.push('/checkout');
+  const handleCheckoutClick = () => {
+    if (upsellProduct && !upsellShown) { setUpsellShown(true); setUpsellOpen(true); }
+    else goCheckout();
+  };
+  const addUpsell = async (product, variation) => {
+    await addToCart(product.databaseId, 1, variation.databaseId, { iw_upsell: '1' });
+    setUpsellOpen(false);
+    goCheckout();
+  };
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return;
@@ -252,9 +279,17 @@ export default function CartPage() {
                 </div>
               )}
 
-              <Link href="/checkout" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '13px', background: 'var(--gradient-primary)', borderRadius: '10px', color: '#fff', fontWeight: 700, fontSize: '1rem', textDecoration: 'none', fontFamily: 'var(--font-body)', boxShadow: 'var(--glow-blue)', marginBottom: '14px' }}>
+              <button onClick={handleCheckoutClick} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '13px', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', fontFamily: 'var(--font-body)', boxShadow: 'var(--glow-blue)', marginBottom: '14px' }}>
                 Proceed to Checkout <ArrowRight size={16} />
-              </Link>
+              </button>
+
+              {upsellOpen && (
+                <PreCheckoutUpsell
+                  product={upsellProduct}
+                  onAdd={addUpsell}
+                  onSkip={() => { setUpsellOpen(false); goCheckout(); }}
+                />
+              )}
 
               {[
                 { Icon: ShieldCheck, label: 'Secure checkout' },
