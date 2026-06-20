@@ -258,10 +258,11 @@ export default function ProductPage() {
             <GuaranteeBadge style={{ marginTop: '16px' }} />
 
             <a href="https://peptideparadigm.app" target="_blank" rel="noopener noreferrer"
-              style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px', padding: '11px 14px', background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.3)', borderRadius: '10px', color: 'var(--text-light)', textDecoration: 'none', fontSize: '0.85rem' }}>
-              <BookOpen size={15} color="#a78bfa" />
-              <span>Research this compound in the <strong>Peptide Paradigm app</strong></span>
-              <ArrowRight size={14} color="#a78bfa" style={{ marginLeft: 'auto' }} />
+              style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '12px', padding: '12px 14px', background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.3)', borderRadius: '12px', color: 'var(--text-light)', textDecoration: 'none' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/pp-app-mark.png" alt="Peptide Paradigm" width={42} height={42} style={{ width: 42, height: 42, borderRadius: 9, flexShrink: 0 }} />
+              <span style={{ flex: 1, fontSize: '0.85rem', lineHeight: 1.4 }}>Look up <strong>{product.name}</strong> in our free reference guide — the Peptide Paradigm app</span>
+              <ArrowRight size={15} color="#a78bfa" style={{ flexShrink: 0 }} />
             </a>
           </div>
 

@@ -20,6 +20,7 @@ const J4_MESSAGE = '🇺🇸  4th of July — get a FREE MOTS-C 10mg on every or
 const BASE_MESSAGES = [
   '🔬  Certificate of Analysis available for every product',
   '🧪  Research-grade peptides, independently lab-tested',
+  '📱  New — the free Peptide Paradigm reference guide. Look up any compound.',
 ];
 
 export default function AnnouncementBar() {
