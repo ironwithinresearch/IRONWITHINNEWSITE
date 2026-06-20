@@ -116,37 +116,57 @@ export default function CheckoutPage() {
   const isZeroDue = (cartItems?.length || 0) > 0 && computedTotalNum <= 0;
   const effectiveMethod = isZeroDue ? 'iw_giftcard' : payMethod;
 
+  // errorPolicy:'all' is REQUIRED. For guest checkout through the off-site redirect
+  // gateway (iwr_rail), WooGraphQL returns `order: null` (a guest can't read the
+  // just-created order back in the same request). Selecting the non-null `order { id }`
+  // then yields a partial GraphQL error ("Cannot return null for non-nullable field
+  // Order.id"). With the default errorPolicy ('none') Apollo discards the data and
+  // routes to onError — throwing away the VALID Stripe `redirect`, so the buyer sees
+  // "Internal server error" instead of the payment page. 'all' lets the promise resolve
+  // WITH the partial data so we can still follow `redirect`.
   const [checkoutMutation, { loading: placingOrder }] = useMutation(CHECKOUT, {
-    onCompleted: (data) => {
-      const result = data?.checkout;
-      const method = payMethodRef.current;
-      // Card: clean-rail gateway returns a redirect to the secure payment page.
-      if (method === 'iwr_rail' && result?.redirect) {
+    errorPolicy: 'all',
+  });
+
+  const finishCheckout = (data, errors) => {
+    const result = data?.checkout;
+    const method = payMethodRef.current;
+
+    // Card: follow the Stripe redirect. `order` is expected to be null for guests
+    // here; the redirect URL is authoritative, so ignore the order error.
+    if (method === 'iwr_rail') {
+      if (result?.redirect) {
         window.location.href = result.redirect;
         return;
       }
-      // P2P (Zelle/Venmo/Cash App): order placed on-hold — show pay-to instructions.
-      // Gift-card-paid ($0 due) orders are complete already — no P2P instructions.
-      const num = result?.order?.orderNumber || result?.order?.databaseId || '';
-      setOrderNumber(num);
-      if (method !== 'iwr_rail' && method !== 'iw_giftcard') {
-        const m = PAY_METHODS.find((x) => x.id === method);
-        setP2pInfo({
-          label: m?.label || 'P2P',
-          handle: m?.handle || '',
-          total: plainPrice(result?.order?.total || cartTotal),
-          orderNumber: num,
-        });
-      }
-      setOrderPlaced(true);
-      refetchCart();
-    },
-    onError: (err) => {
-      alert(`Checkout error: ${err.message}`);
-    },
-  });
+      alert('Checkout error: no payment link was returned. Please try again, or email support@ironwithin.io.');
+      return;
+    }
 
-  const handlePlaceOrder = () => {
+    // P2P / gift card: an order must actually have been placed. No result = real failure.
+    if (!result) {
+      alert(`Checkout error: ${errors?.[0]?.message || 'We could not place your order. Please try again.'}`);
+      return;
+    }
+
+    // P2P (Zelle/Venmo/Cash App): order placed on-hold — show pay-to instructions.
+    // Gift-card-paid ($0 due) orders are complete already — no P2P instructions.
+    const num = result?.order?.orderNumber || result?.order?.databaseId || '';
+    setOrderNumber(num);
+    if (method !== 'iwr_rail' && method !== 'iw_giftcard') {
+      const m = PAY_METHODS.find((x) => x.id === method);
+      setP2pInfo({
+        label: m?.label || 'P2P',
+        handle: m?.handle || '',
+        total: plainPrice(result?.order?.total || cartTotal),
+        orderNumber: num,
+      });
+    }
+    setOrderPlaced(true);
+    refetchCart();
+  };
+
+  const handlePlaceOrder = async () => {
     payMethodRef.current = effectiveMethod;
     const billingInfo = billing.sameAsShipping ? shipping : billing;
     // Subscribe & Save items are tagged on the cart lines (extraData iw_subscribe),
@@ -158,7 +178,13 @@ export default function CheckoutPage() {
       affiliateRef: getAffiliateRef(),
       shippingMethod: shipRate,
     });
-    checkoutMutation({ variables: input });
+    try {
+      const { data, errors } = await checkoutMutation({ variables: input });
+      finishCheckout(data, errors);
+    } catch (err) {
+      // Network / unexpected errors only — GraphQL errors arrive via errorPolicy:'all'.
+      alert(`Checkout error: ${err.message}`);
+    }
   };
 
   // ── Order success screen ──
