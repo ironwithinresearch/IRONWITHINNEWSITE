@@ -248,6 +248,32 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ══ FLAGSHIP BUNDLE 2 — THE LONG SHOT ══ */}
+      <section style={{ padding: '0 24px 64px' }}>
+        <div className="container" style={{ maxWidth: 1000 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '32px', alignItems: 'center', background: 'var(--card-dark)', border: '1px solid rgba(0,207,255,0.3)', borderRadius: '24px', padding: '32px', boxShadow: '0 0 0 1px rgba(0,207,255,0.05), 0 20px 60px rgba(0,0,0,0.3)' }}>
+            <div style={{ flex: '1 1 320px' }}>
+              <span style={{ display: 'inline-block', padding: '5px 14px', background: 'var(--gradient-primary)', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#fff', marginBottom: '14px' }}>★ Flagship Bundle</span>
+              <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.9rem', fontWeight: 900, color: '#fff', margin: '0 0 10px', lineHeight: 1.15 }}>The Long Shot</h2>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 18px' }}>
+                Our longevity research stack — <strong style={{ color: 'var(--text-light)' }}>NAD+</strong> (1000mg ×2) + <strong style={{ color: 'var(--text-light)' }}>GHK-Cu</strong> (100mg) + <strong style={{ color: 'var(--text-light)' }}>Thymosin Alpha-1</strong> (5mg ×2). 99%+ purity, COA on every vial.
+              </p>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap', marginBottom: '20px' }}>
+                <span style={{ fontFamily: 'var(--font-heading)', fontSize: '2.1rem', fontWeight: 900, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>$245.44</span>
+                <span style={{ color: 'var(--text-muted)', fontSize: '1.1rem', textDecoration: 'line-through' }}>$288.75</span>
+                <span style={{ padding: '4px 12px', background: 'rgba(52,211,153,0.14)', border: '1px solid rgba(52,211,153,0.35)', borderRadius: '999px', fontSize: '0.78rem', fontWeight: 800, color: '#34d399' }}>Save 15% · $43.31</span>
+              </div>
+              <Link href="/product/long-shot" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 34px', background: 'var(--gradient-primary)', borderRadius: '12px', color: '#fff', fontWeight: 800, fontSize: '1rem', textDecoration: 'none', boxShadow: 'var(--glow-blue)' }}>
+                Shop the Bundle <ArrowRight size={17} />
+              </Link>
+            </div>
+            <div style={{ flex: '1 1 280px', minWidth: 240 }}>
+              <img src="https://bhidasowgm.onrocket.site/wp-content/uploads/2026/06/long-shot.png" alt="The Long Shot bundle" style={{ width: '100%', borderRadius: '16px', display: 'block' }} />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ══ FEATURED PRODUCTS — REAL GRAPHQL ══ */}
       <section style={{ padding: '80px 24px' }}>
         <div className="container">
