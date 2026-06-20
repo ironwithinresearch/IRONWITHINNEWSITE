@@ -20,7 +20,6 @@ const navLinks = [
   { href: '/rewards',   label: 'Rewards'    },
   { href: '/lab-reports',label: 'Lab Reports' },
   { href: '/contact',   label: 'Contact'    },
-  { href: '/affiliate', label: 'Affiliates' },
 ];
 
 export default function Navbar() {
