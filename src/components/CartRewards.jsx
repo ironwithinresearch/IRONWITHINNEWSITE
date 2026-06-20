@@ -17,7 +17,7 @@ export default function CartRewards({ subtotal = 0, onApplyCode }) {
 
   useEffect(() => { if (isLoggedIn) fetchRewards().then(setData); }, [isLoggedIn]);
 
-  const earn = Math.floor(Number(subtotal) || 0); // base 1 pt / $1 (tier multiplier is gravy)
+  const earn = Math.floor((Number(subtotal) || 0) * 5); // base 5 pts / $1 (tier multiplier is gravy)
 
   const box = { background: 'var(--bg-dark)', border: '1px solid rgba(0,207,255,0.22)', borderRadius: 12, padding: '12px 14px', marginBottom: 18, fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.45 };
   const tag = { display: 'inline-flex', alignItems: 'center', gap: 5, fontWeight: 800, color: 'var(--primary-blue)', marginRight: 6 };
