@@ -25,8 +25,8 @@ export default function SaleCountdown() {
   const time = (d > 0 ? `${d}d ` : '') + `${pad(h)}h ${pad(m)}m ${pad(s)}s`;
 
   return (
-    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '9px 20px', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.45)', borderRadius: '999px', marginBottom: '24px', fontSize: '0.9rem', color: '#fbbf24', fontWeight: 600 }}>
-      <Clock size={15} /> Father&apos;s Day Sale ends in{' '}
+    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '9px 20px', background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.5)', borderRadius: '999px', marginBottom: '24px', fontSize: '0.9rem', color: '#f87171', fontWeight: 700 }}>
+      <Clock size={15} /> <strong style={{ color: '#fff', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Final hours</strong>&nbsp;— Father&apos;s Day ends in{' '}
       <strong style={{ fontVariantNumeric: 'tabular-nums', color: '#fff', letterSpacing: '0.02em' }}>{time}</strong>
       <span style={{ color: 'rgba(255,255,255,0.5)' }}>·</span> 15% off everything
     </div>

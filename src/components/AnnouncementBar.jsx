@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react';
 // The sale message auto-disappears after this; product prices revert via the
 // WooCommerce sale schedule (date_on_sale_to) at the same moment.
 const SALE_ENDS = Date.parse('2026-06-22T04:59:59Z');
-const SALE_MESSAGE = "🏷️  Father's Day Sale — 15% off everything, no code needed — use your favorite affiliate code for an additional discount";
+const SALE_MESSAGE = "⏰  FINAL HOURS — Father's Day Sale ends at midnight tonight · 15% off everything, no code needed · stack your affiliate code for even more";
 
 // July 4th: free MOTS-C 10mg on orders $250+. Window Jul 3 00:00 → Jul 5 11:59pm
 // Central (== 05:00 UTC Jul 3 → 04:59:59 UTC Jul 6), matching the backend promo.
