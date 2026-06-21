@@ -29,8 +29,8 @@ const benefits = [
   {
     Icon: Gift,
     color: '#fbbf24',
-    title: 'Marketing Resources',
-    desc: 'Access banners, product images, and promotional copy to help you promote Iron Within Research.',
+    title: 'Done-For-You Swipe Pack',
+    desc: 'Ready-to-post captions, hooks, product images, and the compliance disclosure — copy, paste, add your code, post. No guesswork.',
   },
   {
     Icon: Zap,
@@ -55,7 +55,8 @@ const steps = [
 
 const faqs = [
   { q: 'Who can apply to the affiliate program?', a: 'Anyone with a website, blog, social media account, or email list relevant to research, health, fitness, or biohacking is welcome to apply.' },
-  { q: 'How are commissions calculated?', a: 'Commissions are calculated as a percentage of the order subtotal (excluding shipping and taxes). The exact rate is displayed in your affiliate dashboard after approval.' },
+  { q: 'How are commissions calculated?', a: 'You earn 10% of each order’s subtotal to start (excluding shipping and taxes), rising to 15% once you pass $2,500/month in referred sales and 20% past $15,000/month. Your current rate and earnings show in your dashboard.' },
+  { q: 'Do I get content to post?', a: 'Yes — every approved affiliate gets our Swipe Pack: ready-to-post captions, hooks, product images, and the required disclosure. Just add your code and post.' },
   { q: 'When do I get paid?', a: 'Affiliate payouts are processed weekly via Everee. Paying through Everee lets us properly issue your 1099 for tax purposes.' },
   { q: 'Is there a cost to join?', a: 'No — joining the Iron Within Research affiliate program is completely free.' },
 ];
@@ -115,7 +116,7 @@ export default function AffiliatePage() {
             lineHeight: 1.7, marginBottom: '36px',
             maxWidth: '540px', margin: '0 auto 36px',
           }}>
-            Join our affiliate program and earn commissions by promoting premium research-grade peptides to your audience.
+            Earn <strong style={{ color: 'var(--text-light)' }}>10% on every sale</strong> — rising to <strong style={{ color: 'var(--text-light)' }}>20%</strong> as you grow — promoting premium research-grade peptides. Weekly payouts, your own link, and done-for-you content so you can post in minutes.
           </p>
 
           {/* CTA — links to GoAffPro */}
@@ -247,6 +248,32 @@ export default function AffiliatePage() {
           </div>
         </section>
 
+        {/* ── Commission tiers ── */}
+        <section style={{ marginBottom: '72px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(1.8rem,4vw,2.4rem)', fontWeight: 800 }}>
+              Earn More As You{' '}
+              <span style={{ background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Grow</span>
+            </h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginTop: 10 }}>Everyone starts at 10%. Drive volume, earn more on every sale.</p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px,1fr))', gap: 18, maxWidth: 860, margin: '0 auto' }}>
+            {[
+              { pct: '10%', name: 'Partner', req: 'Default — everyone starts here', best: false },
+              { pct: '15%', name: 'Pro', req: '$2,500+ in referred sales / month', best: true },
+              { pct: '20%', name: 'Elite', req: '$15,000+ in referred sales / month', best: false },
+            ].map((t) => (
+              <div key={t.name} style={{ background: 'var(--card-dark)', border: `1px solid ${t.best ? 'rgba(0,207,255,0.45)' : 'var(--glass-border)'}`, borderRadius: 'var(--radius-lg)', padding: '30px 24px', textAlign: 'center', position: 'relative' }}>
+                {t.best && <span style={{ position: 'absolute', top: -11, left: '50%', transform: 'translateX(-50%)', background: 'linear-gradient(135deg,#00cfff,#ec4899)', color: '#fff', fontSize: '0.64rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', padding: '4px 12px', borderRadius: 999, whiteSpace: 'nowrap' }}>Aim here</span>}
+                <div style={{ fontFamily: 'var(--font-heading)', fontSize: '2.6rem', fontWeight: 900, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', lineHeight: 1 }}>{t.pct}</div>
+                <div style={{ fontWeight: 800, color: '#fff', margin: '8px 0 4px' }}>{t.name}</div>
+                <div style={{ color: 'var(--text-muted)', fontSize: '0.82rem', lineHeight: 1.5 }}>{t.req}</div>
+              </div>
+            ))}
+          </div>
+          <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: 20 }}>Tiers are based on trailing 30-day referred sales and reviewed monthly.</p>
+        </section>
+
         {/* ── How it works ── */}
         <section style={{ marginBottom: '72px' }}>
           <div style={{ textAlign: 'center', marginBottom: '48px' }}>
@@ -367,6 +394,11 @@ export default function AffiliatePage() {
             >
               Apply Now on GoAffPro <ArrowRight size={16} />
             </a>
+            <div style={{ marginTop: 18 }}>
+              <Link href="/affiliate/resources" style={{ display: 'inline-flex', alignItems: 'center', gap: 7, color: 'var(--primary-blue)', fontWeight: 600, fontSize: '0.9rem', textDecoration: 'none' }}>
+                See the done-for-you Swipe Pack <ArrowRight size={14} />
+              </Link>
+            </div>
           </div>
         </section>
 
