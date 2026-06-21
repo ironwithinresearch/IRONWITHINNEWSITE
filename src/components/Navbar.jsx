@@ -16,6 +16,7 @@ const navLinks = [
    { href: '/',      label: 'Home'       },
   { href: '/shop',      label: 'Shop'       },
   { href: '/categories',label: 'Categories' },
+  { href: '/continuity',label: 'Plans'      },
   { href: '/gift-cards',label: 'Gift Cards' },
   { href: '/rewards',   label: 'Rewards'    },
   { href: '/lab-reports',label: 'Lab Reports' },

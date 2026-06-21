@@ -27,7 +27,7 @@ export default function ShopPage() {
   const { data: catData } = useQuery(GET_CATEGORIES);
   // Gift cards aren't peptides — keep them out of the shop grid + category filters
   // (they have their own /gift-cards page).
-  const categories = (catData?.productCategories?.nodes || []).filter(c => c.slug !== 'gift-cards');
+  const categories = (catData?.productCategories?.nodes || []).filter(c => c.slug !== 'gift-cards' && c.slug !== 'continuity-plans');
 
   const { data, loading, error } = useQuery(GET_PRODUCTS, {
     variables: {
@@ -38,7 +38,7 @@ export default function ShopPage() {
     fetchPolicy: 'cache-and-network',
   });
 
-  const products = [...(data?.products?.nodes || [])].filter(p => p.slug !== 'gift-card').sort((a, b) =>
+  const products = [...(data?.products?.nodes || [])].filter(p => p.slug !== 'gift-card' && !p.slug.includes('-month-plan')).sort((a, b) =>
     (a.name || '').localeCompare(b.name || '', undefined, { numeric: true, sensitivity: 'base' })
   );
 

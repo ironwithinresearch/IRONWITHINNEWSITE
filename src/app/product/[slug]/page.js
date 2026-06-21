@@ -15,7 +15,7 @@ import {
   FlaskConical, ShoppingCart, Heart, ChevronRight,
   Shield, Truck, BadgeCheck, Minus, Plus,
   Loader2, CheckCircle2, AlertCircle, Info, Package,
-  FileText, Download, BookOpen, ArrowRight,
+  FileText, Download, BookOpen, ArrowRight, CalendarClock,
 } from 'lucide-react';
 
 export default function ProductPage() {
@@ -256,6 +256,15 @@ export default function ProductPage() {
 
             {/* Guarantee + proof (risk reversal) — under the vial */}
             <GuaranteeBadge style={{ marginTop: '16px' }} />
+
+            {['rt-3', 'cjc-ipa', 'mots-c'].includes(product.slug) && (
+              <Link href="/continuity"
+                style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '12px', padding: '12px 14px', background: 'rgba(0,207,255,0.07)', border: '1px solid rgba(0,207,255,0.3)', borderRadius: '12px', color: 'var(--text-light)', textDecoration: 'none' }}>
+                <CalendarClock size={20} color="var(--primary-blue)" style={{ flexShrink: 0 }} />
+                <span style={{ flex: 1, fontSize: '0.85rem', lineHeight: 1.4 }}>Running a longer study? <strong>Save with a 3 or 6-month plan</strong> — 1 month free + free shipping.</span>
+                <ArrowRight size={15} color="var(--primary-blue)" style={{ flexShrink: 0 }} />
+              </Link>
+            )}
 
             <a href="https://peptideparadigm.app" target="_blank" rel="noopener noreferrer"
               style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '12px', padding: '12px 14px', background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.3)', borderRadius: '12px', color: 'var(--text-light)', textDecoration: 'none' }}>
