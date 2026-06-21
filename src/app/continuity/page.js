@@ -32,7 +32,7 @@ const GET_PLANS = gql`
 const BASES = [
   { key: 'rt-3', label: 'RT-3 10mg', tag: 'Metabolic & body-composition research', dose: 'Ships 1 vial (10mg) per month' },
   { key: 'cjc-ipa', label: 'CJC / IPA (10+10)', tag: 'GH-axis research blend', dose: 'Ships 3 vials (10mg + 10mg) per month' },
-  { key: 'mots-c', label: 'MOTS-C 10mg', tag: 'Mitochondrial & metabolic research', dose: 'Ships 3 vials (10mg) per month' },
+  { key: 'mots-c', label: 'MOTS-C 40mg', tag: 'Mitochondrial & metabolic research', dose: 'Ships 1 vial (40mg) per month' },
 ];
 
 const toNum = (s) => parseFloat(String(s || '').replace(/[^0-9.]/g, '')) || 0;
