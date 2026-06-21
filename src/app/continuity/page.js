@@ -30,9 +30,9 @@ const GET_PLANS = gql`
 `;
 
 const BASES = [
-  { key: 'rt-3', label: 'RT-3', tag: 'Metabolic & body-composition research' },
-  { key: 'cjc-ipa', label: 'CJC / IPA', tag: 'GH-axis research blend' },
-  { key: 'mots-c', label: 'MOTS-C', tag: 'Mitochondrial & metabolic research' },
+  { key: 'rt-3', label: 'RT-3 10mg', tag: 'Metabolic & body-composition research', dose: 'Ships 1 vial (10mg) per month' },
+  { key: 'cjc-ipa', label: 'CJC / IPA (10+10)', tag: 'GH-axis research blend', dose: 'Ships 3 vials (10mg + 10mg) per month' },
+  { key: 'mots-c', label: 'MOTS-C 10mg', tag: 'Mitochondrial & metabolic research', dose: 'Ships 3 vials (10mg) per month' },
 ];
 
 const toNum = (s) => parseFloat(String(s || '').replace(/[^0-9.]/g, '')) || 0;
@@ -126,6 +126,7 @@ export default function ContinuityPage() {
                   <div>
                     <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', fontWeight: 900, color: '#fff', margin: 0 }}>{base.label}</h3>
                     <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', margin: '3px 0 0' }}>{base.tag}</p>
+                    <p style={{ color: 'var(--primary-blue)', fontSize: '0.76rem', fontWeight: 600, margin: '4px 0 0' }}>{base.dose}</p>
                   </div>
                 </div>
 
