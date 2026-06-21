@@ -16,7 +16,7 @@
 // change the password server-side via a Next.js API route.
 // ─────────────────────────────────────────────────────────────
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -55,6 +55,7 @@ export default function ForgotPasswordPage() {
   const [emailError, setEmailError] = useState('');
 
   // Step 2 state
+  const [code, setCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showNew, setShowNew] = useState(false);
@@ -64,12 +65,19 @@ export default function ForgotPasswordPage() {
 
   const strength = getPasswordStrength(newPassword);
 
-  // ── STEP 1: Validate email exists ────────────────────────────
-  // We try to authenticate with a dummy password via the JWT endpoint.
-  // If the error says "incorrect password" → user EXISTS ✓
-  // If the error says "invalid username/no user" → user does NOT exist ✗
+  // Prefill email from the "set your password" welcome link (?email=…).
+  useEffect(() => {
+    try {
+      const p = new URLSearchParams(window.location.search).get('email');
+      if (p) setEmail(p);
+    } catch (e) { /* noop */ }
+  }, []);
+
+  // ── STEP 1: Request a 6-digit reset code ─────────────────────
+  // Always advance to step 2 — the backend is anti-enumeration and only
+  // emails a code if an account exists, so we never reveal whether it does.
   const handleEmailSubmit = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     setEmailError('');
 
     const trimmed = email.trim().toLowerCase();
@@ -81,48 +89,12 @@ export default function ForgotPasswordPage() {
     setCheckingUser(true);
 
     try {
-      const res = await fetch(process.env.NEXT_PUBLIC_JWT_AUTH_URL, {
+      await fetch('/api/auth/request-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: trimmed, password: '__iwr_check_only__' }),
+        body: JSON.stringify({ email: trimmed }),
       });
-
-      const data = await res.json();
-      const msg = (data?.message || data?.code || '').toLowerCase();
-
-      // "incorrect_password" or "wrong password" → user EXISTS
-      if (
-        msg.includes('incorrect_password') ||
-        msg.includes('incorrect password') ||
-        msg.includes('password you entered') ||
-        msg.includes('wrong password')
-      ) {
-        // User found — go to password step
-        setStep(STEP_PASSWORD);
-        return;
-      }
-
-      // "invalid_username" or "no user found" → user does NOT exist
-      if (
-        msg.includes('invalid_username') ||
-        msg.includes('invalid username') ||
-        msg.includes('no user') ||
-        msg.includes('not registered') ||
-        msg.includes('unknown email') ||
-        msg.includes('no account')
-      ) {
-        setEmailError('No account found with this email address.');
-        return;
-      }
-
-      // If we somehow got a token (correct password??) → user exists
-      if (data?.token) {
-        setStep(STEP_PASSWORD);
-        return;
-      }
-
-      // Unknown error
-      setEmailError('Unable to verify account. Please try again.');
+      setStep(STEP_PASSWORD);
     } catch (err) {
       setEmailError('Connection error. Please check your internet and try again.');
     } finally {
@@ -137,6 +109,11 @@ export default function ForgotPasswordPage() {
     e.preventDefault();
     setPasswordError('');
 
+    const cleanCode = code.replace(/\D/g, '');
+    if (cleanCode.length !== 6) {
+      setPasswordError('Enter the 6-digit code from your email.');
+      return;
+    }
     if (newPassword.length < 8) {
       setPasswordError('Password must be at least 8 characters.');
       return;
@@ -156,7 +133,7 @@ export default function ForgotPasswordPage() {
       const res = await fetch('/api/auth/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim().toLowerCase(), newPassword }),
+        body: JSON.stringify({ email: email.trim().toLowerCase(), code: cleanCode, newPassword }),
       });
 
       const data = await res.json();
@@ -241,7 +218,8 @@ export default function ForgotPasswordPage() {
                   Reset Password
                 </h1>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: '28px' }}>
-                  Enter your registered email address and we'll verify your account.
+                  Enter your email and we'll send you a 6-digit reset code. New here, or
+                  ordered as a guest? This is how you set your password too.
                 </p>
 
                 {emailError && (
@@ -298,10 +276,10 @@ export default function ForgotPasswordPage() {
                     {checkingUser ? (
                       <>
                         <div style={{ width: 16, height: 16, borderRadius: '50%', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', animation: 'spin 0.8s linear infinite' }} />
-                        Verifying Account…
+                        Sending Code…
                       </>
                     ) : (
-                      <>Verify Account <ArrowRight size={15} /></>
+                      <>Send Reset Code <ArrowRight size={15} /></>
                     )}
                   </button>
                 </form>
@@ -311,17 +289,17 @@ export default function ForgotPasswordPage() {
             {/* ══ STEP 2: NEW PASSWORD ═════════════════════════ */}
             {step === STEP_PASSWORD && (
               <>
-                {/* Account confirmed banner */}
+                {/* Code sent banner */}
                 <div style={{
                   display: 'flex', alignItems: 'center', gap: '8px',
                   padding: '10px 14px', marginBottom: '24px',
                   background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.25)',
                   borderRadius: '10px',
                 }}>
-                  <CheckCircle2 size={14} color="#34d399" />
+                  <Mail size={14} color="#34d399" />
                   <div>
-                    <span style={{ fontSize: '0.8rem', color: '#34d399', fontWeight: 600 }}>Account found — </span>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{email}</span>
+                    <span style={{ fontSize: '0.8rem', color: '#34d399', fontWeight: 600 }}>Code sent — </span>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>check {email} (and spam)</span>
                   </div>
                 </div>
 
@@ -338,7 +316,7 @@ export default function ForgotPasswordPage() {
                   Set New Password
                 </h2>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: '24px' }}>
-                  Choose a strong password for your account.
+                  Enter the 6-digit code we emailed you, then choose a new password.
                 </p>
 
                 {passwordError && (
@@ -354,6 +332,37 @@ export default function ForgotPasswordPage() {
                 )}
 
                 <form onSubmit={handlePasswordSubmit}>
+
+                  {/* Verification code */}
+                  <div style={{ marginBottom: '16px' }}>
+                    <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 500, color: 'var(--text-secondary)', marginBottom: '7px' }}>
+                      6-Digit Code
+                    </label>
+                    <div style={{ position: 'relative' }}>
+                      <KeyRound size={15} style={{ position: 'absolute', left: '13px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', pointerEvents: 'none' }} />
+                      <input
+                        type="text" inputMode="numeric" maxLength={6}
+                        value={code}
+                        onChange={e => { setCode(e.target.value.replace(/\D/g, '')); setPasswordError(''); }}
+                        placeholder="123456" required autoComplete="one-time-code"
+                        style={{
+                          width: '100%', padding: '12px 14px 12px 40px',
+                          background: 'var(--bg-dark)', border: '1px solid var(--glass-border)',
+                          borderRadius: '10px', color: 'var(--text-light)',
+                          fontFamily: 'var(--font-body)', fontSize: '1.1rem', letterSpacing: '5px', outline: 'none',
+                        }}
+                        onFocus={e => e.target.style.borderColor = 'var(--primary-blue)'}
+                        onBlur={e => e.target.style.borderColor = 'var(--glass-border)'}
+                      />
+                    </div>
+                    <button type="button" onClick={handleEmailSubmit} disabled={checkingUser} style={{
+                      marginTop: '8px', background: 'none', border: 'none',
+                      color: 'var(--primary-blue)', fontSize: '0.78rem',
+                      cursor: checkingUser ? 'not-allowed' : 'pointer', padding: 0, fontFamily: 'var(--font-body)',
+                    }}>
+                      {checkingUser ? 'Sending…' : "Didn't get it? Resend code"}
+                    </button>
+                  </div>
 
                   {/* New password */}
                   <div style={{ marginBottom: '16px' }}>

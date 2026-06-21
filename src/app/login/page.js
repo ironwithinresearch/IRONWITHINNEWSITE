@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { FlaskConical, Mail, Lock, ArrowRight, Eye, EyeOff, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { FlaskConical, Mail, Lock, ArrowRight, Eye, EyeOff, AlertCircle, CheckCircle2, KeyRound } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 // Strip HTML tags from WordPress error messages like:
@@ -264,6 +264,22 @@ export default function LoginPage() {
               )}
             </button>
           </form>
+
+          {/* First-time / guest buyers: their account was auto-created with no password. */}
+          <Link href="/forgot-password" style={{ textDecoration: 'none' }}>
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: '10px',
+              marginTop: '20px', padding: '12px 14px',
+              background: 'rgba(0,207,255,0.06)', border: '1px solid rgba(0,207,255,0.2)',
+              borderRadius: '10px',
+            }}>
+              <KeyRound size={16} color="var(--primary-blue)" style={{ flexShrink: 0 }} />
+              <span style={{ flex: 1, fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                <strong style={{ color: 'var(--text-light)' }}>First time, or ordered as a guest?</strong> Set your password to access your account.
+              </span>
+              <ArrowRight size={14} color="var(--primary-blue)" style={{ flexShrink: 0 }} />
+            </div>
+          </Link>
 
           <div style={{
             textAlign: 'center', marginTop: '22px',
