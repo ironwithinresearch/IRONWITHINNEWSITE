@@ -51,6 +51,7 @@ export default function LoginPage() {
     ? new URLSearchParams(window.location.search)
     : null;
   const resetSuccess = searchParams?.get('reset') === 'success';
+  const fromCart = searchParams?.get('reason') === 'cart';
   // Where to go after signing in (e.g. back to /checkout). Read after mount to
   // avoid a static-prerender/hydration mismatch; only allow same-site paths.
   const [redirectTo, setRedirectTo] = useState('/account');
@@ -126,6 +127,20 @@ export default function LoginPage() {
           borderRadius: '20px',
           padding: '36px',
         }}>
+
+          {/* Add-to-cart gate context */}
+          {fromCart && !resetSuccess && (
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: '8px',
+              padding: '12px 14px', marginBottom: '20px',
+              background: 'rgba(0,207,255,0.08)',
+              border: '1px solid rgba(0,207,255,0.25)',
+              borderRadius: '10px', color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.5,
+            }}>
+              <KeyRound size={15} color="var(--primary-blue)" style={{ flexShrink: 0 }} />
+              <span>Sign in or <Link href={registerHref} style={{ color: 'var(--primary-blue)', fontWeight: 600 }}>create a 21+ account</Link> to add items to your cart.</span>
+            </div>
+          )}
 
           {/* Password reset success banner */}
           {resetSuccess && (

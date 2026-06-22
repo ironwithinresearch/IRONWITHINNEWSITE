@@ -59,6 +59,13 @@ export function CartProvider({ children }) {
   });
 
   const addToCart = useCallback(async (productId, quantity = 1, variationId = null, extraData = null) => {
+    // Account required to add to cart — no anonymous carts. Bounce logged-out
+    // shoppers to sign in / create a 21+ account, then back to where they were.
+    if (typeof window !== 'undefined' && !localStorage.getItem('jwt_token')) {
+      const here = window.location.pathname + window.location.search;
+      window.location.href = `/login?redirect=${encodeURIComponent(here)}&reason=cart`;
+      return { success: false, requiresAuth: true };
+    }
     try {
       const variables = { productId: parseInt(productId), quantity };
       if (variationId) variables.variationId = parseInt(variationId);
