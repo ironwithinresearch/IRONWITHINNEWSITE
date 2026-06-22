@@ -25,10 +25,15 @@ const HOOKS = [
 const DISCLOSURE = "#ad #affiliate — I earn a commission on purchases made with my code. For research use only. Not for human consumption.";
 
 const GRAPHICS = [
-  { src: '/affiliate-assets/g1.png', label: 'Story cover — Trust' },
-  { src: '/affiliate-assets/g2.png', label: 'Story cover — COA' },
+  { src: '/affiliate-assets/g1.png', label: 'Story — Trust' },
+  { src: '/affiliate-assets/g2.png', label: 'Story — COA' },
+  { src: '/affiliate-assets/g7.png', label: 'Story — Research Plans' },
+  { src: '/affiliate-assets/g8.png', label: 'Story — Why us' },
+  { src: '/affiliate-assets/g9.png', label: 'Story — Grand Slam' },
   { src: '/affiliate-assets/g3.png', label: 'Discount — Save' },
   { src: '/affiliate-assets/g4.png', label: 'Discount — Stack' },
+  { src: '/affiliate-assets/g5.png', label: 'Square — Trust' },
+  { src: '/affiliate-assets/g6.png', label: 'Square — Save' },
 ];
 
 const SCRIPTS = [
