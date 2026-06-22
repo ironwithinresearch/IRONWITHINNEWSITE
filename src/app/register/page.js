@@ -33,6 +33,7 @@ export default function RegisterPage() {
   const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [agree21, setAgree21] = useState(false);
 
   // ── FIX: No authToken/refreshToken in response — just customer fields.
   // After registration succeeds, we call the JWT login endpoint directly.
@@ -78,6 +79,10 @@ export default function RegisterPage() {
     }
     if (form.password.length < 8) {
       setError('Password must be at least 8 characters.');
+      return;
+    }
+    if (!agree21) {
+      setError('You must confirm you are 21 or older to create an account.');
       return;
     }
 
@@ -239,10 +244,19 @@ export default function RegisterPage() {
               />
             </div>
 
+            {/* 21+ confirmation */}
+            <label style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '22px', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: '0.82rem', lineHeight: 1.55 }}>
+              <input
+                type="checkbox" checked={agree21} onChange={e => { setAgree21(e.target.checked); setError(''); }}
+                style={{ marginTop: '2px', width: 16, height: 16, accentColor: 'var(--primary-blue)', flexShrink: 0, cursor: 'pointer' }}
+              />
+              <span>I confirm I am <strong style={{ color: 'var(--text-light)' }}>21 years of age or older</strong> and agree to the <Link href="/terms" style={{ color: 'var(--primary-blue)' }}>Terms</Link> and <Link href="/disclaimer" style={{ color: 'var(--primary-blue)' }}>Disclaimer</Link>. All products are for research use only — not for human consumption.</span>
+            </label>
+
             {/* Submit */}
             <button
               type="submit"
-              disabled={loading || success}
+              disabled={loading || success || !agree21}
               style={{
                 width: '100%', padding: '13px',
                 background: 'linear-gradient(135deg, #00cfff, #ec4899)',

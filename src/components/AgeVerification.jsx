@@ -110,7 +110,7 @@ export default function AgeVerification() {
             marginBottom: '16px',
             color: '#fff',
           }}>
-            Are You 18 or Older?
+            Are You 21 or Older?
           </h1>
 
           <p style={{
@@ -127,7 +127,7 @@ export default function AgeVerification() {
             lineHeight: 1.6,
             marginBottom: '36px',
           }}>
-            By entering, you confirm you are at least 18 years of age and agree to our Terms of Service and Disclaimer. Products are <strong style={{ color: 'rgba(148,163,184,1)' }}>for research use only</strong> and not for human consumption.
+            By entering, you confirm you are at least 21 years of age and agree to our Terms of Service and Disclaimer. Products are <strong style={{ color: 'rgba(148,163,184,1)' }}>for research use only</strong> and not for human consumption.
           </p>
 
           {/* Buttons */}
@@ -153,7 +153,7 @@ export default function AgeVerification() {
               onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 0 24px rgba(0,207,255,0.4)'; }}
             >
               <CheckCircle2 size={18} />
-              Yes, I Am 18 or Older — Enter Site
+              Yes, I Am 21 or Older — Enter Site
             </button>
 
             <button
@@ -174,7 +174,7 @@ export default function AgeVerification() {
               onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(239,68,68,0.3)'; e.currentTarget.style.color = '#f87171'; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = 'rgba(100,116,139,1)'; }}
             >
-              No, I Am Under 18 — Exit
+              No, I Am Under 21 — Exit
             </button>
           </div>
 

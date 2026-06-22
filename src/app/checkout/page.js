@@ -274,11 +274,35 @@ export default function CheckoutPage() {
     );
   }
 
-  // ── Guest checkout enabled ──
-  // No login wall — guests check out with just their email (collected in the
-  // form below). The backend (iw-guest-account.php) auto-creates an account from
-  // that email so order history still works. Logged-out users see an optional,
-  // non-blocking sign-in nudge near the top of the form.
+  // ── Account required (no guest checkout) ──
+  // Iron Within requires a verified 21+ account to purchase. Block checkout for
+  // logged-out visitors and route them to sign in / create an account.
+  if (authMounted && !isLoggedIn) {
+    return (
+      <div style={{ minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 24px' }}>
+        <div style={{ maxWidth: 460, width: '100%', textAlign: 'center', background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: '20px', padding: '44px 36px' }}>
+          <div style={{ width: 60, height: 60, borderRadius: '14px', background: 'rgba(0,207,255,0.1)', border: '1px solid rgba(0,207,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+            <Lock size={26} color="var(--primary-blue)" />
+          </div>
+          <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.6rem', fontWeight: 900, color: '#fff', margin: '0 0 12px' }}>Account required to check out</h1>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.6, margin: '0 0 28px' }}>
+            Iron Within requires a verified <strong style={{ color: 'var(--text-light)' }}>21+ account</strong> to purchase research compounds. Sign in or create your free account to continue — it takes a few seconds.
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <Link href="/register?redirect=/checkout" style={{ padding: '14px', background: 'var(--gradient-primary)', borderRadius: '12px', color: '#fff', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              Create your account <ArrowRight size={16} />
+            </Link>
+            <Link href="/login?redirect=/checkout" style={{ padding: '13px', background: 'transparent', border: '1px solid var(--glass-border)', borderRadius: '12px', color: 'var(--text-light)', fontWeight: 600, textDecoration: 'none' }}>
+              I already have an account — Sign in
+            </Link>
+          </div>
+          <p style={{ marginTop: '20px', fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+            Your cart is saved — you'll come right back here after signing in.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: '100vh', paddingBottom: '80px' }}>
@@ -307,16 +331,6 @@ export default function CheckoutPage() {
             </div>
           ))}
         </div>
-
-        {/* Optional sign-in nudge — never blocks guest checkout */}
-        {authMounted && !isLoggedIn && (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flexWrap: 'wrap', background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: '12px', padding: '12px 18px', marginBottom: '28px', fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
-            <span>Checking out as guest — just add your email below.</span>
-            <Link href="/login?redirect=/checkout" style={{ color: 'var(--primary-blue)', fontWeight: 600, textDecoration: 'none' }}>
-              Have an account? Sign in →
-            </Link>
-          </div>
-        )}
 
         <div className="checkout-grid">
 

@@ -16,7 +16,7 @@ const sections = [
   {
     title: 'Eligibility',
     content:
-      'You must be at least 18 years old and legally capable of entering into binding agreements to use this website or purchase products.',
+      'You must be at least 21 years old and legally capable of entering into binding agreements to use this website or purchase products.',
   },
   {
     title: 'Account Responsibilities',
