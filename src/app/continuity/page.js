@@ -77,7 +77,7 @@ export default function ContinuityPage() {
           <CalendarClock size={14} /> Research Plans
         </span>
         <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.4rem', fontWeight: 900, color: '#fff', margin: '0 0 12px', lineHeight: 1.1 }}>
-          Never run mid-study. Lock in your supply.
+          Never run out mid-study. Lock in your supply.
         </h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '1.02rem', lineHeight: 1.6, maxWidth: 620, margin: '0 auto' }}>
           Prepay 3 or 6 months, pay once, and we ship a fresh vial every month. Get a month free,
