@@ -36,7 +36,7 @@ export default function BirthdayBashBanner() {
             Shop the Birthday Bash — 15% Off <ArrowRight size={17} />
           </Link>
           <p style={{ marginTop: '12px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-            Auto-applied at checkout — no code needed. Every order is entered to win a $250 gift card.
+            Auto-applied at checkout — no code needed. Every order of $100+ is entered to win a $250 gift card.
           </p>
         </div>
       </div>

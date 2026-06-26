@@ -15,7 +15,7 @@ const SALE_MESSAGE = "⏰  FINAL HOURS — Father's Day Sale ends at midnight to
 // so 7PM CDT = 00:00 UTC next day). 15% off sitewide, no code, stacks with codes.
 const BB_START = Date.parse('2026-06-27T00:00:00Z');
 const BB_END = Date.parse('2026-06-29T00:00:00Z');
-const BB_MESSAGE = "🎂  LACEY'S BIRTHDAY BASH — 15% OFF SITEWIDE, no code needed · stack your affiliate code for even more · 🎁 every order = a shot at a $250 gift card · ends Sunday 7PM";
+const BB_MESSAGE = "🎂  LACEY'S BIRTHDAY BASH — 15% OFF SITEWIDE, no code needed · stack your affiliate code for even more · 🎁 every $100+ order = a shot at a $250 gift card · ends Sunday 7PM";
 
 // July 4th: free MOTS-C 10mg on orders $250+. Window Jul 3 00:00 → Jul 5 11:59pm
 // Central (== 05:00 UTC Jul 3 → 04:59:59 UTC Jul 6), matching the backend promo.
