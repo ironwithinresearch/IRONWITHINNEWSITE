@@ -4,7 +4,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Copy, Check, Sparkles, ShieldAlert, ShieldCheck, ArrowRight, Download, Film } from 'lucide-react';
+import { Copy, Check, Sparkles, ShieldAlert, ShieldCheck, ArrowRight, Download, Film, Wallet } from 'lucide-react';
 
 const CAPTIONS = [
   "Doing peptide research? Iron Within Research is the only source I trust — 99%+ purity with a Certificate of Analysis on every single vial. Use code [YOURCODE] → ironwithin.io",
@@ -77,6 +77,23 @@ export default function AffiliateResourcesPage() {
         <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', lineHeight: 1.6, maxWidth: 560, margin: '0 auto' }}>
           Copy any caption, swap <strong style={{ color: 'var(--text-light)' }}>[YOURCODE]</strong> for your affiliate code (find it in your <a href="https://ironwithin.goaffpro.com/login" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-blue)' }}>dashboard</a>), add the disclosure, and post.
         </p>
+      </div>
+
+      {/* NEW: 2× store-credit payout */}
+      <div style={{ background: 'linear-gradient(100deg, rgba(52,211,153,0.14), rgba(0,207,255,0.10))', border: '1px solid rgba(52,211,153,0.45)', borderRadius: 18, padding: '24px 26px', marginBottom: 40, display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
+        <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <Wallet size={26} color="#34d399" />
+        </div>
+        <div style={{ flex: '1 1 300px' }}>
+          <div style={{ display: 'inline-block', fontSize: '0.66rem', fontWeight: 800, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#34d399', background: 'rgba(52,211,153,0.15)', padding: '3px 9px', borderRadius: 999, marginBottom: 8 }}>New · Earn more</div>
+          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', fontWeight: 800, color: '#fff', margin: '0 0 6px' }}>Get paid in 2× store credit</h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.55, margin: 0 }}>
+            Take your commission as Iron Within store credit and it's worth <strong style={{ color: '#34d399' }}>double</strong> — a <strong style={{ color: 'var(--text-light)' }}>$100</strong> commission becomes <strong style={{ color: '#34d399' }}>$200</strong> to spend. Auto-applies at checkout, no code. Switch anytime.
+          </p>
+        </div>
+        <Link href="/affiliate/payout" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 26px', background: 'linear-gradient(90deg,#34d399,#00cfff)', borderRadius: 11, color: '#06231a', fontWeight: 800, fontSize: '0.95rem', textDecoration: 'none', whiteSpace: 'nowrap' }}>
+          Choose 2× credit <ArrowRight size={16} />
+        </Link>
       </div>
 
       {/* Captions */}
