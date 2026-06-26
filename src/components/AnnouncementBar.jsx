@@ -11,6 +11,12 @@ import { useState, useEffect } from 'react';
 const SALE_ENDS = Date.parse('2026-06-22T04:59:59Z');
 const SALE_MESSAGE = "⏰  FINAL HOURS — Father's Day Sale ends at midnight tonight · 15% off everything, no code needed · stack your affiliate code for even more";
 
+// Lacey's Birthday Bash — Fri Jun 26 7PM CT → Sun Jun 28 7PM CT (CDT = UTC-5,
+// so 7PM CDT = 00:00 UTC next day). 15% off sitewide, no code, stacks with codes.
+const BB_START = Date.parse('2026-06-27T00:00:00Z');
+const BB_END = Date.parse('2026-06-29T00:00:00Z');
+const BB_MESSAGE = "🎂  LACEY'S BIRTHDAY BASH — 15% OFF SITEWIDE, no code needed · stack your affiliate code for even more · 🎁 every order = a shot at a $250 gift card · ends Sunday 7PM";
+
 // July 4th: free MOTS-C 10mg on orders $250+. Window Jul 3 00:00 → Jul 5 11:59pm
 // Central (== 05:00 UTC Jul 3 → 04:59:59 UTC Jul 6), matching the backend promo.
 const J4_START = Date.parse('2026-07-03T05:00:00Z');
@@ -24,12 +30,14 @@ const BASE_MESSAGES = [
 ];
 
 export default function AnnouncementBar() {
-  // Start with the Father's Day message (matches the server render while it's on),
-  // then recompute on the client by date — no hydration mismatch.
-  const [messages, setMessages] = useState([SALE_MESSAGE, ...BASE_MESSAGES]);
+  // Start with base messages (no promo) so the server render is safe, then
+  // recompute promos on the client by date — no hydration mismatch.
+  const [messages, setMessages] = useState(BASE_MESSAGES);
+  const [bbActive, setBbActive] = useState(false);
   useEffect(() => {
     const now = Date.now();
     const promos = [];
+    if (now >= BB_START && now < BB_END) { promos.push(BB_MESSAGE); setBbActive(true); }
     if (now < SALE_ENDS) promos.push(SALE_MESSAGE);
     if (now >= J4_START && now <= J4_END) promos.push(J4_MESSAGE);
     setMessages([...promos, ...BASE_MESSAGES]);
@@ -46,7 +54,7 @@ export default function AnnouncementBar() {
       aria-label="Store announcements"
       style={{
         position: 'fixed', top: 0, left: 0, right: 0, height: 36, zIndex: 101,
-        background: 'var(--gradient-primary, linear-gradient(90deg,#00CFFF,#7c3aed))',
+        background: bbActive ? 'linear-gradient(90deg,#ec4899,#f5d272)' : 'var(--gradient-primary, linear-gradient(90deg,#00CFFF,#7c3aed))',
         color: '#001018', overflow: 'hidden', display: 'flex', alignItems: 'center',
         fontFamily: 'var(--font-body)',
       }}

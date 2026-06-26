@@ -17,6 +17,7 @@ import {
   ShoppingCart, Heart, Loader2,
 } from 'lucide-react';
 import SaleCountdown from '@/components/SaleCountdown';
+import BirthdayBashBanner from '@/components/BirthdayBashBanner';
 import AppPromo from '@/components/AppPromo';
 
 const categories = [
@@ -211,6 +212,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ══ BIRTHDAY BASH BANNER (sale window only) ══ */}
+      <BirthdayBashBanner />
 
       {/* ══ STATS BAR ══ */}
       <section style={{ background: 'var(--card-dark)', borderTop: '1px solid var(--glass-border)', borderBottom: '1px solid var(--glass-border)', padding: '36px 24px' }}>

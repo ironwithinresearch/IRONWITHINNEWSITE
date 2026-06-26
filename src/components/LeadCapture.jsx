@@ -9,6 +9,10 @@ import { useState, useEffect } from 'react';
 const KEY = 'iw_lead';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// During Lacey's Birthday Bash the promo popup takes over — don't double up.
+const BB_START = Date.parse('2026-06-27T00:00:00Z');
+const BB_END   = Date.parse('2026-06-29T00:00:00Z');
+
 export default function LeadCapture() {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState('');
@@ -18,6 +22,8 @@ export default function LeadCapture() {
   const [code, setCode] = useState('');
 
   useEffect(() => {
+    const now = Date.now();
+    if (now >= BB_START && now < BB_END) return;        // Birthday Bash popup owns the sale window
     let saved = null;
     try { saved = localStorage.getItem(KEY); } catch { /* ignore */ }
     if (saved === 'done') return;                       // already signed up
