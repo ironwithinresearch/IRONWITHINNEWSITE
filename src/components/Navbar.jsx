@@ -11,6 +11,7 @@ import {
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
+import { getPayoutPref } from '@/lib/affiliatePayout';
 
 const navLinks = [
    { href: '/',      label: 'Home'       },
@@ -37,6 +38,22 @@ export default function Navbar() {
   const { isLoggedIn, user, logout }                   = useAuth();
   const { itemCount }                                   = useCart();
   const { wishlistCount }                               = useWishlist();
+
+  // Only recognized affiliates see the "Affiliate Payout" menu item. Cached per
+  // session so we don't re-check on every navigation.
+  const [isAffiliate, setIsAffiliate] = useState(false);
+  useEffect(() => {
+    if (!isLoggedIn) { setIsAffiliate(false); return; }
+    try {
+      const cached = sessionStorage.getItem('iw_is_affiliate');
+      if (cached !== null) { setIsAffiliate(cached === '1'); return; }
+    } catch { /* ignore */ }
+    getPayoutPref().then((d) => {
+      const v = !!(d && d.isAffiliate);
+      setIsAffiliate(v);
+      try { sessionStorage.setItem('iw_is_affiliate', v ? '1' : '0'); } catch { /* ignore */ }
+    });
+  }, [isLoggedIn]);
 
   // ── theme ──
   useEffect(() => {
@@ -204,6 +221,7 @@ export default function Navbar() {
                       { href: '/account',  label: 'My Account' },
                       { href: '/orders',   label: 'My Orders'  },
                       { href: '/wishlist', label: 'Wishlist'   },
+                      ...(isAffiliate ? [{ href: '/affiliate/payout', label: 'Affiliate Payout' }] : []),
                     ].map(({ href, label }) => (
                       <Link key={href} href={href} style={{ display: 'block', padding: '9px 12px', borderRadius: 'var(--radius-md)', color: 'var(--text-secondary)', fontSize: '0.875rem', textDecoration: 'none', transition: 'all 0.15s ease' }}
                         onMouseEnter={e => { e.currentTarget.style.background = 'rgba(0,207,255,0.06)'; e.currentTarget.style.color = 'var(--text-light)'; }}
@@ -264,6 +282,9 @@ export default function Navbar() {
                 <User size={16} /> {displayName}
               </Link>
               <Link href="/orders" style={{ padding: '14px 18px', borderRadius: 'var(--radius-md)', color: 'var(--text-secondary)', fontSize: '1rem', textDecoration: 'none' }}>My Orders</Link>
+              {isAffiliate && (
+                <Link href="/affiliate/payout" style={{ padding: '14px 18px', borderRadius: 'var(--radius-md)', color: 'var(--text-secondary)', fontSize: '1rem', textDecoration: 'none' }}>Affiliate Payout</Link>
+              )}
               <button onClick={logout} style={{ padding: '14px 18px', borderRadius: 'var(--radius-md)', background: 'none', border: 'none', color: '#f87171', fontSize: '1rem', textAlign: 'left', cursor: 'pointer', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <LogOut size={16} /> Sign Out
               </button>

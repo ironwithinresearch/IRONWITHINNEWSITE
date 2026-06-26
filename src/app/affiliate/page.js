@@ -4,7 +4,7 @@ import Link from 'next/link';
 import {
   FlaskConical, DollarSign, Users, BarChart3,
   ArrowRight, CheckCircle2, Zap, Globe, Gift,
-  ShieldCheck, Star,
+  ShieldCheck, Star, Wallet,
 } from 'lucide-react';
 
 const benefits = [
@@ -183,6 +183,25 @@ export default function AffiliatePage() {
       </section>
 
       <div className="container">
+
+        {/* ── 2× store-credit payout (already-approved affiliates) ── */}
+        <section style={{ marginTop: '-20px', marginBottom: '64px' }}>
+          <div style={{ maxWidth: 820, margin: '0 auto', background: 'linear-gradient(100deg, rgba(52,211,153,0.14), rgba(0,207,255,0.10))', border: '1px solid rgba(52,211,153,0.45)', borderRadius: 18, padding: '24px 26px', display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
+            <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <Wallet size={26} color="#34d399" />
+            </div>
+            <div style={{ flex: '1 1 300px' }}>
+              <div style={{ display: 'inline-block', fontSize: '0.66rem', fontWeight: 800, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#34d399', background: 'rgba(52,211,153,0.15)', padding: '3px 9px', borderRadius: 999, marginBottom: 8 }}>Already an affiliate?</div>
+              <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', fontWeight: 800, color: '#fff', margin: '0 0 6px' }}>Get paid in 2× store credit</h2>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.55, margin: 0 }}>
+                Take your commission as Iron Within store credit and it's worth <strong style={{ color: '#34d399' }}>double</strong> — a <strong style={{ color: 'var(--text-light)' }}>$100</strong> commission becomes <strong style={{ color: '#34d399' }}>$200</strong>. Auto-applies at checkout, switch anytime.
+              </p>
+            </div>
+            <Link href="/affiliate/payout" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 26px', background: 'linear-gradient(90deg,#34d399,#00cfff)', borderRadius: 11, color: '#06231a', fontWeight: 800, fontSize: '0.95rem', textDecoration: 'none', whiteSpace: 'nowrap' }}>
+              Choose 2× credit <ArrowRight size={16} />
+            </Link>
+          </div>
+        </section>
 
         {/* ── Benefits ── */}
         <section style={{ marginBottom: '72px' }}>
