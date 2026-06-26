@@ -12,6 +12,7 @@ import PreCheckoutUpsell from '@/components/PreCheckoutUpsell';
 import BundleUpsell from '@/components/BundleUpsell';
 import FreeShippingBar from '@/components/FreeShippingBar';
 import CartRewards from '@/components/CartRewards';
+import CartStoreCredit from '@/components/CartStoreCredit';
 import SaleCountdown from '@/components/SaleCountdown';
 import PaymentMethods from '@/components/PaymentMethods';
 import {
@@ -244,6 +245,7 @@ export default function CartPage() {
               <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}><SaleCountdown /></div>
               <FreeShippingBar subtotal={subtotalNum} alreadyFree={subscribedCount > 0} />
               <CartRewards subtotal={subtotalNum} onApplyCode={applyCoupon} />
+              <CartStoreCredit />
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <SummaryRow label="Subtotal" rawValue={cartSubtotal} />

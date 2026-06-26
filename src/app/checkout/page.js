@@ -12,6 +12,7 @@ import { getReferCookie } from '@/lib/referral';
 import { useAuth } from '../../context/AuthContext';
 import { decodePriceHtml } from '../../lib/utils';
 import { getAffiliateRef } from '../../lib/affiliate';
+import { fetchStoreCredit } from '../../lib/storeCredit';
 import PaymentMethods from '../../components/PaymentMethods';
 import {
   ShieldCheck, CreditCard, Truck, ChevronRight,
@@ -75,6 +76,16 @@ export default function CheckoutPage() {
   const [payMethod, setPayMethod] = useState('iwr_rail');
   const [p2pInfo, setP2pInfo] = useState(null);
   const payMethodRef = useRef('iwr_rail');
+  // Account store-credit balance (auto-applied at checkout, server-side). Fetched
+  // once on mount; the backend is authoritative on how much actually applies.
+  const [creditBalance, setCreditBalance] = useState(0);
+  useEffect(() => {
+    let on = true;
+    fetchStoreCredit().then((d) => {
+      if (on && d) setCreditBalance(Math.max(0, parseFloat(d.balance) || 0));
+    });
+    return () => { on = false; };
+  }, []);
 
   const [shipping, setShipping] = useState({
     firstName: '', lastName: '', email: user?.email || '',
@@ -113,10 +124,22 @@ export default function CheckoutPage() {
   const computedTotalNum = Math.max(0, money(cartTotal) - money(shippingTotal) + shipCostNum);
   const displayTotal = fmt(computedTotalNum);
 
-  // When a gift card fully covers the order (incl. shipping), nothing is due — we
-  // complete the $0 order through the backend gift-card gateway, not the card rail.
+  // Store credit (account wallet) applies on top of any discount, like cash. The
+  // backend adds it as a negative fee at order creation; we mirror the math here so
+  // the customer sees the reduced amount due (and we can route a fully-covered order
+  // to the no-rail store-credit gateway instead of the card rail).
+  const round2 = (n) => Math.round(n * 100) / 100;
+  const creditApplied = round2(Math.min(creditBalance, Math.max(0, computedTotalNum)));
+  const dueAfterCredit = Math.max(0, round2(computedTotalNum - creditApplied));
+  const coveredByCredit = computedTotalNum > 0 && creditApplied > 0 && dueAfterCredit <= 0.005;
+
+  // When a gift card OR store credit fully covers the order (incl. shipping), nothing
+  // is due — we complete the $0 order through a backend gateway, not the card rail.
   const isZeroDue = (cartItems?.length || 0) > 0 && computedTotalNum <= 0;
-  const effectiveMethod = isZeroDue ? 'iw_giftcard' : payMethod;
+  const noRailDue = isZeroDue || coveredByCredit;
+  const effectiveMethod = isZeroDue ? 'iw_giftcard' : (coveredByCredit ? 'iw_storecredit' : payMethod);
+  // Amount actually charged via the selected method (after store credit).
+  const dueDisplay = fmt(noRailDue ? 0 : dueAfterCredit);
 
   // errorPolicy:'all' is REQUIRED. For guest checkout through the off-site redirect
   // gateway (iwr_rail), WooGraphQL returns `order: null` (a guest can't read the
@@ -155,7 +178,7 @@ export default function CheckoutPage() {
     // Gift-card-paid ($0 due) orders are complete already — no P2P instructions.
     const num = result?.order?.orderNumber || result?.order?.databaseId || '';
     setOrderNumber(num);
-    if (method !== 'iwr_rail' && method !== 'iw_giftcard') {
+    if (method !== 'iwr_rail' && method !== 'iw_giftcard' && method !== 'iw_storecredit') {
       const m = PAY_METHODS.find((x) => x.id === method);
       setP2pInfo({
         label: m?.label || 'P2P',
@@ -411,8 +434,18 @@ export default function CheckoutPage() {
                       <span style={{ display: 'block', fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-light)' }}>Paid in full by gift card 🎁</span>
                       <span style={{ display: 'block', fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: 2 }}>Your gift card covers this order — nothing due. No card needed.</span>
                     </div>
+                  ) : coveredByCredit ? (
+                    <div style={{ padding: '14px', borderRadius: '10px', background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.5)', fontFamily: 'var(--font-body)' }}>
+                      <span style={{ display: 'block', fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-light)' }}>Paid in full by store credit 💳</span>
+                      <span style={{ display: 'block', fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: 2 }}>Your account balance covers this order — nothing due. No card needed.</span>
+                    </div>
                   ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {creditApplied > 0 && (
+                      <div style={{ padding: '10px 12px', borderRadius: '10px', background: 'rgba(52,211,153,0.07)', border: '1px solid rgba(52,211,153,0.35)', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                        <strong style={{ color: '#34d399' }}>${creditApplied.toFixed(2)} store credit</strong> applied — you'll pay <strong style={{ color: 'var(--text-light)' }}>{fmt(dueAfterCredit)}</strong> with the method below.
+                      </div>
+                    )}
                     {PAY_METHODS.map((m) => {
                       const active = payMethod === m.id;
                       return (
@@ -447,10 +480,10 @@ export default function CheckoutPage() {
                   style={{ width: '100%', padding: '14px', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: placingOrder ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: 'var(--glow-blue)', opacity: placingOrder ? 0.8 : 1 }}>
                   {placingOrder ? (
                     <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Placing Order…</>
-                  ) : isZeroDue ? (
+                  ) : noRailDue ? (
                     <><Lock size={15} /> Complete Order — $0.00 due</>
                   ) : payMethod === 'iwr_rail' ? (
-                    <><Lock size={15} /> Continue to Secure Payment — {displayTotal}</>
+                    <><Lock size={15} /> Continue to Secure Payment — {dueDisplay}</>
                   ) : (
                     <><Lock size={15} /> Place Order — Pay by {PAY_METHODS.find((x) => x.id === payMethod)?.label}</>
                   )}
@@ -518,6 +551,10 @@ export default function CheckoutPage() {
               })}
               {/* Shipping — $0.00 until the review step, then the selected rate */}
               <SummaryRow label="Shipping" htmlValue={shipDisplay} value={undefined} />
+              {/* Store credit (account wallet) — applied like cash, after discounts */}
+              {creditApplied > 0 && (
+                <SummaryRow label="Store Credit" value={`- $${creditApplied.toFixed(2)}`} valueColor="#34d399" />
+              )}
             </div>
 
             <div style={{ height: 1, background: 'var(--glass-border)', marginBottom: '14px' }} />
@@ -526,7 +563,7 @@ export default function CheckoutPage() {
               <span style={{ fontWeight: 700 }}>Total</span>
               {/* Computed so it reflects the selected shipping rate exactly */}
               <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: 900, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-                {displayTotal}</span>
+                {dueDisplay}</span>
             </div>
 
             {[

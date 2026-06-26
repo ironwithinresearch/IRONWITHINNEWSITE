@@ -1,19 +1,20 @@
 'use client';
 // src/app/account/page.js
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import Link from 'next/link';
 import { GET_CUSTOMER, GET_ORDERS } from '@/lib/queries/orders';
 import { UPDATE_CUSTOMER } from '@/lib/queries/auth';
 import { useAuth } from '@/context/AuthContext';
 import { decodePriceHtml } from '@/lib/utils';
+import { fetchStoreCredit } from '@/lib/storeCredit';
 import {
   User, Package, MapPin, Settings, ArrowRight,
   LogOut, ShieldCheck, Loader2, FlaskConical,
   Search, Truck, CheckCircle2, Clock, XCircle,
   ChevronDown, X, ShoppingCart, RotateCcw, Download,
-  Save, Eye, EyeOff, CheckCircle, AlertCircle,
+  Save, Eye, EyeOff, CheckCircle, AlertCircle, Wallet,
 } from 'lucide-react';
 
 /* ─────────────────────── helpers ─────────────────────────── */
@@ -628,6 +629,83 @@ function SecurityPanel({ customer }) {
   );
 }
 
+/* ═══════════════════ Store Credit panel ═══════════════════ */
+function StoreCreditPanel() {
+  const [state, setState] = useState({ loading: true, data: null });
+  useEffect(() => {
+    let on = true;
+    fetchStoreCredit().then((d) => { if (on) setState({ loading: false, data: d }); });
+    return () => { on = false; };
+  }, []);
+
+  const bal = state.data && state.data.balance != null ? Number(state.data.balance) : 0;
+  const ledger = Array.isArray(state.data?.ledger) ? state.data.ledger : [];
+  const money = (n) => `${n < 0 ? '-' : ''}$${Math.abs(Number(n) || 0).toFixed(2)}`;
+  const fmtDate = (t) => {
+    if (!t) return '';
+    const d = new Date(String(t).replace(' ', 'T'));
+    return isNaN(d) ? String(t) : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  };
+
+  return (
+    <div style={{ marginTop: '24px', background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: '20px', padding: '28px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+        <div style={{ width: 36, height: 36, borderRadius: '10px', background: 'rgba(52,211,153,0.12)', border: '1px solid rgba(52,211,153,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Wallet size={18} color="#34d399" />
+        </div>
+        <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.05rem', fontWeight: 800 }}>Store Credit</h2>
+      </div>
+
+      {state.loading ? (
+        <Loader2 size={20} color="#34d399" style={{ animation: 'spin 1s linear infinite' }} />
+      ) : (
+        <>
+          {/* Balance card */}
+          <div style={{ textAlign: 'center', background: 'var(--bg-dark)', border: '1px solid rgba(52,211,153,0.25)', borderRadius: '16px', padding: '28px 20px', marginBottom: ledger.length ? '22px' : '0' }}>
+            <div style={{ fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '6px' }}>Available balance</div>
+            <div style={{ fontFamily: 'var(--font-heading)', fontSize: '2.6rem', fontWeight: 900, color: bal > 0 ? '#34d399' : 'var(--text-muted)', lineHeight: 1 }}>
+              ${bal.toFixed(2)}
+            </div>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginTop: '12px', maxWidth: 360, marginLeft: 'auto', marginRight: 'auto', lineHeight: 1.5 }}>
+              {bal > 0
+                ? 'Applied automatically at checkout — no code needed. It comes off after any discount, like cash.'
+                : "You don't have any store credit yet. We'll let you know if credit is added to your account."}
+            </p>
+            {bal > 0 && (
+              <Link href="/shop" style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', marginTop: '18px', padding: '11px 24px', background: 'var(--gradient-primary)', borderRadius: '10px', color: '#fff', fontWeight: 600, fontSize: '0.88rem', textDecoration: 'none' }}>
+                Shop now <ArrowRight size={15} />
+              </Link>
+            )}
+          </div>
+
+          {/* Activity */}
+          {ledger.length > 0 && (
+            <div>
+              <h3 style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '12px' }}>Recent activity</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                {ledger.map((e, i) => (
+                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', padding: '11px 0', borderBottom: i < ledger.length - 1 ? '1px solid var(--glass-border)' : 'none' }}>
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ fontSize: '0.87rem', color: 'var(--text-light)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{e.reason || 'Adjustment'}</div>
+                      <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>{fmtDate(e.t)}</div>
+                    </div>
+                    <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                      <div style={{ fontWeight: 700, fontSize: '0.9rem', color: Number(e.amount) >= 0 ? '#34d399' : '#f87171' }}>
+                        {Number(e.amount) >= 0 ? '+' : ''}{money(e.amount)}
+                      </div>
+                      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>bal {money(e.balance)}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
 /* ══════════════════════════════════════════════════════════ */
 /*  MAIN ACCOUNT PAGE                                         */
 /* ══════════════════════════════════════════════════════════ */
@@ -669,9 +747,10 @@ export default function AccountPage() {
 
   /* ── Menu items — all toggle inline now ── */
   const menuItems = [
-    { id: 'orders',   Icon: Package,     color: 'var(--primary-blue)', title: 'My Orders',  desc: 'View and track your orders' },
-    { id: 'profile',  Icon: User,        color: 'var(--purple)',       title: 'Profile',    desc: 'Update your name and email' },
-    { id: 'security', Icon: ShieldCheck, color: '#fbbf24',             title: 'Security',   desc: 'Change your password' },
+    { id: 'orders',   Icon: Package,     color: 'var(--primary-blue)', title: 'My Orders',     desc: 'View and track your orders' },
+    { id: 'credit',   Icon: Wallet,      color: '#34d399',             title: 'Store Credit',  desc: 'Your account balance' },
+    { id: 'profile',  Icon: User,        color: 'var(--purple)',       title: 'Profile',       desc: 'Update your name and email' },
+    { id: 'security', Icon: ShieldCheck, color: '#fbbf24',             title: 'Security',      desc: 'Change your password' },
   ];
 
   return (
@@ -732,6 +811,7 @@ export default function AccountPage() {
 
         {/* ── Inline Panels ── */}
         {activeSection === 'orders'   && <OrdersPanel />}
+        {activeSection === 'credit'   && <StoreCreditPanel />}
         {activeSection === 'profile'  && <ProfilePanel customer={customer} refetch={refetch} />}
         {activeSection === 'security' && <SecurityPanel customer={customer} />}
 
