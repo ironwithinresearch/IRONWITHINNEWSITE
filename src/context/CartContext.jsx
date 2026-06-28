@@ -1,7 +1,7 @@
 'use client';
 // src/context/CartContext.jsx
 
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useRef } from 'react';
 import { useQuery, useMutation, useApolloClient } from '@apollo/client';
 import {
   GET_CART,
@@ -25,12 +25,30 @@ export function CartProvider({ children }) {
     setTimeout(() => setNotification(null), 3000);
   };
 
+  // Guards a one-time silent refetch after a stale WooCommerce session is healed.
+  const sessionHealRef = useRef(false);
+
   // GET_CART — always fetch fresh from network
   const { data, loading: cartLoading, refetch: refetchCart } = useQuery(GET_CART, {
     fetchPolicy: 'network-only',
     notifyOnNetworkStatusChange: true,
     onError: (err) => {
-      console.error('Cart fetch error:', err.message);
+      const msg = err?.message || '';
+      // An expired/invalid WooCommerce session token is auto-healed by the Apollo
+      // errorLink (it drops the dead token; the next request mints a fresh one). This
+      // is normal for returning visitors after ~48h — not an error. Quietly refetch
+      // once so the cart loads cleanly with the fresh session, and don't log noise.
+      if (/invalid[_ ]token|expired token|no session found/i.test(msg)) {
+        if (!sessionHealRef.current) {
+          sessionHealRef.current = true;
+          Promise.resolve()
+            .then(() => refetchCart?.())
+            .catch(() => {})
+            .finally(() => { sessionHealRef.current = false; });
+        }
+        return;
+      }
+      console.error('Cart fetch error:', msg);
     },
   });
 
