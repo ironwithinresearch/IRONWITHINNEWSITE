@@ -16,6 +16,21 @@ export default function CartRewards({ subtotal = 0, value = 0, onChange }) {
 
   useEffect(() => { if (isLoggedIn) fetchRewards().then(setData); }, [isLoggedIn]);
 
+  // --- All hooks must run unconditionally (before any early return) ---
+  const stepPts = data?.redeem_points || 500;   // 500 pts
+  const stepUsd = data?.redeem_dollars || 5;     // = $5
+  const balPts = data?.points || 0;
+  const maxByPoints = Math.floor(balPts / stepPts) * stepPts;
+  const maxBySubtotal = Math.floor((Number(subtotal) || 0) / stepUsd) * stepPts;
+  const maxPts = Math.max(0, Math.min(maxByPoints, maxBySubtotal));
+  const clamped = Math.max(0, Math.min(value || 0, maxPts));
+
+  // Clamp the chosen value down if the balance/subtotal dropped below it.
+  useEffect(() => {
+    if (clamped !== (value || 0)) onChange?.(clamped);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [maxPts]);
+
   const earn = Math.floor((Number(subtotal) || 0) * 5); // base 5 pts / $1
 
   const box = { background: 'var(--bg-dark)', border: '1px solid rgba(0,207,255,0.22)', borderRadius: 12, padding: '12px 14px', marginBottom: 18, fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.45 };
@@ -32,21 +47,8 @@ export default function CartRewards({ subtotal = 0, value = 0, onChange }) {
   }
   if (!data) return null;
 
-  const stepPts = data.redeem_points || 500;   // 500 pts
-  const stepUsd = data.redeem_dollars || 5;    // = $5
-  const balPts = data.points || 0;
-  // Max redeemable = limited by points AND by the order subtotal, in whole steps.
-  const maxByPoints = Math.floor(balPts / stepPts) * stepPts;
-  const maxBySubtotal = Math.floor((Number(subtotal) || 0) / stepUsd) * stepPts;
-  const maxPts = Math.max(0, Math.min(maxByPoints, maxBySubtotal));
-
-  // Keep the chosen value within range (clamp down if subtotal/balance dropped).
-  const clamped = Math.max(0, Math.min(value || 0, maxPts));
-  useEffect(() => { if (clamped !== (value || 0)) onChange?.(clamped); /* eslint-disable-next-line */ }, [maxPts]);
-
   const usd = (pts) => (pts / stepPts) * stepUsd;
   const set = (pts) => onChange?.(Math.max(0, Math.min(pts, maxPts)));
-
   const canRedeem = maxPts >= stepPts;
 
   const btn = (disabled) => ({
