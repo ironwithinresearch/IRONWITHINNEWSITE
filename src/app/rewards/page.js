@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
-import { fetchRewards, redeemRewards, TIER_STYLE } from '@/lib/rewards';
-import { Gift, ShoppingBag, TrendingUp, Cake, Sparkles, Copy, Check } from 'lucide-react';
+import { fetchRewards, TIER_STYLE } from '@/lib/rewards';
+import { Gift, ShoppingBag, TrendingUp, Cake, Sparkles, Check } from 'lucide-react';
 
 const money = (n) => `$${(Math.round(n * 100) / 100).toFixed(2)}`;
 const nf = (n) => (n || 0).toLocaleString('en-US');
@@ -13,10 +13,6 @@ export default function RewardsPage() {
   const { isLoggedIn, user } = useAuth();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [redeeming, setRedeeming] = useState(0);
-  const [redeemed, setRedeemed] = useState(null); // {code, dollars}
-  const [copied, setCopied] = useState(false);
-  const [err, setErr] = useState('');
 
   const load = async () => {
     setLoading(true);
@@ -25,16 +21,6 @@ export default function RewardsPage() {
     setLoading(false);
   };
   useEffect(() => { if (isLoggedIn) load(); else setLoading(false); }, [isLoggedIn]);
-
-  const doRedeem = async (dollars) => {
-    setErr(''); setRedeeming(dollars);
-    const res = await redeemRewards(dollars);
-    setRedeeming(0);
-    if (res?.success) { setRedeemed({ code: res.code, dollars: res.dollars }); load(); }
-    else setErr(res?.error || 'Could not redeem.');
-  };
-
-  const copy = (code) => { navigator.clipboard?.writeText(code); setCopied(true); setTimeout(() => setCopied(false), 1800); };
 
   const points = data?.points || 0;
   const value = data?.value || 0;
@@ -45,8 +31,6 @@ export default function RewardsPage() {
   const redeemStep = data?.redeem_dollars || 10;
   const redeemPts = data?.redeem_points || 500;
   const maxRedeem = Math.floor(points / redeemPts) * redeemStep;
-  const options = [];
-  for (let d = redeemStep; d <= maxRedeem && options.length < 5; d += redeemStep) options.push(d);
 
   return (
     <main style={{ minHeight: '100vh', background: 'var(--bg-dark)', padding: '60px 24px 90px' }}>
@@ -105,37 +89,29 @@ export default function RewardsPage() {
           </div>
         )}
 
-        {/* Redeem */}
+        {/* Spend your points — now applied straight off the cart total at checkout */}
         {isLoggedIn && !loading && (
           <section style={{ marginBottom: '48px' }}>
-            <h2 style={sectionH}>Cash in your points</h2>
-            {redeemed ? (
-              <div style={{ background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.4)', borderRadius: 16, padding: '22px', textAlign: 'center' }}>
-                <Check size={22} color="#34d399" />
-                <p style={{ color: 'var(--text-light)', fontWeight: 700, margin: '8px 0 4px' }}>You redeemed {money(redeemed.dollars)} off!</p>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', margin: '0 0 14px' }}>Apply this code at checkout — it&apos;s reserved for your account.</p>
-                <button onClick={() => copy(redeemed.code)} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 18px', background: 'var(--card-elevated)', border: '1px dashed var(--primary-blue)', borderRadius: 10, color: '#fff', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', letterSpacing: '0.04em' }}>
-                  {redeemed.code} {copied ? <Check size={15} color="#34d399" /> : <Copy size={15} />}
-                </button>
+            <h2 style={sectionH}>Spend your points</h2>
+            {maxRedeem >= redeemStep ? (
+              <div style={{ background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.4)', borderRadius: 16, padding: '24px', textAlign: 'center' }}>
+                <p style={{ color: 'var(--text-light)', fontWeight: 800, fontSize: '1.15rem', margin: '0 0 6px' }}>
+                  You&apos;ve got {money(maxRedeem)} ready to spend 🎉
+                </p>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.6, margin: '0 auto 18px', maxWidth: 460 }}>
+                  {nf(redeemPts)} points = {money(redeemStep)} off. Add items to your cart, then use the{' '}
+                  <strong style={{ color: 'var(--text-light)' }}>“Spend points on this order”</strong> slider — it comes
+                  <strong style={{ color: '#34d399' }}> straight off your total</strong> at checkout. No code to copy or apply.
+                </p>
+                <Link href="/shop" style={{ display: 'inline-block', padding: '13px 30px', background: 'var(--gradient-primary)', borderRadius: 11, color: '#fff', fontWeight: 700, textDecoration: 'none', boxShadow: 'var(--glow-blue)' }}>
+                  Shop &amp; spend your points →
+                </Link>
               </div>
-            ) : maxRedeem >= redeemStep ? (
-              <>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: '0 0 16px' }}>{nf(redeemPts)} points = {money(redeemStep)} off. Pick an amount:</p>
-                <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                  {options.map((d) => (
-                    <button key={d} disabled={redeeming > 0} onClick={() => doRedeem(d)} style={{ flex: '1 1 130px', padding: '18px', background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: 14, cursor: redeeming ? 'wait' : 'pointer', textAlign: 'center' }}>
-                      <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.5rem', fontWeight: 900, color: '#fff' }}>{redeeming === d ? '…' : `${money(d)} off`}</div>
-                      <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: 3 }}>{nf(d / redeemStep * redeemPts)} points</div>
-                    </button>
-                  ))}
-                </div>
-              </>
             ) : (
               <div style={{ background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: 14, padding: '22px', color: 'var(--text-secondary)', textAlign: 'center' }}>
-                You&apos;re <strong style={{ color: 'var(--text-light)' }}>{nf(Math.max(0, redeemPts - points))} points</strong> from your first {money(redeemStep)} reward. Keep going!
+                You&apos;re <strong style={{ color: 'var(--text-light)' }}>{nf(Math.max(0, redeemPts - points))} points</strong> from your first {money(redeemStep)} reward. Points apply straight off your total at checkout — keep going!
               </div>
             )}
-            {err && <p style={{ color: '#f87171', fontSize: '0.85rem', marginTop: 12 }}>{err}</p>}
           </section>
         )}
 
