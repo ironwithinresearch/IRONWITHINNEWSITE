@@ -44,7 +44,7 @@ export const CHECKOUT = gql`
 // Build the checkout input object for the mutation
 // paymentMethod: 'cod' for Cash on Delivery (no Stripe needed to test)
 // paymentMethod: 'stripe' when Stripe is integrated
-export function buildCheckoutInput({ billing, transactionId = '', paymentMethod = 'cod', customerNote = '', affiliateRef = '', shippingMethod = '', referrerCode = '' }) {
+export function buildCheckoutInput({ billing, transactionId = '', paymentMethod = 'cod', customerNote = '', affiliateRef = '', shippingMethod = '', referrerCode = '', rewardsPts = 0 }) {
   const billingAddress = {
     firstName: billing.firstName || '',
     lastName: billing.lastName || '',
@@ -66,6 +66,7 @@ export function buildCheckoutInput({ billing, transactionId = '', paymentMethod 
   if (affiliateRef) metaData.push({ key: 'goaffpro_ref', value: String(affiliateRef) });
   if (referrerCode) metaData.push({ key: '_iw_referrer_code', value: String(referrerCode) });
   if (shippingMethod) metaData.push({ key: '_iw_ship_rate', value: String(shippingMethod) });
+  if (rewardsPts > 0) metaData.push({ key: '_iw_rewards_redeem_pts', value: String(rewardsPts) });
   // Subscribe & Save items are tagged at the cart-line level (extraData iw_subscribe)
   // and flow to the order line items, so no order-level meta is needed here.
 

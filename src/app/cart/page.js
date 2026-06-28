@@ -12,6 +12,7 @@ import PreCheckoutUpsell from '@/components/PreCheckoutUpsell';
 import BundleUpsell from '@/components/BundleUpsell';
 import FreeShippingBar from '@/components/FreeShippingBar';
 import CartRewards from '@/components/CartRewards';
+import { getRewardsRedeemPts, setRewardsRedeemPts } from '@/lib/rewards';
 import CartStoreCredit from '@/components/CartStoreCredit';
 import SaleCountdown from '@/components/SaleCountdown';
 import PaymentMethods from '@/components/PaymentMethods';
@@ -34,11 +35,19 @@ export default function CartPage() {
   const [couponCode, setCouponCode] = useState('');
   const [couponError, setCouponError] = useState('');
 
+  // Reward points the customer chooses to spend on this order (500 pts = $5).
+  // Persisted so the choice carries to checkout, where it's applied to the total.
+  const [rewardsPts, setRewardsPts] = useState(0);
+  useEffect(() => { setRewardsPts(getRewardsRedeemPts()); }, []);
+  const handleRewardsChange = (pts) => { setRewardsPts(pts); setRewardsRedeemPts(pts); };
+  const rewardsDollars = (rewardsPts || 0) / 100; // $0.01 / pt
+
   const subtotalNum = parseFloat(cartSubtotal?.replace(/[^0-9.]/g, '') || '0');
   // Cart total EXCLUDING shipping — shipping is chosen at checkout review, so the
   // cart shouldn't show it (the WC session may already carry a default rate).
   const num = (s) => parseFloat(String(s || '').replace(/&nbsp;/g, '').replace(/[^0-9.]/g, '') || '0');
-  const cartTotalNoShipping = `$${Math.max(0, num(cartTotal) - num(shippingTotal)).toFixed(2)}`;
+  const totalNoShipNum = Math.max(0, num(cartTotal) - num(shippingTotal));
+  const cartTotalNoShipping = `$${Math.max(0, totalNoShipNum - rewardsDollars).toFixed(2)}`;
  
   const appliedCoupons = cart?.appliedCoupons || [];
 
@@ -244,7 +253,7 @@ export default function CartPage() {
 
               <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}><SaleCountdown /></div>
               <FreeShippingBar subtotal={subtotalNum} alreadyFree={subscribedCount > 0} />
-              <CartRewards subtotal={subtotalNum} onApplyCode={applyCoupon} />
+              <CartRewards subtotal={subtotalNum} value={rewardsPts} onChange={handleRewardsChange} />
               <CartStoreCredit />
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -266,6 +275,10 @@ export default function CartPage() {
                     />
                   );
                 })}
+
+                {rewardsPts > 0 && (
+                  <SummaryRow label={`Rewards (${rewardsPts.toLocaleString()} pts)`} value={`- $${rewardsDollars.toFixed(2)}`} valueColor="#34d399" />
+                )}
               </div>
 
               <div style={{ height: 1, background: 'var(--glass-border)', margin: '14px 0' }} />

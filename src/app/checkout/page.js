@@ -13,6 +13,7 @@ import { useAuth } from '../../context/AuthContext';
 import { decodePriceHtml } from '../../lib/utils';
 import { getAffiliateRef } from '../../lib/affiliate';
 import { fetchStoreCredit } from '../../lib/storeCredit';
+import { getRewardsRedeemPts, setRewardsRedeemPts, fetchRewards } from '../../lib/rewards';
 import PaymentMethods from '../../components/PaymentMethods';
 import {
   ShieldCheck, CreditCard, Truck, ChevronRight,
@@ -87,6 +88,17 @@ export default function CheckoutPage() {
     return () => { on = false; };
   }, []);
 
+  // Reward points the customer chose to spend (set on the cart). Capped at checkout
+  // against their live balance + the amount actually due, then applied server-side.
+  const [rewardsBalPts, setRewardsBalPts] = useState(0);
+  const [rewardsChosenPts, setRewardsChosenPts] = useState(0);
+  useEffect(() => {
+    setRewardsChosenPts(getRewardsRedeemPts());
+    let on = true;
+    fetchRewards().then((d) => { if (on && d) setRewardsBalPts(parseInt(d.points, 10) || 0); });
+    return () => { on = false; };
+  }, []);
+
   const [shipping, setShipping] = useState({
     firstName: '', lastName: '', email: user?.email || '',
     phone: '', address: '', city: '', state: '', zip: '', country: 'US',
@@ -131,15 +143,21 @@ export default function CheckoutPage() {
   const round2 = (n) => Math.round(n * 100) / 100;
   const creditApplied = round2(Math.min(creditBalance, Math.max(0, computedTotalNum)));
   const dueAfterCredit = Math.max(0, round2(computedTotalNum - creditApplied));
-  const coveredByCredit = computedTotalNum > 0 && creditApplied > 0 && dueAfterCredit <= 0.005;
 
-  // When a gift card OR store credit fully covers the order (incl. shipping), nothing
-  // is due — we complete the $0 order through a backend gateway, not the card rail.
+  // Rewards: spend chosen points (500 pts = $5) off whatever is still due after store
+  // credit, in $5 increments, capped at the live balance. Applied server-side as a fee.
+  const rewardsAppliedPts = Math.max(0, Math.min(rewardsChosenPts, rewardsBalPts, Math.floor(dueAfterCredit / 5) * 500));
+  const rewardsApplied = round2(rewardsAppliedPts / 100);
+  const dueAfterAll = Math.max(0, round2(dueAfterCredit - rewardsApplied));
+
+  // When a gift card / store credit / rewards fully cover the order, nothing is due —
+  // we complete the $0 order through a backend gateway, not the card rail.
   const isZeroDue = (cartItems?.length || 0) > 0 && computedTotalNum <= 0;
-  const noRailDue = isZeroDue || coveredByCredit;
-  const effectiveMethod = isZeroDue ? 'iw_giftcard' : (coveredByCredit ? 'iw_storecredit' : payMethod);
-  // Amount actually charged via the selected method (after store credit).
-  const dueDisplay = fmt(noRailDue ? 0 : dueAfterCredit);
+  const fullyCovered = computedTotalNum > 0 && dueAfterAll <= 0.005;
+  const noRailDue = isZeroDue || fullyCovered;
+  const effectiveMethod = isZeroDue ? 'iw_giftcard' : (fullyCovered ? 'iw_storecredit' : payMethod);
+  // Amount actually charged via the selected method (after store credit + rewards).
+  const dueDisplay = fmt(noRailDue ? 0 : dueAfterAll);
 
   // errorPolicy:'all' is REQUIRED. For guest checkout through the off-site redirect
   // gateway (iwr_rail), WooGraphQL returns `order: null` (a guest can't read the
@@ -161,6 +179,7 @@ export default function CheckoutPage() {
     // here; the redirect URL is authoritative, so ignore the order error.
     if (method === 'iwr_rail') {
       if (result?.redirect) {
+        setRewardsRedeemPts(0); // order created — points already reserved on it
         window.location.href = result.redirect;
         return;
       }
@@ -187,6 +206,7 @@ export default function CheckoutPage() {
         orderNumber: num,
       });
     }
+    setRewardsRedeemPts(0); // order created — points already reserved on it
     setOrderPlaced(true);
     refetchCart();
   };
@@ -224,6 +244,7 @@ export default function CheckoutPage() {
       affiliateRef: getAffiliateRef(),
       referrerCode: getReferCookie(),
       shippingMethod: shipRate,
+      rewardsPts: rewardsAppliedPts,
     });
     try {
       const { data, errors } = await checkoutMutation({ variables: input });
@@ -434,16 +455,19 @@ export default function CheckoutPage() {
                       <span style={{ display: 'block', fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-light)' }}>Paid in full by gift card 🎁</span>
                       <span style={{ display: 'block', fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: 2 }}>Your gift card covers this order — nothing due. No card needed.</span>
                     </div>
-                  ) : coveredByCredit ? (
+                  ) : fullyCovered ? (
                     <div style={{ padding: '14px', borderRadius: '10px', background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.5)', fontFamily: 'var(--font-body)' }}>
-                      <span style={{ display: 'block', fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-light)' }}>Paid in full by store credit 💳</span>
-                      <span style={{ display: 'block', fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: 2 }}>Your account balance covers this order — nothing due. No card needed.</span>
+                      <span style={{ display: 'block', fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-light)' }}>Paid in full 🎉</span>
+                      <span style={{ display: 'block', fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: 2 }}>Your {creditApplied > 0 ? 'store credit' : 'rewards'}{creditApplied > 0 && rewardsApplied > 0 ? ' + rewards' : ''} cover this order — nothing due. No card needed.</span>
                     </div>
                   ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {creditApplied > 0 && (
+                    {(creditApplied > 0 || rewardsApplied > 0) && (
                       <div style={{ padding: '10px 12px', borderRadius: '10px', background: 'rgba(52,211,153,0.07)', border: '1px solid rgba(52,211,153,0.35)', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                        <strong style={{ color: '#34d399' }}>${creditApplied.toFixed(2)} store credit</strong> applied — you'll pay <strong style={{ color: 'var(--text-light)' }}>{fmt(dueAfterCredit)}</strong> with the method below.
+                        {creditApplied > 0 && <strong style={{ color: '#34d399' }}>${creditApplied.toFixed(2)} store credit</strong>}
+                        {creditApplied > 0 && rewardsApplied > 0 && ' + '}
+                        {rewardsApplied > 0 && <strong style={{ color: '#34d399' }}>${rewardsApplied.toFixed(2)} rewards</strong>}
+                        {' '}applied — you'll pay <strong style={{ color: 'var(--text-light)' }}>{fmt(dueAfterAll)}</strong> with the method below.
                       </div>
                     )}
                     {PAY_METHODS.map((m) => {
@@ -554,6 +578,10 @@ export default function CheckoutPage() {
               {/* Store credit (account wallet) — applied like cash, after discounts */}
               {creditApplied > 0 && (
                 <SummaryRow label="Store Credit" value={`- $${creditApplied.toFixed(2)}`} valueColor="#34d399" />
+              )}
+              {/* Rewards points spent on this order */}
+              {rewardsApplied > 0 && (
+                <SummaryRow label={`Rewards (${rewardsAppliedPts.toLocaleString()} pts)`} value={`- $${rewardsApplied.toFixed(2)}`} valueColor="#34d399" />
               )}
             </div>
 

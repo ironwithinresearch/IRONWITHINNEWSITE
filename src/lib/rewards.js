@@ -15,6 +15,16 @@ export const TIER_STYLE = {
   black:    { color: '#f5d272', glow: 'rgba(245,210,114,0.55)' }, // gold for the top tier
 };
 
+// Chosen points to spend on this order (set in cart, read at checkout). Persisted
+// so the choice survives the cart → checkout hop. Always whole 500-pt increments.
+export function getRewardsRedeemPts() {
+  if (typeof window === 'undefined') return 0;
+  return parseInt(localStorage.getItem('iw_rewards_redeem_pts') || '0', 10) || 0;
+}
+export function setRewardsRedeemPts(pts) {
+  try { localStorage.setItem('iw_rewards_redeem_pts', String(Math.max(0, pts | 0))); } catch { /* ignore */ }
+}
+
 export async function fetchRewards() {
   const t = token();
   if (!t) return null;
