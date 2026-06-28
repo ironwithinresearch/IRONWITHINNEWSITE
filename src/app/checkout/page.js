@@ -183,7 +183,10 @@ export default function CheckoutPage() {
         window.location.href = result.redirect;
         return;
       }
-      alert('Checkout error: no payment link was returned. Please try again, or email support@ironwithin.io.');
+      const reason = errors?.[0]?.message;
+      alert(reason
+        ? `Checkout error: ${reason}`
+        : 'Checkout error: no payment link was returned. Please try again, or email support@ironwithin.io.');
       return;
     }
 
