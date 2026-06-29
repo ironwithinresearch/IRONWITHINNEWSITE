@@ -18,6 +18,7 @@ const BUNDLES = [
   { slug: 'grand-slam-bundle', blurb: 'RT-3 30mg + GLOW + CJC/IPA (10+10)',        components: ['rt-3', 'glow-bundle', 'cjc-ipa'] },
   { slug: 'the-freedom-stack', blurb: 'RT-3 30mg + SS-31 ×2 + KLOW ×2',            components: ['rt-3', 'ss-31', 'klow'] },
   { slug: 'long-shot',         blurb: 'NAD+ 1000mg ×2 + GHK-Cu 100mg + Thymosin α1 ×2', components: ['nad', 'ghk-cu'] },
+  { slug: 'the-radiant-bundle', blurb: 'KPV 10mg ×10 + GHK-Cu 50mg ×2',                 components: ['kpv', 'ghk-cu'] },
 ];
 const SLUGS = BUNDLES.map((b) => b.slug);
 const num = (s) => parseFloat(String(s || '').replace(/[^0-9.]/g, '')) || 0;
