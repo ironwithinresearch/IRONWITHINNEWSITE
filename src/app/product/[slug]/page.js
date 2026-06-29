@@ -379,6 +379,19 @@ export default function ProductPage() {
               </div>
             )}
 
+            {/* Batch history — continued batch-over-batch testing */}
+            {coa && coa.batches && coa.batches.length > 1 && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center', padding: '0 2px' }}>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginRight: 4 }}>Batch history:</span>
+                {coa.batches.map((b, i) => (
+                  <a key={i} href={b.coaFile} target="_blank" rel="noopener noreferrer"
+                    style={{ fontSize: '0.72rem', color: 'var(--primary-blue)', textDecoration: 'none', padding: '3px 9px', borderRadius: 7, background: 'rgba(0,207,255,0.08)' }}>
+                    {b.batchDate}{i === 0 ? ' · latest' : ''}
+                  </a>
+                ))}
+              </div>
+            )}
+
             {/* Disclaimer */}
             <div style={{ display: 'flex', gap: '8px', padding: '12px 14px', background: 'rgba(251,191,36,0.06)', border: '1px solid rgba(251,191,36,0.2)', borderRadius: '10px' }}>
               <Info size={14} color="#fbbf24" style={{ flexShrink: 0, marginTop: 2 }} />

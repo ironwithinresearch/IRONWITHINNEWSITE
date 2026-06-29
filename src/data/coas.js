@@ -3,7 +3,15 @@
    survive the old ironwithinlabs.com store being retired). */
 
 export const coaBySlug = {
-  'ss-31': { coaFile: '/coas/ss-31.pdf', batchDate: '6/29/2026', productName: 'SS-31' },
+  // `batches` (newest first) shows continued batch-over-batch testing. The top-level
+  // coaFile/batchDate mirror the latest batch (kept for back-compat with single-COA UI).
+  'ss-31': {
+    coaFile: '/coas/ss-31.pdf', batchDate: '6/29/2026', productName: 'SS-31',
+    batches: [
+      { coaFile: '/coas/ss-31.pdf', batchDate: '6/29/2026' },
+      { coaFile: '/coas/ss-31-2026-06-08.pdf', batchDate: '6/8/2026' },
+    ],
+  },
   'igf-1-lr3': { coaFile: '/coas/igf-1-lr3.pdf', batchDate: '6/29/2026', productName: 'IGF-1 LR3' },
   'thymosin-alpha-1': { coaFile: '/coas/thymosin-alpha-1.pdf', batchDate: '5/6/2026', productName: 'Thymosin Alpha 1' },
   'bpc-157': { coaFile: '/coas/bpc-157.pdf', batchDate: '4/16/2026', productName: 'BPC-157' },

@@ -121,7 +121,9 @@ export default function LabReportsPage() {
                     </h3>
                     {r.batchDate ? (
                       <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                        Batch tested {r.batchDate}
+                        {r.batches && r.batches.length > 1
+                          ? `${r.batches.length} batches tested · latest ${r.batchDate}`
+                          : `Batch tested ${r.batchDate}`}
                       </span>
                     ) : null}
                   </div>
@@ -159,6 +161,29 @@ export default function LabReportsPage() {
                   <Download size={15} />
                 </a>
               </div>
+
+              {r.batches && r.batches.length > 1 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, paddingTop: 12, borderTop: '1px solid var(--glass-border)' }}>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', width: '100%', marginBottom: 2 }}>
+                    Batch history — continued testing:
+                  </span>
+                  {r.batches.map((b, i) => (
+                    <a
+                      key={i}
+                      href={b.coaFile}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        fontSize: '0.74rem', color: 'var(--primary-blue)', textDecoration: 'none',
+                        display: 'inline-flex', alignItems: 'center', gap: 5,
+                        padding: '4px 9px', borderRadius: 7, background: 'rgba(0,207,255,0.08)',
+                      }}
+                    >
+                      <FileText size={11} /> {b.batchDate}{i === 0 ? ' · latest' : ''}
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>
