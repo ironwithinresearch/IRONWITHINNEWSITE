@@ -11,12 +11,13 @@
 // does not restrict, so checkout is unaffected.
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://api.goaffpro.com https://api2.goaffpro.com https://cdn.reamaze.com https://*.reamaze.com",
+  "script-src 'self' 'unsafe-inline' https://api.goaffpro.com https://api2.goaffpro.com https://cdn.reamaze.com https://*.reamaze.com https://cdnjs.cloudflare.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.reamaze.com",
   "font-src 'self' data: https://fonts.gstatic.com https://*.reamaze.com",
   "img-src 'self' data: blob: https:",
-  "connect-src 'self' https://bhidasowgm.onrocket.site https://api.goaffpro.com https://api2.goaffpro.com https://*.reamaze.com wss://*.reamaze.com",
-  "frame-src 'self' https://*.reamaze.com",
+  "media-src 'self' https://*.reamaze.com",
+  "connect-src 'self' https://bhidasowgm.onrocket.site https://api.goaffpro.com https://api2.goaffpro.com https://*.reamaze.com wss://*.reamaze.com https://*.reamaze.io wss://*.reamaze.io https://*.pusher.com wss://*.pusher.com",
+  "frame-src 'self' https://*.reamaze.com https://*.reamaze.io",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
