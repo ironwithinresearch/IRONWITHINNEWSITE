@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import SaleCountdown from '@/components/SaleCountdown';
 import BirthdayBashBanner from '@/components/BirthdayBashBanner';
+import July4Banner from '@/components/July4Banner';
 import AppPromo from '@/components/AppPromo';
 
 const categories = [
@@ -174,6 +175,9 @@ import { useState } from 'react';
 export default function Home() {
   return (
     <>
+      {/* ══ 4TH OF JULY SALE BANNER (date-gated) ══ */}
+      <July4Banner />
+
       {/* ══ HERO ══ */}
       <section style={{ position: 'relative', minHeight: '92vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', overflow: 'hidden', padding: '60px 24px' }}>
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: `radial-gradient(ellipse at 20% 50%, rgba(124,58,237,0.15) 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, rgba(0,207,255,0.12) 0%, transparent 50%), radial-gradient(ellipse at 50% 90%, rgba(236,72,153,0.10) 0%, transparent 50%)` }} />
