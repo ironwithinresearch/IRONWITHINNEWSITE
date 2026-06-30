@@ -454,8 +454,8 @@ export default function ProductPage() {
               </div>
             )}
 
-            {/* Subscribe & Save — per product */}
-            {inStock && slug !== 'gift-card' && slug !== 'grand-slam-bundle' && slug !== 'long-shot' && (
+            {/* Subscribe & Save — REMOVED 2026-06-29 (margin: it granted free US shipping on small orders). Gated off. */}
+            {false && inStock && slug !== 'gift-card' && slug !== 'grand-slam-bundle' && slug !== 'long-shot' && (
               <div style={{ display: 'grid', gap: '8px', marginBottom: '14px' }}>
                 <button type="button" onClick={() => setSubscribe(false)}
                   style={{ textAlign: 'left', display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 14px', borderRadius: '10px', cursor: 'pointer', background: !subscribe ? 'rgba(0,207,255,0.06)' : 'transparent', border: `1px solid ${!subscribe ? 'var(--primary-blue)' : 'var(--glass-border)'}`, color: 'var(--text-light)', fontFamily: 'var(--font-body)' }}>
