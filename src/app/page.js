@@ -234,6 +234,33 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ══ FLAGSHIP BUNDLE 0 — THE FREEDOM STACK (top bundle / 4th of July headliner) ══ */}
+      <section style={{ padding: '64px 24px 0' }}>
+        <div className="container" style={{ maxWidth: 1000 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '32px', alignItems: 'center', background: 'radial-gradient(ellipse at 85% 15%, rgba(178,34,52,0.18), transparent 60%), radial-gradient(ellipse at 15% 90%, rgba(19,41,75,0.4), transparent 55%), var(--card-dark)', border: '1px solid rgba(178,34,52,0.5)', borderRadius: '24px', padding: '32px', boxShadow: '0 0 0 1px rgba(19,41,75,0.3), 0 20px 60px rgba(0,0,0,0.4)' }}>
+            <div style={{ flex: '1 1 320px' }}>
+              <span style={{ display: 'inline-block', padding: '5px 14px', background: 'linear-gradient(90deg,#b22234,#13294b)', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#fff', marginBottom: '14px' }}>🇺🇸 4th of July Headliner</span>
+              <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.9rem', fontWeight: 900, color: '#fff', margin: '0 0 10px', lineHeight: 1.15 }}>The Freedom Stack</h2>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 18px' }}>
+                Our biggest-value research stack — <strong style={{ color: 'var(--text-light)' }}>1× RETA</strong> (30mg) + <strong style={{ color: 'var(--text-light)' }}>2× SS-31</strong> + <strong style={{ color: 'var(--text-light)' }}>2× KLOW</strong>. 99%+ purity, COA on every vial.
+              </p>
+              <div style={{ fontSize: '0.82rem', color: '#fbbf24', fontWeight: 600, margin: '0 0 16px' }}>🎁 FREE MOTS-C 10mg · FREE bac water · FREE U.S. shipping · +250 bonus points</div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap', marginBottom: '20px' }}>
+                <span style={{ fontFamily: 'var(--font-heading)', fontSize: '2.1rem', fontWeight: 900, background: 'linear-gradient(90deg,#ff5a6e,#7aa2ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>$360</span>
+                <span style={{ color: 'var(--text-muted)', fontSize: '1.1rem', textDecoration: 'line-through' }}>$515</span>
+                <span style={{ padding: '4px 12px', background: 'rgba(52,211,153,0.14)', border: '1px solid rgba(52,211,153,0.35)', borderRadius: '999px', fontSize: '0.78rem', fontWeight: 800, color: '#34d399' }}>Save 30% · $155</span>
+              </div>
+              <Link href="/product/the-freedom-stack" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 34px', background: 'linear-gradient(90deg,#b22234,#13294b)', borderRadius: '12px', color: '#fff', fontWeight: 800, fontSize: '1rem', textDecoration: 'none', boxShadow: '0 0 24px rgba(178,34,52,0.45)' }}>
+                Shop the Bundle <ArrowRight size={17} />
+              </Link>
+            </div>
+            <div style={{ flex: '1 1 280px', minWidth: 240 }}>
+              <img src="https://bhidasowgm.onrocket.site/wp-content/uploads/2026/06/freedom-stack.png" alt="The Freedom Stack bundle" style={{ width: '100%', borderRadius: '16px', display: 'block' }} />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ══ FLAGSHIP BUNDLE ══ */}
       <section style={{ padding: '64px 24px' }}>
         <div className="container" style={{ maxWidth: 1000 }}>
