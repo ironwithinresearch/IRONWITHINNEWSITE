@@ -3,6 +3,7 @@
    survive the old ironwithinlabs.com store being retired). */
 
 export const coaBySlug = {
+  'tb-500': { coaFile: '/coas/tb-500-5928420.pdf', batchDate: '5/15/2026', productName: 'TB-500' },
   'dsip-10mg': { coaFile: '/coas/dsip-10mg-4349569.pdf', batchDate: '6/24/2026', productName: 'DSIP' },
   'mt-2': { coaFile: '/coas/mt-2-3295184.pdf', batchDate: '6/24/2026', productName: 'MT-2' },
   'l-glutathione': { coaFile: '/coas/l-glutathione-2768697.pdf', batchDate: '6/24/2026', productName: 'L-Glutathione' },
