@@ -113,7 +113,7 @@ function FeaturedProducts() {
             <Link href={`/product/${product.slug}`} style={{ textDecoration: 'none' }}>
               <div style={{ height: 180, background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
                 {product.image?.sourceUrl ? (
-                  <img src={product.image.sourceUrl} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '16px' }} />
+                  <img src={product.image.sourceUrl} alt={product.name} loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '16px' }} />
                 ) : (
                   <FlaskConical size={52} color="var(--primary-blue)" style={{ opacity: 0.2 }} />
                 )}
@@ -255,7 +255,7 @@ export default function Home() {
               </Link>
             </div>
             <div style={{ flex: '1 1 280px', minWidth: 240 }}>
-              <img src="https://bhidasowgm.onrocket.site/wp-content/uploads/2026/06/freedom-stack.png" alt="The Freedom Stack bundle" style={{ width: '100%', borderRadius: '16px', display: 'block' }} />
+              <img src="https://bhidasowgm.onrocket.site/wp-content/uploads/2026/06/freedom-stack.webp" alt="The Freedom Stack bundle" loading="lazy" decoding="async" style={{ width: '100%', borderRadius: '16px', display: 'block' }} />
             </div>
           </div>
         </div>
@@ -266,7 +266,7 @@ export default function Home() {
         <div className="container" style={{ maxWidth: 1000 }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '32px', alignItems: 'center', background: 'var(--card-dark)', border: '1px solid rgba(0,207,255,0.3)', borderRadius: '24px', padding: '32px', boxShadow: '0 0 0 1px rgba(0,207,255,0.05), 0 20px 60px rgba(0,0,0,0.3)' }}>
             <div style={{ flex: '1 1 280px', minWidth: 240 }}>
-              <img src="https://bhidasowgm.onrocket.site/wp-content/uploads/2026/06/grand-slam-rwb.png" alt="The Grand Slam Bundle" style={{ width: '100%', borderRadius: '16px', display: 'block' }} />
+              <img src="https://bhidasowgm.onrocket.site/wp-content/uploads/2026/06/grand-slam-rwb.webp" alt="The Grand Slam Bundle" loading="lazy" decoding="async" style={{ width: '100%', borderRadius: '16px', display: 'block' }} />
             </div>
             <div style={{ flex: '1 1 320px' }}>
               <span style={{ display: 'inline-block', padding: '5px 14px', background: 'var(--gradient-primary)', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#fff', marginBottom: '14px' }}>★ Flagship Bundle</span>
@@ -309,7 +309,7 @@ export default function Home() {
               </Link>
             </div>
             <div style={{ flex: '1 1 280px', minWidth: 240 }}>
-              <img src="https://bhidasowgm.onrocket.site/wp-content/uploads/2026/06/long-shot.png" alt="The Long Shot bundle" style={{ width: '100%', borderRadius: '16px', display: 'block' }} />
+              <img src="https://bhidasowgm.onrocket.site/wp-content/uploads/2026/06/long-shot.webp" alt="The Long Shot bundle" loading="lazy" decoding="async" style={{ width: '100%', borderRadius: '16px', display: 'block' }} />
             </div>
           </div>
         </div>
@@ -320,7 +320,7 @@ export default function Home() {
         <div className="container" style={{ maxWidth: 1000 }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '32px', alignItems: 'center', background: 'var(--card-dark)', border: '1px solid rgba(232,170,150,0.35)', borderRadius: '24px', padding: '32px', boxShadow: '0 0 0 1px rgba(232,170,150,0.06), 0 20px 60px rgba(0,0,0,0.3)' }}>
             <div style={{ flex: '1 1 280px', minWidth: 240 }}>
-              <img src="https://bhidasowgm.onrocket.site/wp-content/uploads/2026/06/radiant-bundle.png" alt="The Radiant Bundle — KPV + GHK-Cu" style={{ width: '100%', borderRadius: '16px', display: 'block' }} />
+              <img src="https://bhidasowgm.onrocket.site/wp-content/uploads/2026/06/radiant-bundle.webp" alt="The Radiant Bundle — KPV + GHK-Cu" loading="lazy" decoding="async" style={{ width: '100%', borderRadius: '16px', display: 'block' }} />
             </div>
             <div style={{ flex: '1 1 320px' }}>
               <span style={{ display: 'inline-block', padding: '5px 14px', background: 'linear-gradient(100deg,#e8aa96,#caa05a)', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#3a1c25', marginBottom: '14px' }}>✨ New · Skin &amp; Radiance</span>

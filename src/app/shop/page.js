@@ -179,7 +179,7 @@ export default function ShopPage() {
                     <Link href={`/product/${product.slug}`} style={{ textDecoration: 'none' }}>
                       <div style={{ height: 200, background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
                         {product.image?.sourceUrl ? (
-                          <img src={product.image.sourceUrl} alt={product.image.altText || product.name} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '16px' }} />
+                          <img src={product.image.sourceUrl} alt={product.image.altText || product.name} loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '16px' }} />
                         ) : (
                           <FlaskConical size={52} color="var(--primary-blue)" style={{ opacity: 0.25 }} />
                         )}

@@ -235,7 +235,7 @@ export default function ProductPage() {
               <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 {images.map((src, i) => (
                   <div key={i} style={{ width: 64, height: 64, borderRadius: '10px', border: '1px solid var(--glass-border)', overflow: 'hidden', cursor: 'pointer', background: 'var(--bg-elevated)' }}>
-                    <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                    <img src={src} alt="" loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                   </div>
                 ))}
               </div>
@@ -577,7 +577,7 @@ export default function ProductPage() {
                       onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(0,207,255,0.3)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
                       onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.transform = 'translateY(0)'; }}>
                       {rel.image?.sourceUrl ? (
-                        <img src={rel.image.sourceUrl} alt={rel.name} style={{ height: 60, objectFit: 'contain', margin: '0 auto 10px' }} />
+                        <img src={rel.image.sourceUrl} alt={rel.name} loading="lazy" decoding="async" style={{ height: 60, objectFit: 'contain', margin: '0 auto 10px' }} />
                       ) : (
                         <FlaskConical size={32} color="var(--primary-blue)" style={{ margin: '0 auto 10px', opacity: 0.4 }} />
                       )}
