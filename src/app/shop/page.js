@@ -3,6 +3,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useQuery } from '@apollo/client';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
@@ -179,7 +180,7 @@ export default function ShopPage() {
                     <Link href={`/product/${product.slug}`} style={{ textDecoration: 'none' }}>
                       <div style={{ height: 200, background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
                         {product.image?.sourceUrl ? (
-                          <img src={product.image.sourceUrl} alt={product.image.altText || product.name} loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '16px' }} />
+                          <Image src={product.image.sourceUrl} alt={product.image.altText || product.name} fill sizes="(max-width:640px) 45vw, (max-width:1024px) 30vw, 240px" style={{ objectFit: 'contain', padding: '16px' }} />
                         ) : (
                           <FlaskConical size={52} color="var(--primary-blue)" style={{ opacity: 0.25 }} />
                         )}
