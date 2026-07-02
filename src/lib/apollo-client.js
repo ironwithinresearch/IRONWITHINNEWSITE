@@ -19,6 +19,19 @@ export function makeClient() {
     if (typeof window !== 'undefined') {
       token = localStorage.getItem('jwt_token');
       wooSession = localStorage.getItem('woo_session');
+      // Never send an expired JWT: the server would silently treat us as a guest and
+      // return empty orders/profile. Drop it so requests go out unauthenticated and the
+      // app can prompt a fresh login instead of showing a logged-in-but-empty account.
+      if (token) {
+        try {
+          const exp = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))).exp;
+          if (exp && Date.now() >= exp * 1000) {
+            localStorage.removeItem('jwt_token');
+            localStorage.removeItem('iwr_user');
+            token = null;
+          }
+        } catch { /* malformed token — leave as-is */ }
+      }
     }
 
     return {
