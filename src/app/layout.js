@@ -7,7 +7,6 @@ import AffiliateTracker from "../components/AffiliateTracker";
 import ReferralCapture from "../components/ReferralCapture";
 import LeadCapture from "../components/LeadCapture";
 import BirthdayBashPopup from "../components/BirthdayBashPopup";
-import July4Popup from "../components/July4Popup";
 import ReamazeChat from "../components/ReamazeChat";
 import ApolloWrapper from "../lib/ApolloWrapper";
 
@@ -56,7 +55,6 @@ export default function RootLayout({ children }) {
           <Footer />
           <LeadCapture />
           <BirthdayBashPopup />
-          <July4Popup />
           <ReamazeChat />
         </ApolloWrapper>
       </body>
