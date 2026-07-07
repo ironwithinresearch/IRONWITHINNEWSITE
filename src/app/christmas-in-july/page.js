@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import XmasCountdown from '@/components/XmasCountdown';
+import ScratchCard from '@/components/ScratchCard';
 
 export const revalidate = 300;
 
@@ -77,15 +78,12 @@ export default async function ChristmasInJuly() {
         )}
         {mode === 'live' && liveDay && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
-            <div style={{ padding: '22px 26px', borderRadius: 20, background: 'linear-gradient(135deg, rgba(200,16,46,0.28), rgba(42,157,92,0.22))', border: '1px solid rgba(245,197,66,0.4)', maxWidth: 640 }}>
-              <div style={{ color: '#3ddc84', fontWeight: 800, fontSize: '0.72rem', letterSpacing: '0.16em', textTransform: 'uppercase' }}>● Live now · Day {liveDay.day}</div>
-              <div style={{ fontSize: '2.2rem', margin: '6px 0' }}>{ENRICH[liveDay.day]?.e}</div>
-              <div style={{ fontFamily: 'var(--font-heading, inherit)', fontSize: '1.5rem', fontWeight: 900, color: '#fff' }}>{liveDay.badge}</div>
-              <p style={{ color: 'rgba(255,255,255,0.78)', margin: '8px 0 0' }}>{ENRICH[liveDay.day]?.sub}</p>
-              {liveDay.code && <div style={{ marginTop: 12, display: 'inline-block', padding: '8px 18px', borderRadius: 10, background: '#fff', color: '#0f1729', fontWeight: 900, letterSpacing: '0.08em', fontSize: '1.1rem' }}>CODE: {liveDay.code}</div>}
+            <div style={{ padding: '20px 26px', borderRadius: 20, background: 'linear-gradient(135deg, rgba(200,16,46,0.28), rgba(42,157,92,0.22))', border: '1px solid rgba(245,197,66,0.4)', maxWidth: 560 }}>
+              <div style={{ color: '#3ddc84', fontWeight: 800, fontSize: '0.72rem', letterSpacing: '0.16em', textTransform: 'uppercase' }}>● Day {liveDay.day} is live</div>
+              <div style={{ fontSize: '2rem', margin: '8px 0 4px' }}>🎟️</div>
+              <div style={{ fontFamily: 'var(--font-heading, inherit)', fontSize: '1.35rem', fontWeight: 900, color: '#fff' }}>Scratch Day {liveDay.day} below to reveal today's deal!</div>
             </div>
             <XmasCountdown target={target} label="Today's deal ends in" />
-            <Link href="/shop" style={ctaStyle}>Shop Today's Deal →</Link>
           </div>
         )}
         {mode === 'ended' && (
@@ -116,31 +114,16 @@ export default async function ChristmasInJuly() {
           {days.map((d) => {
             const st = stateOf(d);
             const en = ENRICH[d.day] || {};
-            const border = st === 'live' ? '2px solid #f5c542' : st === 'past' ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(255,255,255,0.14)';
+            const reveal = st !== 'up'; // future days carry NO deal content
             return (
-              <div key={d.day} style={{ position: 'relative', borderRadius: 16, padding: 18, border,
-                background: st === 'live' ? 'linear-gradient(135deg, rgba(200,16,46,0.22), rgba(42,157,92,0.18))' : 'rgba(255,255,255,0.03)',
-                opacity: st === 'past' ? 0.55 : 1, boxShadow: st === 'live' ? '0 0 30px rgba(245,197,66,0.25)' : 'none' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <span style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.1em', color: 'rgba(255,255,255,0.55)' }}>DAY {d.day}</span>
-                  {st === 'live' && <span style={{ fontSize: '0.62rem', fontWeight: 800, color: '#0a1f14', background: '#3ddc84', padding: '2px 8px', borderRadius: 999 }}>LIVE</span>}
-                  {st === 'past' && <span style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.5)' }}>ended ✓</span>}
-                  {st === 'up' && <span style={{ fontSize: '0.62rem', color: '#f5c542' }}>{d.date ? new Date(d.date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}</span>}
-                </div>
-                <div style={{ fontSize: '1.7rem', lineHeight: 1 }}>{en.e}</div>
-                <div style={{ fontFamily: 'var(--font-heading, inherit)', fontWeight: 900, color: '#fff', fontSize: '1rem', margin: '8px 0 4px' }}>{d.badge}</div>
-                <div style={{ color: 'rgba(255,255,255,0.62)', fontSize: '0.82rem', lineHeight: 1.45 }}>{en.sub}</div>
-                {/* code: revealed on/after its day, locked before */}
-                {d.code && (st === 'live' || st === 'past'
-                  ? <div style={{ marginTop: 10, display: 'inline-block', padding: '5px 12px', borderRadius: 8, background: st === 'live' ? '#fff' : 'rgba(255,255,255,0.1)', color: st === 'live' ? '#0f1729' : 'rgba(255,255,255,0.7)', fontWeight: 800, letterSpacing: '0.06em', fontSize: '0.82rem' }}>{d.code}</div>
-                  : <div style={{ marginTop: 10, fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)' }}>🔒 code unlocks that day</div>)}
-                {st === 'live' && <div><Link href="/shop" style={{ ...ctaStyle, marginTop: 12, padding: '9px 16px', fontSize: '0.85rem', display: 'inline-flex' }}>Shop now →</Link></div>}
-              </div>
+              <ScratchCard key={d.day} day={d.day} date={d.date} state={st}
+                emoji={reveal ? en.e : ''} badge={reveal ? d.badge : ''}
+                sub={reveal ? en.sub : ''} code={reveal ? d.code : null} />
             );
           })}
         </div>
         <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem', marginTop: 28 }}>
-          Enter each day's code at checkout — creator codes stack. Free gifts auto-add while supplies last. For research use only.
+          Each day, come back and scratch that day's card to reveal the deal + code. Creator codes stack; free gifts auto-add while supplies last. For research use only.
         </p>
       </section>
     </div>
