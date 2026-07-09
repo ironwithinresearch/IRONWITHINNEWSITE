@@ -6,25 +6,25 @@ export const revalidate = 300;
 
 export const metadata = {
   title: '12 Days of Christmas in July | Iron Within Research',
-  description: 'A new deal every day, July 14–25 — 20% off, category blowouts, doorbusters, free gifts, and a grand finale. Shop all 12 days to win 1 of 5 $1,000 credits.',
+  description: 'A new deal every day, July 11–22 — giveaways, BOGO, bonus days, and a grand finale. Take part in each day to win 1 of 5 $1,000 credits.',
 };
 
 const FEED_URL = (process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://bhidasowgm.onrocket.site') + '/wp-json/iw/v1/xmas-july';
 
 // Emoji + sub-line per day; badge/name/code come from the live engine feed.
 const ENRICH = {
-  1:  { e: '🎁', sub: '20% off everything to kick it off. Code JOY20.' },
-  2:  { e: '🩹', sub: '30% off all Regenerative — GHK-Cu, SS-31, KPV, NAD+, BPC & more.' },
-  3:  { e: '🧦', sub: 'A FREE bac water auto-added to every order $75+.' },
-  4:  { e: '⚡', sub: '30% off RT-3 — our #1 seller — 24 hours only.' },
-  5:  { e: '🎄', sub: 'A FREE MOTS-C 10mg on every order $175+.' },
-  6:  { e: '🏆', sub: '25% off all Performance — RT-3, MOTS-C, TRZ-2, 5-Amino & more.' },
-  7:  { e: '📦', sub: 'An extra 15% off every bundle, stacked on bundle savings.' },
-  8:  { e: '🧠', sub: '30% off all Neuro — Semax, Selank, PT-141, Kisspeptin, DSIP.' },
-  9:  { e: '💳', sub: 'Buy a $250 gift card, get $50 bonus balance free.' },
-  10: { e: '💊', sub: '25% off Capsules + Lab Supplies.' },
-  11: { e: '🛷', sub: 'FREE shipping sitewide + a FREE mystery vial on $200+.' },
-  12: { e: '🎆', sub: '40% off EVERYTHING, 24 hours only, plus a free gift.' },
+  1:  { e: '🎁', sub: 'FREE RT-3 or TRZ-2 10mg (your pick) on every order $150+.' },
+  2:  { e: '🔁', sub: 'BOGO — buy a BPC-157, get your 2nd 50% off.' },
+  3:  { e: '⚡', sub: 'Triple Rewards Points on every order today.' },
+  4:  { e: '✨', sub: '43% off GLOW, GHK-Cu & KPV — Glow Day.' },
+  5:  { e: '💳', sub: 'Buy a $100 gift card, get $25 bonus balance free.' },
+  6:  { e: '🚚', sub: 'FREE expedited shipping sitewide + a free bac water.' },
+  7:  { e: '🧠', sub: 'Buy a Semax, get a Selank FREE.' },
+  8:  { e: '💥', sub: '45% off every bundle — Bundle Blowout.' },
+  9:  { e: '🎁', sub: 'Spend $250, get $50 store credit for next time.' },
+  10: { e: '🔁', sub: 'Buy 2, get 1 FREE on best-sellers.' },
+  11: { e: '🎁', sub: 'A FREE vial — KPV, DSIP, Selank or Semax — on $150+.' },
+  12: { e: '🏆', sub: '45% OFF everything + a free gift on $150+. Grand finale!' },
 };
 
 async function getFeed() {
@@ -37,8 +37,8 @@ async function getFeed() {
 
 function ctToday() { return new Date(Date.now() - 5 * 3600000).toISOString().slice(0, 10); }
 function schedule() {
-  const START = Date.parse('2026-07-14T05:00:00Z'); // Jul 14 00:00 CDT
-  const END = Date.parse('2026-07-26T05:00:00Z');   // midnight after Day 12
+  const START = Date.parse('2026-07-11T05:00:00Z'); // Jul 11 00:00 CDT
+  const END = Date.parse('2026-07-23T05:00:00Z');   // midnight after Day 12
   const now = Date.now();
   if (now < START) return { mode: 'pre', target: '2026-07-14T05:00:00Z' };
   if (now < END) {
@@ -67,7 +67,7 @@ export default async function ChristmasInJuly() {
           🎄 12 Days of <span style={{ background: 'linear-gradient(90deg,#ff5a6e,#f5c542,#3ddc84)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Christmas in July</span>
         </h1>
         <p style={{ color: 'rgba(255,255,255,0.72)', fontSize: '1.05rem', margin: '0 0 24px' }}>
-          A new deal every single day · <b style={{ color: '#fff' }}>July 14–25</b>
+          A new deal every single day · <b style={{ color: '#fff' }}>July 11–22</b>
         </p>
 
         {mode === 'pre' && (
@@ -101,7 +101,7 @@ export default async function ChristmasInJuly() {
             <div style={{ fontSize: '1.5rem', marginBottom: 4 }}>🏆</div>
             <div style={{ fontFamily: 'var(--font-heading, inherit)', fontWeight: 900, color: '#f5c542', fontSize: '1.2rem' }}>Shop all 12 days → win $1,000</div>
             <p style={{ color: 'rgba(255,255,255,0.8)', margin: '6px 0 0', fontSize: '0.92rem' }}>
-              Place an order on every one of the 12 days and you're entered to win <b style={{ color: '#fff' }}>one of five $1,000 store-credit prizes</b>. Miss a day, miss your shot. 🎁
+              Take part in each day's deal to earn that day's entry — complete all 12 for a bonus entry. Five winners each get <b style={{ color: '#fff' }}>$1,000 in store credit</b>. 🎁
             </p>
           </div>
         </section>

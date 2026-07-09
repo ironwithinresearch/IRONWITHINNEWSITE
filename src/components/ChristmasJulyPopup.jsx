@@ -2,10 +2,10 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-// First-visit-per-day modal during the 12 Days of Christmas in July (Jul 14–25 CT).
+// First-visit-per-day modal during the 12 Days of Christmas in July (Jul 11–22 CT).
 // Reminds shoppers to scratch today's card; once per calendar day per visitor.
-const XJ_START = Date.parse('2026-07-14T05:00:00Z');
-const XJ_END = Date.parse('2026-07-26T05:00:00Z');
+const XJ_START = Date.parse('2026-07-11T05:00:00Z');
+const XJ_END = Date.parse('2026-07-23T05:00:00Z');
 
 function ctDate() {
   const d = new Date(Date.now() - 5 * 3600000);
@@ -13,7 +13,7 @@ function ctDate() {
 }
 function dayNum() {
   const t = new Date(Date.now() - 5 * 3600000); t.setUTCHours(0, 0, 0, 0);
-  return Math.min(12, Math.max(1, Math.round((t.getTime() - Date.parse('2026-07-14T00:00:00Z')) / 86400000) + 1));
+  return Math.min(12, Math.max(1, Math.round((t.getTime() - Date.parse('2026-07-11T00:00:00Z')) / 86400000) + 1));
 }
 
 export default function ChristmasJulyPopup() {

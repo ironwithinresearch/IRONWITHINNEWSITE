@@ -23,13 +23,13 @@ const J4_START = Date.parse('2026-06-30T00:00:00Z');
 const J4_END = Date.parse('2026-07-06T04:00:00Z');
 const J4_MESSAGE = '🇺🇸  4TH OF JULY SALE — 25% OFF SITEWIDE, no code needed · stack your creator code for even more · 🎁  FREE MOTS-C 10mg on orders $250+ · ends Sat Jul 5, midnight ET';
 
-// 12 Days of Christmas in July — Jul 14–25 CT (CDT = UTC-5, midnight CT = 05:00 UTC).
-const XJ_START = Date.parse('2026-07-14T05:00:00Z');
-const XJ_END = Date.parse('2026-07-26T05:00:00Z');
+// 12 Days of Christmas in July — Jul 11–22 CT (CDT = UTC-5, midnight CT = 05:00 UTC).
+const XJ_START = Date.parse('2026-07-11T05:00:00Z');
+const XJ_END = Date.parse('2026-07-23T05:00:00Z');
 function xjDayNum() {
   const ctToday = new Date(Date.now() - 5 * 3600000);
   ctToday.setUTCHours(0, 0, 0, 0);
-  const d = Math.round((ctToday.getTime() - Date.parse('2026-07-14T00:00:00Z')) / 86400000) + 1;
+  const d = Math.round((ctToday.getTime() - Date.parse('2026-07-11T00:00:00Z')) / 86400000) + 1;
   return Math.min(12, Math.max(1, d));
 }
 const XJ_MESSAGE = (n) => `🎄  12 DAYS OF CHRISTMAS IN JULY — Day ${n} of 12 is LIVE · scratch today's card to reveal the deal 🎟️ · shop all 12 days → win 1 of 5 $1,000 credits`;
