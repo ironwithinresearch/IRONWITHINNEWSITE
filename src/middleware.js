@@ -32,7 +32,9 @@ export async function middleware(req) {
   return NextResponse.redirect(url);
 }
 
-// Only guard the affiliate section. /affiliate-access and /api/* are NOT matched.
+// Guard the affiliate section AND its downloadable assets (swipe graphics).
+// /affiliate-access and /api/* are NOT matched. Authenticated affiliates load the
+// assets normally because their browser sends the gate cookie on same-origin requests.
 export const config = {
-  matcher: ['/affiliate', '/affiliate/:path*'],
+  matcher: ['/affiliate', '/affiliate/:path*', '/affiliate-assets/:path*'],
 };
