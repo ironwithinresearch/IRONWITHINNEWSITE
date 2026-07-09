@@ -20,7 +20,7 @@ export default async function sitemap() {
   }
 
   const now = new Date();
-  const staticRoutes = ["", "/shop", "/categories", "/gift-cards", "/lab-reports", "/faq", "/contact", "/affiliate", "/shipping", "/refund", "/terms", "/privacy", "/disclaimer"];
+  const staticRoutes = ["", "/shop", "/categories", "/gift-cards", "/lab-reports", "/faq", "/contact", "/shipping", "/refund", "/terms", "/privacy", "/disclaimer"];
 
   return [
     ...staticRoutes.map((path) => ({
