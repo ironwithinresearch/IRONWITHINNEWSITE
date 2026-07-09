@@ -4,7 +4,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Copy, Check, Sparkles, ShieldAlert, ShieldCheck, ArrowRight, Download, Film, Wallet } from 'lucide-react';
+import { Copy, Check, Sparkles, ShieldAlert, ShieldCheck, ArrowRight, Download, Film, Wallet, BookOpen } from 'lucide-react';
 
 const CAPTIONS = [
   "Doing peptide research? Iron Within Research is the only source I trust — 99%+ purity with a Certificate of Analysis on every single vial. Use code [YOURCODE] → ironwithin.io",
@@ -78,6 +78,25 @@ export default function AffiliateResourcesPage() {
           Copy any caption, swap <strong style={{ color: 'var(--text-light)' }}>[YOURCODE]</strong> for your affiliate code (find it in your <a href="https://ironwithin.goaffpro.com/login" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-blue)' }}>dashboard</a>), add the disclosure, and post.
         </p>
       </div>
+
+      {/* Handbook — read the rules + how-to */}
+      <Link href="/affiliate/handbook" style={{ textDecoration: 'none', display: 'block', marginBottom: 20 }}>
+        <div style={{ background: 'linear-gradient(100deg, rgba(124,58,237,0.14), rgba(236,72,153,0.10))', border: '1px solid rgba(124,58,237,0.45)', borderRadius: 18, padding: '24px 26px', display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
+          <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(124,58,237,0.15)', border: '1px solid rgba(124,58,237,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <BookOpen size={26} color="#a78bfa" />
+          </div>
+          <div style={{ flex: '1 1 300px' }}>
+            <div style={{ display: 'inline-block', fontSize: '0.66rem', fontWeight: 800, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#a78bfa', background: 'rgba(124,58,237,0.14)', padding: '3px 9px', borderRadius: 999, marginBottom: 8 }}>Start here</div>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', fontWeight: 800, color: '#fff', margin: '0 0 6px' }}>The Affiliate Handbook</h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.55, margin: 0 }}>
+              The rules, commission tiers, how to handle a customer problem, the rewards program, and how to grow your %. <strong style={{ color: 'var(--text-light)' }}>Read it first</strong> — printable / save-as-PDF inside.
+            </p>
+          </div>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 26px', background: 'var(--gradient-secondary, linear-gradient(135deg,#7C3AED,#EC4899))', borderRadius: 11, color: '#fff', fontWeight: 800, fontSize: '0.95rem', whiteSpace: 'nowrap', boxShadow: '0 0 20px rgba(124,58,237,0.35)' }}>
+            Read the handbook <ArrowRight size={16} />
+          </span>
+        </div>
+      </Link>
 
       {/* NEW: 2× store-credit payout */}
       <div style={{ background: 'linear-gradient(100deg, rgba(0,207,255,0.12), rgba(124,58,237,0.10))', border: '1px solid rgba(0,207,255,0.4)', borderRadius: 18, padding: '24px 26px', marginBottom: 40, display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
