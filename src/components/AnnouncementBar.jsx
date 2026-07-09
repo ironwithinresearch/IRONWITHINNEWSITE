@@ -34,6 +34,12 @@ function xjDayNum() {
 }
 const XJ_MESSAGE = (n) => `🎄  12 DAYS OF CHRISTMAS IN JULY — Day ${n} of 12 is LIVE · scratch today's card to reveal the deal 🎟️ · shop all 12 days → win 1 of 5 $1,000 credits`;
 
+// Summer Sale — 30% off everything. Live now → end of Aug 20 CT (== 04:59:59 UTC Aug 21),
+// matching the WooCommerce sale schedule (_sale_price_dates_to). Auto-disappears after.
+const SUMMER_START = Date.parse('2026-07-01T00:00:00Z');
+const SUMMER_END = Date.parse('2026-08-21T04:59:59Z');
+const SUMMER_MESSAGE = '☀️  SUMMER SALE — 30% OFF EVERYTHING, no code needed · stack your affiliate code for even more · 99%+ purity, COA on every order · ends Aug 20';
+
 const BASE_MESSAGES = [
   '🔬  Certificate of Analysis available for every product',
   '🧪  Research-grade peptides, independently lab-tested',
@@ -47,12 +53,14 @@ export default function AnnouncementBar() {
   const [bbActive, setBbActive] = useState(false);
   const [j4Active, setJ4Active] = useState(false);
   const [xjActive, setXjActive] = useState(false);
+  const [summerActive, setSummerActive] = useState(false);
   useEffect(() => {
     const now = Date.now();
     const promos = [];
     if (now >= XJ_START && now < XJ_END) { promos.push(XJ_MESSAGE(xjDayNum())); setXjActive(true); }
     if (now >= J4_START && now <= J4_END) { promos.push(J4_MESSAGE); setJ4Active(true); }
     if (now >= BB_START && now < BB_END) { promos.push(BB_MESSAGE); setBbActive(true); }
+    if (now >= SUMMER_START && now < SUMMER_END) { promos.push(SUMMER_MESSAGE); setSummerActive(true); }
     if (now < SALE_ENDS) promos.push(SALE_MESSAGE);
     setMessages([...promos, ...BASE_MESSAGES]);
   }, []);
@@ -68,7 +76,7 @@ export default function AnnouncementBar() {
       aria-label="Store announcements"
       style={{
         position: 'fixed', top: 0, left: 0, right: 0, height: 36, zIndex: 101,
-        background: xjActive ? 'linear-gradient(90deg,#c8102e,#0f5132,#f5c542,#0f5132,#c8102e)' : j4Active ? 'linear-gradient(90deg,#b22234,#7a1228,#13294b,#7a1228,#b22234)' : bbActive ? 'linear-gradient(90deg,#ec4899,#f5d272)' : 'var(--gradient-primary, linear-gradient(90deg,#00CFFF,#7c3aed))',
+        background: xjActive ? 'linear-gradient(90deg,#c8102e,#0f5132,#f5c542,#0f5132,#c8102e)' : j4Active ? 'linear-gradient(90deg,#b22234,#7a1228,#13294b,#7a1228,#b22234)' : bbActive ? 'linear-gradient(90deg,#ec4899,#f5d272)' : summerActive ? 'linear-gradient(90deg,#ffb14a,#ff7a59,#37c8ff)' : 'var(--gradient-primary, linear-gradient(90deg,#00CFFF,#7c3aed))',
         color: (j4Active || xjActive) ? '#fff' : '#001018', overflow: 'hidden', display: 'flex', alignItems: 'center',
         fontFamily: 'var(--font-body)',
       }}
