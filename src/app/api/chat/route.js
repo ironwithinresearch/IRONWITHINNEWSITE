@@ -14,6 +14,8 @@ const WC_KEY   = process.env.WC_KEY;
 const WC_SECRET = process.env.WC_SECRET;
 const NOTIFY_SECRET = process.env.IW_BOT_NOTIFY_SECRET || '';
 const REPLACEMENT_MODE = process.env.IW_CHAT_REPLACEMENT_MODE || 'simulate'; // 'simulate' | 'live'
+const SS_BASE = process.env.SHIPSTATION_BASE || 'https://api.shipstation.com/v2';
+const SS_KEY = process.env.SHIPSTATION_API_KEY;
 
 const wcAuth = 'Basic ' + Buffer.from(`${WC_KEY}:${WC_SECRET}`).toString('base64');
 const wc = async (path, opts = {}) => {
@@ -34,13 +36,40 @@ const notify = async (payload) => {
   } catch { /* non-fatal */ }
 };
 
+// Live carrier status for an order via ShipStation (already knows the UPS status).
+// Matches the order's stored tracking number to the right label (an order can have stale labels).
+async function shipStatus(orderId, trackingNumber) {
+  if (!SS_KEY) return null;
+  try {
+    const r = await fetch(`${SS_BASE}/labels?external_shipment_id=${orderId}`, { headers: { 'API-Key': SS_KEY } });
+    if (!r.ok) return null;
+    const labels = (await r.json()).labels || [];
+    if (!labels.length) return null;
+    let lab = trackingNumber ? labels.find((l) => l.tracking_number === trackingNumber) : null;
+    if (!lab) lab = labels.slice().sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0))[0];
+    const out = { status: lab.tracking_status || null, tracking: lab.tracking_number, carrier: lab.carrier_code };
+    try {
+      const t = await fetch(`${SS_BASE}/labels/${lab.label_id}/track`, { headers: { 'API-Key': SS_KEY } });
+      if (t.ok) {
+        const d = await t.json();
+        out.status = d.status_description || d.carrier_status_description || out.status;
+        out.estimated_delivery = d.estimated_delivery_date || null;
+        out.delivered_on = d.actual_delivery_date || null;
+        const ev = (d.events || [])[0];
+        if (ev) out.last_scan = [ev.description, ev.city_locality, ev.state_province].filter(Boolean).join(' ').trim();
+      }
+    } catch { /* detail optional */ }
+    return out;
+  } catch { return null; }
+}
+
 const SYSTEM = `You are the Iron Within Research support agent — the chat assistant on ironwithin.io, a store that sells research-grade peptides and compounds. Be warm, upbeat, and concise (2–4 sentences). Use emoji sparingly.
 
 ## HARD RULE — research use only (never break)
 Iron Within products are sold FOR RESEARCH PURPOSES ONLY and are not for human consumption. NEVER give medical, health, dosing, protocol, reconstitution, cycling, stacking, benefits, side-effect, or usage advice yourself. When someone asks about dosing, "how much to inject/take", protocols, or how to use a compound: do NOT advise — point them to **Peptide Paradigm**, a free education + dosage-tracking tool, at **www.peptideparadigm.com**, and offer to help with orders, COAs, shipping, or account instead. One or two friendly sentences.
 
 ## You can take real actions with tools
-- **lookup_order** — check if an order has shipped, its tracking, and its items. You MUST have the order number AND the email on the account. If the tool says the email doesn't match, do not reveal anything — politely ask them to confirm the email on the order.
+- **lookup_order** — check an order's status, its items, and its **live carrier delivery status** (the tool returns live_delivery_status like "Delivered"/"In Transit"/"Out for Delivery" plus estimated_delivery, delivered_on, and the last_scan location — straight from the carrier via ShipStation). Report it in plain, friendly language (e.g. "It was delivered on July 9" or "It's in transit, estimated to arrive July 12 — last scanned in Louisville, KY"). You MUST have the order number AND the email on the account; if the tool says the email doesn't match, reveal nothing and ask them to confirm the email on the order.
 - **create_replacement** — if a customer reports a missing, damaged, wrong, or leaking item, verify their identity with lookup first, look carefully at any photo they attached, and if the item really is missing/damaged, create a free $0 replacement (free shipping). Only replace items that were actually on that order. Confirm which item before replacing. Never replace the same item twice — if the tool says it was already replaced, escalate instead.
 - **escalate_to_support** — email the team for anything you can't resolve, billing/payment problems, or when the customer asks for a human. Ask for their email first.
 
@@ -66,10 +95,15 @@ async function lookupOrder({ order_number, email }) {
   if (!email || onAcct !== String(email).toLowerCase())
     return { verified: false, note: 'Email does not match the account on this order. Do NOT reveal order details; ask them to confirm the email on the order.' };
   const meta = Object.fromEntries((o.meta_data || []).map((m) => [m.key, m.value]));
+  const shipped = o.status === 'shipped' || o.status === 'completed';
+  const delivery = (shipped || meta._tracking_number) ? await shipStatus(id, meta._tracking_number) : null;
   return {
-    verified: true, order: id, status: o.status,
-    shipped: o.status === 'shipped' || o.status === 'completed',
+    verified: true, order: id, status: o.status, shipped,
     tracking: meta._tracking_number || null, carrier: meta._tracking_provider || null,
+    live_delivery_status: delivery?.status || null,       // e.g. Delivered / In Transit / Out for Delivery / Exception
+    estimated_delivery: delivery?.estimated_delivery || null,
+    delivered_on: delivery?.delivered_on || null,
+    last_scan: delivery?.last_scan || null,
     items: (o.line_items || []).map((l) => ({ name: l.name, qty: l.quantity, product_id: l.product_id, variation_id: l.variation_id })),
     already_replaced: Array.isArray(meta._iw_bot_replaced) ? meta._iw_bot_replaced : [],
   };
