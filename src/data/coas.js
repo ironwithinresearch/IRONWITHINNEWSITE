@@ -66,7 +66,13 @@ export const coaBySlug = {
       { coaFile: '/coas/klow.pdf', batchDate: '4/16/2026' },
     ],
   },
-  'ipa': { coaFile: '/coas/ipa.pdf', batchDate: '2/22/2026', productName: 'Ipa' },
+  'ipa': {
+    coaFile: '/coas/ipa-2026-04-16.pdf', batchDate: '4/16/2026', productName: 'Ipa',
+    batches: [
+      { coaFile: '/coas/ipa-2026-04-16.pdf', batchDate: '4/16/2026 · Lot IWR-6499787' },
+      { coaFile: '/coas/ipa.pdf', batchDate: '2/22/2026' },
+    ],
+  },
   'cjc-w-o-dac': { coaFile: '/coas/cjc-w-o-dac.pdf', batchDate: '2/22/2026', productName: 'CJC w/o DAC' },
   'cjc-ipa': { coaFile: '/coas/cjc-ipa.pdf', batchDate: '2/22/2026', productName: 'CJC / IPA' },
   'cagrillintide': { coaFile: '/coas/cagrillintide.pdf', batchDate: '4/16/2026', productName: 'Cagrillintide' },
