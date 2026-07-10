@@ -119,6 +119,17 @@ async function createReplacement({ order_number, email, item_name, reason }) {
     return { ok: false, note: 'That item was already replaced once on this order — do not replace again; escalate to a human.' };
 
   const { data: o } = await wc(`/orders/${v.order}`);
+
+  // Safe launch default: unless replacements are explicitly LIVE, route to a human
+  // (email the team) instead of auto-creating/shipping. Real service, no false promise.
+  if (REPLACEMENT_MODE !== 'live') {
+    await notify({ type: 'replacement', order_id: v.order, reply_to: o.billing?.email,
+      subject: `Replacement request — order #${v.order}`,
+      message: `Customer reports a missing/damaged item.\nOrder: #${v.order}\nItem: ${line.name}\nCustomer: ${o.billing?.first_name || ''} <${o.billing?.email || ''}>\nReason: ${reason}\n\n(Bot is in human-review mode — please create + ship the free replacement.)` });
+    return { ok: true, routed_to_human: true, item: line.name,
+      message: `I've flagged the missing "${line.name}" to our support team — they'll get a free replacement out to you and follow up at your email within 1 business day.` };
+  }
+
   const orderPayload = {
     status: REPLACEMENT_MODE === 'live' ? 'processing' : 'draft',
     customer_id: o.customer_id || 0,
@@ -157,8 +168,18 @@ async function escalate({ summary, customer_email }) {
 
 const IMPL = { lookup_order: lookupOrder, create_replacement: createReplacement, escalate_to_support: escalate };
 
+// Lightweight per-IP rate limit (public endpoint). 30 messages / 10 min.
+const RL = new Map();
+function clientIp(request) { return (request.headers.get('x-forwarded-for') || '').split(',')[0].trim() || 'unknown'; }
+
 export async function POST(request) {
   if (!process.env.ANTHROPIC_API_KEY) return Response.json({ reply: 'The assistant isn’t configured yet.' }, { status: 200 });
+  const ip = clientIp(request), now = Date.now();
+  const rec = RL.get(ip);
+  if (rec && now - rec.t > 600000) RL.delete(ip);
+  const cur = RL.get(ip) || { n: 0, t: now };
+  if (cur.n >= 30) return Response.json({ reply: 'You’ve sent a lot of messages in a short window — give me a minute and try again. For anything urgent, email support@ironwithin.io.' }, { status: 200 });
+  RL.set(ip, { n: cur.n + 1, t: cur.t });
   const client = new Anthropic();
   let body;
   try { body = await request.json(); } catch { return Response.json({ error: 'bad request' }, { status: 400 }); }

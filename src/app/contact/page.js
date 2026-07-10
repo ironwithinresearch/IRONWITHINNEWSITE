@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import IWChatWidget from '../../components/IWChatWidget';
 
 export default function ContactPage() {
   const [name, setName] = useState('');
@@ -180,6 +181,7 @@ export default function ContactPage() {
           </div>
         )}
       </div>
+      <IWChatWidget autoOpen />
     </div>
   );
 }
