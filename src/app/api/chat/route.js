@@ -109,7 +109,7 @@ async function lookupOrder({ order_number, email }) {
   };
 }
 
-async function createReplacement({ order_number, email, item_name, reason }) {
+async function createReplacement({ order_number, email, item_name, reason }, ctx = {}) {
   const v = await lookupOrder({ order_number, email });
   if (!v.verified) return v;
   const key = String(item_name || '').toLowerCase().split(/[\s(]/)[0];
@@ -119,19 +119,9 @@ async function createReplacement({ order_number, email, item_name, reason }) {
     return { ok: false, note: 'That item was already replaced once on this order — do not replace again; escalate to a human.' };
 
   const { data: o } = await wc(`/orders/${v.order}`);
-
-  // Safe launch default: unless replacements are explicitly LIVE, route to a human
-  // (email the team) instead of auto-creating/shipping. Real service, no false promise.
-  if (REPLACEMENT_MODE !== 'live') {
-    await notify({ type: 'replacement', order_id: v.order, reply_to: o.billing?.email,
-      subject: `Replacement request — order #${v.order}`,
-      message: `Customer reports a missing/damaged item.\nOrder: #${v.order}\nItem: ${line.name}\nCustomer: ${o.billing?.first_name || ''} <${o.billing?.email || ''}>\nReason: ${reason}\n\n(Bot is in human-review mode — please create + ship the free replacement.)` });
-    return { ok: true, routed_to_human: true, item: line.name,
-      message: `I've flagged the missing "${line.name}" to our support team — they'll get a free replacement out to you and follow up at your email within 1 business day.` };
-  }
-
+  const shipNow = REPLACEMENT_MODE === 'live'; // live → ships immediately; otherwise ON HOLD for review
   const orderPayload = {
-    status: REPLACEMENT_MODE === 'live' ? 'processing' : 'draft',
+    status: shipNow ? 'processing' : 'on-hold',
     customer_id: o.customer_id || 0,
     billing: o.billing, shipping: (o.shipping && o.shipping.address_1) ? o.shipping : o.billing,
     line_items: [{ product_id: line.product_id, variation_id: line.variation_id || undefined, quantity: 1, total: '0.00', subtotal: '0.00' }],
@@ -140,29 +130,40 @@ async function createReplacement({ order_number, email, item_name, reason }) {
     meta_data: [{ key: '_iw_replacement_of', value: v.order }, { key: '_iw_bot_created', value: '1' }],
   };
   const created = await wc('/orders', { method: 'POST', body: JSON.stringify(orderPayload) });
-  if (!created.ok) return { ok: false, note: 'Could not create the replacement automatically — escalating to a human.', escalate: true };
+  if (!created.ok) {
+    await notify({ type: 'replacement', order_id: v.order, reply_to: o.billing?.email,
+      subject: `Replacement needs manual handling — order #${v.order}`,
+      message: `The bot could not auto-create a replacement for "${line.name}" on order #${v.order}. Please handle manually.\nReason: ${reason}\n\n--- FULL CHAT CONVERSATION ---\n${ctx.transcript || '(none)'}` });
+    return { ok: true, routed_to_human: true, item: line.name,
+      message: `I've flagged the missing "${line.name}" to our team — they'll sort your free replacement and email you shortly.` };
+  }
 
-  // audit: note + flag on the original order, and email the team
+  // audit trail on the original order
   const replacedList = [...(v.already_replaced || []), line.name];
-  await wc(`/orders/${v.order}`, { method: 'PUT', body: JSON.stringify({
-    meta_data: [{ key: '_iw_bot_replaced', value: replacedList }],
-  }) });
+  await wc(`/orders/${v.order}`, { method: 'PUT', body: JSON.stringify({ meta_data: [{ key: '_iw_bot_replaced', value: replacedList }] }) });
   await wc(`/orders/${v.order}/notes`, { method: 'POST', body: JSON.stringify({
-    note: `Support bot created a ${REPLACEMENT_MODE === 'live' ? 'FREE replacement (order #' + created.data.id + ', shipping)' : 'FREE replacement DRAFT (order #' + created.data.id + ', not shipped — preview mode)'} for "${line.name}". Reason: ${reason}`,
+    note: `Support bot created FREE replacement order #${created.data.id} — status ${shipNow ? 'PROCESSING (shipping)' : 'ON HOLD (awaiting your review)'} — for "${line.name}". Reason: ${reason}`,
     customer_note: false,
   }) });
-  await notify({ type: 'replacement', order_id: v.order, reply_to: o.billing?.email,
-    subject: `Free replacement created for order #${v.order}`,
-    message: `The support bot created a ${REPLACEMENT_MODE === 'live' ? 'LIVE replacement order (#' + created.data.id + ') that WILL ship' : 'replacement DRAFT (#' + created.data.id + ', preview — not shipped)'}.\n\nItem: ${line.name}\nCustomer: ${o.billing?.first_name || ''} <${o.billing?.email || ''}>\nReason given: ${reason}` });
 
-  return { ok: true, replacement_order: created.data.id, mode: REPLACEMENT_MODE, item: line.name,
-    message: REPLACEMENT_MODE === 'live'
-      ? `Replacement for "${line.name}" created and shipping free — no charge.`
-      : `(Preview mode) Replacement for "${line.name}" was created as a draft the team can see; it won't actually ship in preview.` };
+  // email the team the full conversation for review
+  await notify({ type: 'replacement', order_id: v.order, reply_to: o.billing?.email,
+    subject: `${shipNow ? 'Replacement SHIPPING' : 'Replacement ON HOLD — please review'}: order #${created.data.id} (re #${v.order})`,
+    message: `The support bot created a FREE replacement order.\n\n`
+      + `New order: #${created.data.id}\nStatus: ${shipNow ? 'PROCESSING — will ship' : 'ON HOLD — will NOT ship until you release it'}\n`
+      + `Replacing: order #${v.order}\nItem: ${line.name}\nCustomer: ${o.billing?.first_name || ''} ${o.billing?.last_name || ''} <${o.billing?.email || ''}>\nReason given: ${reason}\n\n`
+      + `--- FULL CHAT CONVERSATION ---\n${ctx.transcript || '(none)'}\n\n`
+      + (shipNow ? '' : `To approve: open order #${created.data.id} in WooCommerce and change status On hold → Processing (it will then ship). To reject: cancel the order.`) });
+
+  return { ok: true, replacement_order: created.data.id, on_hold: !shipNow, item: line.name,
+    message: shipNow
+      ? `Your free replacement for "${line.name}" is created and shipping — no charge. 📦`
+      : `Thanks — I've created a free replacement for the missing "${line.name}" and our team is reviewing it now. You'll get a shipping confirmation by email shortly. Sorry for the mix-up! 🙏` };
 }
 
-async function escalate({ summary, customer_email }) {
-  await notify({ type: 'escalation', reply_to: customer_email, subject: 'Chat escalation', message: summary || 'Customer needs help.' });
+async function escalate({ summary, customer_email }, ctx = {}) {
+  await notify({ type: 'escalation', reply_to: customer_email, subject: 'Chat escalation',
+    message: `${summary || 'Customer needs help.'}\n\n--- FULL CHAT CONVERSATION ---\n${ctx.transcript || '(none)'}` });
   return { ok: true, note: `Emailed support@ironwithin.io${customer_email ? ' (reply-to ' + customer_email + ')' : ''}.` };
 }
 
@@ -198,6 +199,10 @@ export async function POST(request) {
     return { role: m.role, content: String(m.content || '') };
   });
 
+  // Transcript of the conversation so far, for the team-review email on replacements/escalations.
+  const transcript = history.map((m) => `${m.role === 'user' ? 'Customer' : 'Assistant'}: ${String(m.content || '')}`).join('\n');
+  const ctx = { transcript };
+
   try {
     for (let i = 0; i < 6; i++) {
       const r = await client.messages.create({ model: 'claude-haiku-4-5', max_tokens: 600, system: SYSTEM, tools: TOOLS, messages });
@@ -205,7 +210,7 @@ export async function POST(request) {
         messages.push({ role: 'assistant', content: r.content });
         const results = [];
         for (const b of r.content.filter((b) => b.type === 'tool_use')) {
-          let out; try { out = await (IMPL[b.name] || (async () => ({ error: 'unknown tool' })))(b.input); }
+          let out; try { out = await (IMPL[b.name] || (async () => ({ error: 'unknown tool' })))(b.input, ctx); }
           catch (e) { out = { error: 'tool failed' }; }
           results.push({ type: 'tool_result', tool_use_id: b.id, content: JSON.stringify(out) });
         }
