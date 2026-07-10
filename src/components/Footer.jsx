@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { FlaskConical, Mail, ArrowRight, ShieldCheck, Truck, Star } from 'lucide-react';
+import { FlaskConical, Mail, ArrowRight, ShieldCheck, Truck } from 'lucide-react';
 import PaymentMethods from './PaymentMethods';
 
 const footerLinks = {
@@ -37,7 +37,6 @@ const trustItems = [
   { Icon: FlaskConical, label: 'Lab Verified' },
   { Icon: Truck, label: 'Fast Shipping' },
   { Icon: ShieldCheck, label: 'Secure Checkout' },
-  { Icon: Star, label: '4.9/5 Rating' },
 ];
 
 export default function Footer() {
