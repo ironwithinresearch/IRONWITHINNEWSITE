@@ -209,6 +209,7 @@ export function CartProvider({ children }) {
       itemCount,
       cartTotal,
       cartSubtotal,
+      cartDiscount: cart?.discountTotal || '$0.00',
       shippingTotal: cart?.shippingTotal || null,
       availableShippingRates: cart?.availableShippingMethods?.[0]?.rates || [],
       chosenShippingMethods: cart?.chosenShippingMethods || [],
