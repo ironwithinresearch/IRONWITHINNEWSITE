@@ -97,7 +97,7 @@ export default function AnnouncementBar() {
       </div>
       <style>{`
         @keyframes iw-ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-        .iw-ticker { animation: iw-ticker-scroll 56s linear infinite; }
+        .iw-ticker { animation: iw-ticker-scroll 90s linear infinite; }
         .iw-ticker:hover { animation-play-state: paused; }
         @media (prefers-reduced-motion: reduce) { .iw-ticker { animation: none; } }
       `}</style>
