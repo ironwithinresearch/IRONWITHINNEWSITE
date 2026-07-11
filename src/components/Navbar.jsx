@@ -8,15 +8,16 @@ import {
   FlaskConical, ShoppingCart, Heart, User,
   Menu, X, Search, Sun, Moon, ChevronDown, LogOut,
 } from 'lucide-react';
+import { useQuery } from '@apollo/client';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { getPayoutPref } from '@/lib/affiliatePayout';
+import { GET_CATEGORIES } from '@/lib/queries/products';
 
 const navLinks = [
    { href: '/',      label: 'Home'       },
   { href: '/shop',      label: 'Shop'       },
-  { href: '/categories',label: 'Categories' },
   { href: '/continuity',label: 'Plans'      },
   { href: '/gift-cards',label: 'Gift Cards' },
   { href: '/rewards',   label: 'Rewards'    },
@@ -24,12 +25,25 @@ const navLinks = [
   { href: '/contact',   label: 'Contact'    },
 ];
 
+// The Lux Me beauty line is brand-new (no products yet), so it won't come back from
+// the hideEmpty category query — surface it explicitly until it has stock.
+const LUX_ME = { id: 'luxme', name: 'Beauty Line - Lux Me by Axion', slug: 'lux-me' };
+
 export default function Navbar() {
   const pathname = usePathname();
   const [menuOpen,    setMenuOpen]    = useState(false);
   const [scrolled,    setScrolled]    = useState(false);
   const [theme,       setTheme]       = useState('dark');
   const [accountOpen, setAccountOpen] = useState(false);
+  const [shopOpen,    setShopOpen]    = useState(false);
+
+  // Categories for the Shop dropdown (research + product cats), plus the Lux Me beauty line.
+  const { data: catData } = useQuery(GET_CATEGORIES, { fetchPolicy: 'cache-first' });
+  const shopCats = (() => {
+    const cats = (catData?.productCategories?.nodes || [])
+      .filter(c => !['gift-cards', 'continuity-plans'].includes(c.slug));
+    return cats.some(c => c.slug === 'lux-me') ? cats : [...cats, LUX_ME];
+  })();
 
   // badge bump animations
   const [cartBump,    setCartBump]    = useState(false);
@@ -129,8 +143,44 @@ export default function Navbar() {
           <nav style={{ display: 'flex', alignItems: 'center', gap: '4px' }} className="desktop-nav">
             {navLinks.map(({ href, label }) => {
               const isActive = pathname === href || pathname.startsWith(href + '/');
+              const baseStyle = { padding: '7px 14px', borderRadius: 'var(--radius-md)', fontSize: '0.875rem', fontWeight: isActive ? 600 : 400, color: isActive ? 'var(--primary-blue)' : 'var(--text-secondary)', background: isActive ? 'rgba(0,207,255,0.08)' : 'transparent', textDecoration: 'none', transition: 'all 0.15s ease', whiteSpace: 'nowrap' };
+
+              // Shop is now a category dropdown (Categories lives under here).
+              if (href === '/shop') {
+                const shopActive = isActive || pathname.startsWith('/categories');
+                return (
+                  <div key={href} style={{ position: 'relative' }}
+                    onMouseEnter={() => setShopOpen(true)} onMouseLeave={() => setShopOpen(false)}>
+                    <Link href="/shop" style={{ ...baseStyle, color: shopActive ? 'var(--primary-blue)' : baseStyle.color, background: shopActive ? 'rgba(0,207,255,0.08)' : baseStyle.background, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      Shop <ChevronDown size={13} style={{ transform: shopOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s ease' }} />
+                    </Link>
+                    {shopOpen && (
+                      <div style={{ position: 'absolute', top: 'calc(100% + 4px)', left: 0, minWidth: 252, background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-lg)', padding: '8px', boxShadow: '0 12px 32px rgba(0,0,0,0.45)', zIndex: 200 }}>
+                        <Link href="/shop" style={{ display: 'block', padding: '9px 12px', borderRadius: 'var(--radius-md)', color: 'var(--text-light)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none' }}
+                          onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,207,255,0.06)'}
+                          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                          All Products
+                        </Link>
+                        <div style={{ fontSize: '0.62rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-muted)', padding: '10px 12px 4px' }}>Shop by Category</div>
+                        {shopCats.map(cat => {
+                          const luxe = cat.slug === 'lux-me';
+                          return (
+                            <Link key={cat.slug} href={`/shop?category=${cat.slug}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', padding: '9px 12px', borderRadius: 'var(--radius-md)', color: luxe ? '#e6b8bf' : 'var(--text-secondary)', fontSize: '0.85rem', fontWeight: luxe ? 600 : 400, textDecoration: 'none', transition: 'all 0.12s ease' }}
+                              onMouseEnter={e => { e.currentTarget.style.background = luxe ? 'rgba(212,175,55,0.08)' : 'rgba(0,207,255,0.06)'; e.currentTarget.style.color = luxe ? '#f0cfd4' : 'var(--text-light)'; }}
+                              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = luxe ? '#e6b8bf' : 'var(--text-secondary)'; }}>
+                              <span>{cat.name}</span>
+                              {luxe && <span style={{ fontSize: '0.55rem', fontWeight: 800, letterSpacing: '0.05em', color: '#1a1207', background: 'linear-gradient(135deg,#e6b8bf,#d4af37)', padding: '2px 6px', borderRadius: '999px' }}>NEW</span>}
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
               return (
-                <Link key={href} href={href} style={{ padding: '7px 14px', borderRadius: 'var(--radius-md)', fontSize: '0.875rem', fontWeight: isActive ? 600 : 400, color: isActive ? 'var(--primary-blue)' : 'var(--text-secondary)', background: isActive ? 'rgba(0,207,255,0.08)' : 'transparent', textDecoration: 'none', transition: 'all 0.15s ease', whiteSpace: 'nowrap' }}
+                <Link key={href} href={href} style={baseStyle}
                   onMouseEnter={e => { if (!isActive) { e.currentTarget.style.color = 'var(--text-light)'; e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; } }}
                   onMouseLeave={e => { if (!isActive) { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.background = 'transparent'; } }}>
                   {label}
@@ -258,9 +308,24 @@ export default function Navbar() {
       {menuOpen && (
         <div style={{ position: 'fixed', top: 'var(--navbar-height, 68px)', left: 0, right: 0, bottom: 0, zIndex: 99, background: 'rgba(5,7,18,0.97)', backdropFilter: 'blur(24px)', padding: '28px 24px', display: 'flex', flexDirection: 'column', gap: '6px', overflowY: 'auto' }}>
           {navLinks.map(({ href, label }) => (
-            <Link key={href} href={href} style={{ padding: '14px 18px', borderRadius: 'var(--radius-md)', color: pathname === href ? 'var(--primary-blue)' : 'var(--text-light)', background: pathname === href ? 'rgba(0,207,255,0.08)' : 'transparent', fontWeight: pathname === href ? 600 : 400, fontSize: '1rem', textDecoration: 'none', borderLeft: `3px solid ${pathname === href ? 'var(--primary-blue)' : 'transparent'}` }}>
-              {label}
-            </Link>
+            <div key={href}>
+              <Link href={href} style={{ display: 'block', padding: '14px 18px', borderRadius: 'var(--radius-md)', color: pathname === href ? 'var(--primary-blue)' : 'var(--text-light)', background: pathname === href ? 'rgba(0,207,255,0.08)' : 'transparent', fontWeight: pathname === href ? 600 : 400, fontSize: '1rem', textDecoration: 'none', borderLeft: `3px solid ${pathname === href ? 'var(--primary-blue)' : 'transparent'}` }}>
+                {label}
+              </Link>
+              {href === '/shop' && (
+                <div style={{ paddingLeft: '14px', display: 'flex', flexDirection: 'column', gap: '1px', marginTop: '2px' }}>
+                  {shopCats.map(cat => {
+                    const luxe = cat.slug === 'lux-me';
+                    return (
+                      <Link key={cat.slug} href={`/shop?category=${cat.slug}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '11px 18px', borderRadius: 'var(--radius-md)', color: luxe ? '#e6b8bf' : 'var(--text-secondary)', fontWeight: luxe ? 600 : 400, fontSize: '0.9rem', textDecoration: 'none' }}>
+                        {cat.name}
+                        {luxe && <span style={{ fontSize: '0.55rem', fontWeight: 800, color: '#1a1207', background: 'linear-gradient(135deg,#e6b8bf,#d4af37)', padding: '2px 6px', borderRadius: '999px' }}>NEW</span>}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           ))}
 
           {/* Mobile wishlist + cart counts */}
