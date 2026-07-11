@@ -108,6 +108,32 @@ export default function CartPage() {
     await addToCart(opt.pid, 1, opt.vid, { iw_gift_pick: String(opt.vid) });
   };
 
+  // Gift-choice popup: auto-open once when the free vial is unlocked and not yet chosen.
+  const [giftModalOpen, setGiftModalOpen] = useState(false);
+  const xjGiftItem = cartItems.find(it => {
+    const ed = it.extraData || [];
+    const isGift = ed.some(e => (e.key === 'iw_free_gift' && e.value === '1') || (e.key === 'iw_gift_pick' && !!e.value));
+    return isGift && XJ_GIFT_SLUGS.includes(it.product?.node?.slug);
+  });
+  const xjHasPick = cartItems.some(it => (it.extraData || []).some(e => e.key === 'iw_gift_pick' && !!e.value));
+  const currentGiftSlug = xjGiftItem?.product?.node?.slug;
+  const xjGiftKey = xjGiftItem?.key;
+  useEffect(() => {
+    if (!xjGiftKey || typeof window === 'undefined') return;
+    if (xjHasPick) return;
+    if (sessionStorage.getItem('iw_xj_gift_modal')) return;
+    setGiftModalOpen(true);
+  }, [xjGiftKey, xjHasPick]);
+  const pickGift = async (opt) => {
+    try { sessionStorage.setItem('iw_xj_gift_modal', '1'); } catch {}
+    setGiftModalOpen(false);
+    if (currentGiftSlug !== opt.slug) await chooseXjGift(opt);
+  };
+  const dismissGiftModal = () => {
+    try { sessionStorage.setItem('iw_xj_gift_modal', '1'); } catch {}
+    setGiftModalOpen(false);
+  };
+
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return;
     setCouponError('');
@@ -233,23 +259,12 @@ export default function CartPage() {
                         </p>
                       )}
 
-                      {/* Day-1 free gift: let the customer pick RT-3 or TRZ-2 */}
+                      {/* Day-1 free gift: open the chooser popup */}
                       {isXjGift && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
-                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Your pick:</span>
-                          {XJ_GIFT_OPTS.map(opt => {
-                            const active = product?.slug === opt.slug;
-                            return (
-                              <button key={opt.vid} onClick={() => { if (!active) chooseXjGift(opt); }} disabled={active || cartLoading}
-                                style={{ padding: '3px 10px', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 700, cursor: active ? 'default' : 'pointer',
-                                  border: active ? '1px solid #34d399' : '1px solid var(--glass-border)',
-                                  background: active ? 'rgba(52,211,153,0.15)' : 'transparent',
-                                  color: active ? '#34d399' : 'var(--text-light)' }}>
-                                {active ? '✓ ' : ''}{opt.label}
-                              </button>
-                            );
-                          })}
-                        </div>
+                        <button onClick={() => setGiftModalOpen(true)}
+                          style={{ background: 'none', border: 'none', padding: 0, marginBottom: '8px', color: 'var(--primary-blue)', fontSize: '0.74rem', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline' }}>
+                          🎁 Choose your free gift
+                        </button>
                       )}
 
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
@@ -380,6 +395,36 @@ export default function CartPage() {
           </div>
         )}
       </div>
+
+      {/* Day-1 free-gift chooser popup */}
+      {giftModalOpen && xjGiftItem && (
+        <div onClick={dismissGiftModal} style={{ position: 'fixed', inset: 0, zIndex: 2000, background: 'rgba(3,8,20,0.74)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div onClick={e => e.stopPropagation()} style={{ maxWidth: 440, width: '100%', background: 'var(--card-dark, #0e1a30)', border: '1px solid var(--glass-border)', borderRadius: '20px', padding: '30px 26px', boxShadow: '0 30px 80px -20px rgba(0,0,0,0.85)', textAlign: 'center' }}>
+            <div style={{ fontSize: '2.2rem', marginBottom: '8px' }}>🎁</div>
+            <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '1.35rem', marginBottom: '6px', color: 'var(--text-light)' }}>You&apos;ve unlocked a FREE vial!</h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '22px' }}>Day 1 of the 12 Days of Christmas in July — pick your free gift on orders $150+.</p>
+            <div style={{ display: 'flex', gap: '12px', marginBottom: '18px' }}>
+              {XJ_GIFT_OPTS.map(opt => {
+                const active = currentGiftSlug === opt.slug;
+                return (
+                  <button key={opt.vid} onClick={() => pickGift(opt)} disabled={cartLoading}
+                    style={{ flex: 1, padding: '20px 12px', borderRadius: '16px', cursor: cartLoading ? 'wait' : 'pointer',
+                      border: active ? '2px solid #34d399' : '1px solid var(--glass-border)',
+                      background: active ? 'rgba(52,211,153,0.10)' : 'var(--bg-elevated, #0b1526)',
+                      color: 'var(--text-light)', display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'center' }}>
+                    <span style={{ fontWeight: 800, fontSize: '1.02rem' }}>{opt.label}</span>
+                    <span style={{ fontSize: '0.72rem', color: '#34d399', fontWeight: 700 }}>{active ? '✓ CURRENT' : 'TAP TO CHOOSE'}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <button onClick={dismissGiftModal} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '0.82rem', cursor: 'pointer' }}>
+              Keep {XJ_GIFT_OPTS.find(o => o.slug === currentGiftSlug)?.label || 'my gift'}
+            </button>
+          </div>
+        </div>
+      )}
+
       <style>{`@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
     </div>
   );
