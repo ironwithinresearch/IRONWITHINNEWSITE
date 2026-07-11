@@ -24,6 +24,13 @@ import {
 import { useState, useMemo, useEffect } from 'react';
 import { getReferCookie } from '@/lib/referral';
 
+// 12 Days — Day 1 "your pick" free gift options (RT-3 10mg / TRZ-2 10mg).
+const XJ_GIFT_OPTS = [
+  { vid: 520, pid: 310, label: 'RT-3 10mg' },
+  { vid: 1033, pid: 319, label: 'TRZ-2 10mg' },
+];
+const XJ_GIFT_VIDS = XJ_GIFT_OPTS.map(o => o.vid);
+
 
 export default function CartPage() {
   const {
@@ -87,6 +94,18 @@ export default function CartPage() {
     await addToCart(product.databaseId, 1, variation.databaseId, { iw_upsell: '1' });
     setUpsellOpen(false);
     goCheckout();
+  };
+
+  // 12 Days — Day 1 free gift: let the customer pick RT-3 or TRZ-2 (server honors iw_gift_pick).
+  const chooseXjGift = async (opt) => {
+    // Drop any existing Day-1 gift line first, then add the chosen vial tagged as the pick.
+    for (const it of cartItems) {
+      const ed = it.extraData || [];
+      const isGift = ed.some(e => (e.key === 'iw_free_gift' && e.value === '1') || (e.key === 'iw_gift_pick' && !!e.value));
+      const v = it.variation?.node?.databaseId;
+      if (isGift && XJ_GIFT_VIDS.includes(v)) { await removeItem(it.key); }
+    }
+    await addToCart(opt.pid, 1, opt.vid, { iw_gift_pick: String(opt.vid) });
   };
 
   const handleApplyCoupon = async () => {
@@ -153,7 +172,8 @@ export default function CartPage() {
                 const variation = item.variation?.node;
                 // Get variation attributes for display
                 const variationAttrs = variation?.attributes?.nodes || [];
-                const isFreeGift = (item.extraData || []).some(e => (e.key === 'iw_free_gift' || e.key === 'iw_bundle_gift') && e.value === '1');
+                const isFreeGift = (item.extraData || []).some(e => (((e.key === 'iw_free_gift' || e.key === 'iw_bundle_gift') && e.value === '1') || (e.key === 'iw_gift_pick' && !!e.value)));
+                const isXjGift = isFreeGift && XJ_GIFT_VIDS.includes(variation?.databaseId);
                 const subCadence = subCadenceOf(item);
 
                 return (
@@ -211,6 +231,25 @@ export default function CartPage() {
                         <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '8px' }}>
                           {variation.name}
                         </p>
+                      )}
+
+                      {/* Day-1 free gift: let the customer pick RT-3 or TRZ-2 */}
+                      {isXjGift && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Your pick:</span>
+                          {XJ_GIFT_OPTS.map(opt => {
+                            const active = variation?.databaseId === opt.vid;
+                            return (
+                              <button key={opt.vid} onClick={() => { if (!active) chooseXjGift(opt); }} disabled={active || cartLoading}
+                                style={{ padding: '3px 10px', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 700, cursor: active ? 'default' : 'pointer',
+                                  border: active ? '1px solid #34d399' : '1px solid var(--glass-border)',
+                                  background: active ? 'rgba(52,211,153,0.15)' : 'transparent',
+                                  color: active ? '#34d399' : 'var(--text-light)' }}>
+                                {active ? '✓ ' : ''}{opt.label}
+                              </button>
+                            );
+                          })}
+                        </div>
                       )}
 
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
