@@ -35,15 +35,15 @@ async function getFeed() {
   } catch { return null; }
 }
 
-function ctToday() { return new Date(Date.now() - 5 * 3600000).toISOString().slice(0, 10); }
+function ctToday() { return new Date(Date.now() - 4 * 3600000).toISOString().slice(0, 10); }
 function schedule() {
-  const START = Date.parse('2026-07-11T05:00:00Z'); // Jul 11 00:00 CDT
-  const END = Date.parse('2026-07-23T05:00:00Z');   // midnight after Day 12
+  const START = Date.parse('2026-07-11T04:00:00Z'); // launched 1hr early: 11 PM CT Jul 10 = midnight ET
+  const END = Date.parse('2026-07-23T04:00:00Z');   // 11 PM CT after Day 12
   const now = Date.now();
-  if (now < START) return { mode: 'pre', target: '2026-07-14T05:00:00Z' };
+  if (now < START) return { mode: 'pre', target: '2026-07-11T04:00:00Z' };
   if (now < END) {
-    const dayStart = new Date(now - 5 * 3600000); dayStart.setUTCHours(0, 0, 0, 0);
-    return { mode: 'live', target: new Date(dayStart.getTime() + 86400000 + 5 * 3600000).toISOString() };
+    const dayStart = new Date(now - 4 * 3600000); dayStart.setUTCHours(0, 0, 0, 0);
+    return { mode: 'live', target: new Date(dayStart.getTime() + 86400000 + 4 * 3600000).toISOString() };
   }
   return { mode: 'ended', target: null };
 }

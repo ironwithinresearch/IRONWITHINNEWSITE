@@ -23,11 +23,12 @@ const J4_START = Date.parse('2026-06-30T00:00:00Z');
 const J4_END = Date.parse('2026-07-06T04:00:00Z');
 const J4_MESSAGE = '🇺🇸  4TH OF JULY SALE — 25% OFF SITEWIDE, no code needed · stack your creator code for even more · 🎁  FREE MOTS-C 10mg on orders $250+ · ends Sat Jul 5, midnight ET';
 
-// 12 Days of Christmas in July — Jul 11–22 CT (CDT = UTC-5, midnight CT = 05:00 UTC).
-const XJ_START = Date.parse('2026-07-11T05:00:00Z');
-const XJ_END = Date.parse('2026-07-23T05:00:00Z');
+// 12 Days of Christmas in July — Jul 11–22 CT, launched 1hr early so each day flips at
+// 11 PM CT (= midnight ET). Boundary = 04:00 UTC; day math uses a 4hr (not 5hr) CT-ish offset.
+const XJ_START = Date.parse('2026-07-11T04:00:00Z');
+const XJ_END = Date.parse('2026-07-23T04:00:00Z');
 function xjDayNum() {
-  const ctToday = new Date(Date.now() - 5 * 3600000);
+  const ctToday = new Date(Date.now() - 4 * 3600000);
   ctToday.setUTCHours(0, 0, 0, 0);
   const d = Math.round((ctToday.getTime() - Date.parse('2026-07-11T00:00:00Z')) / 86400000) + 1;
   return Math.min(12, Math.max(1, d));
