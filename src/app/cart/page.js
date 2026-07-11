@@ -21,7 +21,7 @@ import {
   Tag, Truck, ShieldCheck, Package, ChevronRight,
   Loader2,
 } from 'lucide-react';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { getReferCookie } from '@/lib/referral';
 
 // 12 Days — Day 1 "your pick" free gift options (RT-3 10mg / TRZ-2 10mg).
@@ -118,21 +118,19 @@ export default function CartPage() {
   const xjHasPick = cartItems.some(it => (it.extraData || []).some(e => e.key === 'iw_gift_pick' && !!e.value));
   const currentGiftSlug = xjGiftItem?.product?.node?.slug;
   const xjGiftKey = xjGiftItem?.key;
+  // Auto-open once per cart visit whenever there's an unclaimed gift. Picking a gift
+  // (iw_gift_pick) stops it for good; dismissing just closes it for this visit.
+  const giftAutoOpened = useRef(false);
   useEffect(() => {
-    if (!xjGiftKey || typeof window === 'undefined') return;
-    if (xjHasPick) return;
-    if (sessionStorage.getItem('iw_xj_gift_modal')) return;
-    setGiftModalOpen(true);
+    if (giftAutoOpened.current || !xjGiftKey) return;
+    giftAutoOpened.current = true;
+    if (!xjHasPick) setGiftModalOpen(true);
   }, [xjGiftKey, xjHasPick]);
   const pickGift = async (opt) => {
-    try { sessionStorage.setItem('iw_xj_gift_modal', '1'); } catch {}
     setGiftModalOpen(false);
     if (currentGiftSlug !== opt.slug) await chooseXjGift(opt);
   };
-  const dismissGiftModal = () => {
-    try { sessionStorage.setItem('iw_xj_gift_modal', '1'); } catch {}
-    setGiftModalOpen(false);
-  };
+  const dismissGiftModal = () => setGiftModalOpen(false);
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return;
