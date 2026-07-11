@@ -26,10 +26,10 @@ import { getReferCookie } from '@/lib/referral';
 
 // 12 Days — Day 1 "your pick" free gift options (RT-3 10mg / TRZ-2 10mg).
 const XJ_GIFT_OPTS = [
-  { vid: 520, pid: 310, label: 'RT-3 10mg' },
-  { vid: 1033, pid: 319, label: 'TRZ-2 10mg' },
+  { vid: 520, pid: 310, label: 'RT-3 10mg', slug: 'rt-3' },
+  { vid: 1033, pid: 319, label: 'TRZ-2 10mg', slug: 'trz-2' },
 ];
-const XJ_GIFT_VIDS = XJ_GIFT_OPTS.map(o => o.vid);
+const XJ_GIFT_SLUGS = XJ_GIFT_OPTS.map(o => o.slug);
 
 
 export default function CartPage() {
@@ -102,8 +102,8 @@ export default function CartPage() {
     for (const it of cartItems) {
       const ed = it.extraData || [];
       const isGift = ed.some(e => (e.key === 'iw_free_gift' && e.value === '1') || (e.key === 'iw_gift_pick' && !!e.value));
-      const v = it.variation?.node?.databaseId;
-      if (isGift && XJ_GIFT_VIDS.includes(v)) { await removeItem(it.key); }
+      const sl = it.product?.node?.slug;
+      if (isGift && XJ_GIFT_SLUGS.includes(sl)) { await removeItem(it.key); }
     }
     await addToCart(opt.pid, 1, opt.vid, { iw_gift_pick: String(opt.vid) });
   };
@@ -173,7 +173,7 @@ export default function CartPage() {
                 // Get variation attributes for display
                 const variationAttrs = variation?.attributes?.nodes || [];
                 const isFreeGift = (item.extraData || []).some(e => (((e.key === 'iw_free_gift' || e.key === 'iw_bundle_gift') && e.value === '1') || (e.key === 'iw_gift_pick' && !!e.value)));
-                const isXjGift = isFreeGift && XJ_GIFT_VIDS.includes(variation?.databaseId);
+                const isXjGift = isFreeGift && XJ_GIFT_SLUGS.includes(product?.slug);
                 const subCadence = subCadenceOf(item);
 
                 return (
@@ -238,7 +238,7 @@ export default function CartPage() {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
                           <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Your pick:</span>
                           {XJ_GIFT_OPTS.map(opt => {
-                            const active = variation?.databaseId === opt.vid;
+                            const active = product?.slug === opt.slug;
                             return (
                               <button key={opt.vid} onClick={() => { if (!active) chooseXjGift(opt); }} disabled={active || cartLoading}
                                 style={{ padding: '3px 10px', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 700, cursor: active ? 'default' : 'pointer',
