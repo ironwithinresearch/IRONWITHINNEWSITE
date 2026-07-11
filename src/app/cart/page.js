@@ -34,7 +34,7 @@ const XJ_GIFT_SLUGS = XJ_GIFT_OPTS.map(o => o.slug);
 
 export default function CartPage() {
   const {
-    cartItems, cartTotal, cartSubtotal, cartDiscount, cartLoading, shippingTotal,
+    cartItems, cartTotal, cartSubtotal, cartLoading, shippingTotal,
     updateQuantity, removeItem, applyCoupon, removeCoupon, addToCart,
     applyingCoupon, cart, notification,
   } = useCart();
@@ -304,9 +304,9 @@ export default function CartPage() {
               <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 800, marginBottom: '20px' }}>Order Summary</h2>
 
               <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}><SaleCountdown /></div>
-              {/* WooCommerce measures the $225 free-ship threshold AFTER coupon discounts
-                  (ignore_discounts=no), so match that here — subtotal minus coupon discount. */}
-              <FreeShippingBar subtotal={Math.max(0, subtotalNum - num(cartDiscount))} alreadyFree={subscribedCount > 0} />
+              {/* Free-ship threshold measures the subtotal BEFORE discount codes
+                  (WC free_shipping ignore_discounts=yes), so use the pre-coupon subtotal. */}
+              <FreeShippingBar subtotal={subtotalNum} alreadyFree={subscribedCount > 0} />
               <CartRewards subtotal={subtotalNum} value={rewardsPts} onChange={handleRewardsChange} />
               <CartStoreCredit />
 
