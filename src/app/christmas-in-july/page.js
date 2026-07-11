@@ -14,7 +14,7 @@ const FEED_URL = (process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://bhidasowgm.o
 // Emoji + sub-line per day; badge/name/code come from the live engine feed.
 const ENRICH = {
   1:  { e: '🎁', sub: 'FREE RT-3 or TRZ-2 10mg (your pick) on every order $150+.' },
-  2:  { e: '🔁', sub: 'BOGO — buy a BPC-157 or SS-31, get your 2nd 50% off.' },
+  2:  { e: '🔁', sub: 'BOGO — buy an SS-31, get your 2nd 50% off.' },
   3:  { e: '⚡', sub: 'Triple Rewards Points on every order today.' },
   4:  { e: '✨', sub: '43% off GLOW, GHK-Cu & KPV — Glow Day.' },
   5:  { e: '💳', sub: 'Buy a $100 gift card, get $25 bonus balance free.' },
