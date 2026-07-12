@@ -3,12 +3,28 @@
 import { useState, useEffect } from 'react';
 import { FlaskConical, ShieldAlert, CheckCircle2 } from 'lucide-react';
 
+// Lux Me by Axion (beauty line) pages are exempt from the research-compound
+// age gate — those buyers arrive from luxmebyaxion.com and should land on a
+// clean skincare page. Keep this list in sync with the `lux-me` Woo category.
+const LUXME_SLUGS = ['elixir-of-youth', 'radiant-renewal'];
+
+function isLuxMePath() {
+  if (typeof window === 'undefined') return false;
+  const { pathname, search } = window.location;
+  const m = pathname.match(/^\/product\/([^/]+)\/?$/);
+  if (m && LUXME_SLUGS.includes(m[1])) return true;
+  if (pathname.replace(/\/$/, '') === '/shop' && /(?:^|[?&])category=lux-me(?:&|$)/.test(search)) return true;
+  return false;
+}
+
 export default function AgeVerification() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const verified = sessionStorage.getItem('iwr-age-verified');
-    if (!verified) setVisible(true);
+    // Skip the gate on Lux Me beauty pages (don't set verified, so navigating
+    // to a research-compound page later in the session still gates).
+    if (!verified && !isLuxMePath()) setVisible(true);
   }, []);
 
   const handleConfirm = () => {
