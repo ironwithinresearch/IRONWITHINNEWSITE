@@ -10,11 +10,15 @@ export default async function sitemap() {
     const res = await fetch(GQL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query: "{ products(first: 100) { nodes { slug } } }" }),
+      body: JSON.stringify({ query: "{ products(first: 100) { nodes { slug productCategories { nodes { slug } } } } }" }),
       next: { revalidate: 3600 },
     });
     const json = await res.json();
-    slugs = (json?.data?.products?.nodes || []).map((n) => n.slug).filter(Boolean).filter((s) => s !== 'gift-card');
+    slugs = (json?.data?.products?.nodes || [])
+      // Lux Me beauty line is unlisted on IW — keep it out of the sitemap so Google
+      // doesn't index those products under ironwithin.io (the Lux Me site owns them).
+      .filter((n) => !(n.productCategories?.nodes || []).some((c) => c.slug === 'lux-me'))
+      .map((n) => n.slug).filter(Boolean).filter((s) => s !== 'gift-card');
   } catch {
     slugs = [];
   }
