@@ -2,20 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { FlaskConical, ShieldAlert, CheckCircle2 } from 'lucide-react';
-
-// Lux Me by Axion (beauty line) pages are exempt from the research-compound
-// age gate — those buyers arrive from luxmebyaxion.com and should land on a
-// clean skincare page. Keep this list in sync with the `lux-me` Woo category.
-const LUXME_SLUGS = ['elixir-of-youth', 'radiant-renewal'];
-
-function isLuxMePath() {
-  if (typeof window === 'undefined') return false;
-  const { pathname, search } = window.location;
-  const m = pathname.match(/^\/product\/([^/]+)\/?$/);
-  if (m && LUXME_SLUGS.includes(m[1])) return true;
-  if (pathname.replace(/\/$/, '') === '/shop' && /(?:^|[?&])category=lux-me(?:&|$)/.test(search)) return true;
-  return false;
-}
+import { isLuxMePath } from '../lib/luxme';
 
 export default function AgeVerification() {
   const [visible, setVisible] = useState(false);

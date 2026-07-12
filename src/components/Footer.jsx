@@ -1,8 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { FlaskConical, Mail, ArrowRight, ShieldCheck, Truck } from 'lucide-react';
 import PaymentMethods from './PaymentMethods';
+import { isLuxMePath } from '../lib/luxme';
 
 const footerLinks = {
   Shop: [
@@ -40,6 +43,13 @@ const trustItems = [
 ];
 
 export default function Footer() {
+  // On Lux Me beauty pages, suppress the research-use framing (brand blurb +
+  // "for research purposes only / not for human consumption"). Computed after
+  // mount to stay hydration-safe and re-checked on client navigation.
+  const pathname = usePathname();
+  const [isLuxMe, setIsLuxMe] = useState(false);
+  useEffect(() => { setIsLuxMe(isLuxMePath()); }, [pathname]);
+
   return (
     <footer style={{
       background: 'var(--bg-elevated)',
@@ -82,7 +92,9 @@ export default function Footer() {
               marginBottom: '20px',
               maxWidth: '240px',
             }}>
-              Premium research-grade peptides trusted by scientists and researchers worldwide. 99.3%+ purity guaranteed.
+              {isLuxMe
+                ? 'Advanced peptide skincare, formulated to the highest standard of purity and finish.'
+                : 'Premium research-grade peptides trusted by scientists and researchers worldwide. 99.3%+ purity guaranteed.'}
             </p>
 
             {/* Support email */}
@@ -171,11 +183,13 @@ export default function Footer() {
           paddingBottom: '32px',
         }}>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-            © 2026 Iron Within Nutrition LLC DBA Iron Within Research. All rights reserved. For research purposes only.
+            © 2026 Iron Within Nutrition LLC DBA Iron Within Research. All rights reserved.{isLuxMe ? '' : ' For research purposes only.'}
           </p>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>
-            Not intended for human consumption.
-          </p>
+          {!isLuxMe && (
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>
+              Not intended for human consumption.
+            </p>
+          )}
         </div>
 
       </div>
