@@ -1,9 +1,10 @@
 'use client';
 // src/app/shop/page.js
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 import { useQuery } from '@apollo/client';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
@@ -16,11 +17,17 @@ import {
   CheckCircle2, Heart,
 } from 'lucide-react';
 
-export default function ShopPage() {
+function ShopContent() {
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('');
   const [searchInput, setSearchInput] = useState('');
   const [addedItems, setAddedItems] = useState({});
+
+  // Honor ?category=<slug> from the nav (and react when it changes without a remount).
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    setActiveCategory(searchParams.get('category') || '');
+  }, [searchParams]);
 
   const { addToCart, notification } = useCart();
   const { addToWishlist, removeFromWishlist, isWishlisted } = useWishlist();
@@ -242,5 +249,14 @@ export default function ShopPage() {
 
       <style>{`@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
     </div>
+  );
+}
+
+// useSearchParams must be inside a Suspense boundary (Next.js App Router).
+export default function ShopPage() {
+  return (
+    <Suspense fallback={null}>
+      <ShopContent />
+    </Suspense>
   );
 }
