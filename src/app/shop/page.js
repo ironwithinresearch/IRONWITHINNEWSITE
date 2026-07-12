@@ -34,8 +34,9 @@ function ShopContent() {
 
   const { data: catData } = useQuery(GET_CATEGORIES);
   // Gift cards aren't peptides — keep them out of the shop grid + category filters
-  // (they have their own /gift-cards page).
-  const categories = (catData?.productCategories?.nodes || []).filter(c => c.slug !== 'gift-cards' && c.slug !== 'continuity-plans');
+  // (they have their own /gift-cards page). Lux Me (beauty line) is hidden from IW
+  // browsing — only reachable via a direct ?category=lux-me link from the Lux Me site.
+  const categories = (catData?.productCategories?.nodes || []).filter(c => c.slug !== 'gift-cards' && c.slug !== 'continuity-plans' && c.slug !== 'lux-me');
 
   const { data, loading, error } = useQuery(GET_PRODUCTS, {
     variables: {
@@ -46,7 +47,10 @@ function ShopContent() {
     fetchPolicy: 'cache-and-network',
   });
 
-  const products = [...(data?.products?.nodes || [])].filter(p => p.slug !== 'gift-card' && !p.slug.includes('-month-plan')).sort((a, b) =>
+  const products = [...(data?.products?.nodes || [])].filter(p => p.slug !== 'gift-card' && !p.slug.includes('-month-plan'))
+    // Hide Lux Me products from All / search; show them only when arriving on ?category=lux-me
+    .filter(p => activeCategory === 'lux-me' || !(p.productCategories?.nodes || []).some(c => c.slug === 'lux-me'))
+    .sort((a, b) =>
     (a.name || '').localeCompare(b.name || '', undefined, { numeric: true, sensitivity: 'base' })
   );
 

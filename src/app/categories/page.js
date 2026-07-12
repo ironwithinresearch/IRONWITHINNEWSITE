@@ -73,7 +73,8 @@ export default function CategoriesPage() {
   const [hoveredKey, setHoveredKey] = useState(null);
 
   const { data, loading } = useQuery(GET_CATEGORIES, { fetchPolicy: 'cache-and-network' });
-  const categories = data?.productCategories?.nodes || [];
+  // Lux Me (beauty line) is hidden from IW browsing — reachable only via a direct link.
+  const categories = (data?.productCategories?.nodes || []).filter(c => c.slug !== 'lux-me');
 
   return (
     <div style={{ minHeight: '100vh', paddingBottom: '80px' }}>

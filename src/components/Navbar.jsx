@@ -31,10 +31,12 @@ const SHOP_MENU = [
   { slug: 'regenerative-research', name: 'Regenerative Research' },
   { slug: 'neuro-research',        name: 'Neuro Research' },
   { slug: 'lab-supplies',          name: 'Lab Supplies' },
-  { slug: 'lux-me',                name: 'Beauty Line - Lux Me by Axion' },
   { slug: 'continuity-plans',      name: 'Plans',      href: '/continuity' },
   { slug: 'gift-cards',            name: 'Gift Cards',  href: '/gift-cards' },
 ];
+// The Lux Me beauty line is "behind the scenes" on the IW store — hidden from nav,
+// the All-Products grid, search and the categories page. It stays purchasable via the
+// direct links the standalone Lux Me site sends (/shop?category=lux-me and /product/<slug>).
 
 export default function Navbar() {
   const pathname = usePathname();
