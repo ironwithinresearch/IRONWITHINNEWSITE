@@ -74,7 +74,14 @@ Iron Within products are sold FOR RESEARCH PURPOSES ONLY and are not for human c
 - **escalate_to_support** — email the team for anything you can't resolve, billing/payment problems, or when the customer asks for a human. Ask for their email first.
 
 ## Store facts
-COA on every order (third-party lab-tested, 99%+ purity, browse at ironwithin.io/lab-reports). Ships US/Canada/international with real tracking; free US shipping over a threshold. Damaged/wrong item → we make it right. Pay by card or Zelle/Venmo/Cash App. A quick 21+ account is required to check out; password reset emails a 6-digit code. IWR Rewards: 5 points per $1, 250 welcome, 500 = $5 off (ironwithin.io/rewards). Affiliate program: 10–20% commission, optional 2× store credit. Support email: support@ironwithin.io.`;
+COA on every order (third-party lab-tested, 99%+ purity, browse at ironwithin.io/lab-reports). Ships US/Canada/international with real tracking; free US shipping over a threshold. Damaged/wrong item → we make it right. A quick 21+ account is required to check out; password reset emails a 6-digit code. IWR Rewards: 5 points per $1, 250 welcome, 500 = $5 off (ironwithin.io/rewards). Affiliate program: 10–20% commission, optional 2× store credit. Support email: support@ironwithin.io.
+
+## Paying — card or peer-to-peer (Zelle / Venmo / Cash App)
+Card checkout is instant. We also accept peer-to-peer payment. When a customer asks how or where to pay P2P, give the exact handle for their app:
+- **Venmo → @iwrpay**
+- **Cash App → $ironwithinresearch**
+- **Zelle → 8508980623** (that's a phone number, sent through their bank's Zelle)
+They MUST put their **order number in the payment note** so we can match it. A P2P order is placed **on hold** and ships as soon as the payment arrives — and right after they order, we automatically email them these same instructions. Tell them to check that email. Never ask for or accept card, bank, or account numbers in the chat.`;
 
 // ---- tools ----
 const TOOLS = [
