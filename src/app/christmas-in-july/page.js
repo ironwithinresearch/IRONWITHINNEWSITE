@@ -18,7 +18,7 @@ const ENRICH = {
   3:  { e: '⚡', sub: 'Triple Rewards Points on every order today.' },
   4:  { e: '✨', sub: '43% off GLOW, GHK-Cu & KPV — Glow Day.' },
   5:  { e: '🔥', sub: '40% off RT-3, TRZ-2, Cagrilintide & MOTS-C — Metabolic Day.' },
-  6:  { e: '🚚', sub: 'FREE expedited shipping sitewide + a free bac water.' },
+  6:  { e: '🧬', sub: '40% off NAD+, Epitalon, Thymosin Alpha-1 & Sermorelin — Longevity Day.' },
   7:  { e: '🧠', sub: 'Buy a Semax, get a Selank FREE.' },
   8:  { e: '💥', sub: '45% off every bundle — Bundle Blowout.' },
   9:  { e: '🎁', sub: 'Spend $250, get $50 store credit for next time.' },
