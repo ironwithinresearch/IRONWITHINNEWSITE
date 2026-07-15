@@ -5,7 +5,7 @@
 //
 // Keep LUXME_SLUGS in sync with the `lux-me` WooCommerce category as the
 // lineup grows.
-export const LUXME_SLUGS = ['elixir-of-youth', 'radiant-renewal'];
+export const LUXME_SLUGS = ['elixir-of-youth', 'radiant-renewal', 'topical-kpv'];
 
 // Client-only: is the current URL a Lux Me product page or the Lux Me shop view?
 export function isLuxMePath() {
