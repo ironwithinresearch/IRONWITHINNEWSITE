@@ -112,6 +112,7 @@ export const GET_CUSTOMER = gql`
       lastName
       email
       username
+      mustChangePassword
       billing {
         firstName
         lastName

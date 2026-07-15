@@ -489,7 +489,7 @@ function CountrySelect({ label, value, onChange, colSpan }) {
 /* ══════════════════════════════════════════════════════════ */
 /*  SECURITY PANEL  (change password)                        */
 /* ══════════════════════════════════════════════════════════ */
-function SecurityPanel({ customer }) {
+function SecurityPanel({ customer, forced, onChanged }) {
   const { token } = useAuth();
 
   const [form, setForm]     = useState({ current: '', newPw: '', confirm: '' });
@@ -518,6 +518,7 @@ function SecurityPanel({ customer }) {
       });
       setAlert({ type: 'success', msg: 'Password changed successfully!' });
       setForm({ current: '', newPw: '', confirm: '' });
+      onChanged?.();
     } catch (err) {
       setAlert({ type: 'error', msg: err.message || 'Failed to change password.' });
     } finally {
@@ -531,6 +532,21 @@ function SecurityPanel({ customer }) {
         <ShieldCheck size={16} color="#fbbf24" />
         <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 800 }}>Security</h2>
       </div>
+
+      {forced && (
+        <div style={{
+          display: 'flex', alignItems: 'flex-start', gap: '10px',
+          padding: '14px 16px', borderRadius: 'var(--radius-md)', marginBottom: '18px',
+          background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.4)',
+          color: '#fbbf24', fontSize: '0.85rem', lineHeight: 1.5,
+        }}>
+          <AlertCircle size={16} style={{ flexShrink: 0, marginTop: '1px' }} />
+          <span>
+            <strong>Set a new password to continue.</strong> You logged in with a temporary
+            password we emailed you. Please choose your own new password below before using your account.
+          </span>
+        </div>
+      )}
 
       <Alert type={alert.type} msg={alert.msg} />
 
@@ -719,6 +735,11 @@ export default function AccountPage() {
   });
 
   const customer = data?.customer;
+  const mustChangePw = !!customer?.mustChangePassword;
+
+  // Force the user onto the Security panel until they set a new password.
+  useEffect(() => { if (mustChangePw) setActiveSection('security'); }, [mustChangePw]);
+  const effectiveSection = mustChangePw ? 'security' : activeSection;
 
   if (!mounted) return null;
 
@@ -785,9 +806,10 @@ export default function AccountPage() {
         {/* ── Menu grid ── */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
           {menuItems.map(({ id, Icon, color, title, desc }) => {
-            const isActive = activeSection === id;
+            const isActive = effectiveSection === id;
+            const locked = mustChangePw && id !== 'security';
             return (
-              <div key={id} onClick={() => setActiveSection(isActive ? null : id)} style={{ cursor: 'pointer' }}>
+              <div key={id} onClick={() => { if (mustChangePw) return; setActiveSection(isActive ? null : id); }} style={{ cursor: mustChangePw ? 'not-allowed' : 'pointer', opacity: locked ? 0.45 : 1 }}>
                 <div style={{
                   background: 'var(--card-dark)',
                   border: `1px solid ${isActive ? `${color}55` : 'var(--glass-border)'}`,
@@ -810,10 +832,10 @@ export default function AccountPage() {
         </div>
 
         {/* ── Inline Panels ── */}
-        {activeSection === 'orders'   && <OrdersPanel />}
-        {activeSection === 'credit'   && <StoreCreditPanel />}
-        {activeSection === 'profile'  && <ProfilePanel customer={customer} refetch={refetch} />}
-        {activeSection === 'security' && <SecurityPanel customer={customer} />}
+        {effectiveSection === 'orders'   && <OrdersPanel />}
+        {effectiveSection === 'credit'   && <StoreCreditPanel />}
+        {effectiveSection === 'profile'  && <ProfilePanel customer={customer} refetch={refetch} />}
+        {effectiveSection === 'security' && <SecurityPanel customer={customer} forced={mustChangePw} onChanged={refetch} />}
 
       </div>
       <style>{`@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
