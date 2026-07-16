@@ -40,19 +40,22 @@ function verifySig(raw, ts, sigHeader) {
   return false;
 }
 
+let lastErr = null;
 async function callGraphql(query, variables) {
+  lastErr = null;
   for (let attempt = 1; attempt <= 5; attempt++) {
     try {
       const res = await fetch(GRAPHQL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'User-Agent': 'IronWithin-SSR' },
+        headers: { 'Content-Type': 'application/json' }, // no custom UA — Cloudflare challenges those
         body: JSON.stringify({ query, variables }),
       });
       const text = await res.text();
       if (res.ok && !isChallenge(text)) {
         try { return JSON.parse(text); } catch { return { raw: text }; }
       }
-    } catch { /* retry */ }
+      lastErr = { status: res.status, challenged: isChallenge(text), sample: text.slice(0, 160) };
+    } catch (e) { lastErr = { thrown: String(e) }; }
     await new Promise((r) => setTimeout(r, 300));
   }
   return null;
@@ -97,7 +100,7 @@ export async function POST(req) {
     return Response.json({ ok: true, order: ext, status: payload.status });
   }
   // Not confirmed — 502 so ChargeX retries the webhook.
-  return new Response(JSON.stringify({ ok: false, order: ext, result: payload || 'no_response' }), {
+  return new Response(JSON.stringify({ ok: false, order: ext, gql: result || null, lastErr }), {
     status: 502, headers: { 'Content-Type': 'application/json' },
   });
 }
