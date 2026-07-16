@@ -99,11 +99,13 @@ export async function POST(req) {
   const payload = result && result.data && result.data.chargxMarkPaid;
   console.log('[chargx-wh] mark-paid →', JSON.stringify(payload || result));
 
-  if (payload && payload.success) {
-    return Response.json({ ok: true, verified, order: ext, status: payload.status });
+  const debug = STRICT ? undefined : { recvSig: sig, ts, body: raw.slice(0, 300) };
+  // If the mutation RESPONDED (even not_found / already_paid), the webhook was processed fine →
+  // 200 so ChargeX doesn't treat it as a failure. Only a genuine can't-reach-backend is a 502.
+  if (result) {
+    return Response.json({ ok: !!(payload && payload.success), verified, order: ext, status: payload && payload.status, debug });
   }
-  // Not confirmed — 502 so ChargeX retries the webhook.
-  return new Response(JSON.stringify({ ok: false, verified, order: ext, gql: result || null, lastErr }), {
+  return new Response(JSON.stringify({ ok: false, verified, order: ext, error: 'backend_unreachable', lastErr, debug }), {
     status: 502, headers: { 'Content-Type': 'application/json' },
   });
 }
