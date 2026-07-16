@@ -33,6 +33,10 @@ const PAY_METHODS = [
   { id: 'iwr_cashapp', label: 'Cash App', handle: '$ironwithinresearch' },
 ];
 
+// ChargeX card gateway — HIDDEN behind ?chargx=1 during testing so live customers keep using
+// the rail. Behaves like iwr_rail (hosted redirect). Remove the gate at go-live.
+const CHARGX_METHOD = { id: 'iwr_chargx', label: 'Credit / Debit Card', desc: 'Pay by card on our secure encrypted page.' };
+
 // Countries for the checkout address (ISO 3166-1 alpha-2 codes — WooCommerce format).
 // US/CA/GB/AU surfaced first, then the rest alphabetically.
 const COUNTRIES = [
@@ -77,6 +81,17 @@ export default function CheckoutPage() {
   const [payMethod, setPayMethod] = useState('iwr_rail');
   const [p2pInfo, setP2pInfo] = useState(null);
   const payMethodRef = useRef('iwr_rail');
+  // ChargeX card option is unlisted — only appears (and auto-selects) with ?chargx=1 while we test.
+  const [showChargx, setShowChargx] = useState(false);
+  useEffect(() => {
+    try {
+      if (new URLSearchParams(window.location.search).get('chargx') === '1') {
+        setShowChargx(true);
+        setPayMethod('iwr_chargx');
+      }
+    } catch {}
+  }, []);
+  const payMethodOptions = showChargx ? [CHARGX_METHOD, ...PAY_METHODS] : PAY_METHODS;
   // Account store-credit balance (auto-applied at checkout, server-side). Fetched
   // once on mount; the backend is authoritative on how much actually applies.
   const [creditBalance, setCreditBalance] = useState(0);
@@ -177,7 +192,7 @@ export default function CheckoutPage() {
 
     // Card: follow the Stripe redirect. `order` is expected to be null for guests
     // here; the redirect URL is authoritative, so ignore the order error.
-    if (method === 'iwr_rail') {
+    if (method === 'iwr_rail' || method === 'iwr_chargx') {
       if (result?.redirect) {
         setRewardsRedeemPts(0); // order created — points already reserved on it
         window.location.href = result.redirect;
@@ -200,7 +215,7 @@ export default function CheckoutPage() {
     // Gift-card-paid ($0 due) orders are complete already — no P2P instructions.
     const num = result?.order?.orderNumber || result?.order?.databaseId || '';
     setOrderNumber(num);
-    if (method !== 'iwr_rail' && method !== 'iw_giftcard' && method !== 'iw_storecredit') {
+    if (method !== 'iwr_rail' && method !== 'iwr_chargx' && method !== 'iw_giftcard' && method !== 'iw_storecredit') {
       const m = PAY_METHODS.find((x) => x.id === method);
       setP2pInfo({
         label: m?.label || 'P2P',
@@ -473,7 +488,7 @@ export default function CheckoutPage() {
                         {' '}applied — you'll pay <strong style={{ color: 'var(--text-light)' }}>{fmt(dueAfterAll)}</strong> with the method below.
                       </div>
                     )}
-                    {PAY_METHODS.map((m) => {
+                    {payMethodOptions.map((m) => {
                       const active = payMethod === m.id;
                       return (
                         <button
@@ -493,7 +508,7 @@ export default function CheckoutPage() {
                           <span style={{ flex: 1 }}>
                             <span style={{ display: 'block', fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-light)' }}>{m.label}</span>
                             <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                              {m.id === 'iwr_rail' ? m.desc : `Send your payment to ${m.handle} after placing the order`}
+                              {(m.id === 'iwr_rail' || m.id === 'iwr_chargx') ? m.desc : `Send your payment to ${m.handle} after placing the order`}
                             </span>
                           </span>
                         </button>
@@ -509,10 +524,10 @@ export default function CheckoutPage() {
                     <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Placing Order…</>
                   ) : noRailDue ? (
                     <><Lock size={15} /> Complete Order — $0.00 due</>
-                  ) : payMethod === 'iwr_rail' ? (
+                  ) : (payMethod === 'iwr_rail' || payMethod === 'iwr_chargx') ? (
                     <><Lock size={15} /> Continue to Secure Payment — {dueDisplay}</>
                   ) : (
-                    <><Lock size={15} /> Place Order — Pay by {PAY_METHODS.find((x) => x.id === payMethod)?.label}</>
+                    <><Lock size={15} /> Place Order — Pay by {payMethodOptions.find((x) => x.id === payMethod)?.label}</>
                   )}
                 </button>
               </FormCard>
