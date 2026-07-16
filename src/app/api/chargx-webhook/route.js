@@ -38,10 +38,32 @@ export async function POST(req) {
   }
 }
 
-// Health check.
-export async function GET() {
-  return new Response(JSON.stringify({ ok: true, note: 'ChargeX webhook proxy alive' }), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' },
-  });
+// Health check + ?diag=1 probes which backend channel gets through Cloudflare from Vercel's servers.
+export async function GET(req) {
+  const u = new URL(req.url);
+  if (u.searchParams.get('diag') !== '1') {
+    return new Response(JSON.stringify({ ok: true, note: 'ChargeX webhook proxy alive' }), {
+      status: 200, headers: { 'Content-Type': 'application/json' },
+    });
+  }
+  const isChallenge = (t) => /just a moment|challenge-platform|cf-mitigated|__cf_chl/i.test(t);
+  const out = {};
+  // 1) GraphQL endpoint
+  try {
+    const r = await fetch('https://bhidasowgm.onrocket.site/graphql', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: '{ generalSettings { title } }' }),
+    });
+    const t = await r.text();
+    out.graphql = { status: r.status, challenged: isChallenge(t), sample: t.slice(0, 90) };
+  } catch (e) { out.graphql = { error: String(e) }; }
+  // 2) REST webhook route
+  try {
+    const r = await fetch('https://bhidasowgm.onrocket.site/wp-json/iw/v1/chargx-webhook', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{"diag":1}',
+    });
+    const t = await r.text();
+    out.rest = { status: r.status, challenged: isChallenge(t), sample: t.slice(0, 90) };
+  } catch (e) { out.rest = { error: String(e) }; }
+  return new Response(JSON.stringify(out, null, 2), { status: 200, headers: { 'Content-Type': 'application/json' } });
 }
