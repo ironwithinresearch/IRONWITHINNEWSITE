@@ -84,8 +84,8 @@ export async function POST(req) {
   const success = /succeed|paid|captur/i.test(event) ||
     ['paid', 'succeeded', 'captured', 'complete', 'completed', 'approved'].includes(status);
 
-  if (!ext) return Response.json({ ok: true, note: 'no external_order_id' });
-  if (!success) return Response.json({ ok: true, note: `event "${event}" ignored` });
+  if (!ext) return Response.json({ ok: true, verified, note: 'no external_order_id' });
+  if (!success) return Response.json({ ok: true, verified, note: `event "${event}" ignored` });
 
   const mutation = 'mutation MarkPaid($input: ChargxMarkPaidInput!) { chargxMarkPaid(input: $input) { success status } }';
   const variables = { input: {
@@ -100,10 +100,10 @@ export async function POST(req) {
   console.log('[chargx-wh] mark-paid →', JSON.stringify(payload || result));
 
   if (payload && payload.success) {
-    return Response.json({ ok: true, order: ext, status: payload.status });
+    return Response.json({ ok: true, verified, order: ext, status: payload.status });
   }
   // Not confirmed — 502 so ChargeX retries the webhook.
-  return new Response(JSON.stringify({ ok: false, order: ext, gql: result || null, lastErr }), {
+  return new Response(JSON.stringify({ ok: false, verified, order: ext, gql: result || null, lastErr }), {
     status: 502, headers: { 'Content-Type': 'application/json' },
   });
 }
