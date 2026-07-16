@@ -7,7 +7,8 @@ import crypto from 'crypto';
 export const dynamic = 'force-dynamic';
 
 const GRAPHQL = 'https://bhidasowgm.onrocket.site/graphql';
-const WH_SECRET = process.env.CHARGX_WEBHOOK_SECRET || '';
+// Comma-separated: we try every candidate secret; the one that verifies is the live one.
+const WH_SECRETS = (process.env.CHARGX_WEBHOOK_SECRET || '').split(',').map((s) => s.trim()).filter(Boolean);
 const INTERNAL_SECRET = process.env.CHARGX_INTERNAL_SECRET || '';
 const STRICT = process.env.CHARGX_WH_STRICT === '1';
 
@@ -17,7 +18,7 @@ const isChallenge = (t) => /just a moment|challenge-platform|__cf_chl|cf-mitigat
 // The exact secret encoding isn't documented, so try the common variants (utf8 key, hex-decoded
 // key, base64-decoded key) in hex and base64 output; discovery log tells us which matched.
 function verifySig(raw, ts, sigHeader) {
-  if (!ts || !sigHeader || !WH_SECRET) return false;
+  if (!ts || !sigHeader || !WH_SECRETS.length) return false;
   const signed = `${ts}.${raw}`;
   const cands = [];
   const add = (key) => {
@@ -26,9 +27,11 @@ function verifySig(raw, ts, sigHeader) {
       cands.push(crypto.createHmac('sha256', key).update(signed).digest('base64'));
     } catch { /* skip */ }
   };
-  add(WH_SECRET);
-  try { const b = Buffer.from(WH_SECRET, 'hex'); if (b.length >= 16) add(b); } catch { /* not hex */ }
-  try { const s = WH_SECRET.replace(/^(whsec_|sk_)/, ''); const b = Buffer.from(s, 'base64'); if (b.length >= 16) add(b); } catch { /* not b64 */ }
+  for (const secret of WH_SECRETS) {
+    add(secret);
+    try { const b = Buffer.from(secret, 'hex'); if (b.length >= 16) add(b); } catch { /* not hex */ }
+    try { const s = secret.replace(/^(whsec_|sk_)/, ''); const b = Buffer.from(s, 'base64'); if (b.length >= 16) add(b); } catch { /* not b64 */ }
+  }
   for (const part of sigHeader.trim().split(/\s+/)) {
     const val = part.replace(/^v1[=,]/, '');
     for (const c of cands) {
