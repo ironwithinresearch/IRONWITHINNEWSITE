@@ -1,78 +1,120 @@
-// ChargeX webhook proxy. ChargeX (Svix) can't deliver directly to the Rocket.net WordPress
-// backend (its IPs appear firewalled), so we receive the webhook here on Vercel — which ChargeX
-// can reach — and forward it byte-for-byte (raw body + Webhook-* signature headers preserved) to
-// the backend mu-plugin route, which verifies the signature and marks the order paid.
+// ChargeX webhook receiver. ChargeX (Svix) can reach Vercel reliably but the WordPress backend
+// sits behind Cloudflare, which intermittently challenges the REST route. So we receive here,
+// verify ChargeX's signature, and mark the order paid via a guarded GraphQL mutation — /graphql
+// is Cloudflare-whitelisted (the whole headless site renders through it), so it's reliable.
+import crypto from 'crypto';
+
 export const dynamic = 'force-dynamic';
 
-const BACKEND = 'https://bhidasowgm.onrocket.site/wp-json/iw/v1/chargx-webhook';
+const GRAPHQL = 'https://bhidasowgm.onrocket.site/graphql';
+const WH_SECRET = process.env.CHARGX_WEBHOOK_SECRET || '';
+const INTERNAL_SECRET = process.env.CHARGX_INTERNAL_SECRET || '';
+const STRICT = process.env.CHARGX_WH_STRICT === '1';
 
 const isChallenge = (t) => /just a moment|challenge-platform|__cf_chl|cf-mitigated/i.test(t || '');
 
-export async function POST(req) {
-  const raw = await req.text();
-  const h = (k) => req.headers.get(k) || '';
-  const headers = {
-    'Content-Type': 'application/json',
-    'User-Agent': 'curl/8.4.0',
-    'Webhook-Id': h('webhook-id'),
-    'Webhook-Timestamp': h('webhook-timestamp'),
-    'Webhook-Signature': h('webhook-signature'),
-    'X-Chargx-Proxy': '1',
-  };
-
-  // Cloudflare intermittently challenges Vercel→backend, so retry until one gets through.
-  // The raw body + Webhook-* headers are preserved on every attempt so the backend can still
-  // verify the signature.
-  let lastStatus = 0;
-  for (let attempt = 1; attempt <= 6; attempt++) {
+// ChargeX: HMAC-SHA256(secret, `${timestamp}.${rawBody}`), header Webhook-Signature = "v1=<sig>".
+// The exact secret encoding isn't documented, so try the common variants (utf8 key, hex-decoded
+// key, base64-decoded key) in hex and base64 output; discovery log tells us which matched.
+function verifySig(raw, ts, sigHeader) {
+  if (!ts || !sigHeader || !WH_SECRET) return false;
+  const signed = `${ts}.${raw}`;
+  const cands = [];
+  const add = (key) => {
     try {
-      const res = await fetch(BACKEND, { method: 'POST', headers, body: raw });
-      const text = await res.text();
-      lastStatus = res.status;
-      if (res.ok && !isChallenge(text)) {
-        console.log('[chargx-proxy] delivered on attempt', attempt, '→', text.slice(0, 160));
-        return new Response(text, { status: 200, headers: { 'Content-Type': 'application/json' } });
+      cands.push(crypto.createHmac('sha256', key).update(signed).digest('hex'));
+      cands.push(crypto.createHmac('sha256', key).update(signed).digest('base64'));
+    } catch { /* skip */ }
+  };
+  add(WH_SECRET);
+  try { const b = Buffer.from(WH_SECRET, 'hex'); if (b.length >= 16) add(b); } catch { /* not hex */ }
+  try { const s = WH_SECRET.replace(/^(whsec_|sk_)/, ''); const b = Buffer.from(s, 'base64'); if (b.length >= 16) add(b); } catch { /* not b64 */ }
+  for (const part of sigHeader.trim().split(/\s+/)) {
+    const val = part.replace(/^v1[=,]/, '');
+    for (const c of cands) {
+      if (c.length === val.length) {
+        try { if (crypto.timingSafeEqual(Buffer.from(c), Buffer.from(val))) return true; } catch { /* len */ }
       }
-      console.warn('[chargx-proxy] attempt', attempt, 'blocked/failed', res.status, isChallenge(text) ? '(cf-challenge)' : '');
-    } catch (e) {
-      console.error('[chargx-proxy] attempt', attempt, 'error:', String(e));
     }
+  }
+  return false;
+}
+
+async function callGraphql(query, variables) {
+  for (let attempt = 1; attempt <= 5; attempt++) {
+    try {
+      const res = await fetch(GRAPHQL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'User-Agent': 'IronWithin-SSR' },
+        body: JSON.stringify({ query, variables }),
+      });
+      const text = await res.text();
+      if (res.ok && !isChallenge(text)) {
+        try { return JSON.parse(text); } catch { return { raw: text }; }
+      }
+    } catch { /* retry */ }
     await new Promise((r) => setTimeout(r, 300));
   }
+  return null;
+}
 
-  // Every attempt got blocked — 502 so ChargeX retries the webhook later (its own retry layer).
-  console.error('[chargx-proxy] all attempts blocked; last status', lastStatus);
-  return new Response(JSON.stringify({ ok: false, error: 'backend_unreachable' }), {
+export async function POST(req) {
+  const raw = await req.text();
+  const ts = req.headers.get('webhook-timestamp') || '';
+  const sig = req.headers.get('webhook-signature') || '';
+  const verified = verifySig(raw, ts, sig);
+
+  console.log('[chargx-wh] verified=', verified, 'ts=', ts, 'sig=', sig, 'body=', raw.slice(0, 400));
+
+  if (STRICT && !verified) {
+    return new Response(JSON.stringify({ error: 'signature' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
+  }
+
+  let data; try { data = JSON.parse(raw); } catch { data = {}; }
+  const obj = (data && data.data && data.data.object) || (data && data.object) || data || {};
+  const event = (data && (data.type || data.event)) || '';
+  const status = String(obj.status || '').toLowerCase();
+  const ext = parseInt(obj.external_order_id || 0, 10);
+  const success = /succeed|paid|captur/i.test(event) ||
+    ['paid', 'succeeded', 'captured', 'complete', 'completed', 'approved'].includes(status);
+
+  if (!ext) return Response.json({ ok: true, note: 'no external_order_id' });
+  if (!success) return Response.json({ ok: true, note: `event "${event}" ignored` });
+
+  const mutation = 'mutation MarkPaid($input: ChargxMarkPaidInput!) { chargxMarkPaid(input: $input) { success status } }';
+  const variables = { input: {
+    externalOrderId: ext,
+    chargxOrderId: String(obj.order_id || ''),
+    orderDisplayId: String(obj.order_display_id || ''),
+    secret: INTERNAL_SECRET,
+    clientMutationId: 'chargx',
+  } };
+  const result = await callGraphql(mutation, variables);
+  const payload = result && result.data && result.data.chargxMarkPaid;
+  console.log('[chargx-wh] mark-paid →', JSON.stringify(payload || result));
+
+  if (payload && payload.success) {
+    return Response.json({ ok: true, order: ext, status: payload.status });
+  }
+  // Not confirmed — 502 so ChargeX retries the webhook.
+  return new Response(JSON.stringify({ ok: false, order: ext, result: payload || 'no_response' }), {
     status: 502, headers: { 'Content-Type': 'application/json' },
   });
 }
 
-// Health check + ?diag=1 probes which backend channel gets through Cloudflare from Vercel's servers.
+// Health + ?diag=1 channel probe.
 export async function GET(req) {
   const u = new URL(req.url);
   if (u.searchParams.get('diag') !== '1') {
-    return new Response(JSON.stringify({ ok: true, note: 'ChargeX webhook proxy alive' }), {
+    return new Response(JSON.stringify({ ok: true, note: 'ChargeX webhook receiver alive' }), {
       status: 200, headers: { 'Content-Type': 'application/json' },
     });
   }
-  const isChallenge = (t) => /just a moment|challenge-platform|cf-mitigated|__cf_chl/i.test(t);
   const out = {};
-  // 1) GraphQL endpoint
   try {
-    const r = await fetch('https://bhidasowgm.onrocket.site/graphql', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query: '{ generalSettings { title } }' }),
-    });
+    const r = await fetch(GRAPHQL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: '{ generalSettings { title } }' }) });
     const t = await r.text();
     out.graphql = { status: r.status, challenged: isChallenge(t), sample: t.slice(0, 90) };
   } catch (e) { out.graphql = { error: String(e) }; }
-  // 2) REST webhook route
-  try {
-    const r = await fetch('https://bhidasowgm.onrocket.site/wp-json/iw/v1/chargx-webhook', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{"diag":1}',
-    });
-    const t = await r.text();
-    out.rest = { status: r.status, challenged: isChallenge(t), sample: t.slice(0, 90) };
-  } catch (e) { out.rest = { error: String(e) }; }
   return new Response(JSON.stringify(out, null, 2), { status: 200, headers: { 'Content-Type': 'application/json' } });
 }
