@@ -8,6 +8,7 @@ import ReferralCapture from "../components/ReferralCapture";
 import LeadCapture from "../components/LeadCapture";
 import BirthdayBashPopup from "../components/BirthdayBashPopup";
 import ChristmasJulyPopup from "../components/ChristmasJulyPopup";
+import ShippingPauseNotice from "../components/ShippingPauseNotice";
 import ApolloWrapper from "../lib/ApolloWrapper";
 
 const SITE_NAME = "Iron Within Research";
@@ -56,6 +57,7 @@ export default function RootLayout({ children }) {
           <LeadCapture />
           <BirthdayBashPopup />
           <ChristmasJulyPopup />
+          <ShippingPauseNotice />
         </ApolloWrapper>
       </body>
     </html>

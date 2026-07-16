@@ -41,6 +41,14 @@ const SUMMER_START = Date.parse('2026-07-01T00:00:00Z');
 const SUMMER_END = Date.parse('2026-08-21T04:59:59Z');
 const SUMMER_MESSAGE = '☀️  SUMMER SALE — 30% OFF EVERYTHING, no code needed · stack your affiliate code for even more · 99%+ purity, COA on every order · ends Aug 20';
 
+// Shipping pause — a short break Thu Jul 16 (2 PM CT) → Sunday Jul 19. Orders placed after
+// the cutoff ship Sunday. Cutoff 2 PM CDT = 19:00 UTC; notice auto-hides when shipping
+// resumes at the start of Sun Jul 19 CT (== 05:00 UTC).
+const SHIP_CUTOFF = Date.parse('2026-07-16T19:00:00Z');
+const SHIP_END = Date.parse('2026-07-19T05:00:00Z');
+const SHIP_BEFORE = '🚚  SHIPPING NOTICE — order by 2 PM CT this Thursday (Jul 16) to ship right away · orders after that ship Sunday, Jul 19';
+const SHIP_DURING = '🚚  SHIPPING PAUSED until Sunday — any order placed now ships Sun, Jul 19 · thanks for your patience!';
+
 const BASE_MESSAGES = [
   '🔬  Certificate of Analysis available for every product',
   '🧪  Research-grade peptides, independently lab-tested',
@@ -58,6 +66,7 @@ export default function AnnouncementBar() {
   useEffect(() => {
     const now = Date.now();
     const promos = [];
+    if (now < SHIP_END) promos.push(now < SHIP_CUTOFF ? SHIP_BEFORE : SHIP_DURING);
     if (now >= XJ_START && now < XJ_END) { promos.push(XJ_MESSAGE(xjDayNum())); setXjActive(true); }
     if (now >= J4_START && now <= J4_END) { promos.push(J4_MESSAGE); setJ4Active(true); }
     if (now >= BB_START && now < BB_END) { promos.push(BB_MESSAGE); setBbActive(true); }
