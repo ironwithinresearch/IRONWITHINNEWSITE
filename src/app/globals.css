@@ -482,3 +482,17 @@ img {
 .breadcrumb span {
     color: var(--text-muted);
 }
+
+/* Shop-by-Goal bundle cards (homepage) */
+.iw-goal-card {
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.iw-goal-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 22px 56px rgba(0, 0, 0, 0.42);
+}
+@media (prefers-reduced-motion: reduce) {
+    .iw-goal-card { transition: none; }
+    .iw-goal-card:hover { transform: none; }
+}

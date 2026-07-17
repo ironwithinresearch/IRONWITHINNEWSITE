@@ -257,137 +257,39 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══ FLAGSHIP BUNDLE 2 — THE LONG SHOT ══ */}
-      <section style={{ padding: '0 24px 64px' }}>
-        <div className="container" style={{ maxWidth: 1000 }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '32px', alignItems: 'center', background: 'var(--card-dark)', border: '1px solid rgba(0,207,255,0.3)', borderRadius: '24px', padding: '32px', boxShadow: '0 0 0 1px rgba(0,207,255,0.05), 0 20px 60px rgba(0,0,0,0.3)' }}>
-            <div style={{ flex: '1 1 320px' }}>
-              <span style={{ display: 'inline-block', padding: '5px 14px', background: 'var(--gradient-primary)', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#fff', marginBottom: '14px' }}>★ Flagship Bundle</span>
-              <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.9rem', fontWeight: 900, color: '#fff', margin: '0 0 10px', lineHeight: 1.15 }}>The Long Shot</h2>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 18px' }}>
-                Our longevity research stack — <strong style={{ color: 'var(--text-light)' }}>NAD+</strong> (1000mg ×2) + <strong style={{ color: 'var(--text-light)' }}>GHK-Cu</strong> (100mg) + <strong style={{ color: 'var(--text-light)' }}>Thymosin Alpha-1</strong> (5mg ×2). 99%+ purity, COA on every vial.
-              </p>
-              <div style={{ fontSize: '0.82rem', color: '#fbbf24', fontWeight: 600, margin: '0 0 16px' }}>🎁 Includes a FREE bac water · FREE U.S. shipping · +250 bonus points</div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap', marginBottom: '20px' }}>
-                <span style={{ fontFamily: 'var(--font-heading)', fontSize: '2.1rem', fontWeight: 900, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>$245.44</span>
-                <span style={{ color: 'var(--text-muted)', fontSize: '1.1rem', textDecoration: 'line-through' }}>$288.75</span>
-                <span style={{ padding: '4px 12px', background: 'rgba(52,211,153,0.14)', border: '1px solid rgba(52,211,153,0.35)', borderRadius: '999px', fontSize: '0.78rem', fontWeight: 800, color: '#34d399' }}>Save 15% · $43.31</span>
-              </div>
-              <Link href="/product/long-shot" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 34px', background: 'var(--gradient-primary)', borderRadius: '12px', color: '#fff', fontWeight: 800, fontSize: '1rem', textDecoration: 'none', boxShadow: 'var(--glow-blue)' }}>
-                Shop the Bundle <ArrowRight size={17} />
-              </Link>
-            </div>
-            <div style={{ flex: '1 1 280px', minWidth: 240 }}>
-              <img src="https://bhidasowgm.onrocket.site/wp-content/uploads/2026/06/long-shot.webp" alt="The Long Shot bundle" loading="lazy" decoding="async" style={{ width: '100%', borderRadius: '16px', display: 'block' }} />
-            </div>
+      {/* ══ SHOP BY GOAL — bundle grid (was 5 stacked banners) ══ */}
+      <section style={{ padding: '0 24px 76px' }}>
+        <div className="container" style={{ maxWidth: 1060 }}>
+          <div style={{ textAlign: 'center', marginBottom: '34px' }}>
+            <span style={{ display: 'inline-block', padding: '5px 14px', background: 'var(--gradient-primary)', borderRadius: '999px', fontSize: '0.74rem', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#fff', marginBottom: '14px' }}>Shop by Goal</span>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(1.7rem, 4vw, 2.3rem)', fontWeight: 900, color: '#fff', margin: '0 0 10px', lineHeight: 1.12 }}>Curated Research Stacks</h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', margin: 0, maxWidth: 560, marginLeft: 'auto', marginRight: 'auto' }}>
+              Pick your goal — every bundle saves 15%+ and includes a <strong style={{ color: 'var(--text-light)' }}>free bac water</strong>, <strong style={{ color: 'var(--text-light)' }}>free U.S. shipping</strong> &amp; <strong style={{ color: 'var(--text-light)' }}>250 bonus points</strong>.
+            </p>
           </div>
-        </div>
-      </section>
-
-      {/* ══ FLAGSHIP BUNDLE 3 — THE RADIANT BUNDLE ══ */}
-      <section style={{ padding: '0 24px 64px' }}>
-        <div className="container" style={{ maxWidth: 1000 }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '32px', alignItems: 'center', background: 'var(--card-dark)', border: '1px solid rgba(232,170,150,0.35)', borderRadius: '24px', padding: '32px', boxShadow: '0 0 0 1px rgba(232,170,150,0.06), 0 20px 60px rgba(0,0,0,0.3)' }}>
-            <div style={{ flex: '1 1 280px', minWidth: 240 }}>
-              <img src="https://bhidasowgm.onrocket.site/wp-content/uploads/2026/06/radiant-bundle.webp" alt="The Radiant Bundle — KPV + GHK-Cu" loading="lazy" decoding="async" style={{ width: '100%', borderRadius: '16px', display: 'block' }} />
-            </div>
-            <div style={{ flex: '1 1 320px' }}>
-              <span style={{ display: 'inline-block', padding: '5px 14px', background: 'linear-gradient(100deg,#e8aa96,#caa05a)', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#3a1c25', marginBottom: '14px' }}>✨ New · Skin &amp; Radiance</span>
-              <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.9rem', fontWeight: 900, color: '#fff', margin: '0 0 10px', lineHeight: 1.15 }}>The Radiant Bundle</h2>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 18px' }}>
-                Our skin &amp; regenerative research kit — <strong style={{ color: 'var(--text-light)' }}>KPV</strong> (10mg ×10) + <strong style={{ color: 'var(--text-light)' }}>GHK-Cu</strong> (50mg ×2). 99%+ purity, COA on every vial.
-              </p>
-              <div style={{ fontSize: '0.82rem', color: '#fbbf24', fontWeight: 600, margin: '0 0 16px' }}>🎁 Includes a FREE bac water · FREE U.S. shipping · +250 bonus points</div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap', marginBottom: '20px' }}>
-                <span style={{ fontFamily: 'var(--font-heading)', fontSize: '2.1rem', fontWeight: 900, background: 'linear-gradient(100deg,#e8aa96,#caa05a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>$396.95</span>
-                <span style={{ color: 'var(--text-muted)', fontSize: '1.1rem', textDecoration: 'line-through' }}>$529.40</span>
-                <span style={{ padding: '4px 12px', background: 'rgba(52,211,153,0.14)', border: '1px solid rgba(52,211,153,0.35)', borderRadius: '999px', fontSize: '0.78rem', fontWeight: 800, color: '#34d399' }}>Save 25% · $132.45</span>
-              </div>
-              <Link href="/product/the-radiant-bundle" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 34px', background: 'linear-gradient(100deg,#e8aa96,#caa05a)', borderRadius: '12px', color: '#3a1c25', fontWeight: 800, fontSize: '1rem', textDecoration: 'none', boxShadow: '0 0 24px rgba(232,170,150,0.4)' }}>
-                Shop the Bundle <ArrowRight size={17} />
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(232px, 1fr))', gap: '20px' }}>
+            {[
+              { name: 'The Long Shot', goal: 'Longevity', href: '/product/long-shot', img: 'https://bhidasowgm.onrocket.site/wp-content/uploads/2026/06/long-shot.webp', price: '$245.44', save: 'Save 15%', accent: '#00CFFF', cta: 'Age Well' },
+              { name: 'The Radiant Bundle', goal: 'Skin & Radiance', href: '/product/the-radiant-bundle', img: 'https://bhidasowgm.onrocket.site/wp-content/uploads/2026/06/radiant-bundle.webp', price: '$396.95', save: 'Save 25%', accent: '#e8aa96', cta: 'Glow Up' },
+              { name: 'The Recovery Protocol', goal: 'Recovery & Repair', href: '/product/recovery-protocol', img: 'https://bhidasowgm.onrocket.site/wp-content/uploads/2026/07/iw-bundle-recovery-protocol.webp', price: '$155.95', save: 'Save 15%', accent: '#10b981', cta: 'Recover' },
+              { name: 'The Shred', goal: 'Metabolic', href: '/product/the-shred', img: 'https://bhidasowgm.onrocket.site/wp-content/uploads/2026/07/iw-bundle-the-shred.webp', price: 'From $261.95', save: 'Save 15%', accent: '#ff7a3c', cta: 'Get Lean' },
+              { name: 'The Reset', goal: 'Sleep & Focus', href: '/product/the-reset', img: 'https://bhidasowgm.onrocket.site/wp-content/uploads/2026/07/iw-bundle-the-reset.webp', price: '$143.95', save: 'Save 15%', accent: '#7c6cff', cta: 'Unwind' },
+            ].map((b) => (
+              <Link key={b.name} href={b.href} className="iw-goal-card" style={{ display: 'flex', flexDirection: 'column', background: 'var(--card-dark)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '18px', overflow: 'hidden', textDecoration: 'none', boxShadow: '0 14px 44px rgba(0,0,0,0.28)' }}>
+                <div style={{ position: 'relative', aspectRatio: '1 / 1', background: '#05070d' }}>
+                  <img src={b.img} alt={`${b.name} — ${b.goal} research bundle`} loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                  <span style={{ position: 'absolute', top: '12px', left: '12px', padding: '4px 11px', background: 'rgba(3,7,15,0.62)', border: `1px solid ${b.accent}`, borderRadius: '999px', fontSize: '0.66rem', fontWeight: 800, letterSpacing: '0.07em', textTransform: 'uppercase', color: '#fff' }}>{b.goal}</span>
+                </div>
+                <div style={{ padding: '16px 18px 18px', display: 'flex', flexDirection: 'column', gap: '9px', flex: 1 }}>
+                  <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.12rem', fontWeight: 800, color: '#fff', margin: 0, lineHeight: 1.2 }}>{b.name}</h3>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '9px', flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: '1.18rem', fontWeight: 900, color: '#fff' }}>{b.price}</span>
+                    <span style={{ padding: '2px 9px', background: 'rgba(52,211,153,0.14)', border: '1px solid rgba(52,211,153,0.35)', borderRadius: '999px', fontSize: '0.7rem', fontWeight: 800, color: '#34d399' }}>{b.save}</span>
+                  </div>
+                  <span style={{ marginTop: 'auto', display: 'inline-flex', alignItems: 'center', gap: '6px', alignSelf: 'flex-start', padding: '9px 18px', borderRadius: '10px', background: b.accent, color: '#04121a', fontWeight: 800, fontSize: '0.86rem' }}>{b.cta}<ArrowRight size={15} /></span>
+                </div>
               </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ══ FLAGSHIP BUNDLE 4 — THE RECOVERY PROTOCOL ══ */}
-      <section style={{ padding: '0 24px 64px' }}>
-        <div className="container" style={{ maxWidth: 1000 }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '32px', alignItems: 'center', background: 'var(--card-dark)', border: '1px solid rgba(52,211,153,0.35)', borderRadius: '24px', padding: '32px', boxShadow: '0 0 0 1px rgba(52,211,153,0.06), 0 20px 60px rgba(0,0,0,0.3)' }}>
-            <div style={{ flex: '1 1 320px' }}>
-              <span style={{ display: 'inline-block', padding: '5px 14px', background: 'linear-gradient(100deg,#10b981,#059669)', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#fff', marginBottom: '14px' }}>🐺 New · Recovery &amp; Repair</span>
-              <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.9rem', fontWeight: 900, color: '#fff', margin: '0 0 10px', lineHeight: 1.15 }}>The Recovery Protocol</h2>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 18px' }}>
-                Our tissue, joint &amp; gut research stack — <strong style={{ color: 'var(--text-light)' }}>BPC-157</strong> (10mg) + <strong style={{ color: 'var(--text-light)' }}>TB-500</strong> (10mg) + <strong style={{ color: 'var(--text-light)' }}>KPV</strong> (10mg). 99%+ purity, COA on every vial.
-              </p>
-              <div style={{ fontSize: '0.82rem', color: '#fbbf24', fontWeight: 600, margin: '0 0 16px' }}>🎁 Includes a FREE bac water · FREE U.S. shipping · +250 bonus points</div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap', marginBottom: '20px' }}>
-                <span style={{ fontFamily: 'var(--font-heading)', fontSize: '2.1rem', fontWeight: 900, background: 'linear-gradient(100deg,#10b981,#059669)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>$155.95</span>
-                <span style={{ color: 'var(--text-muted)', fontSize: '1.1rem', textDecoration: 'line-through' }}>$183.85</span>
-                <span style={{ padding: '4px 12px', background: 'rgba(52,211,153,0.14)', border: '1px solid rgba(52,211,153,0.35)', borderRadius: '999px', fontSize: '0.78rem', fontWeight: 800, color: '#34d399' }}>Save 15% · $27.90</span>
-              </div>
-              <Link href="/product/recovery-protocol" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 34px', background: 'linear-gradient(100deg,#10b981,#059669)', borderRadius: '12px', color: '#fff', fontWeight: 800, fontSize: '1rem', textDecoration: 'none', boxShadow: '0 0 24px rgba(16,185,129,0.4)' }}>
-                Shop the Bundle <ArrowRight size={17} />
-              </Link>
-            </div>
-            <div style={{ flex: '1 1 280px', minWidth: 240 }}>
-              <img src="https://bhidasowgm.onrocket.site/wp-content/uploads/2026/07/iw-bundle-recovery-protocol.webp" alt="The Recovery Protocol — BPC-157, TB-500, KPV" loading="lazy" decoding="async" style={{ width: '100%', borderRadius: '16px', display: 'block' }} />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ══ FLAGSHIP BUNDLE 5 — THE SHRED ══ */}
-      <section style={{ padding: '0 24px 64px' }}>
-        <div className="container" style={{ maxWidth: 1000 }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '32px', alignItems: 'center', background: 'var(--card-dark)', border: '1px solid rgba(255,122,60,0.35)', borderRadius: '24px', padding: '32px', boxShadow: '0 0 0 1px rgba(255,122,60,0.06), 0 20px 60px rgba(0,0,0,0.3)' }}>
-            <div style={{ flex: '1 1 280px', minWidth: 240 }}>
-              <img src="https://bhidasowgm.onrocket.site/wp-content/uploads/2026/07/iw-bundle-the-shred.webp" alt="The Shred — choose TRZ-2 or RT-3, Cagrilintide, MOTS-C" loading="lazy" decoding="async" style={{ width: '100%', borderRadius: '16px', display: 'block' }} />
-            </div>
-            <div style={{ flex: '1 1 320px' }}>
-              <span style={{ display: 'inline-block', padding: '5px 14px', background: 'linear-gradient(100deg,#ff7a3c,#e0552a)', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#fff', marginBottom: '14px' }}>🔥 New · Metabolic</span>
-              <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.9rem', fontWeight: 900, color: '#fff', margin: '0 0 10px', lineHeight: 1.15 }}>The Shred</h2>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 18px' }}>
-                Our metabolic research stack — <strong style={{ color: 'var(--text-light)' }}>choose TRZ-2 or RT-3</strong> (30mg) + <strong style={{ color: 'var(--text-light)' }}>Cagrilintide</strong> (10mg) + <strong style={{ color: 'var(--text-light)' }}>MOTS-C</strong> (40mg). 99%+ purity, COA on every vial.
-              </p>
-              <div style={{ fontSize: '0.82rem', color: '#fbbf24', fontWeight: 600, margin: '0 0 16px' }}>🎁 Includes a FREE bac water · FREE U.S. shipping · +250 bonus points</div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap', marginBottom: '20px' }}>
-                <span style={{ fontFamily: 'var(--font-heading)', fontSize: '2.1rem', fontWeight: 900, background: 'linear-gradient(100deg,#ff7a3c,#e0552a)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>From $261.95</span>
-                <span style={{ color: 'var(--text-muted)', fontSize: '1.1rem', textDecoration: 'line-through' }}>$307.85</span>
-                <span style={{ padding: '4px 12px', background: 'rgba(52,211,153,0.14)', border: '1px solid rgba(52,211,153,0.35)', borderRadius: '999px', fontSize: '0.78rem', fontWeight: 800, color: '#34d399' }}>Save 15%</span>
-              </div>
-              <Link href="/product/the-shred" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 34px', background: 'linear-gradient(100deg,#ff7a3c,#e0552a)', borderRadius: '12px', color: '#fff', fontWeight: 800, fontSize: '1rem', textDecoration: 'none', boxShadow: '0 0 24px rgba(255,122,60,0.4)' }}>
-                Shop the Bundle <ArrowRight size={17} />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ══ FLAGSHIP BUNDLE 6 — THE RESET ══ */}
-      <section style={{ padding: '0 24px 64px' }}>
-        <div className="container" style={{ maxWidth: 1000 }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '32px', alignItems: 'center', background: 'var(--card-dark)', border: '1px solid rgba(124,108,255,0.35)', borderRadius: '24px', padding: '32px', boxShadow: '0 0 0 1px rgba(124,108,255,0.06), 0 20px 60px rgba(0,0,0,0.3)' }}>
-            <div style={{ flex: '1 1 320px' }}>
-              <span style={{ display: 'inline-block', padding: '5px 14px', background: 'linear-gradient(100deg,#7c6cff,#5b4bd6)', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#fff', marginBottom: '14px' }}>🧠 New · Sleep &amp; Focus</span>
-              <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.9rem', fontWeight: 900, color: '#fff', margin: '0 0 10px', lineHeight: 1.15 }}>The Reset</h2>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 18px' }}>
-                Our focus, calm &amp; sleep research stack — <strong style={{ color: 'var(--text-light)' }}>Semax</strong> (10mg) + <strong style={{ color: 'var(--text-light)' }}>Selank</strong> (10mg) + <strong style={{ color: 'var(--text-light)' }}>DSIP</strong> (10mg). 99%+ purity, COA on every vial.
-              </p>
-              <div style={{ fontSize: '0.82rem', color: '#fbbf24', fontWeight: 600, margin: '0 0 16px' }}>🎁 Includes a FREE bac water · FREE U.S. shipping · +250 bonus points</div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap', marginBottom: '20px' }}>
-                <span style={{ fontFamily: 'var(--font-heading)', fontSize: '2.1rem', fontWeight: 900, background: 'linear-gradient(100deg,#7c6cff,#5b4bd6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>$143.95</span>
-                <span style={{ color: 'var(--text-muted)', fontSize: '1.1rem', textDecoration: 'line-through' }}>$169.85</span>
-                <span style={{ padding: '4px 12px', background: 'rgba(52,211,153,0.14)', border: '1px solid rgba(52,211,153,0.35)', borderRadius: '999px', fontSize: '0.78rem', fontWeight: 800, color: '#34d399' }}>Save 15% · $25.90</span>
-              </div>
-              <Link href="/product/the-reset" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 34px', background: 'linear-gradient(100deg,#7c6cff,#5b4bd6)', borderRadius: '12px', color: '#fff', fontWeight: 800, fontSize: '1rem', textDecoration: 'none', boxShadow: '0 0 24px rgba(124,108,255,0.4)' }}>
-                Shop the Bundle <ArrowRight size={17} />
-              </Link>
-            </div>
-            <div style={{ flex: '1 1 280px', minWidth: 240 }}>
-              <img src="https://bhidasowgm.onrocket.site/wp-content/uploads/2026/07/iw-bundle-the-reset.webp" alt="The Reset — Semax, Selank, DSIP" loading="lazy" decoding="async" style={{ width: '100%', borderRadius: '16px', display: 'block' }} />
-            </div>
+            ))}
           </div>
         </div>
       </section>
