@@ -27,15 +27,12 @@ const steps = ['Shipping', 'Review'];
 // gateways (registered on the WooCommerce backend in iw-p2p-pay.php) — the order
 // is placed on-hold and the buyer is shown send-to instructions.
 const PAY_METHODS = [
-  { id: 'iwr_rail',    label: 'Credit / Debit Card', desc: 'Pay by card on our secure encrypted payment page.' },
+  { id: 'iwr_chargx',  label: 'Credit / Debit Card', desc: 'Pay by card on our secure encrypted page.' },
   { id: 'iwr_zelle',   label: 'Zelle',    handle: '8508980623' },
   { id: 'iwr_venmo',   label: 'Venmo',    handle: '@iwrpay' },
   { id: 'iwr_cashapp', label: 'Cash App', handle: '$ironwithinresearch' },
 ];
 
-// ChargeX card gateway — HIDDEN behind ?chargx=1 during testing so live customers keep using
-// the rail. Behaves like iwr_rail (hosted redirect). Remove the gate at go-live.
-const CHARGX_METHOD = { id: 'iwr_chargx', label: 'Credit / Debit Card', desc: 'Pay by card on our secure encrypted page.' };
 
 // Countries for the checkout address (ISO 3166-1 alpha-2 codes — WooCommerce format).
 // US/CA/GB/AU surfaced first, then the rest alphabetically.
@@ -78,20 +75,11 @@ export default function CheckoutPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
-  const [payMethod, setPayMethod] = useState('iwr_rail');
+  const [payMethod, setPayMethod] = useState('iwr_chargx');
   const [p2pInfo, setP2pInfo] = useState(null);
-  const payMethodRef = useRef('iwr_rail');
-  // ChargeX card option is unlisted — only appears (and auto-selects) with ?chargx=1 while we test.
-  const [showChargx, setShowChargx] = useState(false);
-  useEffect(() => {
-    try {
-      if (new URLSearchParams(window.location.search).get('chargx') === '1') {
-        setShowChargx(true);
-        setPayMethod('iwr_chargx');
-      }
-    } catch {}
-  }, []);
-  const payMethodOptions = showChargx ? [CHARGX_METHOD, ...PAY_METHODS] : PAY_METHODS;
+  const payMethodRef = useRef('iwr_chargx');
+  // ChargeX is now the live card option in PAY_METHODS; the ?chargx=1 gate is retired.
+  const payMethodOptions = PAY_METHODS;
   // Account store-credit balance (auto-applied at checkout, server-side). Fetched
   // once on mount; the backend is authoritative on how much actually applies.
   const [creditBalance, setCreditBalance] = useState(0);
