@@ -17,15 +17,18 @@ const isChallenge = (t) => /just a moment|challenge-platform|__cf_chl|cf-mitigat
 // ChargeX: HMAC-SHA256(secret, `${timestamp}.${rawBody}`), header Webhook-Signature = "v1=<sig>".
 // The exact secret encoding isn't documented, so try the common variants (utf8 key, hex-decoded
 // key, base64-decoded key) in hex and base64 output; discovery log tells us which matched.
-function verifySig(raw, ts, sigHeader) {
+function verifySig(raw, ts, sigHeader, msgId) {
   if (!ts || !sigHeader || !WH_SECRETS.length) return false;
-  const signed = `${ts}.${raw}`;
+  const signedVariants = [`${ts}.${raw}`];             // ChargeX-documented format
+  if (msgId) signedVariants.push(`${msgId}.${ts}.${raw}`); // Svix format
   const cands = [];
   const add = (key) => {
-    try {
-      cands.push(crypto.createHmac('sha256', key).update(signed).digest('hex'));
-      cands.push(crypto.createHmac('sha256', key).update(signed).digest('base64'));
-    } catch { /* skip */ }
+    for (const signed of signedVariants) {
+      try {
+        cands.push(crypto.createHmac('sha256', key).update(signed).digest('hex'));
+        cands.push(crypto.createHmac('sha256', key).update(signed).digest('base64'));
+      } catch { /* skip */ }
+    }
   };
   for (const secret of WH_SECRETS) {
     add(secret);
@@ -68,7 +71,8 @@ export async function POST(req) {
   const raw = await req.text();
   const ts = req.headers.get('webhook-timestamp') || '';
   const sig = req.headers.get('webhook-signature') || '';
-  const verified = verifySig(raw, ts, sig);
+  const msgId = req.headers.get('webhook-id') || '';
+  const verified = verifySig(raw, ts, sig, msgId);
 
   console.log('[chargx-wh] verified=', verified, 'ts=', ts, 'sig=', sig, 'body=', raw.slice(0, 400));
 
@@ -84,15 +88,19 @@ export async function POST(req) {
   const success = /succeed|paid|captur/i.test(event) ||
     ['paid', 'succeeded', 'captured', 'complete', 'completed', 'approved'].includes(status);
 
-  if (!ext) return Response.json({ ok: true, verified, note: 'no external_order_id' });
-  if (!success) return Response.json({ ok: true, verified, note: `event "${event}" ignored` });
-
+  // Always call the mutation so the backend logs the signature (discovery). Only pass a real order
+  // id when it's a genuine success event — otherwise ext=0 so no order is touched (test events).
+  const markExt = (ext && success) ? ext : 0;
   const mutation = 'mutation MarkPaid($input: ChargxMarkPaidInput!) { chargxMarkPaid(input: $input) { success status } }';
   const variables = { input: {
-    externalOrderId: ext,
+    externalOrderId: markExt,
     chargxOrderId: String(obj.order_id || ''),
     orderDisplayId: String(obj.order_display_id || ''),
     secret: INTERNAL_SECRET,
+    verified: !!verified,
+    sig,
+    ts,
+    body: raw.slice(0, 500),
     clientMutationId: 'chargx',
   } };
   const result = await callGraphql(mutation, variables);
