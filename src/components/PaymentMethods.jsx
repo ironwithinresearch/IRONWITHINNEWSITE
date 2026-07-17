@@ -67,6 +67,11 @@ const LOGOS = {
 const CARD_NETWORKS = ['visa', 'mastercard', 'amex', 'discover'];
 const ALL_METHODS = ['visa', 'mastercard', 'amex', 'discover', 'cashapp', 'venmo', 'zelle'];
 
+// TEMP: Mastercard hidden sitewide until ChargeX enables it on the merchant account.
+// The Mastercard logo is defined above and just filtered out at render — flip this back
+// to true (one line) to restore it everywhere the moment MC is live again.
+const MC_ENABLED = false;
+
 export default function PaymentMethods({
   label = 'We Accept',
   methods = ALL_METHODS,
@@ -80,7 +85,9 @@ export default function PaymentMethods({
         </span>
       ) : null}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center', justifyContent: align }}>
-        {methods.map((m) => (LOGOS[m] ? LOGOS[m]() : null))}
+        {methods
+          .filter((m) => MC_ENABLED || m !== 'mastercard')
+          .map((m) => (LOGOS[m] ? LOGOS[m]() : null))}
       </div>
     </div>
   );

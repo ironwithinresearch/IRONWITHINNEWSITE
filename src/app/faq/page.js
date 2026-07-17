@@ -71,7 +71,7 @@ const faqs = [
   {
     category: 'ordering',
     q: 'What payment methods do you accept?',
-    a: 'We accept all major credit and debit cards (Visa, Mastercard, Amex, Discover), as well as Cash App, Venmo, and Zelle. All card transactions are protected by 256-bit SSL encryption, and we never store card details.',
+    a: 'We accept major credit and debit cards (Visa, Amex, Discover), as well as Cash App, Venmo, and Zelle. All card transactions are protected by 256-bit SSL encryption, and we never store card details.',
   },
   {
     category: 'ordering',
