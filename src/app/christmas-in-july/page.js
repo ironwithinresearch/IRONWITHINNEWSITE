@@ -25,6 +25,7 @@ const ENRICH = {
   10: { e: '🔁', sub: 'Buy 2, get 1 FREE on best-sellers.' },
   11: { e: '🎁', sub: 'A FREE vial — KPV, DSIP, Selank or Semax — on $150+.' },
   12: { e: '🏆', sub: '45% OFF everything + a free gift on $150+. Grand finale!' },
+  13: { e: '💰', sub: '50% OFF EVERYTHING + a free vial on $150+, 3× points & spend $250 get $50 — the Grand Slam!' },
 };
 
 async function getFeed() {
@@ -38,7 +39,7 @@ async function getFeed() {
 function ctToday() { return new Date(Date.now() - 4 * 3600000).toISOString().slice(0, 10); }
 function schedule() {
   const START = Date.parse('2026-07-11T04:00:00Z'); // launched 1hr early: 11 PM CT Jul 10 = midnight ET
-  const END = Date.parse('2026-07-23T04:00:00Z');   // 11 PM CT after Day 12
+  const END = Date.parse('2026-07-24T04:00:00Z');   // 11 PM CT after Day 13 (bonus Grand Slam day)
   const now = Date.now();
   if (now < START) return { mode: 'pre', target: '2026-07-11T04:00:00Z' };
   if (now < END) {

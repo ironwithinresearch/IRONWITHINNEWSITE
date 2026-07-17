@@ -26,14 +26,16 @@ const J4_MESSAGE = '🇺🇸  4TH OF JULY SALE — 25% OFF SITEWIDE, no code nee
 // 12 Days of Christmas in July — Jul 11–22 CT, launched 1hr early so each day flips at
 // 11 PM CT (= midnight ET). Boundary = 04:00 UTC; day math uses a 4hr (not 5hr) CT-ish offset.
 const XJ_START = Date.parse('2026-07-11T04:00:00Z');
-const XJ_END = Date.parse('2026-07-23T04:00:00Z');
+const XJ_END = Date.parse('2026-07-24T04:00:00Z');
 function xjDayNum() {
   const ctToday = new Date(Date.now() - 4 * 3600000);
   ctToday.setUTCHours(0, 0, 0, 0);
   const d = Math.round((ctToday.getTime() - Date.parse('2026-07-11T00:00:00Z')) / 86400000) + 1;
-  return Math.min(12, Math.max(1, d));
+  return Math.min(13, Math.max(1, d));
 }
-const XJ_MESSAGE = (n) => `🎄  12 DAYS OF CHRISTMAS IN JULY — Day ${n} of 12 is LIVE · scratch today's card to reveal the deal 🎟️ · shop all 12 days → win 1 of 5 $1,000 credits`;
+const XJ_MESSAGE = (n) => n >= 13
+  ? `💰  GRAND SLAM — Day 13 BONUS: 50% OFF EVERYTHING + free vial on $150+ · 3× points · spend $250 get $50 · our biggest day, to make up for the downtime!`
+  : `🎄  12 DAYS OF CHRISTMAS IN JULY — Day ${n} of 13 is LIVE · scratch today's card to reveal the deal 🎟️ · a bonus 13th "Grand Slam" day was added — shop all 13 days → win 1 of 5 $1,000 credits`;
 
 // Summer Sale — 30% off everything. Live now → end of Aug 20 CT (== 04:59:59 UTC Aug 21),
 // matching the WooCommerce sale schedule (_sale_price_dates_to). Auto-disappears after.
