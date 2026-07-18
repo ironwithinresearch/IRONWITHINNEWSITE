@@ -40,6 +40,7 @@
   --glass-bg:     rgba(15, 23, 42, 0.65);
   --glass-border: rgba(0, 207, 255, 0.12);
   --glass-hover:  rgba(0, 207, 255, 0.06);
+  --overlay:      rgba(5, 7, 18, 0.94);   /* full-screen modal backdrop */
 
   /* ── Border Radius ──────────────────────────────────────── */
   --radius-sm:  6px;
@@ -127,6 +128,7 @@
   --glass-bg:     rgba(255,255,255,0.72);
   --glass-border: rgba(23,40,72,0.09);
   --glass-hover:  rgba(23,40,72,0.04);
+  --overlay:      rgba(232,238,247,0.90);   /* light frosted backdrop */
 
   /* shadows → soft, cool-tinted (not black) */
   --shadow-sm:  0 1px 3px rgba(30,50,95,0.08);

@@ -31,7 +31,7 @@ export default function AgeVerification() {
       position: 'fixed',
       inset: 0,
       zIndex: 9999,
-      background: 'rgba(5,7,18,0.97)',
+      background: 'var(--overlay, rgba(5,7,18,0.97))',
       backdropFilter: 'blur(24px)',
       WebkitBackdropFilter: 'blur(24px)',
       display: 'flex',
@@ -53,11 +53,11 @@ export default function AgeVerification() {
         maxWidth: 480,
         width: '100%',
         background: 'var(--card-dark, #0d1117)',
-        border: '1px solid rgba(0,207,255,0.2)',
+        border: '1px solid var(--glass-border, rgba(0,207,255,0.2))',
         borderRadius: '20px',
         padding: '48px 40px',
         textAlign: 'center',
-        boxShadow: '0 0 60px rgba(0,207,255,0.12), 0 32px 64px rgba(0,0,0,0.4)',
+        boxShadow: '0 0 60px rgba(0,207,255,0.12), var(--shadow-lg, 0 32px 64px rgba(0,0,0,0.4))',
         overflow: 'hidden',
       }}>
         {/* Inner glow */}
@@ -111,13 +111,13 @@ export default function AgeVerification() {
             fontWeight: 900,
             lineHeight: 1.15,
             marginBottom: '16px',
-            color: '#fff',
+            color: 'var(--text-light, #fff)',
           }}>
             Are You 21 or Older?
           </h1>
 
           <p style={{
-            color: 'rgba(148,163,184,1)',
+            color: 'var(--text-secondary, rgba(148,163,184,1))',
             fontSize: '0.92rem',
             lineHeight: 1.7,
             marginBottom: '8px',
@@ -125,12 +125,12 @@ export default function AgeVerification() {
             This website sells research compounds intended for qualified researchers only.
           </p>
           <p style={{
-            color: 'rgba(100,116,139,1)',
+            color: 'var(--text-muted, rgba(100,116,139,1))',
             fontSize: '0.82rem',
             lineHeight: 1.6,
             marginBottom: '36px',
           }}>
-            By entering, you confirm you are at least 21 years of age and agree to our Terms of Service and Disclaimer. Products are <strong style={{ color: 'rgba(148,163,184,1)' }}>for research use only</strong> and not for human consumption.
+            By entering, you confirm you are at least 21 years of age and agree to our Terms of Service and Disclaimer. Products are <strong style={{ color: 'var(--text-secondary, rgba(148,163,184,1))' }}>for research use only</strong> and not for human consumption.
           </p>
 
           {/* Buttons */}
@@ -165,9 +165,9 @@ export default function AgeVerification() {
                 width: '100%',
                 padding: '13px',
                 background: 'transparent',
-                border: '1px solid rgba(255,255,255,0.1)',
+                border: '1px solid var(--glass-border, rgba(255,255,255,0.1))',
                 borderRadius: '12px',
-                color: 'rgba(100,116,139,1)',
+                color: 'var(--text-muted, rgba(100,116,139,1))',
                 fontWeight: 500,
                 fontSize: '0.88rem',
                 cursor: 'pointer',
@@ -175,7 +175,7 @@ export default function AgeVerification() {
                 fontFamily: 'inherit',
               }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(239,68,68,0.3)'; e.currentTarget.style.color = '#f87171'; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = 'rgba(100,116,139,1)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--glass-border, rgba(255,255,255,0.1))'; e.currentTarget.style.color = 'var(--text-muted, rgba(100,116,139,1))'; }}
             >
               No, I Am Under 21 — Exit
             </button>
@@ -184,7 +184,7 @@ export default function AgeVerification() {
           <p style={{
             marginTop: '20px',
             fontSize: '0.72rem',
-            color: 'rgba(71,85,105,1)',
+            color: 'var(--text-muted, rgba(71,85,105,1))',
             lineHeight: 1.6,
           }}>
             By clicking "Enter Site" you confirm you meet the minimum age requirement and acknowledge the research-only nature of all products sold on this website.
