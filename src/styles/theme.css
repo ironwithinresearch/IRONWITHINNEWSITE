@@ -90,3 +90,47 @@
   /* ── Product Card ───────────────────────────────────────── */
   --card-padding: 20px;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   LIGHT THEME — "light & airy" (default landing)
+   Overrides ONLY color/surface/shadow tokens. Accent hues, radii,
+   spacing, and typography are inherited from :root unchanged, so the
+   brand (cyan → purple → pink) stays identical — just on a light ground.
+   ═══════════════════════════════════════════════════════════ */
+[data-theme="light"] {
+  /* backgrounds → airy cool white */
+  --bg-dark:      #F5F8FD;
+  --bg-deeper:    #FFFFFF;
+  --bg-elevated:  #FFFFFF;
+  --card-dark:    #FFFFFF;
+  --card-elevated:#F7FAFE;
+
+  /* text → cool ink on light */
+  --text-light:     #0C1526;
+  --text-secondary: #51607A;
+  --text-muted:     #93A0B5;
+
+  /* dark-only gradients → light equivalents (accent gradients unchanged) */
+  --gradient-dark: linear-gradient(180deg, #FFFFFF 0%, #F5F8FD 100%);
+  --gradient-card: linear-gradient(145deg, #FFFFFF 0%, #F7FAFE 100%);
+  --gradient-hero: radial-gradient(60% 55% at 78% 0%, rgba(236,72,153,0.10), transparent 60%),
+                   radial-gradient(55% 60% at 12% 8%, rgba(0,207,255,0.12), transparent 62%),
+                   linear-gradient(180deg, #FFFFFF, #F5F8FD);
+
+  /* glows → soft airy shadows (keep a hint of brand color) */
+  --glow-blue:   0 8px 26px -10px rgba(0,207,255,0.40);
+  --glow-pink:   0 8px 26px -10px rgba(236,72,153,0.32);
+  --glow-purple: 0 10px 30px -12px rgba(124,58,237,0.26);
+  --glow-sm:     0 2px 10px rgba(30,50,95,0.10);
+
+  /* glass → light frosted */
+  --glass-bg:     rgba(255,255,255,0.72);
+  --glass-border: rgba(23,40,72,0.09);
+  --glass-hover:  rgba(23,40,72,0.04);
+
+  /* shadows → soft, cool-tinted (not black) */
+  --shadow-sm:  0 1px 3px rgba(30,50,95,0.08);
+  --shadow-md:  0 6px 20px -8px rgba(30,50,95,0.14);
+  --shadow-lg:  0 18px 44px -18px rgba(30,50,95,0.20);
+  --shadow-card:0 2px 18px -6px rgba(30,50,95,0.12), 0 0 0 1px rgba(23,40,72,0.06);
+}

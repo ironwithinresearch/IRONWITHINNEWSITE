@@ -42,8 +42,15 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="light">
       <body>
+        {/* Land in light by default; honor a returning visitor's saved choice
+            BEFORE first paint so dark users don't see a flash of light. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem('iwr-theme');if(t==='dark'){document.documentElement.setAttribute('data-theme','dark');}}catch(e){}`,
+          }}
+        />
         <ApolloWrapper>
           <AffiliateTracker />
           <ReferralCapture />

@@ -42,7 +42,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const [menuOpen,    setMenuOpen]    = useState(false);
   const [scrolled,    setScrolled]    = useState(false);
-  const [theme,       setTheme]       = useState('dark');
+  const [theme,       setTheme]       = useState('light');
   const [accountOpen, setAccountOpen] = useState(false);
   const [shopOpen,    setShopOpen]    = useState(false);
 
@@ -79,7 +79,7 @@ export default function Navbar() {
 
   // ── theme ──
   useEffect(() => {
-    const stored = localStorage.getItem('iwr-theme') || 'dark';
+    const stored = localStorage.getItem('iwr-theme') || 'light';
     setTheme(stored);
     document.documentElement.setAttribute('data-theme', stored);
   }, []);
