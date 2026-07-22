@@ -41,6 +41,7 @@ export const GET_CART = gql`
               id
               name
               price
+              stockStatus
               attributes { nodes { name value } }
             }
           }

@@ -198,6 +198,7 @@ export default function CartPage() {
                 const isFreeGift = (item.extraData || []).some(e => (((e.key === 'iw_free_gift' || e.key === 'iw_bundle_gift') && e.value === '1') || (e.key === 'iw_gift_pick' && !!e.value)));
                 const isXjGift = isFreeGift && XJ_GIFT_SLUGS.includes(product?.slug);
                 const subCadence = subCadenceOf(item);
+                const lineBackorder = !isFreeGift && (variation?.stockStatus === 'ON_BACKORDER' || product?.stockStatus === 'ON_BACKORDER');
 
                 return (
                   <div key={item.key} style={{ background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: '16px', padding: '18px', display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
@@ -253,6 +254,13 @@ export default function CartPage() {
                       {variationAttrs.length === 0 && variation?.name && (
                         <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '8px' }}>
                           {variation.name}
+                        </p>
+                      )}
+
+                      {/* Backorder note — item ships within 5 days of restock */}
+                      {lineBackorder && (
+                        <p style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '0.72rem', fontWeight: 600, color: '#fbbf24', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '999px', padding: '3px 10px', marginBottom: '8px' }}>
+                          ⏳ On backorder — ships within 5 days
                         </p>
                       )}
 

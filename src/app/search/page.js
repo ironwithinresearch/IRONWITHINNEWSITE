@@ -271,6 +271,10 @@ function SearchInner() {
                   const inStock = isVariable
                     ? product.variations?.nodes?.some(v => v.stockStatus === 'IN_STOCK')
                     : product.stockStatus === 'IN_STOCK';
+                  const onBackorder = !inStock && (isVariable
+                    ? product.variations?.nodes?.some(v => v.stockStatus === 'ON_BACKORDER')
+                    : product.stockStatus === 'ON_BACKORDER');
+                  const buyable = inStock || onBackorder;
                   const added = addedItems[product.id];
 
                   return (
@@ -303,8 +307,8 @@ function SearchInner() {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <span style={{ fontFamily: 'var(--font-heading)', fontSize: '0.9rem', fontWeight: 800, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
                             dangerouslySetInnerHTML={{ __html: decodePriceHtml(product.price) || '—' }} />
-                          <span style={{ fontSize: '0.65rem', fontWeight: 600, color: inStock ? '#34d399' : '#f87171' }}>
-                            {inStock ? '● In Stock' : '● Out of Stock'}
+                          <span style={{ fontSize: '0.65rem', fontWeight: 600, color: inStock ? '#34d399' : onBackorder ? '#fbbf24' : '#f87171' }}>
+                            {inStock ? '● In Stock' : onBackorder ? '● Backorder · 5 days' : '● Out of Stock'}
                           </span>
                         </div>
                       </div>
@@ -314,8 +318,8 @@ function SearchInner() {
                           <ArrowRight size={14} />
                         </Link>
                       ) : (
-                        <button onClick={() => handleAddToCart(product)} disabled={!inStock || added}
-                          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 36, height: 36, background: added ? 'rgba(52,211,153,0.15)' : inStock ? 'var(--gradient-primary)' : 'var(--card-elevated)', border: added ? '1px solid rgba(52,211,153,0.4)' : 'none', borderRadius: 'var(--radius-md)', color: added ? '#34d399' : inStock ? '#fff' : 'var(--text-muted)', cursor: inStock ? 'pointer' : 'not-allowed', flexShrink: 0, opacity: !inStock ? 0.5 : 1 }}>
+                        <button onClick={() => handleAddToCart(product)} disabled={!buyable || added}
+                          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 36, height: 36, background: added ? 'rgba(52,211,153,0.15)' : buyable ? 'var(--gradient-primary)' : 'var(--card-elevated)', border: added ? '1px solid rgba(52,211,153,0.4)' : 'none', borderRadius: 'var(--radius-md)', color: added ? '#34d399' : buyable ? '#fff' : 'var(--text-muted)', cursor: buyable ? 'pointer' : 'not-allowed', flexShrink: 0, opacity: !buyable ? 0.5 : 1 }}>
                           {added ? <CheckCircle2 size={14} /> : <ShoppingCart size={14} />}
                         </button>
                       )}

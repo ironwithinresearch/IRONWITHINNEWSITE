@@ -162,6 +162,10 @@ function ShopContent() {
                 const inStock = isVariable
                   ? product.variations?.nodes?.some(v => v.stockStatus === 'IN_STOCK')
                   : product.stockStatus === 'IN_STOCK';
+                const onBackorder = !inStock && (isVariable
+                  ? product.variations?.nodes?.some(v => v.stockStatus === 'ON_BACKORDER')
+                  : product.stockStatus === 'ON_BACKORDER');
+                const buyable = inStock || onBackorder;
                 const added = addedItems[product.id];
                 const wishlisted = isWishlisted(product.id);
                 const low = lowStockCount(product);
@@ -195,7 +199,9 @@ function ShopContent() {
                         ) : (
                           <FlaskConical size={52} color="var(--primary-blue)" style={{ opacity: 0.25 }} />
                         )}
-                        {!inStock ? (
+                        {onBackorder ? (
+                          <div style={{ position: 'absolute', top: '10px', left: '10px', padding: '3px 10px', background: 'rgba(245,158,11,0.16)', border: '1px solid rgba(245,158,11,0.45)', borderRadius: '999px', fontSize: '0.68rem', fontWeight: 600, color: '#fbbf24' }}>⏳ Backorder</div>
+                        ) : !inStock ? (
                           <div style={{ position: 'absolute', top: '10px', left: '10px', padding: '3px 10px', background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '999px', fontSize: '0.68rem', fontWeight: 600, color: '#f87171' }}>Out of Stock</div>
                         ) : isVariable ? (
                           <div style={{ position: 'absolute', top: '10px', left: '10px', padding: '3px 10px', background: 'rgba(124,58,237,0.15)', border: '1px solid rgba(124,58,237,0.3)', borderRadius: '999px', fontSize: '0.68rem', fontWeight: 600, color: 'var(--purple)' }}>Options</div>
@@ -236,9 +242,9 @@ function ShopContent() {
                             Select <ChevronRight size={13} />
                           </Link>
                         ) : (
-                          <button onClick={() => handleAddToCart(product)} disabled={!inStock || added}
-                            style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '8px 14px', background: added ? 'rgba(52,211,153,0.15)' : inStock ? 'var(--gradient-primary)' : 'var(--card-elevated)', border: added ? '1px solid rgba(52,211,153,0.4)' : 'none', borderRadius: '8px', color: added ? '#34d399' : inStock ? '#fff' : 'var(--text-muted)', fontWeight: 600, fontSize: '0.8rem', cursor: inStock ? 'pointer' : 'not-allowed', fontFamily: 'var(--font-body)', opacity: !inStock ? 0.6 : 1 }}>
-                            {added ? <><CheckCircle2 size={13} /> Added</> : <><ShoppingCart size={13} /> {inStock ? 'Add' : 'N/A'}</>}
+                          <button onClick={() => handleAddToCart(product)} disabled={!buyable || added}
+                            style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '8px 14px', background: added ? 'rgba(52,211,153,0.15)' : buyable ? 'var(--gradient-primary)' : 'var(--card-elevated)', border: added ? '1px solid rgba(52,211,153,0.4)' : 'none', borderRadius: '8px', color: added ? '#34d399' : buyable ? '#fff' : 'var(--text-muted)', fontWeight: 600, fontSize: '0.8rem', cursor: buyable ? 'pointer' : 'not-allowed', fontFamily: 'var(--font-body)', opacity: !buyable ? 0.6 : 1 }}>
+                            {added ? <><CheckCircle2 size={13} /> Added</> : <><ShoppingCart size={13} /> {inStock ? 'Add' : onBackorder ? 'Backorder' : 'N/A'}</>}
                           </button>
                         )}
                       </div>
