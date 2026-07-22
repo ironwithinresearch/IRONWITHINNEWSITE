@@ -9,7 +9,6 @@ import { decodePriceHtml } from '@/lib/utils';
 import { GET_PRODUCT } from '@/lib/queries/products';
 import { pickUpsellSlug } from '@/lib/upsell';
 import PreCheckoutUpsell from '@/components/PreCheckoutUpsell';
-import BundleUpsell from '@/components/BundleUpsell';
 import FreeShippingBar from '@/components/FreeShippingBar';
 import CartRewards from '@/components/CartRewards';
 import { getRewardsRedeemPts, setRewardsRedeemPts } from '@/lib/rewards';
@@ -293,8 +292,6 @@ export default function CartPage() {
                   </div>
                 );
               })}
-
-              <BundleUpsell cartSlugs={cartSlugs} />
 
               <Link href="/shop" style={{ color: 'var(--primary-blue)', fontSize: '0.875rem', fontWeight: 500 }}>← Continue Shopping</Link>
             </div>
