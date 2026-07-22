@@ -31,7 +31,7 @@ const categories = [
 
 const stats = [
   { value: '40+', label: 'Research Products' },
-  { value: '99.3%+', label: 'Purity Guaranteed' },
+  { value: '99%+', label: 'Purity Guaranteed' },
   { value: '3K+', label: 'Researchers Served' },
   { value: '24/7', label: 'Email Support' },
 ];
@@ -241,7 +241,7 @@ export default function Home() {
               <span style={{ background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Compounds</span>
             </h2>
             <p style={{ color: 'var(--text-secondary)', maxWidth: '500px', margin: '0 auto' }}>
-              All peptides are synthesized to 99.3%+ purity standards and independently verified before dispatch.
+              All peptides are synthesized to 99%+ purity standards and independently verified before dispatch.
             </p>
           </div>
 
@@ -271,7 +271,7 @@ export default function Home() {
       <section style={{ padding: '60px 24px', background: 'var(--card-dark)', borderTop: '1px solid var(--glass-border)', borderBottom: '1px solid var(--glass-border)' }}>
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '32px', textAlign: 'center' }}>
-            {[{ value: '40+', label: 'Products' }, { value: '99.3%+', label: 'Purity' }, { value: '3k+', label: 'Researchers' }].map((item, i, arr) => (
+            {[{ value: '40+', label: 'Products' }, { value: '99%+', label: 'Purity' }, { value: '3k+', label: 'Researchers' }].map((item, i, arr) => (
               <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
                 <div>
                   <div style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 900, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', lineHeight: 1, marginBottom: '6px' }}>{item.value}</div>

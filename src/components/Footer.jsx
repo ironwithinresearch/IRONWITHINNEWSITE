@@ -94,7 +94,7 @@ export default function Footer() {
             }}>
               {isLuxMe
                 ? 'Advanced peptide skincare, formulated to the highest standard of purity and finish.'
-                : 'Premium research-grade peptides trusted by scientists and researchers worldwide. 99.3%+ purity guaranteed.'}
+                : 'Premium research-grade peptides trusted by scientists and researchers worldwide. 99%+ purity guaranteed.'}
             </p>
 
             {/* Support email */}

@@ -103,7 +103,7 @@ export default function CategoriesPage() {
           {[
             { Icon: FlaskConical, color: 'var(--primary-blue)', value: `${categories.length}`, label: 'Categories' },
             { Icon: Package, color: 'var(--purple)', value: `${categories.reduce((s, c) => s + (c.count || 0), 0)}+`, label: 'Products' },
-            { Icon: ShieldCheck, color: '#34d399', value: '99.3%+', label: 'Avg Purity' },
+            { Icon: ShieldCheck, color: '#34d399', value: '99%+', label: 'Avg Purity' },
             { Icon: Star, color: '#fbbf24', value: '4.9/5', label: 'Avg Rating' },
           ].map(s => (
             <div key={s.label} style={{ textAlign: 'center' }}>

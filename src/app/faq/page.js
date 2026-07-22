@@ -41,7 +41,7 @@ const faqs = [
   {
     category: 'quality',
     q: 'How do you verify purity?',
-    a: 'Every batch undergoes independent third-party HPLC (High-Performance Liquid Chromatography) and mass spectrometry testing. We target ≥99.3% purity across all compounds.',
+    a: 'Every batch undergoes independent third-party HPLC (High-Performance Liquid Chromatography) and mass spectrometry testing. We target 99%+ purity across all compounds.',
   },
   {
     category: 'shipping',
