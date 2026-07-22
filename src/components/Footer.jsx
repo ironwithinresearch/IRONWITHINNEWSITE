@@ -20,7 +20,7 @@ const footerLinks = {
     { label: 'Research App', href: 'https://peptideparadigm.app' },
     { label: 'Refer & Earn $25', href: '/refer' },
     { label: 'Rewards', href: '/rewards' },
-    { label: 'Affiliates', href: '/affiliate' },
+    { label: 'Partners', href: '/affiliate' },
   ],
   Support: [
     { label: 'Lab Reports & COAs', href: '/lab-reports' },
