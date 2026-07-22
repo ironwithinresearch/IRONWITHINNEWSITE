@@ -257,28 +257,28 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══ SHOP BY GOAL — bundle grid (was 5 stacked banners) ══ */}
+      {/* ══ RESEARCH BUNDLES — multi-compound sets (categorized by composition, not human goals) ══ */}
       <section style={{ padding: '0 24px 76px' }}>
         <div className="container" style={{ maxWidth: 1060 }}>
           <div style={{ textAlign: 'center', marginBottom: '34px' }}>
-            <span style={{ display: 'inline-block', padding: '5px 14px', background: 'var(--gradient-primary)', borderRadius: '999px', fontSize: '0.74rem', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#fff', marginBottom: '14px' }}>Shop by Goal</span>
+            <span style={{ display: 'inline-block', padding: '5px 14px', background: 'var(--gradient-primary)', borderRadius: '999px', fontSize: '0.74rem', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#fff', marginBottom: '14px' }}>Research Bundles</span>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(1.7rem, 4vw, 2.3rem)', fontWeight: 900, color: '#fff', margin: '0 0 10px', lineHeight: 1.12 }}>Curated Research Stacks</h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', margin: 0, maxWidth: 560, marginLeft: 'auto', marginRight: 'auto' }}>
-              Pick your goal — every bundle saves 15%+ and includes a <strong style={{ color: 'var(--text-light)' }}>free bac water</strong>, <strong style={{ color: 'var(--text-light)' }}>free U.S. shipping</strong> &amp; <strong style={{ color: 'var(--text-light)' }}>250 bonus points</strong>.
+              Multi-compound research sets — every bundle saves 15%+ and includes a <strong style={{ color: 'var(--text-light)' }}>free bac water</strong>, <strong style={{ color: 'var(--text-light)' }}>free U.S. shipping</strong> &amp; <strong style={{ color: 'var(--text-light)' }}>250 bonus points</strong>.
             </p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(232px, 1fr))', gap: '20px' }}>
             {[
-              { name: 'The Long Shot', goal: 'Longevity', href: '/product/long-shot', img: 'https://bhidasowgm.onrocket.site/wp-content/uploads/2026/06/long-shot.webp', price: '$245.44', save: 'Save 15%', accent: '#00CFFF', cta: 'Age Well' },
-              { name: 'The Radiant Bundle', goal: 'Skin & Radiance', href: '/product/the-radiant-bundle', img: 'https://bhidasowgm.onrocket.site/wp-content/uploads/2026/06/radiant-bundle.webp', price: '$396.95', save: 'Save 25%', accent: '#e8aa96', cta: 'Glow Up' },
-              { name: 'The Recovery Protocol', goal: 'Recovery & Repair', href: '/product/recovery-protocol', img: 'https://bhidasowgm.onrocket.site/wp-content/uploads/2026/07/iw-bundle-recovery-protocol.webp', price: '$155.95', save: 'Save 15%', accent: '#10b981', cta: 'Recover' },
-              { name: 'The Shred', goal: 'Metabolic', href: '/product/the-shred', img: 'https://bhidasowgm.onrocket.site/wp-content/uploads/2026/07/iw-bundle-the-shred.webp', price: 'From $261.95', save: 'Save 15%', accent: '#ff7a3c', cta: 'Get Lean' },
-              { name: 'The Reset', goal: 'Sleep & Focus', href: '/product/the-reset', img: 'https://bhidasowgm.onrocket.site/wp-content/uploads/2026/07/iw-bundle-the-reset.webp', price: '$143.95', save: 'Save 15%', accent: '#7c6cff', cta: 'Unwind' },
+              { name: 'The Long Shot', comp: 'NAD+ · GHK-Cu · Thymosin α-1', href: '/product/long-shot', img: 'https://bhidasowgm.onrocket.site/wp-content/uploads/2026/06/long-shot.webp', price: '$245.44', save: 'Save 15%', accent: '#00CFFF' },
+              { name: 'The Radiant Bundle', comp: 'KPV · GHK-Cu', href: '/product/the-radiant-bundle', img: 'https://bhidasowgm.onrocket.site/wp-content/uploads/2026/06/radiant-bundle.webp', price: '$396.95', save: 'Save 25%', accent: '#e8aa96' },
+              { name: 'The Recovery Protocol', comp: 'BPC-157 · TB-500 · KPV', href: '/product/recovery-protocol', img: 'https://bhidasowgm.onrocket.site/wp-content/uploads/2026/07/iw-bundle-recovery-protocol.webp', price: '$155.95', save: 'Save 15%', accent: '#10b981' },
+              { name: 'The Shred', comp: 'RT-3 / TRZ-2 · Cagrilintide · MOTS-C', href: '/product/the-shred', img: 'https://bhidasowgm.onrocket.site/wp-content/uploads/2026/07/iw-bundle-the-shred.webp', price: 'From $261.95', save: 'Save 15%', accent: '#ff7a3c' },
+              { name: 'The Reset', comp: 'Semax · Selank · DSIP', href: '/product/the-reset', img: 'https://bhidasowgm.onrocket.site/wp-content/uploads/2026/07/iw-bundle-the-reset.webp', price: '$143.95', save: 'Save 15%', accent: '#7c6cff' },
             ].map((b) => (
               <Link key={b.name} href={b.href} className="iw-goal-card" style={{ display: 'flex', flexDirection: 'column', background: 'var(--card-dark)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '18px', overflow: 'hidden', textDecoration: 'none', boxShadow: '0 14px 44px rgba(0,0,0,0.28)' }}>
                 <div style={{ position: 'relative', aspectRatio: '1 / 1', background: '#05070d' }}>
-                  <img src={b.img} alt={`${b.name} — ${b.goal} research bundle`} loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-                  <span style={{ position: 'absolute', top: '12px', left: '12px', padding: '4px 11px', background: 'rgba(3,7,15,0.62)', border: `1px solid ${b.accent}`, borderRadius: '999px', fontSize: '0.66rem', fontWeight: 800, letterSpacing: '0.07em', textTransform: 'uppercase', color: '#fff' }}>{b.goal}</span>
+                  <img src={b.img} alt={`${b.name} — research compound bundle`} loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                  <span style={{ position: 'absolute', top: '12px', left: '12px', padding: '4px 11px', background: 'rgba(3,7,15,0.62)', border: `1px solid ${b.accent}`, borderRadius: '999px', fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.04em', color: '#fff' }}>{b.comp}</span>
                 </div>
                 <div style={{ padding: '16px 18px 18px', display: 'flex', flexDirection: 'column', gap: '9px', flex: 1 }}>
                   <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.12rem', fontWeight: 800, color: '#fff', margin: 0, lineHeight: 1.2 }}>{b.name}</h3>
@@ -286,7 +286,7 @@ export default function Home() {
                     <span style={{ fontSize: '1.18rem', fontWeight: 900, color: '#fff' }}>{b.price}</span>
                     <span style={{ padding: '2px 9px', background: 'rgba(52,211,153,0.14)', border: '1px solid rgba(52,211,153,0.35)', borderRadius: '999px', fontSize: '0.7rem', fontWeight: 800, color: '#34d399' }}>{b.save}</span>
                   </div>
-                  <span style={{ marginTop: 'auto', display: 'inline-flex', alignItems: 'center', gap: '6px', alignSelf: 'flex-start', padding: '9px 18px', borderRadius: '10px', background: b.accent, color: '#04121a', fontWeight: 800, fontSize: '0.86rem' }}>{b.cta}<ArrowRight size={15} /></span>
+                  <span style={{ marginTop: 'auto', display: 'inline-flex', alignItems: 'center', gap: '6px', alignSelf: 'flex-start', padding: '9px 18px', borderRadius: '10px', background: b.accent, color: '#04121a', fontWeight: 800, fontSize: '0.86rem' }}>View bundle<ArrowRight size={15} /></span>
                 </div>
               </Link>
             ))}
