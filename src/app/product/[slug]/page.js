@@ -101,7 +101,7 @@ export default function ProductPage() {
   const hasDoses = doses.length > 0;
   const hasTiers = isVariable && variations.some(v => tierOf(v));
   const doseInStock = (d) => variations.some(v => doseOf(v) === d && v.stockStatus === 'IN_STOCK');
-  // A dose is buyable if it's in stock OR backorderable (ships within 5 days of restock)
+  // A dose is buyable if it's in stock OR backorderable (ships as soon as it's back in stock)
   const doseBuyable = (d) => variations.some(v => doseOf(v) === d && (v.stockStatus === 'IN_STOCK' || v.stockStatus === 'ON_BACKORDER'));
   const effectiveDose = hasDoses ? (selectedDose || doses.find(doseInStock) || doses.find(doseBuyable) || doses[0]) : null;
 
@@ -330,7 +330,7 @@ export default function ProductPage() {
                 if (onBackorder) {
                   return (
                     <span style={{ padding: '3px 10px', background: 'rgba(245,158,11,0.14)', border: '1px solid rgba(245,158,11,0.45)', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 600, color: '#fbbf24' }}>
-                      ⏳ On backorder · ships within 5 days
+                      ⏳ On backorder · ships as soon as it's back in stock
                     </span>
                   );
                 }
@@ -560,7 +560,7 @@ export default function ProductPage() {
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginTop: '12px', padding: '12px 14px', background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '10px' }}>
                 <span style={{ fontSize: '1rem', lineHeight: 1.2 }}>⏳</span>
                 <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                  <strong style={{ color: '#fbbf24' }}>Available on backorder.</strong> This item is temporarily out of stock — order now and it ships within <strong>5 days</strong> of restock. You'll be charged today to reserve your place in line.
+                  <strong style={{ color: '#fbbf24' }}>Available on backorder.</strong> This item is temporarily out of stock — order now and it ships <strong>as soon as it's back in stock</strong>. You'll be charged today to reserve your place in line.
                 </div>
               </div>
             )}
@@ -593,7 +593,7 @@ export default function ProductPage() {
                     ['SKU', product.sku],
                     ['Category', product.productCategories?.nodes?.[0]?.name],
                     ['Type', isVariable ? 'Variable Product' : 'Simple Product'],
-                    ['Stock Status', inStock ? (hasCount ? `${stockQty} in stock` : 'In Stock') : onBackorder ? 'On backorder · ships within 5 days' : 'Out of Stock'],
+                    ['Stock Status', inStock ? (hasCount ? `${stockQty} in stock` : 'In Stock') : onBackorder ? 'On backorder · ships when back in stock' : 'Out of Stock'],
                     ['Price', Number.isFinite(unitPrice) ? money(unitPrice) : ''],
                   ].filter(([, v]) => v).map(([k, v]) => (
                     <tr key={k} style={{ borderBottom: '1px solid var(--glass-border)' }}>

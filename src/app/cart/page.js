@@ -257,10 +257,10 @@ export default function CartPage() {
                         </p>
                       )}
 
-                      {/* Backorder note — item ships within 5 days of restock */}
+                      {/* Backorder note — item ships as soon as it's back in stock */}
                       {lineBackorder && (
                         <p style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '0.72rem', fontWeight: 600, color: '#fbbf24', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '999px', padding: '3px 10px', marginBottom: '8px' }}>
-                          ⏳ On backorder — ships within 5 days
+                          ⏳ On backorder — ships as soon as it's back in stock
                         </p>
                       )}
 

@@ -158,7 +158,7 @@ export default function CheckoutPage() {
   // we complete the $0 order through a backend gateway, not the card rail.
   const isZeroDue = (cartItems?.length || 0) > 0 && computedTotalNum <= 0;
   // Backorder: any line whose variation/product is ON_BACKORDER. Requires an
-  // explicit "I understand this ships within 5 days" acknowledgment to place.
+  // explicit "I understand this ships when back in stock" acknowledgment to place.
   const hasBackorder = (cartItems || []).some(i =>
     i.variation?.node?.stockStatus === 'ON_BACKORDER' || i.product?.node?.stockStatus === 'ON_BACKORDER');
   const fullyCovered = computedTotalNum > 0 && dueAfterAll <= 0.005;
@@ -519,7 +519,7 @@ export default function CheckoutPage() {
                     <input type="checkbox" checked={backorderAck} onChange={e => setBackorderAck(e.target.checked)}
                       style={{ width: 17, height: 17, marginTop: '1px', accentColor: '#10b981', cursor: 'pointer', flexShrink: 0 }} />
                     <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
-                      <strong style={{ color: '#fbbf24' }}>⏳ My order contains a backordered item.</strong> I understand it's currently out of stock and will ship within <strong>5 days</strong> of restock, and that I'm being charged today to reserve it.
+                      <strong style={{ color: '#fbbf24' }}>⏳ My order contains a backordered item.</strong> I understand it's currently out of stock and will ship <strong>as soon as it's back in stock</strong>, and that I'm being charged today to reserve it.
                     </span>
                   </label>
                 )}

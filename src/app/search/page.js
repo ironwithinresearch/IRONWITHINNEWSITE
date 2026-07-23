@@ -308,7 +308,7 @@ function SearchInner() {
                           <span style={{ fontFamily: 'var(--font-heading)', fontSize: '0.9rem', fontWeight: 800, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
                             dangerouslySetInnerHTML={{ __html: decodePriceHtml(product.price) || '—' }} />
                           <span style={{ fontSize: '0.65rem', fontWeight: 600, color: inStock ? '#34d399' : onBackorder ? '#fbbf24' : '#f87171' }}>
-                            {inStock ? '● In Stock' : onBackorder ? '● Backorder · 5 days' : '● Out of Stock'}
+                            {inStock ? '● In Stock' : onBackorder ? '● Backorder' : '● Out of Stock'}
                           </span>
                         </div>
                       </div>
