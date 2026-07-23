@@ -153,6 +153,7 @@ export const SEARCH_PRODUCTS = gql`
         name
         slug
         image { sourceUrl }
+        productCategories { nodes { slug } }
         ... on SimpleProduct { price stockStatus }
         ... on VariableProduct { price }
       }
