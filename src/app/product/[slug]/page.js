@@ -101,7 +101,9 @@ export default function ProductPage() {
   const hasDoses = doses.length > 0;
   const hasTiers = isVariable && variations.some(v => tierOf(v));
   const doseInStock = (d) => variations.some(v => doseOf(v) === d && v.stockStatus === 'IN_STOCK');
-  const effectiveDose = hasDoses ? (selectedDose || doses.find(doseInStock) || doses[0]) : null;
+  // A dose is buyable if it's in stock OR backorderable (ships within 5 days of restock)
+  const doseBuyable = (d) => variations.some(v => doseOf(v) === d && (v.stockStatus === 'IN_STOCK' || v.stockStatus === 'ON_BACKORDER'));
+  const effectiveDose = hasDoses ? (selectedDose || doses.find(doseInStock) || doses.find(doseBuyable) || doses[0]) : null;
 
   const poolFor = (d) => hasDoses ? variations.filter(v => doseOf(v) === d) : variations.slice();
   // Quantity tiers selected by PRICE RANK, not by attribute text: variation
@@ -155,6 +157,14 @@ export default function ProductPage() {
   const inStock = isVariable
     ? (resolvedVariation ? resolvedVariation.stockStatus === 'IN_STOCK' : variations.some(v => v.stockStatus === 'IN_STOCK'))
     : product.stockStatus === 'IN_STOCK';
+  // Backorder: the selected variation (or, if none picked, no dose is in stock but
+  // some is backorderable) is ON_BACKORDER. Buyable = in stock OR on backorder.
+  const onBackorder = isVariable
+    ? (resolvedVariation
+        ? resolvedVariation.stockStatus === 'ON_BACKORDER'
+        : (!variations.some(v => v.stockStatus === 'IN_STOCK') && variations.some(v => v.stockStatus === 'ON_BACKORDER')))
+    : product.stockStatus === 'ON_BACKORDER';
+  const buyable = inStock || onBackorder;
 
   // Live vial count for the selected dose (null = untracked)
   const stockQty = isVariable ? resolvedVariation?.stockQuantity : product.stockQuantity;
@@ -317,6 +327,13 @@ export default function ProductPage() {
               ) : null}
               {(() => {
                 const low = inStock && hasCount && stockQty > 0 && stockQty <= 10;
+                if (onBackorder) {
+                  return (
+                    <span style={{ padding: '3px 10px', background: 'rgba(245,158,11,0.14)', border: '1px solid rgba(245,158,11,0.45)', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 600, color: '#fbbf24' }}>
+                      ⏳ On backorder · ships within 5 days
+                    </span>
+                  );
+                }
                 const color = !inStock ? '#f87171' : low ? '#fbbf24' : '#34d399';
                 const bg = !inStock ? 'rgba(239,68,68,0.12)' : low ? 'rgba(245,158,11,0.14)' : 'rgba(52,211,153,0.12)';
                 const bd = !inStock ? 'rgba(239,68,68,0.3)' : low ? 'rgba(245,158,11,0.45)' : 'rgba(52,211,153,0.3)';
@@ -342,7 +359,9 @@ export default function ProductPage() {
                 </label>
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                   {doses.map(d => {
-                    const ok = doseInStock(d);
+                    const inStk = doseInStock(d);
+                    const ok = doseBuyable(d);            // in stock OR backorderable
+                    const backorder = ok && !inStk;
                     const active = effectiveDose === d;
                     return (
                       <button key={d} onClick={() => ok && setSelectedDose(d)} disabled={!ok} style={{
@@ -355,7 +374,7 @@ export default function ProductPage() {
                         fontFamily: 'var(--font-body)',
                         opacity: ok ? 1 : 0.45,
                       }}>
-                        {d}{!ok && ' · Out'}
+                        {d}{!ok ? ' · Out' : backorder ? ' · Backorder' : ''}
                       </button>
                     );
                   })}
@@ -501,7 +520,7 @@ export default function ProductPage() {
             {/* Add to cart + wishlist */}
             <div style={{ display: 'flex', gap: '12px' }}>
               <button onClick={handleAddToCart}
-                disabled={!inStock || addingToCart || (isVariable && !resolvedVariation)}
+                disabled={!buyable || addingToCart || (isVariable && !resolvedVariation)}
                 style={{
                   flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
                   padding: '14px 24px',
@@ -509,18 +528,20 @@ export default function ProductPage() {
                   border: addedToCart ? '1px solid rgba(52,211,153,0.4)' : 'none',
                   borderRadius: '10px',
                   color: addedToCart ? '#34d399' : '#fff',
-                  fontWeight: 700, fontSize: '0.95rem', cursor: (!inStock || (isVariable && !resolvedVariation)) ? 'not-allowed' : 'pointer',
+                  fontWeight: 700, fontSize: '0.95rem', cursor: (!buyable || (isVariable && !resolvedVariation)) ? 'not-allowed' : 'pointer',
                   fontFamily: 'var(--font-body)',
                   boxShadow: addedToCart ? 'none' : 'var(--glow-blue)',
-                  opacity: (!inStock || (isVariable && !resolvedVariation)) ? 0.6 : 1,
+                  opacity: (!buyable || (isVariable && !resolvedVariation)) ? 0.6 : 1,
                   transition: 'all 0.2s ease',
                 }}>
                 {addedToCart ? (
                   <><CheckCircle2 size={16} /> Added to Cart!</>
                 ) : addingToCart ? (
                   <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Adding…</>
+                ) : buyable ? (
+                  <><ShoppingCart size={16} /> {onBackorder ? 'Add to Cart · Backorder' : 'Add to Cart'}</>
                 ) : (
-                  <><ShoppingCart size={16} /> {inStock ? 'Add to Cart' : 'Out of Stock'}</>
+                  <><ShoppingCart size={16} /> Out of Stock</>
                 )}
               </button>
 
@@ -534,6 +555,15 @@ export default function ProductPage() {
                 <Heart size={18} fill={wishlisted ? 'currentColor' : 'none'} />
               </button> */}
             </div>
+
+            {onBackorder && buyable && (
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginTop: '12px', padding: '12px 14px', background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '10px' }}>
+                <span style={{ fontSize: '1rem', lineHeight: 1.2 }}>⏳</span>
+                <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                  <strong style={{ color: '#fbbf24' }}>Available on backorder.</strong> This item is temporarily out of stock — order now and it ships within <strong>5 days</strong> of restock. You'll be charged today to reserve your place in line.
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -563,7 +593,7 @@ export default function ProductPage() {
                     ['SKU', product.sku],
                     ['Category', product.productCategories?.nodes?.[0]?.name],
                     ['Type', isVariable ? 'Variable Product' : 'Simple Product'],
-                    ['Stock Status', inStock ? (hasCount ? `${stockQty} in stock` : 'In Stock') : 'Out of Stock'],
+                    ['Stock Status', inStock ? (hasCount ? `${stockQty} in stock` : 'In Stock') : onBackorder ? 'On backorder · ships within 5 days' : 'Out of Stock'],
                     ['Price', Number.isFinite(unitPrice) ? money(unitPrice) : ''],
                   ].filter(([, v]) => v).map(([k, v]) => (
                     <tr key={k} style={{ borderBottom: '1px solid var(--glass-border)' }}>

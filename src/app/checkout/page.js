@@ -76,6 +76,7 @@ export default function CheckoutPage() {
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
   const [payMethod, setPayMethod] = useState('iwr_chargx');
+  const [backorderAck, setBackorderAck] = useState(false);
   const [p2pInfo, setP2pInfo] = useState(null);
   const payMethodRef = useRef('iwr_chargx');
   // ChargeX is now the live card option in PAY_METHODS; the ?chargx=1 gate is retired.
@@ -156,6 +157,10 @@ export default function CheckoutPage() {
   // When a gift card / store credit / rewards fully cover the order, nothing is due —
   // we complete the $0 order through a backend gateway, not the card rail.
   const isZeroDue = (cartItems?.length || 0) > 0 && computedTotalNum <= 0;
+  // Backorder: any line whose variation/product is ON_BACKORDER. Requires an
+  // explicit "I understand this ships within 5 days" acknowledgment to place.
+  const hasBackorder = (cartItems || []).some(i =>
+    i.variation?.node?.stockStatus === 'ON_BACKORDER' || i.product?.node?.stockStatus === 'ON_BACKORDER');
   const fullyCovered = computedTotalNum > 0 && dueAfterAll <= 0.005;
   const noRailDue = isZeroDue || fullyCovered;
   const effectiveMethod = isZeroDue ? 'iw_giftcard' : (fullyCovered ? 'iw_storecredit' : payMethod);
@@ -239,6 +244,7 @@ export default function CheckoutPage() {
   };
 
   const handlePlaceOrder = async () => {
+    if (hasBackorder && !backorderAck) return; // require backorder acknowledgment
     payMethodRef.current = effectiveMethod;
     const billingInfo = billing.sameAsShipping ? shipping : billing;
     // Subscribe & Save items are tagged on the cart lines (extraData iw_subscribe),
@@ -506,8 +512,20 @@ export default function CheckoutPage() {
                   )}
                 </ReviewBlock>
                 <OrderBump cartItems={cartItems} onAdd={addToCart} onRemove={removeItem} />
-                <button onClick={handlePlaceOrder} disabled={placingOrder}
-                  style={{ width: '100%', padding: '14px', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: placingOrder ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: 'var(--glow-blue)', opacity: placingOrder ? 0.8 : 1 }}>
+
+                {/* Backorder acknowledgment — required when the cart has a backordered item */}
+                {hasBackorder && (
+                  <label style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '13px 15px', marginBottom: '12px', background: 'rgba(245,158,11,0.08)', border: `1px solid ${backorderAck ? 'rgba(52,211,153,0.5)' : 'rgba(245,158,11,0.4)'}`, borderRadius: '12px', cursor: 'pointer', transition: 'border-color 0.15s ease' }}>
+                    <input type="checkbox" checked={backorderAck} onChange={e => setBackorderAck(e.target.checked)}
+                      style={{ width: 17, height: 17, marginTop: '1px', accentColor: '#10b981', cursor: 'pointer', flexShrink: 0 }} />
+                    <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+                      <strong style={{ color: '#fbbf24' }}>⏳ My order contains a backordered item.</strong> I understand it's currently out of stock and will ship within <strong>5 days</strong> of restock, and that I'm being charged today to reserve it.
+                    </span>
+                  </label>
+                )}
+
+                <button onClick={handlePlaceOrder} disabled={placingOrder || (hasBackorder && !backorderAck)}
+                  style={{ width: '100%', padding: '14px', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: (placingOrder || (hasBackorder && !backorderAck)) ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: 'var(--glow-blue)', opacity: (placingOrder || (hasBackorder && !backorderAck)) ? 0.6 : 1 }}>
                   {placingOrder ? (
                     <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Placing Order…</>
                   ) : noRailDue ? (
