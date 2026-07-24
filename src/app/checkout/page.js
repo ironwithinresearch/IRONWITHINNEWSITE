@@ -33,6 +33,11 @@ const PAY_METHODS = [
   { id: 'iwr_cashapp', label: 'Cash App', handle: '$ironwithinresearch' },
 ];
 
+// Card payments temporarily paused (daily processing limit hit). Auto-reverts at
+// midnight CT (= 2026-07-24 05:00 UTC, CDT is UTC-5). Set to a past time to re-enable.
+const CARD_PAUSED_UNTIL = Date.parse('2026-07-24T05:00:00Z');
+const isCardPaused = () => Date.now() < CARD_PAUSED_UNTIL;
+
 
 // Countries for the checkout address (ISO 3166-1 alpha-2 codes — WooCommerce format).
 // US/CA/GB/AU surfaced first, then the rest alphabetically.
@@ -75,12 +80,12 @@ export default function CheckoutPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
-  const [payMethod, setPayMethod] = useState('iwr_chargx');
+  const [payMethod, setPayMethod] = useState(() => isCardPaused() ? 'iwr_zelle' : 'iwr_chargx');
   const [backorderAck, setBackorderAck] = useState(false);
   const [p2pInfo, setP2pInfo] = useState(null);
-  const payMethodRef = useRef('iwr_chargx');
+  const payMethodRef = useRef(isCardPaused() ? 'iwr_zelle' : 'iwr_chargx');
   // ChargeX is now the live card option in PAY_METHODS; the ?chargx=1 gate is retired.
-  const payMethodOptions = PAY_METHODS;
+  const payMethodOptions = isCardPaused() ? PAY_METHODS.filter((m) => m.id !== 'iwr_chargx') : PAY_METHODS;
   // Account store-credit balance (auto-applied at checkout, server-side). Fetched
   // once on mount; the backend is authoritative on how much actually applies.
   const [creditBalance, setCreditBalance] = useState(0);
@@ -474,6 +479,11 @@ export default function CheckoutPage() {
                     </div>
                   ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {isCardPaused() && (
+                      <div style={{ padding: '11px 13px', borderRadius: '10px', background: 'rgba(245,158,11,0.09)', border: '1px solid rgba(245,158,11,0.4)', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                        💳 <strong style={{ color: '#fbbf24' }}>Card payments are temporarily unavailable</strong> and will be back shortly. You can check out instantly below with <strong>Zelle, Venmo, or Cash App</strong> — just send payment and we'll ship right away.
+                      </div>
+                    )}
                     {(creditApplied > 0 || rewardsApplied > 0) && (
                       <div style={{ padding: '10px 12px', borderRadius: '10px', background: 'rgba(52,211,153,0.07)', border: '1px solid rgba(52,211,153,0.35)', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                         {creditApplied > 0 && <strong style={{ color: '#34d399' }}>${creditApplied.toFixed(2)} store credit</strong>}
