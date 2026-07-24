@@ -72,6 +72,11 @@ const ALL_METHODS = ['visa', 'mastercard', 'amex', 'discover', 'cashapp', 'venmo
 // to true (one line) to restore it everywhere the moment MC is live again.
 const MC_ENABLED = false;
 
+// TEMP (2026-07-24): card processing is paused — the card rail still isn't working.
+// All card-network logos are filtered out sitewide so we only advertise what actually
+// works at checkout (Cash App / Venmo / Zelle). Flip to true to bring cards back.
+const CARDS_ENABLED = false;
+
 export default function PaymentMethods({
   label = 'We Accept',
   methods = ALL_METHODS,
@@ -87,6 +92,7 @@ export default function PaymentMethods({
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center', justifyContent: align }}>
         {methods
           .filter((m) => MC_ENABLED || m !== 'mastercard')
+          .filter((m) => CARDS_ENABLED || !CARD_NETWORKS.includes(m))
           .map((m) => (LOGOS[m] ? LOGOS[m]() : null))}
       </div>
     </div>

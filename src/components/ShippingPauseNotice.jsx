@@ -11,12 +11,13 @@ import { Truck, CreditCard } from 'lucide-react';
 const SHIP_CUTOFF = Date.parse('2026-07-16T19:00:00Z');
 const SHIP_END = Date.parse('2026-07-19T05:00:00Z');
 
-// TEMP: while Mastercard is not enabled on ChargeX. Flip to false to remove the payment notice.
+// TEMP: while card processing is paused (2026-07-24 — the card rail still isn't working).
+// Flip to false to remove the payment notice once cards are back.
 const PAYMENT_NOTICE_ACTIVE = true;
-const ACCEPTED_METHODS = 'Visa, Discover, Amex, Apple Pay, Google Pay, Venmo, Cash App, and Zelle';
+const ACCEPTED_METHODS = 'Zelle, Venmo, and Cash App';
 
 // Bump the suffix whenever the notice content changes so returning shoppers see it again.
-const SEEN_KEY = 'iw_checkout_notice_seen_2026_07_pay';
+const SEEN_KEY = 'iw_checkout_notice_seen_2026_07_nocard';
 
 export default function ShippingPauseNotice() {
   const pathname = usePathname();
@@ -80,7 +81,8 @@ export default function ShippingPauseNotice() {
               At this time, the <strong style={{ color: '#fff' }}>only</strong> accepted payment methods are <strong style={{ color: '#fff' }}>{ACCEPTED_METHODS}</strong>. Please make sure you can pay with one of these before placing your order.
             </p>
             <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.8rem', lineHeight: 1.5, margin: '8px 0 0' }}>
-              Mastercard is temporarily unavailable and will return soon.
+              Card payments are temporarily unavailable. Checkout takes seconds — pick a method,
+              send payment, and we ship right away.
             </p>
           </div>
         )}

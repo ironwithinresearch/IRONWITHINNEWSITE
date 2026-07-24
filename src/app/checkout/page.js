@@ -33,10 +33,11 @@ const PAY_METHODS = [
   { id: 'iwr_cashapp', label: 'Cash App', handle: '$ironwithinresearch' },
 ];
 
-// Card payments temporarily paused (daily processing limit hit). Auto-reverts at
-// midnight CT (= 2026-07-24 05:00 UTC, CDT is UTC-5). Set to a past time to re-enable.
-const CARD_PAUSED_UNTIL = Date.parse('2026-07-24T05:00:00Z');
-const isCardPaused = () => Date.now() < CARD_PAUSED_UNTIL;
+// Card payments paused indefinitely (card rail still not processing reliably —
+// 2026-07-24). Checkout shows Zelle / Venmo / Cash App only. To re-enable the card
+// option, flip this to false — no other change needed.
+const CARD_PAUSED = true;
+const isCardPaused = () => CARD_PAUSED;
 
 
 // Countries for the checkout address (ISO 3166-1 alpha-2 codes — WooCommerce format).
@@ -481,7 +482,7 @@ export default function CheckoutPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     {isCardPaused() && (
                       <div style={{ padding: '11px 13px', borderRadius: '10px', background: 'rgba(245,158,11,0.09)', border: '1px solid rgba(245,158,11,0.4)', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-                        💳 <strong style={{ color: '#fbbf24' }}>Card payments are temporarily unavailable</strong> and will be back shortly. You can check out instantly below with <strong>Zelle, Venmo, or Cash App</strong> — just send payment and we'll ship right away.
+                        💳 <strong style={{ color: '#fbbf24' }}>Card payments are temporarily unavailable.</strong> You can check out instantly below with <strong>Zelle, Venmo, or Cash App</strong> — just send payment and we'll ship right away.
                       </div>
                     )}
                     {(creditApplied > 0 || rewardsApplied > 0) && (
