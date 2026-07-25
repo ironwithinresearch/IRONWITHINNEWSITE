@@ -2,7 +2,7 @@ import "./globals.css";
 import AnnouncementBar from "../components/AnnouncementBar";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import AgeVerification from "../components/AgeVerification";
+import SiteGate from "../components/SiteGate";
 import AffiliateTracker from "../components/AffiliateTracker";
 import ReferralCapture from "../components/ReferralCapture";
 import LeadCapture from "../components/LeadCapture";
@@ -54,7 +54,9 @@ export default function RootLayout({ children }) {
         <ApolloWrapper>
           <AffiliateTracker />
           <ReferralCapture />
-          <AgeVerification />
+          {/* Account wall (carries the 21+ confirmation). The standalone age pop-up
+              is retired — age is confirmed on the register form's 21+ checkbox. */}
+          <SiteGate />
           <AnnouncementBar />
           <Navbar />
           <main style={{ minHeight: '100vh', paddingTop: 'calc(var(--navbar-height, 68px) + 36px)' }}>
