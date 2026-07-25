@@ -37,7 +37,8 @@ function CategoryProducts({ categorySlug }) {
     variables: { first: 3, category: categorySlug },
     fetchPolicy: 'cache-and-network',
   });
-  const products = data?.products?.nodes || [];
+  // Skip unpublished products (slug: null) — WPGraphQL returns drafts to logged-in editors.
+  const products = (data?.products?.nodes || []).filter(p => p?.slug);
   if (products.length === 0) return (
     <div style={{ padding: '14px', background: 'var(--bg-dark)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-md)', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.82rem' }}>
       Products coming soon

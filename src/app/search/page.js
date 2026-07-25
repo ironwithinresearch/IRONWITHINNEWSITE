@@ -67,9 +67,10 @@ function SearchInner() {
 
   // Lux Me products are sold via the standalone Lux Me site (checkout through Iron
   // Within), never surfaced on the IW front-end — keep them out of search too.
-  const products = (data?.products?.nodes || []).filter(
-    p => !(p.productCategories?.nodes || []).some(c => c.slug === 'lux-me')
-  );
+  const products = (data?.products?.nodes || [])
+    // Skip unpublished products (slug: null) — WPGraphQL returns drafts to logged-in editors.
+    .filter(p => p?.slug)
+    .filter(p => !(p.productCategories?.nodes || []).some(c => c.slug === 'lux-me'));
 
   const handleAddToCart = async (product) => {
     const result = await addToCart(product.databaseId, 1);

@@ -47,7 +47,13 @@ function ShopContent() {
     fetchPolicy: 'cache-and-network',
   });
 
-  const products = [...(data?.products?.nodes || [])].filter(p => p.slug !== 'gift-card' && !p.slug.includes('-month-plan'))
+  // Drop nodes with no slug FIRST. WPGraphQL returns drafts/private products to logged-in
+  // users who can edit them (i.e. admins/shop managers see ~72 products instead of 45), and
+  // an unpublished product has slug: null — which crashed the whole page on p.slug.includes().
+  // They have no URL, so they don't belong in the grid for anyone.
+  const products = [...(data?.products?.nodes || [])]
+    .filter(p => p?.slug)
+    .filter(p => p.slug !== 'gift-card' && !p.slug.includes('-month-plan'))
     // Hide Lux Me products from All / search; show them only when arriving on ?category=lux-me
     .filter(p => activeCategory === 'lux-me' || !(p.productCategories?.nodes || []).some(c => c.slug === 'lux-me'))
     .sort((a, b) =>

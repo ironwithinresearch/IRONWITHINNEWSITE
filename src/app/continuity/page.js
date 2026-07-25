@@ -44,7 +44,9 @@ export default function ContinuityPage() {
   const [adding, setAdding] = useState(null);
   const [added, setAdded] = useState(null);
 
-  const nodes = data?.products?.nodes || [];
+  // Same guard as the shop grid: logged-in editors get draft products back from WPGraphQL,
+  // and those have slug: null, which would throw on the string calls below.
+  const nodes = (data?.products?.nodes || []).filter((n) => n?.slug);
   const planFor = (key, months) =>
     nodes.find((n) => n.slug.startsWith(key + '-') && n.slug.includes(`${months}-month`));
 
