@@ -93,7 +93,7 @@ export default function SiteGate() {
 
         <h1 style={{
           fontFamily: 'var(--font-heading, inherit)', fontSize: '1.65rem', fontWeight: 900,
-          color: 'var(--text-primary, #fff)', margin: '0 0 12px', lineHeight: 1.2,
+          color: 'var(--text-light, #fff)', margin: '0 0 12px', lineHeight: 1.2,
         }}>
           Create a free account to browse
         </h1>
@@ -114,9 +114,9 @@ export default function SiteGate() {
           lineHeight: 1.55, margin: '0 0 24px', padding: '12px 14px', borderRadius: 12,
           background: 'rgba(0,207,255,0.06)', border: '1px solid rgba(0,207,255,0.22)',
         }}>
-          You&apos;ll confirm you are <strong style={{ color: 'var(--text-primary, #fff)' }}>21
+          You&apos;ll confirm you are <strong style={{ color: 'var(--text-light, #fff)' }}>21
           or older</strong> when you create your account. All products are sold
-          <strong style={{ color: 'var(--text-primary, #fff)' }}> for research use only</strong>
+          <strong style={{ color: 'var(--text-light, #fff)' }}> for research use only</strong>
           {' '}and are not for human consumption.
         </p>
 
@@ -137,7 +137,7 @@ export default function SiteGate() {
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 9,
               padding: '14px', borderRadius: 12, fontWeight: 700, fontSize: '0.95rem',
-              color: 'var(--text-primary, #fff)', textDecoration: 'none',
+              color: 'var(--text-light, #fff)', textDecoration: 'none',
               border: '1px solid var(--glass-border, rgba(255,255,255,0.18))',
             }}
           >
