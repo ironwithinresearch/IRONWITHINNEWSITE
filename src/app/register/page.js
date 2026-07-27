@@ -138,7 +138,7 @@ export default function RegisterPage() {
             Create Account
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-            Join thousands of researchers worldwide
+            Join 1,800+ researchers worldwide
           </p>
         </div>
 

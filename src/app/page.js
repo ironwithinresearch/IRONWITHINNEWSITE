@@ -20,19 +20,15 @@ import SaleCountdown from '@/components/SaleCountdown';
 import BirthdayBashBanner from '@/components/BirthdayBashBanner';
 import AppPromo from '@/components/AppPromo';
 
-const categories = [
-  { name: 'Healing & Recovery', Icon: HeartPulse, count: 12, href: '/categories', color: 'var(--primary-blue)' },
-  { name: 'Metabolic Research', Icon: Zap, count: 8, href: '/categories', color: 'var(--purple)' },
-  { name: 'Cognitive Peptides', Icon: Brain, count: 6, href: '/categories', color: 'var(--pink)' },
-  { name: 'Anti-Aging', Icon: Sparkles, count: 9, href: '/categories', color: '#34d399' },
-  { name: 'Performance', Icon: Dumbbell, count: 11, href: '/categories', color: '#fbbf24' },
-  { name: 'Hormonal Research', Icon: Microscope, count: 7, href: '/categories', color: 'var(--secondary-blue)' },
-];
+// (Removed 2026-07-27: an unused category grid whose labels were outcome claims —
+//  'Anti-Aging', 'Healing & Recovery' etc. It was never rendered, and the real
+//  WooCommerce categories are already mechanism-framed. Recoverable from git.)
+
 
 const stats = [
   { value: '40+', label: 'Research Products' },
   { value: '99%+', label: 'Purity Guaranteed' },
-  { value: '3K+', label: 'Researchers Served' },
+  { value: '1,800+', label: 'Researchers Served' },
   { value: '24/7', label: 'Email Support' },
 ];
 
@@ -188,7 +184,7 @@ export default function Home() {
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '820px', margin: '0 auto' }}>
           {/* proof pill */}
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', padding: '7px 18px', background: 'rgba(0,207,255,0.08)', border: '1px solid rgba(0,207,255,0.25)', borderRadius: '999px', marginBottom: '26px', fontSize: '0.82rem', color: 'var(--text-light)', fontWeight: 600 }}>
-            Trusted by 3,000+ researchers
+            Trusted by 1,800+ researchers
           </div>
           <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(2.4rem, 6.5vw, 4.6rem)', fontWeight: 900, lineHeight: 1.08, marginBottom: '20px', letterSpacing: '-0.03em' }}>
             Research Peptides You Can{' '}
@@ -277,7 +273,7 @@ export default function Home() {
       <section style={{ padding: '60px 24px', background: 'var(--card-dark)', borderTop: '1px solid var(--glass-border)', borderBottom: '1px solid var(--glass-border)' }}>
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '32px', textAlign: 'center' }}>
-            {[{ value: '40+', label: 'Products' }, { value: '99%+', label: 'Purity' }, { value: '3k+', label: 'Researchers' }].map((item, i, arr) => (
+            {[{ value: '40+', label: 'Products' }, { value: '99%+', label: 'Purity' }, { value: '1,800+', label: 'Researchers' }].map((item, i, arr) => (
               <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
                 <div>
                   <div style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 900, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', lineHeight: 1, marginBottom: '6px' }}>{item.value}</div>

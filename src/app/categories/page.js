@@ -17,7 +17,6 @@ const categoryStyle = {
   'healing-recovery':  { color: 'var(--primary-blue)', Icon: HeartPulse,  gradFrom: 'rgba(0,207,255,0.15)',    gradTo: 'rgba(0,207,255,0.03)' },
   'metabolic-research':{ color: 'var(--pink)',          Icon: Zap,         gradFrom: 'rgba(236,72,153,0.15)',   gradTo: 'rgba(236,72,153,0.03)' },
   'cognitive-peptides':{ color: 'var(--purple)',        Icon: Brain,       gradFrom: 'rgba(124,58,237,0.15)',   gradTo: 'rgba(124,58,237,0.03)' },
-  'anti-aging':        { color: '#34d399',              Icon: Sparkles,    gradFrom: 'rgba(52,211,153,0.15)',   gradTo: 'rgba(52,211,153,0.03)' },
   'performance':       { color: '#fbbf24',              Icon: Dumbbell,    gradFrom: 'rgba(251,191,36,0.15)',   gradTo: 'rgba(251,191,36,0.03)' },
   'hormonal-research': { color: 'var(--secondary-blue)',Icon: Microscope,  gradFrom: 'rgba(56,189,248,0.15)',   gradTo: 'rgba(56,189,248,0.03)' },
   'growth-hormone':    { color: '#a78bfa',              Icon: Dna,         gradFrom: 'rgba(167,139,250,0.15)',  gradTo: 'rgba(167,139,250,0.03)' },
@@ -105,7 +104,7 @@ export default function CategoriesPage() {
             { Icon: FlaskConical, color: 'var(--primary-blue)', value: `${categories.length}`, label: 'Categories' },
             { Icon: Package, color: 'var(--purple)', value: `${categories.reduce((s, c) => s + (c.count || 0), 0)}+`, label: 'Products' },
             { Icon: ShieldCheck, color: '#34d399', value: '99%+', label: 'Avg Purity' },
-            { Icon: Star, color: '#fbbf24', value: '4.9/5', label: 'Avg Rating' },
+            { Icon: ShieldCheck, color: '#fbbf24', value: '100%', label: 'COA Coverage' },
           ].map(s => (
             <div key={s.label} style={{ textAlign: 'center' }}>
               <div style={{ width: 40, height: 40, borderRadius: 'var(--radius-md)', background: `${s.color}18`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px' }}>
