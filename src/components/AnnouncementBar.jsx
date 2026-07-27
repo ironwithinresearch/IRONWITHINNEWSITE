@@ -51,7 +51,12 @@ const SHIP_END = Date.parse('2026-07-19T05:00:00Z');
 const SHIP_BEFORE = '🚚  SHIPPING NOTICE — order by 2 PM CT this Thursday (Jul 16) to ship right away · orders after that ship Sunday, Jul 19';
 const SHIP_DURING = '🚚  SHIPPING PAUSED until Sunday — any order placed now ships Sun, Jul 19 · thanks for your patience!';
 
+// Pay-by-app discount — permanent, not a dated promo, so it lives in the base rotation.
+// Steers volume off cards (card payers pay list; app payers get 10% back off).
+const P2P_MESSAGE = '💸  SAVE 10% — pay with Zelle, Venmo, or Cash App and 10% comes off your total automatically at checkout';
+
 const BASE_MESSAGES = [
+  P2P_MESSAGE,
   '🔬  Certificate of Analysis available for every product',
   '🧪  Research-grade peptides, independently lab-tested',
   '📱  New — the free Peptide Paradigm reference guide. Look up any compound.',
