@@ -407,7 +407,7 @@ export default function CartPage() {
           <div onClick={e => e.stopPropagation()} style={{ maxWidth: 440, width: '100%', background: 'var(--card-dark, #0e1a30)', border: '1px solid var(--glass-border)', borderRadius: '20px', padding: '30px 26px', boxShadow: '0 30px 80px -20px rgba(0,0,0,0.85)', textAlign: 'center' }}>
             <div style={{ fontSize: '2.2rem', marginBottom: '8px' }}>🎁</div>
             <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '1.35rem', marginBottom: '6px', color: 'var(--text-light)' }}>You&apos;ve unlocked a FREE vial!</h3>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '22px' }}>Day 1 of the 12 Days of Christmas in July — pick your free gift on orders $150+.</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '22px' }}>Tonight only — pick your free vial on orders $175+. Yours free at checkout.</p>
             <div style={{ display: 'flex', gap: '12px', marginBottom: '18px' }}>
               {XJ_GIFT_OPTS.map(opt => {
                 const active = currentGiftSlug === opt.slug;

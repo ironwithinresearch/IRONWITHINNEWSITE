@@ -39,6 +39,12 @@ const XJ_MESSAGE = (n) => n >= 13
 
 // Summer Sale — 30% off everything. Live now → end of Aug 20 CT (== 04:59:59 UTC Aug 21),
 // matching the WooCommerce sale schedule (_sale_price_dates_to). Auto-disappears after.
+// FLASH SALE — 45% off everything tonight only, ends midnight CT (05:00 UTC Jul 28).
+// Self-gates: the message + red bar disappear automatically after the window.
+const FLASH_START = Date.parse('2026-07-27T00:00:00Z');
+const FLASH_END = Date.parse('2026-07-28T05:00:00Z');
+const FLASH_MESSAGE = '🔥  TONIGHT ONLY — 45% OFF EVERYTHING · no code needed · plus a FREE RT-3 or TRZ-2 10mg (your pick) on orders $175+ · ends at midnight';
+
 const SUMMER_START = Date.parse('2026-07-01T00:00:00Z');
 const SUMMER_END = Date.parse('2026-08-21T04:59:59Z');
 const SUMMER_MESSAGE = '☀️  SUMMER SALE — 30% OFF EVERYTHING, no code needed · stack your affiliate code for even more · 99%+ purity, COA on every order · ends Aug 20';
@@ -70,6 +76,7 @@ export default function AnnouncementBar() {
   const [j4Active, setJ4Active] = useState(false);
   const [xjActive, setXjActive] = useState(false);
   const [summerActive, setSummerActive] = useState(false);
+  const [flashActive, setFlashActive] = useState(false);
   useEffect(() => {
     const now = Date.now();
     const promos = [];
@@ -77,7 +84,9 @@ export default function AnnouncementBar() {
     if (now >= XJ_START && now < XJ_END) { promos.push(XJ_MESSAGE(xjDayNum())); setXjActive(true); }
     if (now >= J4_START && now <= J4_END) { promos.push(J4_MESSAGE); setJ4Active(true); }
     if (now >= BB_START && now < BB_END) { promos.push(BB_MESSAGE); setBbActive(true); }
-    if (now >= SUMMER_START && now < SUMMER_END) { promos.push(SUMMER_MESSAGE); setSummerActive(true); }
+    const flashOn = now >= FLASH_START && now < FLASH_END;
+    if (flashOn) { promos.unshift(FLASH_MESSAGE); setFlashActive(true); }
+    if (!flashOn && now >= SUMMER_START && now < SUMMER_END) { promos.push(SUMMER_MESSAGE); setSummerActive(true); }
     if (now < SALE_ENDS) promos.push(SALE_MESSAGE);
     setMessages([...promos, ...BASE_MESSAGES]);
   }, []);
@@ -93,8 +102,8 @@ export default function AnnouncementBar() {
       aria-label="Store announcements"
       style={{
         position: 'fixed', top: 0, left: 0, right: 0, height: 36, zIndex: 101,
-        background: xjActive ? 'linear-gradient(90deg,#c8102e,#0f5132,#f5c542,#0f5132,#c8102e)' : j4Active ? 'linear-gradient(90deg,#b22234,#7a1228,#13294b,#7a1228,#b22234)' : bbActive ? 'linear-gradient(90deg,#ec4899,#f5d272)' : summerActive ? 'linear-gradient(90deg,#ffb14a,#ff7a59,#37c8ff)' : 'var(--gradient-primary, linear-gradient(90deg,#00CFFF,#7c3aed))',
-        color: (j4Active || xjActive) ? '#fff' : '#001018', overflow: 'hidden', display: 'flex', alignItems: 'center',
+        background: flashActive ? 'linear-gradient(90deg,#dc2626,#f59e0b,#dc2626)' : xjActive ? 'linear-gradient(90deg,#c8102e,#0f5132,#f5c542,#0f5132,#c8102e)' : j4Active ? 'linear-gradient(90deg,#b22234,#7a1228,#13294b,#7a1228,#b22234)' : bbActive ? 'linear-gradient(90deg,#ec4899,#f5d272)' : summerActive ? 'linear-gradient(90deg,#ffb14a,#ff7a59,#37c8ff)' : 'var(--gradient-primary, linear-gradient(90deg,#00CFFF,#7c3aed))',
+        color: (j4Active || xjActive || flashActive) ? '#fff' : '#001018', overflow: 'hidden', display: 'flex', alignItems: 'center',
         fontFamily: 'var(--font-body)',
       }}
     >
