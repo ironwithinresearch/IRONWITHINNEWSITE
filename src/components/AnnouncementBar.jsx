@@ -43,7 +43,7 @@ const XJ_MESSAGE = (n) => n >= 13
 // Self-gates: the message + red bar disappear automatically after the window.
 const FLASH_START = Date.parse('2026-07-27T00:00:00Z');
 const FLASH_END = Date.parse('2026-07-28T05:00:00Z');
-const FLASH_MESSAGE = '🔥  TONIGHT ONLY — 45% OFF EVERYTHING · no code needed · plus a FREE RT-3 or TRZ-2 10mg (your pick) on orders $175+ · ends at midnight';
+const FLASH_MESSAGE = '🔥  TONIGHT ONLY — 45% OFF EVERYTHING · no code needed · biggest discount of the summer · ends at midnight';
 
 const SUMMER_START = Date.parse('2026-07-01T00:00:00Z');
 const SUMMER_END = Date.parse('2026-08-21T04:59:59Z');
