@@ -186,7 +186,7 @@ const sectionH = { fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWe
 
 const DEFAULT_TIERS = [
   { key: 'iron', name: 'Iron', min: 0, perks: ['5 points per $1 spent', '250-point welcome bonus'] },
-  { key: 'steel', name: 'Steel', min: 2500, perks: ['6.25 points per $1 (1.25×)', 'Free U.S. shipping'] },
+  { key: 'steel', name: 'Steel', min: 2500, perks: ['6.25 points per $1 (1.25×)'] },
   { key: 'titanium', name: 'Titanium', min: 7500, perks: ['7.5 points per $1 (1.5×)', 'Free U.S. shipping', 'Early access to restocks & drops'] },
   { key: 'black', name: 'Black Label', min: 20000, perks: ['10 points per $1 (2×)', 'Free U.S. shipping', 'Early access to drops', 'Birthday bonus points'] },
 ];
