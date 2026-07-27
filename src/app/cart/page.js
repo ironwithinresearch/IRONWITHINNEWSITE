@@ -131,8 +131,25 @@ export default function CartPage() {
   };
   const dismissGiftModal = () => setGiftModalOpen(false);
 
-  // (Flash free-gift auto-claim removed 2026-07-27 — the headless extraData add-to-cart
-  // path 500s; the 45%-off flash sale runs on its own. Revisit the gift as a proper feature.)
+  // Flash free gift (tonight only, ends midnight CT). At $175+ auto-add the default vial via a
+  // NORMAL addToCart mutation, which trips the picker so the customer can swap RT-3 ↔ TRZ-2.
+  // Remove it if the cart drops back under $175. Self-disables after the window. (Root cause of
+  // the earlier "can't add" was the dormant 12-Days plugin removing iw_gift_pick lines — fixed.)
+  const FLASH_GIFT_ON = Date.now() >= Date.parse('2026-07-27T00:00:00Z') && Date.now() < Date.parse('2026-07-28T05:00:00Z');
+  const giftEligible = subtotalNum >= 175;
+  const giftBusy = useRef(false);
+  useEffect(() => {
+    if (!FLASH_GIFT_ON || cartLoading || giftBusy.current) return;
+    const hasGift = !!xjGiftItem;
+    if (giftEligible && !hasGift) {
+      giftBusy.current = true;
+      chooseXjGift(XJ_GIFT_OPTS[0]).finally(() => { giftBusy.current = false; });
+    } else if (!giftEligible && hasGift && xjGiftKey) {
+      giftBusy.current = true;
+      removeItem(xjGiftKey).finally(() => { giftBusy.current = false; });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [giftEligible, xjGiftItem, cartLoading]);
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return;
