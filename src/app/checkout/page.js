@@ -35,6 +35,10 @@ const PAY_METHODS = [
   { id: 'iwr_cashapp', label: 'Cash App', handle: '$ironwithinresearch' },
 ];
 
+// Paying by app saves 10% (see mu-plugin iw-p2p-discount.php). Card payers pay list.
+const P2P_DISCOUNT_RATE = 0.10;
+const P2P_DISCOUNT_METHODS = new Set(['iwr_zelle', 'iwr_venmo', 'iwr_cashapp']);
+
 // Any method whose backend gateway answers with an off-site `redirect` rather than
 // completing the order in-place.
 const REDIRECT_METHODS = new Set(['iwr_rail', 'iwr_chargx', CARD_METHOD]);
@@ -158,8 +162,18 @@ export default function CheckoutPage() {
   // the customer sees the reduced amount due (and we can route a fully-covered order
   // to the no-rail store-credit gateway instead of the card rail).
   const round2 = (n) => Math.round(n * 100) / 100;
-  const creditApplied = round2(Math.min(creditBalance, Math.max(0, computedTotalNum)));
-  const dueAfterCredit = Math.max(0, round2(computedTotalNum - creditApplied));
+
+  // Pay-by-app discount: 10% off the items for Zelle / Venmo / Cash App. List price is
+  // what card payers pay; sending via an app takes 10% back off. Applied server-side as a
+  // negative fee at order creation (iw-p2p-discount.php, priority 24) — mirrored here so
+  // the buyer sees it BEFORE they place the order, and before credit/rewards are figured.
+  const p2pEligible = P2P_DISCOUNT_METHODS.has(payMethod);
+  const p2pItemsBase = Math.max(0, money(cartSubtotal) || (computedTotalNum - shipCostNum));
+  const p2pDiscount = p2pEligible ? round2(p2pItemsBase * P2P_DISCOUNT_RATE) : 0;
+  const totalAfterP2P = Math.max(0, round2(computedTotalNum - p2pDiscount));
+
+  const creditApplied = round2(Math.min(creditBalance, Math.max(0, totalAfterP2P)));
+  const dueAfterCredit = Math.max(0, round2(totalAfterP2P - creditApplied));
 
   // Rewards: spend chosen points (500 pts = $5) off whatever is still due after store
   // credit, in $5 increments, capped at the live balance. Applied server-side as a fee.
@@ -518,9 +532,17 @@ export default function CheckoutPage() {
                             {active && <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--primary-blue)' }} />}
                           </span>
                           <span style={{ flex: 1 }}>
-                            <span style={{ display: 'block', fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-light)' }}>{m.label}</span>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 7, fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                              {m.label}
+                              {/* The whole point of the pricing change — make the cheaper path obvious. */}
+                              {P2P_DISCOUNT_METHODS.has(m.id) && (
+                                <span style={{ fontSize: '0.68rem', fontWeight: 800, letterSpacing: '0.04em', padding: '2px 7px', borderRadius: 999, color: '#04121a', background: '#34d399' }}>
+                                  SAVE 10%
+                                </span>
+                              )}
+                            </span>
                             <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                              {REDIRECT_METHODS.has(m.id) ? m.desc : `Send your payment to ${m.handle} after placing the order`}
+                              {REDIRECT_METHODS.has(m.id) ? m.desc : `Send your payment to ${m.handle} after placing the order — 10% comes off your total`}
                             </span>
                           </span>
                         </button>
@@ -617,6 +639,10 @@ export default function CheckoutPage() {
               })}
               {/* Shipping — $0.00 until the review step, then the selected rate */}
               <SummaryRow label="Shipping" htmlValue={shipDisplay} value={undefined} />
+              {/* Pay-by-app discount — shown before credit/rewards, matching the backend order */}
+              {p2pDiscount > 0 && (
+                <SummaryRow label="Zelle / Venmo / Cash App discount (10%)" value={`- $${p2pDiscount.toFixed(2)}`} valueColor="#34d399" />
+              )}
               {/* Store credit (account wallet) — applied like cash, after discounts */}
               {creditApplied > 0 && (
                 <SummaryRow label="Store Credit" value={`- $${creditApplied.toFixed(2)}`} valueColor="#34d399" />
