@@ -31,7 +31,10 @@ export default function CartRewards({ subtotal = 0, value = 0, onChange }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxPts]);
 
-  const earn = Math.floor((Number(subtotal) || 0) * 5); // base 5 pts / $1
+  // Rate comes from the rewards API (earn_per_dollar) so a change on the backend can't
+  // leave the cart advertising an old number.
+  const perDollar = Number(data?.earn_per_dollar) || 1;
+  const earn = Math.floor((Number(subtotal) || 0) * perDollar);
 
   const box = { background: 'var(--bg-dark)', border: '1px solid rgba(0,207,255,0.22)', borderRadius: 12, padding: '12px 14px', marginBottom: 18, fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.45 };
   const tag = { display: 'inline-flex', alignItems: 'center', gap: 5, fontWeight: 800, color: 'var(--primary-blue)', marginRight: 6 };

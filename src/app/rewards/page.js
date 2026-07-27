@@ -121,7 +121,7 @@ export default function RewardsPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14 }}>
             {[
               { icon: Gift, t: 'Create an account', d: 'Get a 250-point welcome bonus instantly — free to join.' },
-              { icon: ShoppingBag, t: 'Shop', d: 'Earn 5 points for every $1 spent on every order.' },
+              { icon: ShoppingBag, t: 'Shop', d: 'Earn 1 point for every $1 spent on every order.' },
               { icon: TrendingUp, t: 'Climb the tiers', d: 'Level up to earn up to 2× points on everything you buy.' },
               { icon: Cake, t: 'Birthday bonus', d: 'Black Label members get bonus points on their birthday.' },
             ].map((c, i) => (
@@ -185,8 +185,8 @@ export default function RewardsPage() {
 const sectionH = { fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: 900, color: '#fff', marginBottom: '18px' };
 
 const DEFAULT_TIERS = [
-  { key: 'iron', name: 'Iron', min: 0, perks: ['5 points per $1 spent', '250-point welcome bonus'] },
-  { key: 'steel', name: 'Steel', min: 2500, perks: ['6.25 points per $1 (1.25×)'] },
-  { key: 'titanium', name: 'Titanium', min: 7500, perks: ['7.5 points per $1 (1.5×)', 'Free U.S. shipping', 'Early access to restocks & drops'] },
-  { key: 'black', name: 'Black Label', min: 20000, perks: ['10 points per $1 (2×)', 'Free U.S. shipping', 'Early access to drops', 'Birthday bonus points'] },
+  { key: 'iron', name: 'Iron', min: 0, perks: ['1 point per $1 spent', '250-point welcome bonus'] },
+  { key: 'steel', name: 'Steel', min: 3000, perks: ['1.25 points per $1 (1.25×)'] },
+  { key: 'titanium', name: 'Titanium', min: 10000, perks: ['1.5 points per $1 (1.5×)', 'Free U.S. shipping', 'Early access to restocks & drops'] },
+  { key: 'black', name: 'Black Label', min: 25000, perks: ['2 points per $1 (2×)', 'Free U.S. shipping', 'Early access to drops', 'Birthday bonus points'] },
 ];

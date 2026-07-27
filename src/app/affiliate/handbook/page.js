@@ -241,7 +241,7 @@ Thanks!`}
         <p>Iron Within has a full loyalty stack, and every piece is a reason for a customer to buy through <em>you</em> and come back. Know these cold — they&apos;re your closing arguments.</p>
         <p style={{ color: C.ink, fontWeight: 700, marginTop: 14 }}>IWR Rewards — points on every order</p>
         <Bullets items={[
-          <>Customers earn <B>5 points per $1</B> spent.</>,
+          <>Customers earn <B>1 point per $1</B> spent.</>,
           <><B>250 bonus points</B> just for creating an account.</>,
           <><B>500 points = $5 off</B>, redeemed right in the cart.</>,
           <>Managed at <C2>ironwithin.io/rewards</C2>.</>,
