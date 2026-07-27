@@ -71,7 +71,7 @@ const faqs = [
   {
     category: 'ordering',
     q: 'What payment methods do you accept?',
-    a: 'We currently accept Zelle, Venmo, and Cash App. Card payments are temporarily unavailable. At checkout you\'ll see the send-to details for each option — send payment and your order ships right away.',
+    a: 'We accept major credit and debit cards (Visa, Mastercard, American Express, Discover), as well as Zelle, Venmo, and Cash App. Card payments are handled on a dedicated secure payment page — all card transactions are encrypted, and we never store your card details.',
   },
   {
     category: 'ordering',

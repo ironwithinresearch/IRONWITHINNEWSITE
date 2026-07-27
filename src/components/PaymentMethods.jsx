@@ -67,15 +67,14 @@ const LOGOS = {
 const CARD_NETWORKS = ['visa', 'mastercard', 'amex', 'discover'];
 const ALL_METHODS = ['visa', 'mastercard', 'amex', 'discover', 'cashapp', 'venmo', 'zelle'];
 
-// TEMP: Mastercard hidden sitewide until ChargeX enables it on the merchant account.
-// The Mastercard logo is defined above and just filtered out at render — flip this back
-// to true (one line) to restore it everywhere the moment MC is live again.
-const MC_ENABLED = false;
+// Mastercard is live again as of the SnapPay switch (2026-07-26) — ChargeX never
+// enabled it on the merchant account, which is why it was hidden for weeks.
+const MC_ENABLED = true;
 
-// TEMP (2026-07-24): card processing is paused — the card rail still isn't working.
-// All card-network logos are filtered out sitewide so we only advertise what actually
-// works at checkout (Cash App / Venmo / Zelle). Flip to true to bring cards back.
-const CARDS_ENABLED = false;
+// Card processing restored 2026-07-26 (SnapPay, via the isolated pay app). Flip to
+// false to pull all card-network logos sitewide if a processor goes down again —
+// keep it in step with CARD_PAUSED in app/checkout/page.js.
+const CARDS_ENABLED = true;
 
 export default function PaymentMethods({
   label = 'We Accept',

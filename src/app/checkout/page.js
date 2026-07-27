@@ -39,10 +39,10 @@ const PAY_METHODS = [
 // completing the order in-place.
 const REDIRECT_METHODS = new Set(['iwr_rail', 'iwr_chargx', CARD_METHOD]);
 
-// Card payments paused (ChargeX stopped processing 2026-07-24). SnapPay replaces it —
-// flip this to false to put the card option back at checkout. Keep it in step with
-// CARDS_ENABLED in components/PaymentMethods.jsx.
-const CARD_PAUSED = true;
+// Card kill switch. Cards run on SnapPay via pay.ironwithin.io as of 2026-07-26
+// (ChargeX stopped processing on the 24th). Set to true to pull the card option from
+// checkout instantly — keep it in step with CARDS_ENABLED in PaymentMethods.jsx.
+const CARD_PAUSED = false;
 const isCardPaused = () => CARD_PAUSED;
 
 
@@ -91,8 +91,8 @@ export default function CheckoutPage() {
   const [backorderAck, setBackorderAck] = useState(false);
   const [p2pInfo, setP2pInfo] = useState(null);
   const payMethodRef = useRef(isCardPaused() ? 'iwr_zelle' : CARD_METHOD);
-  // SnapPay is the card option now (ChargeX retired 2026-07-24). While CARD_PAUSED is
-  // true the card row is filtered out entirely and Zelle is the default.
+  // SnapPay is the card option (ChargeX retired 2026-07-24). If CARD_PAUSED is ever
+  // flipped back on, the card row is filtered out entirely and Zelle becomes default.
   const payMethodOptions = isCardPaused() ? PAY_METHODS.filter((m) => m.id !== CARD_METHOD) : PAY_METHODS;
   // Account store-credit balance (auto-applied at checkout, server-side). Fetched
   // once on mount; the backend is authoritative on how much actually applies.

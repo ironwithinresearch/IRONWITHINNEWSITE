@@ -13,7 +13,7 @@ const SHIP_END = Date.parse('2026-07-19T05:00:00Z');
 
 // TEMP: while card processing is paused (2026-07-24 — the card rail still isn't working).
 // Flip to false to remove the payment notice once cards are back.
-const PAYMENT_NOTICE_ACTIVE = true;
+const PAYMENT_NOTICE_ACTIVE = false;
 const ACCEPTED_METHODS = 'Zelle, Venmo, and Cash App';
 
 // Bump the suffix whenever the notice content changes so returning shoppers see it again.
