@@ -23,19 +23,25 @@ import {
  
 const steps = ['Shipping', 'Review'];
 
-// Payment methods. iwr_rail = card (via the rail). The rest are manual P2P
-// gateways (registered on the WooCommerce backend in iw-p2p-pay.php) — the order
-// is placed on-hold and the buyer is shown send-to instructions.
+// Payment methods. iwr_snappay = card; its backend gateway returns a `redirect` to the
+// isolated payment app at pay.ironwithin.io, so no card data ever touches this app.
+// The rest are manual P2P gateways (iw-p2p-pay.php) — the order is placed on-hold and
+// the buyer is shown send-to instructions.
+const CARD_METHOD = 'iwr_snappay';
 const PAY_METHODS = [
-  { id: 'iwr_chargx',  label: 'Credit / Debit Card', desc: 'Pay by card on our secure encrypted page.' },
+  { id: CARD_METHOD,   label: 'Credit / Debit Card', desc: 'Pay by card on our secure encrypted page.' },
   { id: 'iwr_zelle',   label: 'Zelle',    handle: '8508980623' },
   { id: 'iwr_venmo',   label: 'Venmo',    handle: '@iwrpay' },
   { id: 'iwr_cashapp', label: 'Cash App', handle: '$ironwithinresearch' },
 ];
 
-// Card payments paused indefinitely (card rail still not processing reliably —
-// 2026-07-24). Checkout shows Zelle / Venmo / Cash App only. To re-enable the card
-// option, flip this to false — no other change needed.
+// Any method whose backend gateway answers with an off-site `redirect` rather than
+// completing the order in-place.
+const REDIRECT_METHODS = new Set(['iwr_rail', 'iwr_chargx', CARD_METHOD]);
+
+// Card payments paused (ChargeX stopped processing 2026-07-24). SnapPay replaces it —
+// flip this to false to put the card option back at checkout. Keep it in step with
+// CARDS_ENABLED in components/PaymentMethods.jsx.
 const CARD_PAUSED = true;
 const isCardPaused = () => CARD_PAUSED;
 
@@ -81,12 +87,13 @@ export default function CheckoutPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
-  const [payMethod, setPayMethod] = useState(() => isCardPaused() ? 'iwr_zelle' : 'iwr_chargx');
+  const [payMethod, setPayMethod] = useState(() => isCardPaused() ? 'iwr_zelle' : CARD_METHOD);
   const [backorderAck, setBackorderAck] = useState(false);
   const [p2pInfo, setP2pInfo] = useState(null);
-  const payMethodRef = useRef(isCardPaused() ? 'iwr_zelle' : 'iwr_chargx');
-  // ChargeX is now the live card option in PAY_METHODS; the ?chargx=1 gate is retired.
-  const payMethodOptions = isCardPaused() ? PAY_METHODS.filter((m) => m.id !== 'iwr_chargx') : PAY_METHODS;
+  const payMethodRef = useRef(isCardPaused() ? 'iwr_zelle' : CARD_METHOD);
+  // SnapPay is the card option now (ChargeX retired 2026-07-24). While CARD_PAUSED is
+  // true the card row is filtered out entirely and Zelle is the default.
+  const payMethodOptions = isCardPaused() ? PAY_METHODS.filter((m) => m.id !== CARD_METHOD) : PAY_METHODS;
   // Account store-credit balance (auto-applied at checkout, server-side). Fetched
   // once on mount; the backend is authoritative on how much actually applies.
   const [creditBalance, setCreditBalance] = useState(0);
@@ -191,7 +198,7 @@ export default function CheckoutPage() {
 
     // Card: follow the Stripe redirect. `order` is expected to be null for guests
     // here; the redirect URL is authoritative, so ignore the order error.
-    if (method === 'iwr_rail' || method === 'iwr_chargx') {
+    if (REDIRECT_METHODS.has(method)) {
       if (result?.redirect) {
         setRewardsRedeemPts(0); // order created — points already reserved on it
         window.location.href = result.redirect;
@@ -214,7 +221,7 @@ export default function CheckoutPage() {
     // Gift-card-paid ($0 due) orders are complete already — no P2P instructions.
     const num = result?.order?.orderNumber || result?.order?.databaseId || '';
     setOrderNumber(num);
-    if (method !== 'iwr_rail' && method !== 'iwr_chargx' && method !== 'iw_giftcard' && method !== 'iw_storecredit') {
+    if (!REDIRECT_METHODS.has(method) && method !== 'iw_giftcard' && method !== 'iw_storecredit') {
       const m = PAY_METHODS.find((x) => x.id === method);
       setP2pInfo({
         label: m?.label || 'P2P',
@@ -513,7 +520,7 @@ export default function CheckoutPage() {
                           <span style={{ flex: 1 }}>
                             <span style={{ display: 'block', fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-light)' }}>{m.label}</span>
                             <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                              {(m.id === 'iwr_rail' || m.id === 'iwr_chargx') ? m.desc : `Send your payment to ${m.handle} after placing the order`}
+                              {REDIRECT_METHODS.has(m.id) ? m.desc : `Send your payment to ${m.handle} after placing the order`}
                             </span>
                           </span>
                         </button>
@@ -541,7 +548,7 @@ export default function CheckoutPage() {
                     <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Placing Order…</>
                   ) : noRailDue ? (
                     <><Lock size={15} /> Complete Order — $0.00 due</>
-                  ) : (payMethod === 'iwr_rail' || payMethod === 'iwr_chargx') ? (
+                  ) : REDIRECT_METHODS.has(payMethod) ? (
                     <><Lock size={15} /> Continue to Secure Payment — {dueDisplay}</>
                   ) : (
                     <><Lock size={15} /> Place Order — Pay by {payMethodOptions.find((x) => x.id === payMethod)?.label}</>
