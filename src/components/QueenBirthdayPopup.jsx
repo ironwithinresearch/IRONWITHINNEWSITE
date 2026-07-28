@@ -12,6 +12,7 @@ const SEEN_KEY = 'iw_queen_popup_2026';
 export default function QueenBirthdayPopup() {
   const { isLoggedIn, mounted } = useAuth();
   const [show, setShow] = useState(false);
+  const [left, setLeft] = useState(null); // {d,h,m,s} until the sale ends
 
   useEffect(() => {
     if (!mounted || !isLoggedIn) return;
@@ -21,6 +22,24 @@ export default function QueenBirthdayPopup() {
     const t = setTimeout(() => setShow(true), 1200);
     return () => clearTimeout(t);
   }, [mounted, isLoggedIn]);
+
+  // Live countdown to the sale end (only ticks while the popup is open).
+  useEffect(() => {
+    if (!show) return;
+    const tick = () => {
+      const ms = QB_END - Date.now();
+      if (ms <= 0) { setLeft(null); return; }
+      setLeft({
+        d: Math.floor(ms / 86400000),
+        h: Math.floor(ms / 3600000) % 24,
+        m: Math.floor(ms / 60000) % 60,
+        s: Math.floor(ms / 1000) % 60,
+      });
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [show]);
 
   if (!show) return null;
   const close = () => { try { sessionStorage.setItem(SEEN_KEY, '1'); } catch {} setShow(false); };
@@ -45,7 +64,19 @@ export default function QueenBirthdayPopup() {
         <Link href="/shop" onClick={close} style={{ display: 'block', width: '100%', padding: '14px', borderRadius: 12, background: 'linear-gradient(90deg,#7c3aed,#22c55e,#4ade80)', color: '#04121a', fontWeight: 800, fontSize: '1rem', textDecoration: 'none' }}>
           Shop the Birthday Bash 🐉
         </Link>
-        <div style={{ marginTop: 12, fontSize: '0.72rem', color: 'rgba(134,239,172,0.7)' }}>Ends Sunday, Aug 2 at midnight</div>
+        {left && (
+          <div style={{ marginTop: 16 }}>
+            <div style={{ fontSize: '0.66rem', fontWeight: 800, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#86efac', marginBottom: 7 }}>Sale ends in</div>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 8 }}>
+              {[['Days', left.d], ['Hrs', left.h], ['Min', left.m], ['Sec', left.s]].map(([lab, val]) => (
+                <div key={lab} style={{ minWidth: 58, padding: '8px 6px', borderRadius: 10, background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(74,222,128,0.32)' }}>
+                  <div style={{ fontFamily: 'var(--font-heading, inherit)', fontSize: '1.5rem', fontWeight: 900, color: '#fff', lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>{String(val).padStart(2, '0')}</div>
+                  <div style={{ fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(134,239,172,0.7)', marginTop: 4 }}>{lab}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
