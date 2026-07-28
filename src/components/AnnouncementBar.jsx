@@ -44,7 +44,7 @@ const XJ_MESSAGE = (n) => n >= 13
 // QUEEN'S BIRTHDAY BASH — Wed Jul 29 6 PM CT → Sun Aug 2 midnight CT. Self-gates.
 const QB_START = Date.parse('2026-07-29T23:00:00Z');
 const QB_END = Date.parse('2026-08-03T05:00:00Z');
-const QB_MESSAGE = '🐉  LONG LIVE THE QUEEN — 38% OFF EVERYTHING · no code needed · spend $300, pick a FREE RETA or TIRZ 30mg · every qualifying order wins a shot at a 1-of-1 challenge coin + three $300 prizes · ends Sun Aug 2';
+const QB_MESSAGE = '🐉  LONG LIVE THE QUEEN — 38% OFF EVERYTHING · no code needed · spend $300, pick a FREE RETA or TIRZ 30mg · every qualifying order gets a chance at a 1-of-1 challenge coin or 1 of 3 $300 giveaways · ends Sun Aug 2';
 
 const FLASH_START = Date.parse('2026-07-27T00:00:00Z');
 const FLASH_END = Date.parse('2026-07-28T05:00:00Z');
