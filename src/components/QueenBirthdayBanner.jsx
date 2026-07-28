@@ -20,26 +20,26 @@ export default function QueenBirthdayBanner() {
       <div className="container" style={{ maxWidth: 1060 }}>
         <div style={{
           position: 'relative', overflow: 'hidden', textAlign: 'center',
-          background: 'radial-gradient(ellipse at 25% 15%, rgba(168,85,247,0.30), transparent 60%), radial-gradient(ellipse at 80% 90%, rgba(192,38,211,0.28), transparent 55%), #140826',
-          border: '1px solid rgba(216,180,254,0.45)', borderRadius: '24px', padding: '34px 28px',
-          boxShadow: '0 0 0 1px rgba(124,58,237,0.35), 0 24px 70px rgba(0,0,0,0.45)',
+          background: 'radial-gradient(ellipse at 22% 12%, rgba(34,197,94,0.24), transparent 58%), radial-gradient(ellipse at 82% 92%, rgba(124,58,237,0.34), transparent 58%), #090610',
+          border: '1px solid rgba(74,222,128,0.4)', borderRadius: '24px', padding: '34px 28px',
+          boxShadow: '0 0 0 1px rgba(34,197,94,0.28), 0 24px 70px rgba(0,0,0,0.55)',
         }}>
-          <div style={{ fontSize: '2.4rem', lineHeight: 1 }}>👑</div>
-          <div style={{ fontSize: '0.74rem', fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#e9d5ff', marginTop: 6 }}>
-            Happy Birthday to our Queen
+          <div style={{ fontSize: '2.6rem', lineHeight: 1, filter: 'drop-shadow(0 0 16px rgba(34,197,94,0.6))' }}>🐉</div>
+          <div style={{ fontSize: '0.74rem', fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#86efac', marginTop: 6 }}>
+            Long Live the Queen
           </div>
           <h2 style={{ fontFamily: 'var(--font-heading, inherit)', fontSize: 'clamp(1.9rem, 5vw, 3rem)', fontWeight: 900, color: '#fff', margin: '6px 0 6px', lineHeight: 1.05 }}>
             The Birthday Bash —{' '}
-            <span style={{ background: 'linear-gradient(90deg,#c084fc,#f5c542,#e879f9)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>38% OFF Everything</span>
+            <span style={{ background: 'linear-gradient(90deg,#4ade80,#c084fc,#4ade80)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>38% OFF Everything</span>
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '1rem', lineHeight: 1.55, maxWidth: 680, margin: '0 auto 8px' }}>
             Spend $300 and pick a <b style={{ color:'#fff' }}>FREE RETA or TIRZ 30mg</b> — plus every qualifying order is entered to win a{' '}
             <b style={{ color:'#fff' }}>1-of-1 Iron Within challenge coin</b> or one of <b style={{ color:'#fff' }}>three $300 prizes.</b>
           </p>
-          <Link href="/shop" style={{ display: 'inline-block', marginTop: 12, padding: '14px 40px', borderRadius: 12, background: 'linear-gradient(90deg,#a855f7,#7c3aed,#c026d3)', color: '#fff', fontWeight: 800, fontSize: '1.02rem', textDecoration: 'none' }}>
+          <Link href="/shop" style={{ display: 'inline-block', marginTop: 12, padding: '14px 40px', borderRadius: 12, background: 'linear-gradient(90deg,#7c3aed,#22c55e,#4ade80)', color: '#04121a', fontWeight: 800, fontSize: '1.02rem', textDecoration: 'none' }}>
             Shop the Bash →
           </Link>
-          <div style={{ marginTop: 12, fontSize: '0.76rem', color: 'rgba(233,213,255,0.7)' }}>No code needed · ends Sunday, Aug 2 at midnight CT</div>
+          <div style={{ marginTop: 12, fontSize: '0.76rem', color: 'rgba(134,239,172,0.75)' }}>No code needed · ends Sunday, Aug 2 at midnight CT</div>
         </div>
       </div>
     </section>

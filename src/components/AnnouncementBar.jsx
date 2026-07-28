@@ -44,7 +44,7 @@ const XJ_MESSAGE = (n) => n >= 13
 // QUEEN'S BIRTHDAY BASH — Wed Jul 29 6 PM CT → Sun Aug 2 midnight CT. Self-gates.
 const QB_START = Date.parse('2026-07-29T23:00:00Z');
 const QB_END = Date.parse('2026-08-03T05:00:00Z');
-const QB_MESSAGE = '👑  HAPPY BIRTHDAY TO OUR QUEEN — 38% OFF EVERYTHING · no code needed · spend $300, pick a FREE RETA or TIRZ 30mg · every qualifying order wins a shot at a 1-of-1 challenge coin + three $300 prizes · ends Sun Aug 2';
+const QB_MESSAGE = '🐉  LONG LIVE THE QUEEN — 38% OFF EVERYTHING · no code needed · spend $300, pick a FREE RETA or TIRZ 30mg · every qualifying order wins a shot at a 1-of-1 challenge coin + three $300 prizes · ends Sun Aug 2';
 
 const FLASH_START = Date.parse('2026-07-27T00:00:00Z');
 const FLASH_END = Date.parse('2026-07-28T05:00:00Z');
@@ -110,7 +110,7 @@ export default function AnnouncementBar() {
       aria-label="Store announcements"
       style={{
         position: 'fixed', top: 0, left: 0, right: 0, height: 36, zIndex: 101,
-        background: qbActive ? 'linear-gradient(90deg,#7c3aed,#a855f7,#c026d3,#a855f7,#7c3aed)' : flashActive ? 'linear-gradient(90deg,#dc2626,#f59e0b,#dc2626)' : xjActive ? 'linear-gradient(90deg,#c8102e,#0f5132,#f5c542,#0f5132,#c8102e)' : j4Active ? 'linear-gradient(90deg,#b22234,#7a1228,#13294b,#7a1228,#b22234)' : bbActive ? 'linear-gradient(90deg,#ec4899,#f5d272)' : summerActive ? 'linear-gradient(90deg,#ffb14a,#ff7a59,#37c8ff)' : 'var(--gradient-primary, linear-gradient(90deg,#00CFFF,#7c3aed))',
+        background: qbActive ? 'linear-gradient(90deg,#0a0612,#7c3aed,#22c55e,#7c3aed,#0a0612)' : flashActive ? 'linear-gradient(90deg,#dc2626,#f59e0b,#dc2626)' : xjActive ? 'linear-gradient(90deg,#c8102e,#0f5132,#f5c542,#0f5132,#c8102e)' : j4Active ? 'linear-gradient(90deg,#b22234,#7a1228,#13294b,#7a1228,#b22234)' : bbActive ? 'linear-gradient(90deg,#ec4899,#f5d272)' : summerActive ? 'linear-gradient(90deg,#ffb14a,#ff7a59,#37c8ff)' : 'var(--gradient-primary, linear-gradient(90deg,#00CFFF,#7c3aed))',
         color: (j4Active || xjActive || flashActive || qbActive) ? '#fff' : '#001018', overflow: 'hidden', display: 'flex', alignItems: 'center',
         fontFamily: 'var(--font-body)',
       }}
