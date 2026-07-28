@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import SaleCountdown from '@/components/SaleCountdown';
 import BirthdayBashBanner from '@/components/BirthdayBashBanner';
+import QueenBirthdayBanner from '@/components/QueenBirthdayBanner';
 import AppPromo from '@/components/AppPromo';
 
 // (Removed 2026-07-27: an unused category grid whose labels were outcome claims —
@@ -214,6 +215,9 @@ export default function Home() {
 
       {/* ══ BIRTHDAY BASH BANNER (sale window only) ══ */}
       <BirthdayBashBanner />
+
+      {/* ══ QUEEN'S BIRTHDAY BASH (Jul 29–Aug 2) ══ */}
+      <QueenBirthdayBanner />
 
       {/* ══ STATS BAR ══ */}
       <section style={{ background: 'var(--card-dark)', borderTop: '1px solid var(--glass-border)', borderBottom: '1px solid var(--glass-border)', padding: '36px 24px' }}>

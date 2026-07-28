@@ -23,10 +23,10 @@ import {
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { getReferCookie } from '@/lib/referral';
 
-// 12 Days — Day 1 "your pick" free gift options (RT-3 10mg / TRZ-2 10mg).
+// Queen's Birthday Bash "your pick" free gift on $300+ (RETA/TIRZ 30mg).
 const XJ_GIFT_OPTS = [
-  { vid: 520, pid: 310, label: 'RT-3 10mg', slug: 'rt-3' },
-  { vid: 1033, pid: 319, label: 'TRZ-2 10mg', slug: 'trz-2' },
+  { vid: 523, pid: 310, label: 'RETA 30mg', slug: 'rt-3' },
+  { vid: 524, pid: 319, label: 'TIRZ 30mg', slug: 'trz-2' },
 ];
 const XJ_GIFT_SLUGS = XJ_GIFT_OPTS.map(o => o.slug);
 
@@ -135,8 +135,8 @@ export default function CartPage() {
   // NORMAL addToCart mutation, which trips the picker so the customer can swap RT-3 ↔ TRZ-2.
   // Remove it if the cart drops back under $175. Self-disables after the window. (Root cause of
   // the earlier "can't add" was the dormant 12-Days plugin removing iw_gift_pick lines — fixed.)
-  const FLASH_GIFT_ON = Date.now() >= Date.parse('2026-07-27T00:00:00Z') && Date.now() < Date.parse('2026-07-28T05:00:00Z');
-  const giftEligible = subtotalNum >= 175;
+  const FLASH_GIFT_ON = Date.now() >= Date.parse('2026-07-29T23:00:00Z') && Date.now() < Date.parse('2026-08-03T05:00:00Z');
+  const giftEligible = subtotalNum >= 300;
   const giftBusy = useRef(false);
   useEffect(() => {
     if (!FLASH_GIFT_ON || cartLoading || giftBusy.current) return;
@@ -427,7 +427,7 @@ export default function CartPage() {
           <div onClick={e => e.stopPropagation()} style={{ maxWidth: 440, width: '100%', background: 'var(--card-dark, #0e1a30)', border: '1px solid var(--glass-border)', borderRadius: '20px', padding: '30px 26px', boxShadow: '0 30px 80px -20px rgba(0,0,0,0.85)', textAlign: 'center' }}>
             <div style={{ fontSize: '2.2rem', marginBottom: '8px' }}>🎁</div>
             <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '1.35rem', marginBottom: '6px', color: 'var(--text-light)' }}>You&apos;ve unlocked a FREE vial!</h3>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '22px' }}>Tonight only — pick your free vial on orders $175+. Yours free at checkout.</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '22px' }}>Queen&apos;s Birthday Bash — pick your FREE RETA or TIRZ 30mg on orders $300+. Yours free at checkout. 👑</p>
             <div style={{ display: 'flex', gap: '12px', marginBottom: '18px' }}>
               {XJ_GIFT_OPTS.map(opt => {
                 const active = currentGiftSlug === opt.slug;

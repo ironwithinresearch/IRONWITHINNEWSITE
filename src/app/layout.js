@@ -8,6 +8,8 @@ import ReferralCapture from "../components/ReferralCapture";
 import LeadCapture from "../components/LeadCapture";
 import BirthdayBashPopup from "../components/BirthdayBashPopup";
 import ChristmasJulyPopup from "../components/ChristmasJulyPopup";
+import QueenBirthdayPopup from "../components/QueenBirthdayPopup";
+import QueenTheme from "../components/QueenTheme";
 import ShippingPauseNotice from "../components/ShippingPauseNotice";
 import ApolloWrapper from "../lib/ApolloWrapper";
 
@@ -51,6 +53,7 @@ export default function RootLayout({ children }) {
             __html: `try{var t=localStorage.getItem('iwr-theme');if(t==='dark'){document.documentElement.setAttribute('data-theme','dark');}}catch(e){}`,
           }}
         />
+        <QueenTheme />
         <ApolloWrapper>
           <AffiliateTracker />
           <ReferralCapture />
@@ -66,6 +69,7 @@ export default function RootLayout({ children }) {
           <LeadCapture />
           <BirthdayBashPopup />
           <ChristmasJulyPopup />
+          <QueenBirthdayPopup />
           <ShippingPauseNotice />
         </ApolloWrapper>
       </body>
