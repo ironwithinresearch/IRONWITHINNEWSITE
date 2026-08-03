@@ -41,10 +41,10 @@ const XJ_MESSAGE = (n) => n >= 13
 // matching the WooCommerce sale schedule (_sale_price_dates_to). Auto-disappears after.
 // FLASH SALE — 45% off everything tonight only, ends midnight CT (05:00 UTC Jul 28).
 // Self-gates: the message + red bar disappear automatically after the window.
-// QUEEN'S BIRTHDAY BASH — Wed Jul 29 6 PM CT → Sun Aug 2 midnight CT. Self-gates.
-const QB_START = Date.parse('2026-07-29T23:00:00Z');
+// QUEEN'S BIRTHDAY BASH — Tue Jul 28 6:30 PM CT → Sun Aug 2 midnight CT. Self-gates.
+const QB_START = Date.parse('2026-07-28T23:30:00Z');
 const QB_END = Date.parse('2026-08-03T05:00:00Z');
-const QB_MESSAGE = '🐉  LONG LIVE THE QUEEN — 38% OFF EVERYTHING · no code needed · spend $300, pick a FREE RETA or TIRZ 30mg · every qualifying order gets a chance at a 1-of-1 challenge coin or 1 of 3 $300 giveaways · ends Sun Aug 2';
+const QB_MESSAGE = '🐉  LONG LIVE THE QUEEN — 48% OFF EVERYTHING · no code needed · spend $200 pick a FREE RETA or TIRZ 10mg, or $300 for a full 30mg · every $300+ order gets a chance at a 1-of-1 challenge coin or 1 of 3 $300 giveaways · ends Sun Aug 2';
 
 const FLASH_START = Date.parse('2026-07-27T00:00:00Z');
 const FLASH_END = Date.parse('2026-07-28T05:00:00Z');

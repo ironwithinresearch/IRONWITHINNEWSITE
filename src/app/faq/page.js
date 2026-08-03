@@ -46,7 +46,7 @@ const faqs = [
   {
     category: 'shipping',
     q: 'How fast do you ship?',
-    a: 'Orders ship between 24–48 hours after placement. Standard domestic delivery is 2–4 business days. Express options (1–2 days) are available at checkout. International orders typically arrive within 7–14 business days.',
+    a: 'Standard domestic delivery is 2–4 business days once your order ships. Express options (1–2 days) are available at checkout. International orders typically arrive within 7–14 business days.',
   },
   {
     category: 'shipping',

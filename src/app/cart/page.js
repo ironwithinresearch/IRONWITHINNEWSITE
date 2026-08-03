@@ -23,12 +23,21 @@ import {
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { getReferCookie } from '@/lib/referral';
 
-// Queen's Birthday Bash "your pick" free gift on $300+ (RETA/TIRZ 30mg).
-const XJ_GIFT_OPTS = [
-  { vid: 523, pid: 310, label: 'RETA 30mg', slug: 'rt-3' },
-  { vid: 524, pid: 319, label: 'TIRZ 30mg', slug: 'trz-2' },
+// Queen's Birthday Bash tiered "your pick" free gift — mutually exclusive, highest tier only:
+//   $300+   -> free RETA / TIRZ 30mg
+//   $200–$299 -> free RETA / TIRZ 10mg
+// A cart only ever earns ONE gift (the highest tier it reaches), never both.
+const XJ_GIFT_TIERS = [
+  { min: 300, dose: '30mg', opts: [
+    { vid: 523, pid: 310, label: 'RETA 30mg', slug: 'rt-3' },
+    { vid: 524, pid: 319, label: 'TIRZ 30mg', slug: 'trz-2' },
+  ] },
+  { min: 200, dose: '10mg', opts: [
+    { vid: 520, pid: 310, label: 'RETA 10mg', slug: 'rt-3' },
+    { vid: 1033, pid: 319, label: 'TIRZ 10mg', slug: 'trz-2' },
+  ] },
 ];
-const XJ_GIFT_SLUGS = XJ_GIFT_OPTS.map(o => o.slug);
+const XJ_GIFT_SLUGS = ['rt-3', 'trz-2']; // the two gift products (same across both tiers)
 
 
 export default function CartPage() {
@@ -49,6 +58,13 @@ export default function CartPage() {
   const rewardsDollars = (rewardsPts || 0) / 100; // $0.01 / pt
 
   const subtotalNum = parseFloat(cartSubtotal?.replace(/[^0-9.]/g, '') || '0');
+
+  // Pick the highest gift tier the paid subtotal earns ($300 -> 30mg, $200 -> 10mg).
+  // giftOpts drives the picker; activeGiftVids tells us if a gift line is the right tier.
+  const activeGiftTier = XJ_GIFT_TIERS.find(t => subtotalNum >= t.min) || null;
+  const giftOpts = activeGiftTier ? activeGiftTier.opts : [];
+  const activeGiftVids = new Set(giftOpts.map(o => o.vid));
+  const giftDose = activeGiftTier?.dose || '30mg';
   // Cart total EXCLUDING shipping — shipping is chosen at checkout review, so the
   // cart shouldn't show it (the WC session may already carry a default rate).
   const num = (s) => parseFloat(String(s || '').replace(/&nbsp;/g, '').replace(/[^0-9.]/g, '') || '0');
@@ -117,6 +133,11 @@ export default function CartPage() {
   const xjHasPick = cartItems.some(it => (it.extraData || []).some(e => e.key === 'iw_gift_pick' && !!e.value));
   const currentGiftSlug = xjGiftItem?.product?.node?.slug;
   const xjGiftKey = xjGiftItem?.key;
+  // The gift line's variation id (from its iw_gift_pick tag) — used to tell whether the
+  // gift already in the cart matches the tier the current subtotal earns. If the cart
+  // crosses $300 (or drops below), a wrong-tier gift is swapped for the right one.
+  const xjGiftVid = xjGiftItem ? parseInt((xjGiftItem.extraData || []).find(e => e.key === 'iw_gift_pick')?.value || '0', 10) : 0;
+  const giftCorrectTier = !!xjGiftVid && activeGiftVids.has(xjGiftVid);
   // Auto-open once per cart visit whenever there's an unclaimed gift. Picking a gift
   // (iw_gift_pick) stops it for good; dismissing just closes it for this visit.
   const giftAutoOpened = useRef(false);
@@ -125,9 +146,19 @@ export default function CartPage() {
     giftAutoOpened.current = true;
     if (!xjHasPick) setGiftModalOpen(true);
   }, [xjGiftKey, xjHasPick]);
+  // Remember what they actually chose, so the auto-add effect below re-adds THEIR
+  // pick rather than snapping back to the default.
+  const lastPick = useRef(null);
   const pickGift = async (opt) => {
     setGiftModalOpen(false);
-    if (currentGiftSlug !== opt.slug) await chooseXjGift(opt);
+    if (currentGiftSlug === opt.slug) return;
+    lastPick.current = opt;
+    // Hold the auto-add effect off: swapping removes the old gift line first, which
+    // briefly leaves the cart with no gift and would otherwise re-trigger the
+    // auto-add -- re-adding the default alongside their pick, and the leftover
+    // line then bills at full price.
+    giftBusy.current = true;
+    try { await chooseXjGift(opt); } finally { giftBusy.current = false; }
   };
   const dismissGiftModal = () => setGiftModalOpen(false);
 
@@ -135,21 +166,24 @@ export default function CartPage() {
   // NORMAL addToCart mutation, which trips the picker so the customer can swap RT-3 ↔ TRZ-2.
   // Remove it if the cart drops back under $175. Self-disables after the window. (Root cause of
   // the earlier "can't add" was the dormant 12-Days plugin removing iw_gift_pick lines — fixed.)
-  const FLASH_GIFT_ON = Date.now() >= Date.parse('2026-07-29T23:00:00Z') && Date.now() < Date.parse('2026-08-03T05:00:00Z');
-  const giftEligible = subtotalNum >= 300;
+  const FLASH_GIFT_ON = Date.now() >= Date.parse('2026-07-28T23:30:00Z') && Date.now() < Date.parse('2026-08-03T05:00:00Z');
+  const giftEligible = !!activeGiftTier;
   const giftBusy = useRef(false);
   useEffect(() => {
     if (!FLASH_GIFT_ON || cartLoading || giftBusy.current) return;
     const hasGift = !!xjGiftItem;
-    if (giftEligible && !hasGift) {
+    // Eligible but missing the gift, OR holding the wrong tier's gift (e.g. cart just
+    // crossed $300 so a 10mg needs to become 30mg): add/swap to this tier's pick.
+    if (giftEligible && (!hasGift || !giftCorrectTier)) {
       giftBusy.current = true;
-      chooseXjGift(XJ_GIFT_OPTS[0]).finally(() => { giftBusy.current = false; });
+      const want = giftOpts.find(o => o.slug === lastPick.current?.slug) || giftOpts[0];
+      chooseXjGift(want).finally(() => { giftBusy.current = false; });
     } else if (!giftEligible && hasGift && xjGiftKey) {
       giftBusy.current = true;
       removeItem(xjGiftKey).finally(() => { giftBusy.current = false; });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [giftEligible, xjGiftItem, cartLoading]);
+  }, [giftEligible, xjGiftItem, giftCorrectTier, cartLoading]);
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return;
@@ -406,7 +440,7 @@ export default function CartPage() {
 
               {[
                 { Icon: ShieldCheck, label: 'Secure checkout' },
-                { Icon: Package, label: 'Ships in 24–48 hours' },
+                { Icon: Package, label: 'Fast, discreet shipping' },
               ].map(({ Icon, label }) => (
                 <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '7px', fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '6px' }}>
                   <Icon size={12} color="var(--primary-blue)" /> {label}
@@ -427,9 +461,9 @@ export default function CartPage() {
           <div onClick={e => e.stopPropagation()} style={{ maxWidth: 440, width: '100%', background: 'var(--card-dark, #0e1a30)', border: '1px solid var(--glass-border)', borderRadius: '20px', padding: '30px 26px', boxShadow: '0 30px 80px -20px rgba(0,0,0,0.85)', textAlign: 'center' }}>
             <div style={{ fontSize: '2.2rem', marginBottom: '8px' }}>🎁</div>
             <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '1.35rem', marginBottom: '6px', color: 'var(--text-light)' }}>You&apos;ve unlocked a FREE vial!</h3>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '22px' }}>Queen&apos;s Birthday Bash — pick your FREE RETA or TIRZ 30mg on orders $300+. Yours free at checkout. 👑</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '22px' }}>Queen&apos;s Birthday Bash — pick your FREE RETA or TIRZ {giftDose}. Yours free at checkout. 👑</p>
             <div style={{ display: 'flex', gap: '12px', marginBottom: '18px' }}>
-              {XJ_GIFT_OPTS.map(opt => {
+              {giftOpts.map(opt => {
                 const active = currentGiftSlug === opt.slug;
                 return (
                   <button key={opt.vid} onClick={() => pickGift(opt)} disabled={cartLoading}
@@ -444,7 +478,7 @@ export default function CartPage() {
               })}
             </div>
             <button onClick={dismissGiftModal} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '0.82rem', cursor: 'pointer' }}>
-              Keep {XJ_GIFT_OPTS.find(o => o.slug === currentGiftSlug)?.label || 'my gift'}
+              Keep {giftOpts.find(o => o.slug === currentGiftSlug)?.label || 'my gift'}
             </button>
           </div>
         </div>

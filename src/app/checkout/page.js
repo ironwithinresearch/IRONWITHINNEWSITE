@@ -665,7 +665,7 @@ export default function CheckoutPage() {
             {[
               { Icon: ShieldCheck, label: 'Secure SSL checkout' },
 
-              { Icon: Package, label: 'Ships in 24–48 hours' },
+              { Icon: Package, label: 'Fast, discreet shipping' },
             ].map(({ Icon, label }) => (
               <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '7px', fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '6px' }}>
                 <Icon size={12} color="var(--primary-blue)" /> {label}

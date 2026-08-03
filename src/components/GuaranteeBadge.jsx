@@ -8,7 +8,7 @@ import { ShieldCheck, FlaskConical, FileCheck2, Truck, Lock } from 'lucide-react
 const PROOF = [
   { Icon: FlaskConical, label: '99%+ Purity', sub: '3rd-party lab-tested' },
   { Icon: FileCheck2, label: 'COA on every order', sub: 'verified results' },
-  { Icon: Truck, label: 'Fast discreet shipping', sub: 'ships in 24–48h' },
+  { Icon: Truck, label: 'Fast discreet shipping', sub: 'plain, unmarked packaging' },
   { Icon: Lock, label: 'Secure checkout', sub: 'SSL encrypted' },
 ];
 

@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { useAuth } from '../context/AuthContext';
 
 // "Queen's Birthday Bash" — modal shown ONCE PER SESSION to logged-in shoppers during the event
-// (Wed Jul 29 6 PM CT → Sun Aug 2 midnight CT). Self-gates to the window.
-const QB_START = Date.parse('2026-07-29T23:00:00Z');
+// (Tue Jul 28 6:30 PM CT → Sun Aug 2 midnight CT). Self-gates to the window.
+const QB_START = Date.parse('2026-07-28T23:30:00Z');
 const QB_END   = Date.parse('2026-08-03T05:00:00Z');
 const SEEN_KEY = 'iw_queen_popup_2026';
 
@@ -55,11 +55,11 @@ export default function QueenBirthdayPopup() {
         <h2 style={{ fontFamily: 'var(--font-heading, inherit)', fontSize: '1.7rem', fontWeight: 900, color: '#fff', margin: '6px 0 4px' }}>
           The <span style={{ background: 'linear-gradient(90deg,#4ade80,#c084fc,#4ade80)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Birthday Bash</span>
         </h2>
-        <div style={{ fontSize: '2.6rem', fontWeight: 900, color: '#fff', margin: '2px 0 8px', textShadow: '0 0 42px rgba(34,197,94,0.7)' }}>38% OFF</div>
+        <div style={{ fontSize: '2.6rem', fontWeight: 900, color: '#fff', margin: '2px 0 8px', textShadow: '0 0 42px rgba(34,197,94,0.7)' }}>48% OFF</div>
         <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '0.95rem', lineHeight: 1.55, margin: '0 0 14px' }}>
-          Everything is <b style={{ color:'#fff' }}>38% off</b> to celebrate her birthday. Spend $300 and pick a{' '}
-          <b style={{ color:'#fff' }}>FREE RETA or TIRZ 30mg</b> — and you're automatically entered to win a{' '}
-          <b style={{ color:'#fff' }}>1-of-1 Iron Within challenge coin</b> or a chance at <b style={{ color:'#fff' }}>1 of 3 $300 giveaways.</b>
+          Everything is <b style={{ color:'#fff' }}>48% off</b> to celebrate her birthday. Spend $200 and pick a{' '}
+          <b style={{ color:'#fff' }}>FREE RETA or TIRZ 10mg</b> — or hit $300 for a full <b style={{ color:'#fff' }}>30mg</b>. Every $300+ order is
+          automatically entered to win a <b style={{ color:'#fff' }}>1-of-1 Iron Within challenge coin</b> or a chance at <b style={{ color:'#fff' }}>1 of 3 $300 giveaways.</b>
         </p>
         <Link href="/shop" onClick={close} style={{ display: 'block', width: '100%', padding: '14px', borderRadius: 12, background: 'linear-gradient(90deg,#7c3aed,#22c55e,#4ade80)', color: '#04121a', fontWeight: 800, fontSize: '1rem', textDecoration: 'none' }}>
           Shop the Birthday Bash 🐉

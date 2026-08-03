@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 // Homepage hero banner for the Queen's Birthday Bash. Renders only during the window
 // (client-side, so the server render stays safe / no hydration mismatch).
-const QB_START = Date.parse('2026-07-29T23:00:00Z');
+const QB_START = Date.parse('2026-07-28T23:30:00Z');
 const QB_END   = Date.parse('2026-08-03T05:00:00Z');
 
 export default function QueenBirthdayBanner() {
@@ -30,10 +30,10 @@ export default function QueenBirthdayBanner() {
           </div>
           <h2 style={{ fontFamily: 'var(--font-heading, inherit)', fontSize: 'clamp(1.9rem, 5vw, 3rem)', fontWeight: 900, color: '#fff', margin: '6px 0 6px', lineHeight: 1.05 }}>
             The Birthday Bash —{' '}
-            <span style={{ background: 'linear-gradient(90deg,#4ade80,#c084fc,#4ade80)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>38% OFF Everything</span>
+            <span style={{ background: 'linear-gradient(90deg,#4ade80,#c084fc,#4ade80)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>48% OFF Everything</span>
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '1rem', lineHeight: 1.55, maxWidth: 680, margin: '0 auto 8px' }}>
-            Spend $300 and pick a <b style={{ color:'#fff' }}>FREE RETA or TIRZ 30mg</b> — plus every qualifying order is entered to win a{' '}
+            Spend $200 and pick a <b style={{ color:'#fff' }}>FREE RETA or TIRZ 10mg</b> — or hit $300 for a full <b style={{ color:'#fff' }}>30mg</b>. Every $300+ order is entered to win a{' '}
             <b style={{ color:'#fff' }}>1-of-1 Iron Within challenge coin</b> or a chance at <b style={{ color:'#fff' }}>1 of 3 $300 giveaways.</b>
           </p>
           <Link href="/shop" style={{ display: 'inline-block', marginTop: 12, padding: '14px 40px', borderRadius: 12, background: 'linear-gradient(90deg,#7c3aed,#22c55e,#4ade80)', color: '#04121a', fontWeight: 800, fontSize: '1.02rem', textDecoration: 'none' }}>

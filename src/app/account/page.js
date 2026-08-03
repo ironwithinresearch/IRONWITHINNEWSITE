@@ -21,13 +21,23 @@ import {
 const statusConfig = {
   COMPLETED:  { label: 'Delivered',  color: '#34d399',           bg: 'rgba(52,211,153,0.12)',  border: 'rgba(52,211,153,0.3)',  Icon: CheckCircle2 },
   PROCESSING: { label: 'Processing', color: '#fbbf24',           bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.3)', Icon: Clock },
+  SHIPPED:    { label: 'Shipped',    color: '#00CFFF',           bg: 'rgba(0,207,255,0.12)',  border: 'rgba(0,207,255,0.3)',  Icon: Truck },
+  BACKORDER:  { label: 'Backorder',  color: '#f59e0b',           bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.35)', Icon: Clock },
   ON_HOLD:    { label: 'On Hold',    color: '#fbbf24',           bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.3)', Icon: Clock },
   PENDING:    { label: 'Pending',    color: 'var(--primary-blue)', bg: 'rgba(0,207,255,0.12)', border: 'rgba(0,207,255,0.3)', Icon: Truck },
   CANCELLED:  { label: 'Cancelled',  color: '#f87171',           bg: 'rgba(239,68,68,0.12)',  border: 'rgba(239,68,68,0.3)',  Icon: XCircle },
   REFUNDED:   { label: 'Refunded',   color: '#f87171',           bg: 'rgba(239,68,68,0.12)',  border: 'rgba(239,68,68,0.3)',  Icon: XCircle },
   FAILED:     { label: 'Failed',     color: '#f87171',           bg: 'rgba(239,68,68,0.12)',  border: 'rgba(239,68,68,0.3)',  Icon: XCircle },
 };
-const filterOptions = ['All', 'Delivered', 'Processing', 'On Hold', 'Cancelled'];
+const filterOptions = ['All', 'Processing', 'Shipped', 'Delivered', 'Backorder', 'On Hold', 'Cancelled'];
+
+/* Unknown/unmapped Woo status: show it verbatim rather than guessing at a label. */
+function fallbackStatus(status) {
+  const label = String(status || 'Unknown')
+    .toLowerCase().replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  return { label, color: 'var(--text-secondary)', bg: 'rgba(148,163,184,0.12)',
+           border: 'rgba(148,163,184,0.3)', Icon: Package };
+}
 
 function formatDate(dateStr) {
   if (!dateStr) return '';
@@ -159,7 +169,9 @@ function OrdersPanel() {
       {!loading && filtered.length > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {filtered.map(order => {
-            const sc      = statusConfig[order.status] || statusConfig.PROCESSING;
+            // Never fall back to PROCESSING -- an unmapped status (a new custom
+            // Woo status) would otherwise be shown to the customer as "Processing".
+            const sc      = statusConfig[order.status] || fallbackStatus(order.status);
             const isOpen  = expandedId === order.id;
             const lineItems = order.lineItems?.nodes || [];
             return (
@@ -175,6 +187,12 @@ function OrdersPanel() {
                         <span style={{ padding: '2px 8px', background: sc.bg, border: `1px solid ${sc.border}`, borderRadius: '999px', fontSize: '0.65rem', fontWeight: 700, color: sc.color, letterSpacing: '0.04em' }}>{sc.label}</span>
                       </div>
                       <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>{formatDate(order.date)} · {lineItems.length} item{lineItems.length !== 1 ? 's' : ''}</div>
+                      {order.trackingNumber && (
+                        <a href={order.trackingUrl || '#'} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}
+                          style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', marginTop: '5px', color: '#34d399', fontSize: '0.74rem', fontWeight: 700, textDecoration: 'none' }}>
+                          <Truck size={12} /> Track shipment →
+                        </a>
+                      )}
                     </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -185,6 +203,28 @@ function OrdersPanel() {
 
                 {isOpen && (
                   <div style={{ borderTop: '1px solid var(--glass-border)', padding: '18px 20px' }}>
+
+                    {/* Shipment tracking — appears once ShipStation sends a tracking number */}
+                    {order.trackingNumber && (
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap', padding: '14px 16px', background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.35)', borderRadius: 'var(--radius-md)', marginBottom: '18px' }}>
+                        <div>
+                          <p style={{ fontSize: '0.7rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <Truck size={13} /> Shipment Tracking
+                          </p>
+                          <p style={{ fontSize: '0.83rem', color: 'var(--text-light)', margin: 0 }}>
+                            {order.trackingProvider ? <span style={{ textTransform: 'uppercase', color: 'var(--text-muted)', marginRight: 6 }}>{order.trackingProvider}</span> : null}
+                            <span style={{ fontFamily: 'monospace', fontWeight: 600 }}>{order.trackingNumber}</span>
+                          </p>
+                        </div>
+                        {order.trackingUrl && (
+                          <a href={order.trackingUrl} target="_blank" rel="noopener noreferrer"
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '9px 17px', background: '#34d399', color: '#04130c', borderRadius: 'var(--radius-md)', fontWeight: 700, fontSize: '0.8rem', textDecoration: 'none', whiteSpace: 'nowrap' }}>
+                            Track Package →
+                          </a>
+                        )}
+                      </div>
+                    )}
+
                     <p style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '10px' }}>Items Ordered</p>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '18px' }}>
                       {lineItems.map((li, i) => {

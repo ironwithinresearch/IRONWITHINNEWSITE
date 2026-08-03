@@ -35,7 +35,7 @@ const stats = [
 
 const whyUs = [
   { Icon: Trophy, color: '#fbbf24', title: 'Third-Party Tested', desc: 'Every batch independently verified for purity, potency, and safety by accredited laboratories.' },
-  { Icon: Rocket, color: 'var(--primary-blue)', title: 'Fast Shipping', desc: 'Discreet packaging with express delivery options. Orders ship within 24–48 hours.' },
+  { Icon: Rocket, color: 'var(--primary-blue)', title: 'Fast Shipping', desc: 'Discreet packaging with express delivery options available at checkout.' },
   { Icon: ShieldCheck, color: '#34d399', title: 'Secure Checkout', desc: 'Bank-level SSL encryption on every transaction. Your data is always protected.' },
   { Icon: Mail, color: 'var(--purple)', title: 'Email Support', desc: 'Reach our research specialists any time at support@ironwithin.io — we reply promptly.' },
 ];
@@ -216,7 +216,7 @@ export default function Home() {
       {/* ══ BIRTHDAY BASH BANNER (sale window only) ══ */}
       <BirthdayBashBanner />
 
-      {/* ══ QUEEN'S BIRTHDAY BASH (Jul 29–Aug 2) ══ */}
+      {/* ══ QUEEN'S BIRTHDAY BASH (Jul 28–Aug 2) ══ */}
       <QueenBirthdayBanner />
 
       {/* ══ STATS BAR ══ */}

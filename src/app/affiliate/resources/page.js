@@ -163,7 +163,7 @@ export default function AffiliateResourcesPage() {
       <ul style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.9, margin: '0 0 40px', paddingLeft: 20 }}>
         <li><strong style={{ color: 'var(--text-light)' }}>99%+ purity</strong>, independently third-party lab-tested</li>
         <li><strong style={{ color: 'var(--text-light)' }}>Certificate of Analysis</strong> on every vial</li>
-        <li>Ships in <strong style={{ color: 'var(--text-light)' }}>24–48 hours</strong>, discreet packaging</li>
+        <li>Fast, <strong style={{ color: 'var(--text-light)' }}>discreet packaging</strong> on every order</li>
         <li>Flagship <strong style={{ color: 'var(--text-light)' }}>Grand Slam</strong> & <strong style={{ color: 'var(--text-light)' }}>Long Shot</strong> bundles + prepaid <Link href="/continuity" style={{ color: 'var(--primary-blue)' }}>Research Plans</Link></li>
         <li>Product images: grab them straight from any <Link href="/shop" style={{ color: 'var(--primary-blue)' }}>product page</Link></li>
       </ul>

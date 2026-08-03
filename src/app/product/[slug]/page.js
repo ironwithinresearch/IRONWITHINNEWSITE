@@ -257,7 +257,7 @@ export default function ProductPage() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '16px' }}>
               {[
                 { Icon: Shield, label: 'Lab Verified', sub: '3rd-party tested' },
-                { Icon: Truck, label: 'Fast Shipping', sub: 'Ships in 24–48hrs' },
+                { Icon: Truck, label: 'Fast Shipping', sub: 'Discreet packaging' },
               ].map(t => (
                 <div key={t.label} style={{ background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: '12px', padding: '14px 12px', textAlign: 'center' }}>
                   <t.Icon size={18} color="var(--primary-blue)" style={{ margin: '0 auto 6px', display: 'block' }} />

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 // "Whole-site dedicated to her" — Maleficent theme for the Birthday Bash window. Recolors the
 // site accent to Maleficent's signature purple + poison-green so every CTA, link, and glow reads
 // dark-fairy. Injected client-side, self-removes after the window; accent variables only.
-const QB_START = Date.parse('2026-07-29T23:00:00Z');
+const QB_START = Date.parse('2026-07-28T23:30:00Z');
 const QB_END   = Date.parse('2026-08-03T05:00:00Z');
 
 const CSS = `
