@@ -1,7 +1,8 @@
 // src/app/api/chat/route.js
 // Iron Within support agent. Claude Haiku 4.5 + tools that hit the live WooCommerce
-// backend: look up orders (identity-verified), create $0 replacement orders for
-// missing/damaged items, and escalate to email. Research-use-only guardrail routes
+// backend: look up orders (identity-verified), REQUEST account credit for missing/damaged
+// items (the operator approves and grants it — the bot never creates a replacement order
+// and never moves money), and escalate to email. Research-use-only guardrail routes
 // dosing questions to peptideparadigm.com. Server-side only — no secret reaches the browser.
 
 import Anthropic from '@anthropic-ai/sdk';
@@ -13,7 +14,8 @@ const WC_URL   = process.env.WC_URL || 'https://bhidasowgm.onrocket.site';
 const WC_KEY   = process.env.WC_KEY;
 const WC_SECRET = process.env.WC_SECRET;
 const NOTIFY_SECRET = process.env.IW_BOT_NOTIFY_SECRET || '';
-const REPLACEMENT_MODE = process.env.IW_CHAT_REPLACEMENT_MODE || 'simulate'; // 'simulate' | 'live'
+// (IW_CHAT_REPLACEMENT_MODE is gone — the bot no longer creates orders, so there is no
+// simulate/live distinction. Every make-good is a credit REQUEST the operator approves.)
 const SS_BASE = process.env.SHIPSTATION_BASE || 'https://api.shipstation.com/v2';
 const SS_KEY = process.env.SHIPSTATION_API_KEY;
 
@@ -70,11 +72,12 @@ Iron Within products are sold FOR RESEARCH PURPOSES ONLY and are not for human c
 
 ## You can take real actions with tools
 - **lookup_order** — check an order's status, its items, and its **live carrier delivery status** (the tool returns live_delivery_status like "Delivered"/"In Transit"/"Out for Delivery" plus estimated_delivery, delivered_on, and the last_scan location — straight from the carrier via ShipStation). Report it in plain, friendly language (e.g. "It was delivered on July 9" or "It's in transit, estimated to arrive July 12 — last scanned in Louisville, KY"). You MUST have the order number AND the email on the account; if the tool says the email doesn't match, reveal nothing and ask them to confirm the email on the order.
-- **create_replacement** — if a customer reports a missing, damaged, wrong, or leaking item, verify their identity with lookup first, look carefully at any photo they attached, and if the item really is missing/damaged, create a free $0 replacement (free shipping). Only replace items that were actually on that order. Confirm which item before replacing. Never replace the same item twice — if the tool says it was already replaced, escalate instead.
+- **request_account_credit** — if a customer reports a missing, damaged, wrong, or leaking item, verify their identity with lookup first, look carefully at any photo they attached, and if the item really is missing/damaged, use this tool. It asks our team to put **account credit** on their account for what they paid for that item, so they can **re-order** — we do NOT send a replacement order. Only for items actually on that order, and confirm which item first. Never request credit for the same item twice — if the tool says it was already made good, escalate instead.
+  Tell the customer plainly: the team is adding account credit they can use at checkout on their next order, and they'll get an email when it's applied. Do NOT promise it is already on their account, do not promise an exact timeframe, and never say we're shipping a replacement.
 - **escalate_to_support** — email the team for anything you can't resolve, billing/payment problems, or when the customer asks for a human. Ask for their email first.
 
 ## Store facts
-COA on every order (third-party lab-tested, 99%+ purity, browse at ironwithin.io/lab-reports). Ships US/Canada/international with real tracking; free US shipping over a threshold. Damaged/wrong item → we make it right. A quick 21+ account is required to check out; password reset emails a 6-digit code. IWR Rewards: 1 point per $1, 250 welcome, 500 = $5 off (ironwithin.io/rewards). Affiliate program: 10–20% commission, optional 2× store credit. Support email: support@ironwithin.io.
+COA on every order (third-party lab-tested, 99%+ purity, browse at ironwithin.io/lab-reports). Ships US/Canada/international with real tracking; free US shipping over a threshold. Damaged/wrong item → we make it right with account credit so you can re-order what you want. Account credit sits on the customer's account, applies automatically at checkout, and stacks with discount codes. A quick 21+ account is required to check out; password reset emails a 6-digit code. IWR Rewards: 1 point per $1, 250 welcome, 500 = $5 off (ironwithin.io/rewards). Affiliate program: 10–20% commission, optional 2× store credit. Support email: support@ironwithin.io.
 
 ## Paying — card or peer-to-peer (Zelle / Venmo / Cash App)
 Card checkout is instant. We also accept peer-to-peer payment. When a customer asks how or where to pay P2P, give the exact handle for their app:
@@ -87,7 +90,7 @@ They MUST put their **order number in the payment note** so we can match it. A P
 const TOOLS = [
   { name: 'lookup_order', description: 'Look up an order status, tracking, and items. Requires order_number and the account email.',
     input_schema: { type: 'object', properties: { order_number: { type: 'string' }, email: { type: 'string' } }, required: ['order_number', 'email'] } },
-  { name: 'create_replacement', description: 'Create a free $0 replacement order for a verified missing/damaged item.',
+  { name: 'request_account_credit', description: 'Ask the team to put account credit on the customer\'s account for a verified missing/damaged/wrong item, so they can re-order. Does not create a replacement order and does not grant the credit — it requests it.',
     input_schema: { type: 'object', properties: { order_number: { type: 'string' }, email: { type: 'string' }, item_name: { type: 'string' }, reason: { type: 'string' } }, required: ['order_number', 'email', 'item_name', 'reason'] } },
   { name: 'escalate_to_support', description: 'Email the support team.',
     input_schema: { type: 'object', properties: { summary: { type: 'string' }, customer_email: { type: 'string' } }, required: ['summary'] } },
@@ -111,61 +114,67 @@ async function lookupOrder({ order_number, email }) {
     estimated_delivery: delivery?.estimated_delivery || null,
     delivered_on: delivery?.delivered_on || null,
     last_scan: delivery?.last_scan || null,
-    items: (o.line_items || []).map((l) => ({ name: l.name, qty: l.quantity, product_id: l.product_id, variation_id: l.variation_id })),
-    already_replaced: Array.isArray(meta._iw_bot_replaced) ? meta._iw_bot_replaced : [],
+    items: (o.line_items || []).map((l) => ({
+      name: l.name, qty: l.quantity, product_id: l.product_id, variation_id: l.variation_id,
+      // what the customer actually paid for ONE unit, after discounts — this is the credit amount
+      paid_each: l.quantity ? Math.round((parseFloat(l.total || 0) / l.quantity) * 100) / 100 : 0,
+    })),
+    // Either list blocks a second free make-good on the same item. `_iw_bot_replaced` is the
+    // legacy key from when the bot created $0 replacement orders — still honoured so items
+    // already made good under the old flow can't be credited again now.
+    already_credited: [
+      ...(Array.isArray(meta._iw_bot_credit_requested) ? meta._iw_bot_credit_requested : []),
+      ...(Array.isArray(meta._iw_bot_replaced) ? meta._iw_bot_replaced : []),
+    ],
   };
 }
 
-async function createReplacement({ order_number, email, item_name, reason }, ctx = {}) {
+/* Make-good flow: the bot does NOT create a replacement order and does NOT grant credit
+   itself. It verifies the order + item, works out what the customer paid for that unit, and
+   emails the operator a REQUEST to put that much store credit on the account. The operator
+   approves and runs the grant; the customer then re-orders whatever they actually want.
+   Credit beats a replacement order here — no second shipment to pay for, and the customer
+   can put it toward a different compound or a larger vial. */
+async function requestAccountCredit({ order_number, email, item_name, reason }, ctx = {}) {
   const v = await lookupOrder({ order_number, email });
   if (!v.verified) return v;
   const key = String(item_name || '').toLowerCase().split(/[\s(]/)[0];
   const line = (v.items || []).find((i) => i.name.toLowerCase().includes(key));
-  if (!line) return { ok: false, note: `"${item_name}" wasn't on order #${v.order}. Items on the order: ${v.items.map((i) => i.name).join(', ')}. Only replace purchased items.` };
-  if ((v.already_replaced || []).some((x) => String(x).includes(line.name)))
-    return { ok: false, note: 'That item was already replaced once on this order — do not replace again; escalate to a human.' };
+  if (!line) return { ok: false, note: `"${item_name}" wasn't on order #${v.order}. Items on the order: ${v.items.map((i) => i.name).join(', ')}. Only credit purchased items.` };
+  if ((v.already_credited || []).some((x) => String(x).includes(line.name)))
+    return { ok: false, note: 'That item was already made good once on this order — do not request credit again; escalate to a human.' };
 
   const { data: o } = await wc(`/orders/${v.order}`);
-  const shipNow = REPLACEMENT_MODE === 'live'; // live → ships immediately; otherwise ON HOLD for review
-  const orderPayload = {
-    status: shipNow ? 'processing' : 'on-hold',
-    customer_id: o.customer_id || 0,
-    billing: o.billing, shipping: (o.shipping && o.shipping.address_1) ? o.shipping : o.billing,
-    line_items: [{ product_id: line.product_id, variation_id: line.variation_id || undefined, quantity: 1, total: '0.00', subtotal: '0.00' }],
-    shipping_lines: [{ method_id: 'free_shipping', method_title: 'Free (replacement)', total: '0.00' }],
-    customer_note: `REPLACEMENT – no charge. Re order #${v.order}: ${String(reason || '').slice(0, 300)}`,
-    meta_data: [{ key: '_iw_replacement_of', value: v.order }, { key: '_iw_bot_created', value: '1' }],
-  };
-  const created = await wc('/orders', { method: 'POST', body: JSON.stringify(orderPayload) });
-  if (!created.ok) {
-    await notify({ type: 'replacement', order_id: v.order, reply_to: o.billing?.email,
-      subject: `Replacement needs manual handling — order #${v.order}`,
-      message: `The bot could not auto-create a replacement for "${line.name}" on order #${v.order}. Please handle manually.\nReason: ${reason}\n\n--- FULL CHAT CONVERSATION ---\n${ctx.transcript || '(none)'}` });
-    return { ok: true, routed_to_human: true, item: line.name,
-      message: `I've flagged the missing "${line.name}" to our team — they'll sort your free replacement and email you shortly.` };
-  }
+  const amount = line.paid_each || 0;
+  const custEmail = o.billing?.email || email;
+  const custName = `${o.billing?.first_name || ''} ${o.billing?.last_name || ''}`.trim() || custEmail;
+  const grantReason = `${line.name} — ${String(reason || 'reported issue').slice(0, 120)} (order #${v.order})`;
+
+  // The operator gets a ready-to-run grant command — approving is a copy/paste, not a rebuild.
+  await notify({
+    type: 'credit_request', order_id: v.order, reply_to: custEmail,
+    subject: `Account credit requested — $${amount.toFixed(2)} for ${custName} (order #${v.order})`,
+    message: `The support bot verified a customer issue and is REQUESTING account credit so they can re-order.\n\n`
+      + `NOTHING HAS BEEN GRANTED YET — this is a request for your approval.\n\n`
+      + `Customer: ${custName} <${custEmail}>\nOrder: #${v.order}\nItem: ${line.name}\n`
+      + `Amount paid for that unit: $${amount.toFixed(2)}\nReason given: ${reason}\n\n`
+      + `TO APPROVE — run:\n`
+      + `wp iw-credit grant --email=${custEmail} --amount=${amount.toFixed(2)} --reason="${grantReason}" --skip-plugins=wp-graphql-woocommerce --skip-themes\n\n`
+      + `The customer is emailed automatically when the credit lands, and it auto-applies at their next checkout.\n`
+      + `TO DECLINE: do nothing, and reply to the customer directly.\n\n`
+      + `--- FULL CHAT CONVERSATION ---\n${ctx.transcript || '(none)'}`,
+  });
 
   // audit trail on the original order
-  const replacedList = [...(v.already_replaced || []), line.name];
-  await wc(`/orders/${v.order}`, { method: 'PUT', body: JSON.stringify({ meta_data: [{ key: '_iw_bot_replaced', value: replacedList }] }) });
+  const creditedList = [...(v.already_credited || []), line.name];
+  await wc(`/orders/${v.order}`, { method: 'PUT', body: JSON.stringify({ meta_data: [{ key: '_iw_bot_credit_requested', value: creditedList }] }) });
   await wc(`/orders/${v.order}/notes`, { method: 'POST', body: JSON.stringify({
-    note: `Support bot created FREE replacement order #${created.data.id} — status ${shipNow ? 'PROCESSING (shipping)' : 'ON HOLD (awaiting your review)'} — for "${line.name}". Reason: ${reason}`,
+    note: `Support bot REQUESTED $${amount.toFixed(2)} account credit for "${line.name}" (not yet granted — awaiting operator approval). Reason: ${reason}`,
     customer_note: false,
   }) });
 
-  // email the team the full conversation for review
-  await notify({ type: 'replacement', order_id: v.order, reply_to: o.billing?.email,
-    subject: `${shipNow ? 'Replacement SHIPPING' : 'Replacement ON HOLD — please review'}: order #${created.data.id} (re #${v.order})`,
-    message: `The support bot created a FREE replacement order.\n\n`
-      + `New order: #${created.data.id}\nStatus: ${shipNow ? 'PROCESSING — will ship' : 'ON HOLD — will NOT ship until you release it'}\n`
-      + `Replacing: order #${v.order}\nItem: ${line.name}\nCustomer: ${o.billing?.first_name || ''} ${o.billing?.last_name || ''} <${o.billing?.email || ''}>\nReason given: ${reason}\n\n`
-      + `--- FULL CHAT CONVERSATION ---\n${ctx.transcript || '(none)'}\n\n`
-      + (shipNow ? '' : `To approve: open order #${created.data.id} in WooCommerce and change status On hold → Processing (it will then ship). To reject: cancel the order.`) });
-
-  return { ok: true, replacement_order: created.data.id, on_hold: !shipNow, item: line.name,
-    message: shipNow
-      ? `Your free replacement for "${line.name}" is created and shipping — no charge. 📦`
-      : `Thanks — I've created a free replacement for the missing "${line.name}" and our team is reviewing it now. You'll get a shipping confirmation by email shortly. Sorry for the mix-up! 🙏` };
+  return { ok: true, requested: true, amount, item: line.name,
+    message: `Thanks — I've asked our team to put $${amount.toFixed(2)} of account credit on your account for the ${line.name}. You'll get an email once it's applied, and it'll come off automatically at checkout when you re-order. Sorry for the trouble! 🙏` };
 }
 
 async function escalate({ summary, customer_email }, ctx = {}) {
@@ -174,7 +183,7 @@ async function escalate({ summary, customer_email }, ctx = {}) {
   return { ok: true, note: `Emailed support@ironwithin.io${customer_email ? ' (reply-to ' + customer_email + ')' : ''}.` };
 }
 
-const IMPL = { lookup_order: lookupOrder, create_replacement: createReplacement, escalate_to_support: escalate };
+const IMPL = { lookup_order: lookupOrder, request_account_credit: requestAccountCredit, escalate_to_support: escalate };
 
 // Lightweight per-IP rate limit (public endpoint). 30 messages / 10 min.
 const RL = new Map();
