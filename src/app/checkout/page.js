@@ -31,7 +31,7 @@ const CARD_METHOD = 'iwr_snappay';
 const PAY_METHODS = [
   { id: CARD_METHOD,   label: 'Credit / Debit Card', desc: 'Pay by card on our secure encrypted page.' },
   { id: 'iwr_zelle',   label: 'Zelle',    handle: '8508980623' },
-  { id: 'iwr_venmo',   label: 'Venmo',    handle: '@iwrpay' },
+  { id: 'iwr_venmo',   label: 'Venmo',    handle: '@iwnpay' },
   { id: 'iwr_cashapp', label: 'Cash App', handle: '$ironwithinresearch' },
 ];
 
