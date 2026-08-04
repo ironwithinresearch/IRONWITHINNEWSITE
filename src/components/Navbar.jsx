@@ -141,9 +141,9 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
-            <img src="/logo-mark.png" alt="Iron Within Research" width={36} height={36} style={{ width: 36, height: 36, borderRadius: 'var(--radius-md)', boxShadow: 'var(--glow-blue)', flexShrink: 0, display: 'block' }} />
+            <img src="/logo-mark.png" alt="Immortal Research" width={36} height={36} style={{ width: 36, height: 36, borderRadius: 'var(--radius-md)', boxShadow: 'var(--glow-blue)', flexShrink: 0, display: 'block' }} />
             <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '1.1rem', letterSpacing: '-0.01em', background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', display: 'none' }} className="logo-text">
-              Iron Within Research
+              Immortal Research
             </span>
           </Link>
 
@@ -151,7 +151,7 @@ export default function Navbar() {
           <nav style={{ display: 'flex', alignItems: 'center', gap: '4px' }} className="desktop-nav">
             {navLinks.map(({ href, label }) => {
               const isActive = pathname === href || pathname.startsWith(href + '/');
-              const baseStyle = { padding: '7px 14px', borderRadius: 'var(--radius-md)', fontSize: '0.875rem', fontWeight: isActive ? 600 : 400, color: isActive ? 'var(--primary-blue)' : 'var(--text-secondary)', background: isActive ? 'rgba(0,207,255,0.08)' : 'transparent', textDecoration: 'none', transition: 'all 0.15s ease', whiteSpace: 'nowrap' };
+              const baseStyle = { padding: '7px 14px', borderRadius: 'var(--radius-md)', fontSize: '0.875rem', fontWeight: isActive ? 600 : 400, color: isActive ? 'var(--primary-blue)' : 'var(--text-secondary)', background: isActive ? 'rgba(168,85,247,0.08)' : 'transparent', textDecoration: 'none', transition: 'all 0.15s ease', whiteSpace: 'nowrap' };
 
               // Shop is now a category dropdown (Categories lives under here).
               if (href === '/shop') {
@@ -159,13 +159,13 @@ export default function Navbar() {
                 return (
                   <div key={href} style={{ position: 'relative' }}
                     onMouseEnter={() => setShopOpen(true)} onMouseLeave={() => setShopOpen(false)}>
-                    <Link href="/shop" style={{ ...baseStyle, color: shopActive ? 'var(--primary-blue)' : baseStyle.color, background: shopActive ? 'rgba(0,207,255,0.08)' : baseStyle.background, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    <Link href="/shop" style={{ ...baseStyle, color: shopActive ? 'var(--primary-blue)' : baseStyle.color, background: shopActive ? 'rgba(168,85,247,0.08)' : baseStyle.background, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                       Shop <ChevronDown size={13} style={{ transform: shopOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s ease' }} />
                     </Link>
                     {shopOpen && (
                       <div style={{ position: 'absolute', top: 'calc(100% + 4px)', left: 0, minWidth: 252, background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-lg)', padding: '8px', boxShadow: '0 12px 32px rgba(0,0,0,0.45)', zIndex: 200 }}>
                         <Link href="/shop" style={{ display: 'block', padding: '9px 12px', borderRadius: 'var(--radius-md)', color: 'var(--text-light)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none' }}
-                          onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,207,255,0.06)'}
+                          onMouseEnter={e => e.currentTarget.style.background = 'rgba(168,85,247,0.06)'}
                           onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                           All Products
                         </Link>
@@ -174,7 +174,7 @@ export default function Navbar() {
                           const luxe = cat.slug === 'lux-me';
                           return (
                             <Link key={cat.slug} href={cat.href} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', padding: '9px 12px', borderRadius: 'var(--radius-md)', color: luxe ? '#e6b8bf' : 'var(--text-secondary)', fontSize: '0.85rem', fontWeight: luxe ? 600 : 400, textDecoration: 'none', transition: 'all 0.12s ease' }}
-                              onMouseEnter={e => { e.currentTarget.style.background = luxe ? 'rgba(212,175,55,0.08)' : 'rgba(0,207,255,0.06)'; e.currentTarget.style.color = luxe ? '#f0cfd4' : 'var(--text-light)'; }}
+                              onMouseEnter={e => { e.currentTarget.style.background = luxe ? 'rgba(212,175,55,0.08)' : 'rgba(168,85,247,0.06)'; e.currentTarget.style.color = luxe ? '#f0cfd4' : 'var(--text-light)'; }}
                               onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = luxe ? '#e6b8bf' : 'var(--text-secondary)'; }}>
                               <span>{cat.name}</span>
                               {luxe && <span style={{ fontSize: '0.55rem', fontWeight: 800, letterSpacing: '0.05em', color: '#1a1207', background: 'linear-gradient(135deg,#e6b8bf,#d4af37)', padding: '2px 6px', borderRadius: '999px' }}>NEW</span>}
@@ -215,20 +215,20 @@ export default function Navbar() {
             </button>
 
             {/* ── Wishlist with animated count badge ── */}
-            <Link href="/wishlist" style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-md)', color: wishlistCount > 0 ? 'var(--pink)' : 'var(--text-secondary)', textDecoration: 'none', transition: 'all 0.15s ease', position: 'relative', background: wishlistCount > 0 ? 'rgba(236,72,153,0.08)' : 'transparent' }}
-              onMouseEnter={e => { e.currentTarget.style.color = 'var(--pink)'; e.currentTarget.style.background = 'rgba(236,72,153,0.08)'; }}
-              onMouseLeave={e => { e.currentTarget.style.color = wishlistCount > 0 ? 'var(--pink)' : 'var(--text-secondary)'; e.currentTarget.style.background = wishlistCount > 0 ? 'rgba(236,72,153,0.08)' : 'transparent'; }}>
+            <Link href="/wishlist" style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-md)', color: wishlistCount > 0 ? 'var(--pink)' : 'var(--text-secondary)', textDecoration: 'none', transition: 'all 0.15s ease', position: 'relative', background: wishlistCount > 0 ? 'rgba(74,222,128,0.08)' : 'transparent' }}
+              onMouseEnter={e => { e.currentTarget.style.color = 'var(--pink)'; e.currentTarget.style.background = 'rgba(74,222,128,0.08)'; }}
+              onMouseLeave={e => { e.currentTarget.style.color = wishlistCount > 0 ? 'var(--pink)' : 'var(--text-secondary)'; e.currentTarget.style.background = wishlistCount > 0 ? 'rgba(74,222,128,0.08)' : 'transparent'; }}>
               <Heart size={17} fill={wishlistCount > 0 ? 'currentColor' : 'none'} />
               {wishlistCount > 0 && (
                 <span style={{
                   position: 'absolute', top: '1px', right: '1px',
                   minWidth: 17, height: 17,
                   borderRadius: '999px',
-                  background: 'linear-gradient(135deg, #ec4899, #db2777)',
+                  background: 'linear-gradient(135deg, #4ade80, #db2777)',
                   color: '#fff', fontSize: '0.58rem', fontWeight: 800,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   padding: '0 4px',
-                  boxShadow: '0 0 8px rgba(236,72,153,0.7)',
+                  boxShadow: '0 0 8px rgba(74,222,128,0.7)',
                   border: '1.5px solid var(--bg-dark, #05070f)',
                   animation: wishBump ? 'badgeBump 0.35s ease' : 'none',
                   lineHeight: 1,
@@ -239,9 +239,9 @@ export default function Navbar() {
             </Link>
 
             {/* ── Cart with animated count badge ── */}
-            <Link href="/cart" style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-md)', color: itemCount > 0 ? 'var(--primary-blue)' : 'var(--text-secondary)', textDecoration: 'none', position: 'relative', transition: 'all 0.15s ease', background: itemCount > 0 ? 'rgba(0,207,255,0.08)' : 'transparent' }}
-              onMouseEnter={e => { e.currentTarget.style.color = 'var(--primary-blue)'; e.currentTarget.style.background = 'rgba(0,207,255,0.08)'; }}
-              onMouseLeave={e => { e.currentTarget.style.color = itemCount > 0 ? 'var(--primary-blue)' : 'var(--text-secondary)'; e.currentTarget.style.background = itemCount > 0 ? 'rgba(0,207,255,0.08)' : 'transparent'; }}>
+            <Link href="/cart" style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-md)', color: itemCount > 0 ? 'var(--primary-blue)' : 'var(--text-secondary)', textDecoration: 'none', position: 'relative', transition: 'all 0.15s ease', background: itemCount > 0 ? 'rgba(168,85,247,0.08)' : 'transparent' }}
+              onMouseEnter={e => { e.currentTarget.style.color = 'var(--primary-blue)'; e.currentTarget.style.background = 'rgba(168,85,247,0.08)'; }}
+              onMouseLeave={e => { e.currentTarget.style.color = itemCount > 0 ? 'var(--primary-blue)' : 'var(--text-secondary)'; e.currentTarget.style.background = itemCount > 0 ? 'rgba(168,85,247,0.08)' : 'transparent'; }}>
               <ShoppingCart size={17} />
               {itemCount > 0 && (
                 <span style={{
@@ -252,7 +252,7 @@ export default function Navbar() {
                   color: '#fff', fontSize: '0.58rem', fontWeight: 800,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   padding: '0 4px',
-                  boxShadow: '0 0 8px rgba(0,207,255,0.7)',
+                  boxShadow: '0 0 8px rgba(168,85,247,0.7)',
                   border: '1.5px solid var(--bg-dark, #05070f)',
                   animation: cartBump ? 'badgeBump 0.35s ease' : 'none',
                   lineHeight: 1,
@@ -267,7 +267,7 @@ export default function Navbar() {
               <div style={{ position: 'relative' }} className="desktop-nav">
                 <button
                   onClick={(e) => { e.stopPropagation(); setAccountOpen(v => !v); }}
-                  style={{ display: 'flex', alignItems: 'center', gap: '7px', padding: '7px 12px', background: 'rgba(0,207,255,0.08)', border: '1px solid rgba(0,207,255,0.25)', borderRadius: 'var(--radius-md)', color: 'var(--primary-blue)', fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer', fontFamily: 'var(--font-body)', transition: 'all 0.15s ease' }}>
+                  style={{ display: 'flex', alignItems: 'center', gap: '7px', padding: '7px 12px', background: 'rgba(168,85,247,0.08)', border: '1px solid rgba(168,85,247,0.25)', borderRadius: 'var(--radius-md)', color: 'var(--primary-blue)', fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer', fontFamily: 'var(--font-body)', transition: 'all 0.15s ease' }}>
                   <User size={14} />
                   {displayName}
                   <ChevronDown size={12} style={{ transform: accountOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s ease' }} />
@@ -282,7 +282,7 @@ export default function Navbar() {
                       ...(isAffiliate ? [{ href: '/affiliate/payout', label: 'Affiliate Payout' }] : []),
                     ].map(({ href, label }) => (
                       <Link key={href} href={href} style={{ display: 'block', padding: '9px 12px', borderRadius: 'var(--radius-md)', color: 'var(--text-secondary)', fontSize: '0.875rem', textDecoration: 'none', transition: 'all 0.15s ease' }}
-                        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(0,207,255,0.06)'; e.currentTarget.style.color = 'var(--text-light)'; }}
+                        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(168,85,247,0.06)'; e.currentTarget.style.color = 'var(--text-light)'; }}
                         onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-secondary)'; }}>
                         {label}
                       </Link>
@@ -297,9 +297,9 @@ export default function Navbar() {
                 )}
               </div>
             ) : (
-              <Link href="/account" style={{ display: 'flex', alignItems: 'center', gap: '7px', padding: '7px 14px', background: 'var(--gradient-primary)', borderRadius: 'var(--radius-md)', color: '#fff', fontWeight: 600, fontSize: '0.82rem', textDecoration: 'none', boxShadow: '0 0 16px rgba(0,207,255,0.35)', transition: 'all 0.15s ease' }} className="desktop-nav"
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 0 24px rgba(0,207,255,0.55)'; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 0 16px rgba(0,207,255,0.35)'; }}>
+              <Link href="/account" style={{ display: 'flex', alignItems: 'center', gap: '7px', padding: '7px 14px', background: 'var(--gradient-primary)', borderRadius: 'var(--radius-md)', color: '#fff', fontWeight: 600, fontSize: '0.82rem', textDecoration: 'none', boxShadow: '0 0 16px rgba(168,85,247,0.35)', transition: 'all 0.15s ease' }} className="desktop-nav"
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 0 24px rgba(168,85,247,0.55)'; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 0 16px rgba(168,85,247,0.35)'; }}>
                 <User size={14} /> Account
               </Link>
             )}
@@ -317,7 +317,7 @@ export default function Navbar() {
         <div style={{ position: 'fixed', top: 'var(--navbar-height, 68px)', left: 0, right: 0, bottom: 0, zIndex: 99, background: 'rgba(5,7,18,0.97)', backdropFilter: 'blur(24px)', padding: '28px 24px', display: 'flex', flexDirection: 'column', gap: '6px', overflowY: 'auto' }}>
           {navLinks.map(({ href, label }) => (
             <div key={href}>
-              <Link href={href} style={{ display: 'block', padding: '14px 18px', borderRadius: 'var(--radius-md)', color: pathname === href ? 'var(--primary-blue)' : 'var(--text-light)', background: pathname === href ? 'rgba(0,207,255,0.08)' : 'transparent', fontWeight: pathname === href ? 600 : 400, fontSize: '1rem', textDecoration: 'none', borderLeft: `3px solid ${pathname === href ? 'var(--primary-blue)' : 'transparent'}` }}>
+              <Link href={href} style={{ display: 'block', padding: '14px 18px', borderRadius: 'var(--radius-md)', color: pathname === href ? 'var(--primary-blue)' : 'var(--text-light)', background: pathname === href ? 'rgba(168,85,247,0.08)' : 'transparent', fontWeight: pathname === href ? 600 : 400, fontSize: '1rem', textDecoration: 'none', borderLeft: `3px solid ${pathname === href ? 'var(--primary-blue)' : 'transparent'}` }}>
                 {label}
               </Link>
               {href === '/shop' && (
@@ -338,11 +338,11 @@ export default function Navbar() {
 
           {/* Mobile wishlist + cart counts */}
           <div style={{ display: 'flex', gap: '10px', padding: '14px 18px' }}>
-            <Link href="/wishlist" style={{ display: 'flex', alignItems: 'center', gap: '7px', padding: '10px 16px', background: 'rgba(236,72,153,0.1)', border: '1px solid rgba(236,72,153,0.25)', borderRadius: 'var(--radius-md)', color: 'var(--pink)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none', flex: 1, justifyContent: 'center' }}>
+            <Link href="/wishlist" style={{ display: 'flex', alignItems: 'center', gap: '7px', padding: '10px 16px', background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.25)', borderRadius: 'var(--radius-md)', color: 'var(--pink)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none', flex: 1, justifyContent: 'center' }}>
               <Heart size={15} fill={wishlistCount > 0 ? 'currentColor' : 'none'} />
               Wishlist {wishlistCount > 0 && `(${wishlistCount})`}
             </Link>
-            <Link href="/cart" style={{ display: 'flex', alignItems: 'center', gap: '7px', padding: '10px 16px', background: 'rgba(0,207,255,0.1)', border: '1px solid rgba(0,207,255,0.25)', borderRadius: 'var(--radius-md)', color: 'var(--primary-blue)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none', flex: 1, justifyContent: 'center' }}>
+            <Link href="/cart" style={{ display: 'flex', alignItems: 'center', gap: '7px', padding: '10px 16px', background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.25)', borderRadius: 'var(--radius-md)', color: 'var(--primary-blue)', fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none', flex: 1, justifyContent: 'center' }}>
               <ShoppingCart size={15} />
               Cart {itemCount > 0 && `(${itemCount})`}
             </Link>

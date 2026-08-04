@@ -7,12 +7,12 @@ import Link from 'next/link';
 import { Copy, Check, Sparkles, ShieldAlert, ShieldCheck, ArrowRight, Download, Film, Wallet, BookOpen } from 'lucide-react';
 
 const CAPTIONS = [
-  "Doing peptide research? Iron Within Research is the only source I trust — 99%+ purity with a Certificate of Analysis on every single vial. Use code [YOURCODE] → ironwithin.io",
-  "If you care about clean inputs, your source matters. Iron Within third-party lab-tests every batch to 99%+ purity and includes the COA. Code [YOURCODE] for a discount. 🔬",
+  "Doing peptide research? Immortal Research is the only source I trust — 99%+ purity with a Certificate of Analysis on every single vial. Use code [YOURCODE] → ironwithin.io",
+  "If you care about clean inputs, your source matters. Immortal Research third-party lab-tests every batch to 99%+ purity and includes the COA. Code [YOURCODE] for a discount. 🔬",
   "Restocked my research supplies from @ironwithinresearch again. Fast, discreet shipping and a COA in every order. [YOURCODE] saves you on your first one.",
   "New flagship: the Grand Slam research bundle — three of the most-requested compounds in one box, COA on each vial. Grab it with code [YOURCODE].",
-  "Tip for anyone sourcing research peptides: always demand a Certificate of Analysis. Iron Within includes one on every vial. That's why I send people there. [YOURCODE]",
-  "Running a longer study? Iron Within now has prepaid 3 & 6-month Research Plans — lock your supply, get a month free. Use [YOURCODE].",
+  "Tip for anyone sourcing research peptides: always demand a Certificate of Analysis. Immortal Research includes one on every vial. That's why I send people there. [YOURCODE]",
+  "Running a longer study? Immortal Research now has prepaid 3 & 6-month Research Plans — lock your supply, get a month free. Use [YOURCODE].",
 ];
 
 const HOOKS = [
@@ -39,7 +39,7 @@ const GRAPHICS = [
 const SCRIPTS = [
   {
     title: '"How I vet a supplier" (15–20s)',
-    body: 'HOOK (on camera): "How I vet a research peptide supplier — most fail step 2."\nSHOT: hold up a vial, then show a COA on your phone.\nVO/TEXT: "Step 1: third-party lab tested. Step 2: a Certificate of Analysis on every vial — 99%+ purity. Iron Within does both."\nCTA: "Code in my caption. Research use only."',
+    body: 'HOOK (on camera): "How I vet a research peptide supplier — most fail step 2."\nSHOT: hold up a vial, then show a COA on your phone.\nVO/TEXT: "Step 1: third-party lab tested. Step 2: a Certificate of Analysis on every vial — 99%+ purity. Immortal Research does both."\nCTA: "Code in my caption. Research use only."',
   },
   {
     title: '"Restock unboxing" (15–25s)',
@@ -47,7 +47,7 @@ const SCRIPTS = [
   },
   {
     title: '"The one thing to check" (20–30s)',
-    body: 'HOOK: "Stop buying research peptides without this one thing."\nSHOT: hold a vial, point to the COA.\nVO/TEXT: "A Certificate of Analysis. It proves what\'s actually in the vial. No COA, no buy — Iron Within includes one on every order, 99%+ purity, third-party tested."\nCTA: "Use my code (caption). For research use only — not for human consumption."',
+    body: 'HOOK: "Stop buying research peptides without this one thing."\nSHOT: hold a vial, point to the COA.\nVO/TEXT: "A Certificate of Analysis. It proves what\'s actually in the vial. No COA, no buy — Immortal Research includes one on every order, 99%+ purity, third-party tested."\nCTA: "Use my code (caption). For research use only — not for human consumption."',
   },
 ];
 
@@ -70,7 +70,7 @@ export default function AffiliateResourcesPage() {
   return (
     <div style={{ maxWidth: 820, margin: '0 auto', padding: '48px 24px 80px' }}>
       <div style={{ textAlign: 'center', marginBottom: 36 }}>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '6px 15px', background: 'rgba(0,207,255,0.1)', border: '1px solid rgba(0,207,255,0.3)', borderRadius: 999, fontSize: '0.74rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--primary-blue)', marginBottom: 16 }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '6px 15px', background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.3)', borderRadius: 999, fontSize: '0.74rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--primary-blue)', marginBottom: 16 }}>
           <Sparkles size={14} /> Affiliate Swipe Pack
         </span>
         <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', fontWeight: 900, color: '#fff', margin: '0 0 12px' }}>Post in 5 minutes</h1>
@@ -81,36 +81,36 @@ export default function AffiliateResourcesPage() {
 
       {/* Handbook — read the rules + how-to */}
       <Link href="/affiliate/handbook" style={{ textDecoration: 'none', display: 'block', marginBottom: 20 }}>
-        <div style={{ background: 'linear-gradient(100deg, rgba(124,58,237,0.14), rgba(236,72,153,0.10))', border: '1px solid rgba(124,58,237,0.45)', borderRadius: 18, padding: '24px 26px', display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
-          <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(124,58,237,0.15)', border: '1px solid rgba(124,58,237,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <div style={{ background: 'linear-gradient(100deg, rgba(34,197,94,0.14), rgba(74,222,128,0.10))', border: '1px solid rgba(34,197,94,0.45)', borderRadius: 18, padding: '24px 26px', display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
+          <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <BookOpen size={26} color="#a78bfa" />
           </div>
           <div style={{ flex: '1 1 300px' }}>
-            <div style={{ display: 'inline-block', fontSize: '0.66rem', fontWeight: 800, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#a78bfa', background: 'rgba(124,58,237,0.14)', padding: '3px 9px', borderRadius: 999, marginBottom: 8 }}>Start here</div>
+            <div style={{ display: 'inline-block', fontSize: '0.66rem', fontWeight: 800, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#a78bfa', background: 'rgba(34,197,94,0.14)', padding: '3px 9px', borderRadius: 999, marginBottom: 8 }}>Start here</div>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', fontWeight: 800, color: '#fff', margin: '0 0 6px' }}>The Affiliate Handbook</h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.55, margin: 0 }}>
               The rules, commission tiers, how to handle a customer problem, the rewards program, and how to grow your %. <strong style={{ color: 'var(--text-light)' }}>Read it first</strong> — printable / save-as-PDF inside.
             </p>
           </div>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 26px', background: 'var(--gradient-secondary, linear-gradient(135deg,#7C3AED,#EC4899))', borderRadius: 11, color: '#fff', fontWeight: 800, fontSize: '0.95rem', whiteSpace: 'nowrap', boxShadow: '0 0 20px rgba(124,58,237,0.35)' }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 26px', background: 'var(--gradient-secondary, linear-gradient(135deg,#22C55E,#4ADE80))', borderRadius: 11, color: '#fff', fontWeight: 800, fontSize: '0.95rem', whiteSpace: 'nowrap', boxShadow: '0 0 20px rgba(34,197,94,0.35)' }}>
             Read the handbook <ArrowRight size={16} />
           </span>
         </div>
       </Link>
 
       {/* NEW: 2× store-credit payout */}
-      <div style={{ background: 'linear-gradient(100deg, rgba(0,207,255,0.12), rgba(124,58,237,0.10))', border: '1px solid rgba(0,207,255,0.4)', borderRadius: 18, padding: '24px 26px', marginBottom: 40, display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
-        <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(0,207,255,0.12)', border: '1px solid rgba(0,207,255,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <div style={{ background: 'linear-gradient(100deg, rgba(168,85,247,0.12), rgba(34,197,94,0.10))', border: '1px solid rgba(168,85,247,0.4)', borderRadius: 18, padding: '24px 26px', marginBottom: 40, display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
+        <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(168,85,247,0.12)', border: '1px solid rgba(168,85,247,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
           <Wallet size={26} color="var(--primary-blue)" />
         </div>
         <div style={{ flex: '1 1 300px' }}>
-          <div style={{ display: 'inline-block', fontSize: '0.66rem', fontWeight: 800, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--primary-blue)', background: 'rgba(0,207,255,0.12)', padding: '3px 9px', borderRadius: 999, marginBottom: 8 }}>New · Earn more</div>
+          <div style={{ display: 'inline-block', fontSize: '0.66rem', fontWeight: 800, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--primary-blue)', background: 'rgba(168,85,247,0.12)', padding: '3px 9px', borderRadius: 999, marginBottom: 8 }}>New · Earn more</div>
           <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', fontWeight: 800, color: '#fff', margin: '0 0 6px' }}>Get paid in 2× store credit</h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.55, margin: 0 }}>
-            Take your commission as Iron Within store credit and it's worth <strong style={{ color: 'var(--primary-blue)' }}>double</strong> — a <strong style={{ color: 'var(--text-light)' }}>$100</strong> commission becomes <strong style={{ color: 'var(--primary-blue)' }}>$200</strong> to spend. Auto-applies at checkout, no code. Switch anytime.
+            Take your commission as Immortal Research store credit and it's worth <strong style={{ color: 'var(--primary-blue)' }}>double</strong> — a <strong style={{ color: 'var(--text-light)' }}>$100</strong> commission becomes <strong style={{ color: 'var(--primary-blue)' }}>$200</strong> to spend. Auto-applies at checkout, no code. Switch anytime.
           </p>
         </div>
-        <Link href="/affiliate/payout" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 26px', background: 'var(--gradient-primary)', borderRadius: 11, color: '#fff', fontWeight: 800, fontSize: '0.95rem', textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 0 20px rgba(0,207,255,0.35)' }}>
+        <Link href="/affiliate/payout" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 26px', background: 'var(--gradient-primary)', borderRadius: 11, color: '#fff', fontWeight: 800, fontSize: '0.95rem', textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 0 20px rgba(168,85,247,0.35)' }}>
           Choose 2× credit <ArrowRight size={16} />
         </Link>
       </div>

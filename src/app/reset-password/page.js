@@ -130,8 +130,8 @@ function ResetPasswordInner() {
       <div style={{
         position: 'fixed', inset: 0, pointerEvents: 'none',
         background: `
-          radial-gradient(ellipse at 30% 40%, rgba(124,58,237,0.10) 0%, transparent 55%),
-          radial-gradient(ellipse at 70% 60%, rgba(0,207,255,0.08) 0%, transparent 55%)
+          radial-gradient(ellipse at 30% 40%, rgba(34,197,94,0.10) 0%, transparent 55%),
+          radial-gradient(ellipse at 70% 60%, rgba(168,85,247,0.08) 0%, transparent 55%)
         `,
       }} />
 
@@ -146,7 +146,7 @@ function ResetPasswordInner() {
             position: 'absolute', inset: 0, pointerEvents: 'none',
             background: success
               ? 'radial-gradient(ellipse at center, rgba(52,211,153,0.06) 0%, transparent 70%)'
-              : 'radial-gradient(ellipse at top, rgba(124,58,237,0.05) 0%, transparent 70%)',
+              : 'radial-gradient(ellipse at top, rgba(34,197,94,0.05) 0%, transparent 70%)',
           }} />
 
           <div style={{ position: 'relative', zIndex: 1 }}>
@@ -183,7 +183,7 @@ function ResetPasswordInner() {
               <>
                 <div style={{
                   width: 56, height: 56, borderRadius: '14px',
-                  background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.25)',
+                  background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.25)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   marginBottom: '20px',
                 }}>
@@ -320,13 +320,13 @@ function ResetPasswordInner() {
                     disabled={loading || (confirmPassword && confirmPassword !== password)}
                     style={{
                       width: '100%', padding: '13px',
-                      background: 'linear-gradient(135deg, #00cfff, #ec4899)',
+                      background: 'linear-gradient(135deg, #a855f7, #4ade80)',
                       border: 'none', borderRadius: '10px',
                       color: '#fff', fontWeight: 700, fontSize: '1rem',
                       cursor: loading ? 'not-allowed' : 'pointer',
                       fontFamily: 'var(--font-body)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                      boxShadow: '0 0 20px rgba(0,207,255,0.35)',
+                      boxShadow: '0 0 20px rgba(168,85,247,0.35)',
                       opacity: loading ? 0.8 : 1,
                     }}
                   >

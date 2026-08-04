@@ -75,11 +75,11 @@ export default function GiftCardsPage() {
     <main style={{ maxWidth: 1080, margin: '0 auto', padding: '40px 20px 80px' }}>
       {/* Hero */}
       <div style={{ textAlign: 'center', marginBottom: 36 }}>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 999, background: 'rgba(0,207,255,0.08)', border: '1px solid var(--glass-border)', color: 'var(--primary-blue)', fontSize: '0.8rem', fontWeight: 700, marginBottom: 16 }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 999, background: 'rgba(168,85,247,0.08)', border: '1px solid var(--glass-border)', color: 'var(--primary-blue)', fontSize: '0.8rem', fontWeight: 700, marginBottom: 16 }}>
           <Gift size={15} /> Digital Gift Cards
         </span>
         <h1 style={{ fontSize: 'clamp(1.8rem,4vw,2.6rem)', fontWeight: 800, color: 'var(--text-light)', margin: '0 0 12px' }}>
-          Give the gift of Iron Within
+          Give the gift of Immortal Research
         </h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', maxWidth: 560, margin: '0 auto', lineHeight: 1.55 }}>
           Delivered by email with a personal message. Redeemed at checkout, any unused balance stays on the card. They never expire.
@@ -91,7 +91,7 @@ export default function GiftCardsPage() {
         <div style={{ background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: 16, padding: 28 }}>
           {added ? (
             <div style={{ textAlign: 'center', padding: '20px 0' }}>
-              <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(0,207,255,0.12)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+              <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(168,85,247,0.12)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
                 <Check size={28} color="var(--primary-blue)" />
               </div>
               <h2 style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--text-light)', margin: '0 0 8px' }}>Added to your cart</h2>
@@ -121,7 +121,7 @@ export default function GiftCardsPage() {
                       style={{
                         padding: '18px 0', borderRadius: 12, cursor: 'pointer', fontFamily: 'var(--font-body)',
                         fontSize: '1.25rem', fontWeight: 800,
-                        background: active ? 'rgba(0,207,255,0.10)' : 'var(--bg-dark)',
+                        background: active ? 'rgba(168,85,247,0.10)' : 'var(--bg-dark)',
                         border: `1.5px solid ${active ? 'var(--primary-blue)' : 'var(--glass-border)'}`,
                         color: active ? 'var(--primary-blue)' : 'var(--text-light)',
                       }}>
@@ -169,7 +169,7 @@ export default function GiftCardsPage() {
               { Icon: ShieldCheck, t: 'Easy redemption', d: 'Enter the code in the coupon box at checkout.' },
             ].map(({ Icon, t, d }) => (
               <div key={t} style={{ display: 'flex', gap: 12, marginBottom: 14 }}>
-                <span style={{ flexShrink: 0, width: 34, height: 34, borderRadius: 9, background: 'rgba(0,207,255,0.08)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ flexShrink: 0, width: 34, height: 34, borderRadius: 9, background: 'rgba(168,85,247,0.08)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Icon size={17} color="var(--primary-blue)" />
                 </span>
                 <span>

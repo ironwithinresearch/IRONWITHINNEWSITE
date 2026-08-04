@@ -91,8 +91,8 @@ export default function RefundPage() {
         <div className="container" style={{ maxWidth: '950px' }}>
           <div
             style={{
-              background: 'rgba(124,58,237,0.08)',
-              border: '1px solid rgba(124,58,237,0.2)',
+              background: 'rgba(34,197,94,0.08)',
+              border: '1px solid rgba(34,197,94,0.2)',
               borderRadius: 'var(--radius-xl)',
               padding: '28px',
             }}
@@ -176,8 +176,8 @@ export default function RefundPage() {
                         width: '42px',
                         height: '42px',
                         borderRadius: 'var(--radius-md)',
-                        background: 'rgba(0,207,255,0.08)',
-                        border: '1px solid rgba(0,207,255,0.2)',
+                        background: 'rgba(168,85,247,0.08)',
+                        border: '1px solid rgba(168,85,247,0.2)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -278,8 +278,8 @@ export default function RefundPage() {
               style={{
                 marginTop: '24px',
                 padding: '24px',
-                background: 'rgba(0,207,255,0.08)',
-                border: '1px solid rgba(0,207,255,0.2)',
+                background: 'rgba(168,85,247,0.08)',
+                border: '1px solid rgba(168,85,247,0.2)',
                 borderRadius: 'var(--radius-lg)',
               }}
             >

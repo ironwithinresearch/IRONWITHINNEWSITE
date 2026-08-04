@@ -23,9 +23,9 @@ export function generateStaticParams() {
 
 export function generateMetadata({ params }) {
   const coa = getCoaByFile(decodeURIComponent(params.file));
-  if (!coa) return { title: 'Certificates of Analysis | Iron Within Research' };
+  if (!coa) return { title: 'Certificates of Analysis | Immortal Research' };
   return {
-    title: `${coa.productName} — Certificates of Analysis | Iron Within Research`,
+    title: `${coa.productName} — Certificates of Analysis | Immortal Research`,
     description: `Every independently tested batch COA for ${coa.productName}, including purity and endotoxin results.`,
     robots: { index: false, follow: true },
   };
@@ -49,7 +49,7 @@ export default function CoaByFilePage({ params }) {
           aria-hidden
           style={{
             position: 'absolute', inset: 0,
-            background: 'radial-gradient(ellipse at center top, rgba(0,207,255,0.10) 0%, transparent 70%)',
+            background: 'radial-gradient(ellipse at center top, rgba(168,85,247,0.10) 0%, transparent 70%)',
             pointerEvents: 'none',
           }}
         />
@@ -58,7 +58,7 @@ export default function CoaByFilePage({ params }) {
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
               padding: '6px 14px', borderRadius: 999,
-              background: 'rgba(0,207,255,0.12)', color: 'var(--primary-blue)',
+              background: 'rgba(168,85,247,0.12)', color: 'var(--primary-blue)',
               fontSize: '0.8rem', fontWeight: 600, marginBottom: 18,
               border: '1px solid var(--glass-border)',
             }}
@@ -92,7 +92,7 @@ export default function CoaByFilePage({ params }) {
                   display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap',
                 }}
               >
-                <span style={{ width: 44, height: 44, borderRadius: 'var(--radius-md)', background: 'rgba(0,207,255,0.12)', color: 'var(--primary-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <span style={{ width: 44, height: 44, borderRadius: 'var(--radius-md)', background: 'rgba(168,85,247,0.12)', color: 'var(--primary-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <FileText size={20} />
                 </span>
 
@@ -107,7 +107,7 @@ export default function CoaByFilePage({ params }) {
                       </span>
                     )}
                     {isScanned && (
-                      <span style={{ fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.04em', padding: '3px 8px', borderRadius: 999, background: 'rgba(0,207,255,0.14)', color: 'var(--primary-blue)' }}>
+                      <span style={{ fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.04em', padding: '3px 8px', borderRadius: 999, background: 'rgba(168,85,247,0.14)', color: 'var(--primary-blue)' }}>
                         YOUR VIAL
                       </span>
                     )}

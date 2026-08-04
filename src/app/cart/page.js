@@ -279,7 +279,7 @@ export default function CartPage() {
                             </span>
                           )}
                           {subCadence > 0 && (
-                            <span style={{ padding: '2px 9px', background: 'rgba(0,207,255,0.12)', border: '1px solid var(--primary-blue)', borderRadius: '999px', fontSize: '0.68rem', fontWeight: 700, color: 'var(--primary-blue)', whiteSpace: 'nowrap' }}>
+                            <span style={{ padding: '2px 9px', background: 'rgba(168,85,247,0.12)', border: '1px solid var(--primary-blue)', borderRadius: '999px', fontSize: '0.68rem', fontWeight: 700, color: 'var(--primary-blue)', whiteSpace: 'nowrap' }}>
                               🔁 Subscribe &amp; Save · every {subCadence}d
                             </span>
                           )}
@@ -297,7 +297,7 @@ export default function CartPage() {
                       {variationAttrs.length > 0 && (
                         <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
                           {variationAttrs.map((attr, i) => (
-                            <span key={i} style={{ padding: '2px 8px', background: 'rgba(0,207,255,0.08)', border: '1px solid rgba(0,207,255,0.2)', borderRadius: '999px', fontSize: '0.7rem', fontWeight: 600, color: 'var(--primary-blue)' }}>
+                            <span key={i} style={{ padding: '2px 8px', background: 'rgba(168,85,247,0.08)', border: '1px solid rgba(168,85,247,0.2)', borderRadius: '999px', fontSize: '0.7rem', fontWeight: 600, color: 'var(--primary-blue)' }}>
                               {attr.name}: {attr.value}
                             </span>
                           ))}
@@ -421,7 +421,7 @@ export default function CartPage() {
               </div>
 
               {subscribedCount > 0 && (
-                <div style={{ marginBottom: '18px', padding: '12px 14px', borderRadius: '12px', border: '1px solid var(--primary-blue)', background: 'rgba(0,207,255,0.06)', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
+                <div style={{ marginBottom: '18px', padding: '12px 14px', borderRadius: '12px', border: '1px solid var(--primary-blue)', background: 'rgba(168,85,247,0.06)', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
                   🔁 <strong style={{ color: 'var(--text-light)' }}>Subscribe &amp; Save active</strong> on {subscribedCount} item{subscribedCount > 1 ? 's' : ''} — 10% off + free US shipping. Manage or cancel anytime from your reorder emails.
                 </div>
               )}

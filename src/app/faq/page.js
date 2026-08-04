@@ -208,7 +208,7 @@ export default function FaqPage() {
                   display: 'flex', alignItems: 'center', gap: '10px',
                   padding: '14px 18px',
                   borderBottom: i < categories.length - 1 ? '1px solid var(--glass-border)' : 'none',
-                  background: activeCategory === cat.id ? 'rgba(0,207,255,0.08)' : 'transparent',
+                  background: activeCategory === cat.id ? 'rgba(168,85,247,0.08)' : 'transparent',
                   border: 'none',
                   borderLeft: `3px solid ${activeCategory === cat.id ? 'var(--primary-blue)' : 'transparent'}`,
                   color: activeCategory === cat.id ? 'var(--primary-blue)' : 'var(--text-secondary)',
@@ -224,7 +224,7 @@ export default function FaqPage() {
                     marginLeft: 'auto',
                     fontSize: '0.7rem', fontWeight: 600,
                     color: activeCategory === cat.id ? 'var(--primary-blue)' : 'var(--text-muted)',
-                    background: activeCategory === cat.id ? 'rgba(0,207,255,0.15)' : 'var(--bg-dark)',
+                    background: activeCategory === cat.id ? 'rgba(168,85,247,0.15)' : 'var(--bg-dark)',
                     padding: '2px 7px', borderRadius: '999px',
                   }}>
                     {faqs.filter(f => f.category === cat.id).length}
@@ -270,11 +270,11 @@ export default function FaqPage() {
                   return (
                     <div key={i} style={{
                       background: 'var(--card-dark)',
-                      border: `1px solid ${isOpen ? 'rgba(0,207,255,0.25)' : 'var(--glass-border)'}`,
+                      border: `1px solid ${isOpen ? 'rgba(168,85,247,0.25)' : 'var(--glass-border)'}`,
                       borderRadius: 'var(--radius-lg)',
                       overflow: 'hidden',
                       transition: 'all var(--transition-base)',
-                      boxShadow: isOpen ? '0 0 16px rgba(0,207,255,0.07)' : 'none',
+                      boxShadow: isOpen ? '0 0 16px rgba(168,85,247,0.07)' : 'none',
                     }}>
                       <button
                         onClick={() => setOpenIndex(isOpen ? null : i)}
@@ -294,8 +294,8 @@ export default function FaqPage() {
                         <div style={{
                           width: 28, height: 28, flexShrink: 0,
                           borderRadius: '50%',
-                          background: isOpen ? 'rgba(0,207,255,0.12)' : 'var(--bg-dark)',
-                          border: `1px solid ${isOpen ? 'rgba(0,207,255,0.3)' : 'var(--glass-border)'}`,
+                          background: isOpen ? 'rgba(168,85,247,0.12)' : 'var(--bg-dark)',
+                          border: `1px solid ${isOpen ? 'rgba(168,85,247,0.3)' : 'var(--glass-border)'}`,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           transition: 'all var(--transition-base)',
                         }}>
@@ -344,7 +344,7 @@ export default function FaqPage() {
         }}>
           <div style={{
             position: 'absolute', inset: 0,
-            background: 'radial-gradient(ellipse at left, rgba(0,207,255,0.05) 0%, transparent 60%)',
+            background: 'radial-gradient(ellipse at left, rgba(168,85,247,0.05) 0%, transparent 60%)',
             pointerEvents: 'none',
           }} />
           <div style={{ position: 'relative', zIndex: 1 }}>

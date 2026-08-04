@@ -1,5 +1,5 @@
 // Lux Me by Axion — the beauty line sold via the standalone luxmebyaxion.com
-// storefront, which deep-links buyers into these Iron Within product pages.
+// storefront, which deep-links buyers into these Immortal Research product pages.
 // Those pages are exempt from the research-compound framing (age gate,
 // research-use disclaimers) so beauty buyers get a clean skincare experience.
 //

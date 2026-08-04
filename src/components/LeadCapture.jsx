@@ -88,7 +88,7 @@ export default function LeadCapture() {
             <div style={{ fontSize: 34, marginBottom: 8 }}>🎉</div>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: 900, color: '#fff', margin: '0 0 8px' }}>You&apos;re in!</h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', margin: '0 0 16px' }}>Here&apos;s your 10% off — we&apos;ve also emailed it to you.</p>
-            <div style={{ background: 'rgba(0,207,255,0.08)', border: '1px dashed var(--primary-blue)', borderRadius: 10, padding: '16px', marginBottom: 18 }}>
+            <div style={{ background: 'rgba(168,85,247,0.08)', border: '1px dashed var(--primary-blue)', borderRadius: 10, padding: '16px', marginBottom: 18 }}>
               <div style={{ fontSize: '0.7rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--primary-blue)' }}>Your code</div>
               <div style={{ fontFamily: 'monospace', fontSize: '1.5rem', fontWeight: 800, color: 'var(--primary-blue)', letterSpacing: '0.06em', marginTop: 4 }}>{code}</div>
             </div>

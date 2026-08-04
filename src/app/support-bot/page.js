@@ -1,5 +1,5 @@
 'use client';
-// src/app/support-bot/page.js — preview page for the Iron Within support agent.
+// src/app/support-bot/page.js — preview page for the Immortal Research support agent.
 // Standalone so it doesn't touch the live layout or Re:amaze. Chats with /api/chat.
 
 import { useState, useRef, useEffect } from 'react';
@@ -28,7 +28,7 @@ function Bub({ role, text, image }) {
 }
 
 export default function SupportBot() {
-  const [msgs, setMsgs] = useState([{ role: 'bot', text: "Hey there — I'm the **Iron Within** assistant. 👋\nI can check your order, help with a missing or damaged item, and answer questions about COAs, shipping, and your account. What can I do for you?" }]);
+  const [msgs, setMsgs] = useState([{ role: 'bot', text: "Hey there — I'm the **Immortal Research** assistant. 👋\nI can check your order, help with a missing or damaged item, and answer questions about COAs, shipping, and your account. What can I do for you?" }]);
   const [val, setVal] = useState('');
   const [img, setImg] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -79,7 +79,7 @@ export default function SupportBot() {
             <img src="/logo-mark.png" alt="" style={{ width: '110%', height: '110%', objectFit: 'cover', mixBlendMode: 'screen' }} />
           </div>
           <div>
-            <div style={{ fontWeight: 700, fontSize: 15 }}>Iron Within Assistant</div>
+            <div style={{ fontWeight: 700, fontSize: 15 }}>Immortal Research Assistant</div>
             <div style={{ fontSize: 12, color: '#5fbf93', display: 'flex', alignItems: 'center', gap: 5 }}>
               <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#5fbf93', boxShadow: '0 0 8px #5fbf93' }} /> Online · replies instantly
             </div>

@@ -62,7 +62,7 @@ export default function BundleUpsell({ cartSlugs = [] }) {
   };
 
   return (
-    <div style={{ background: 'var(--card-dark)', border: '1px solid rgba(0,207,255,0.25)', borderRadius: '16px', padding: '18px 18px 14px', marginTop: '4px' }}>
+    <div style={{ background: 'var(--card-dark)', border: '1px solid rgba(168,85,247,0.25)', borderRadius: '16px', padding: '18px 18px 14px', marginTop: '4px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
         <Layers size={16} color="var(--primary-blue)" />
         <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '0.98rem', fontWeight: 800, color: 'var(--text-light)' }}>
@@ -93,7 +93,7 @@ export default function BundleUpsell({ cartSlugs = [] }) {
                     <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-light)' }}>{it.p.name}</span>
                   </Link>
                   {it.relevant && (
-                    <span style={{ padding: '1px 7px', background: 'rgba(0,207,255,0.14)', border: '1px solid rgba(0,207,255,0.5)', borderRadius: '999px', fontSize: '0.6rem', fontWeight: 800, letterSpacing: '0.03em', color: 'var(--primary-blue)', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+                    <span style={{ padding: '1px 7px', background: 'rgba(168,85,247,0.14)', border: '1px solid rgba(168,85,247,0.5)', borderRadius: '999px', fontSize: '0.6rem', fontWeight: 800, letterSpacing: '0.03em', color: 'var(--primary-blue)', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
                       ✓ matches your cart
                     </span>
                   )}

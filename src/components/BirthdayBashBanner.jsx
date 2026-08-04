@@ -25,14 +25,14 @@ export default function BirthdayBashBanner() {
     <section style={{ padding: '44px 24px 8px' }}>
       <div className="container" style={{ maxWidth: 680 }}>
         <Link href="/shop" aria-label="Shop Lacey's Birthday Bash — 15% off sitewide"
-          style={{ display: 'block', borderRadius: '20px', overflow: 'hidden', border: '1px solid rgba(236,72,153,0.4)', boxShadow: '0 0 44px rgba(236,72,153,0.28)' }}>
+          style={{ display: 'block', borderRadius: '20px', overflow: 'hidden', border: '1px solid rgba(74,222,128,0.4)', boxShadow: '0 0 44px rgba(74,222,128,0.28)' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/lacey-birthday-bash.jpg" alt="Lacey's Birthday Bash — 15% off sitewide, no code needed, plus a chance to win a $250 gift card"
             style={{ width: '100%', display: 'block' }} />
         </Link>
         <div style={{ textAlign: 'center', marginTop: '20px' }}>
           <Link href="/shop"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', padding: '15px 38px', background: 'linear-gradient(90deg,#ec4899,#f5d272)', borderRadius: '12px', color: '#0a0a0a', fontWeight: 800, fontSize: '1.05rem', textDecoration: 'none', boxShadow: '0 0 30px rgba(236,72,153,0.4)' }}>
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', padding: '15px 38px', background: 'linear-gradient(90deg,#4ade80,#f5d272)', borderRadius: '12px', color: '#0a0a0a', fontWeight: 800, fontSize: '1.05rem', textDecoration: 'none', boxShadow: '0 0 30px rgba(74,222,128,0.4)' }}>
             Shop the Birthday Bash — 15% Off <ArrowRight size={17} />
           </Link>
           <p style={{ marginTop: '12px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>

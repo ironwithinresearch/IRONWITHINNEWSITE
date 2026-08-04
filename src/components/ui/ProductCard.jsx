@@ -53,9 +53,9 @@ export default function ProductCard({ product, variant = 'default' }) {
       transition: 'all var(--transition-base)',
     }}
       onMouseEnter={e => {
-        e.currentTarget.style.borderColor = 'rgba(0,207,255,0.35)';
+        e.currentTarget.style.borderColor = 'rgba(168,85,247,0.35)';
         e.currentTarget.style.transform = 'translateY(-6px)';
-        e.currentTarget.style.boxShadow = '0 16px 48px rgba(0,0,0,0.4), 0 0 24px rgba(0,207,255,0.15)';
+        e.currentTarget.style.boxShadow = '0 16px 48px rgba(0,0,0,0.4), 0 0 24px rgba(168,85,247,0.15)';
       }}
       onMouseLeave={e => {
         e.currentTarget.style.borderColor = 'var(--glass-border)';
@@ -87,7 +87,7 @@ export default function ProductCard({ product, variant = 'default' }) {
           fontSize: '4rem',
           position: 'relative',
           zIndex: 1,
-          filter: 'drop-shadow(0 0 16px rgba(0,207,255,0.3))',
+          filter: 'drop-shadow(0 0 16px rgba(168,85,247,0.3))',
         }}>
           {icon}
         </div>
@@ -108,7 +108,7 @@ export default function ProductCard({ product, variant = 'default' }) {
           onMouseEnter={e => {
             e.currentTarget.style.color = 'var(--pink)';
             e.currentTarget.style.borderColor = 'var(--pink)';
-            e.currentTarget.style.background = 'rgba(236,72,153,0.1)';
+            e.currentTarget.style.background = 'rgba(74,222,128,0.1)';
           }}
           onMouseLeave={e => {
             e.currentTarget.style.color = 'var(--pink)';
@@ -238,8 +238,8 @@ export default function ProductCard({ product, variant = 'default' }) {
             <button style={{
               width: 36, height: 36,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              background: 'rgba(0,207,255,0.1)',
-              border: '1px solid rgba(0,207,255,0.25)',
+              background: 'rgba(168,85,247,0.1)',
+              border: '1px solid rgba(168,85,247,0.25)',
               borderRadius: 'var(--radius-md)',
               color: 'var(--primary-blue)',
               cursor: inStock ? 'pointer' : 'not-allowed',
@@ -248,11 +248,11 @@ export default function ProductCard({ product, variant = 'default' }) {
             }}
               onMouseEnter={e => {
                 if (!inStock) return;
-                e.currentTarget.style.background = 'rgba(0,207,255,0.2)';
+                e.currentTarget.style.background = 'rgba(168,85,247,0.2)';
                 e.currentTarget.style.boxShadow = 'var(--glow-sm)';
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.background = 'rgba(0,207,255,0.1)';
+                e.currentTarget.style.background = 'rgba(168,85,247,0.1)';
                 e.currentTarget.style.boxShadow = 'none';
               }}
             >
@@ -300,7 +300,7 @@ function CompactCard({ product }) {
         transition: 'all var(--transition-fast)',
       }}
         onMouseEnter={e => {
-          e.currentTarget.style.borderColor = 'rgba(0,207,255,0.3)';
+          e.currentTarget.style.borderColor = 'rgba(168,85,247,0.3)';
           e.currentTarget.style.background = 'var(--card-elevated)';
         }}
         onMouseLeave={e => {
@@ -349,7 +349,7 @@ function HorizontalCard({ product }) {
       alignItems: 'flex-start',
     }}
       onMouseEnter={e => {
-        e.currentTarget.style.borderColor = 'rgba(0,207,255,0.3)';
+        e.currentTarget.style.borderColor = 'rgba(168,85,247,0.3)';
         e.currentTarget.style.boxShadow = 'var(--glow-blue)';
       }}
       onMouseLeave={e => {

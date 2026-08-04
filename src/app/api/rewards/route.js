@@ -1,5 +1,5 @@
 // src/app/api/rewards/route.js
-// Server-side proxy for the IWR Rewards balance. Forwards the customer's JWT to
+// Server-side proxy for the Immortal Rewards balance. Forwards the customer's JWT to
 // the WordPress backend (mu-plugin iw-rewards.php) so the browser never hits the
 // backend directly (no CORS). The backend's jwt-auth resolves the user.
 

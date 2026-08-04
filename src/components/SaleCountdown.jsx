@@ -28,7 +28,7 @@ export default function SaleCountdown() {
   const time = (d > 0 ? `${d}d ` : '') + `${pad(h)}h ${pad(m)}m ${pad(s)}s`;
 
   return (
-    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '9px 20px', background: 'rgba(236,72,153,0.12)', border: '1px solid rgba(236,72,153,0.55)', borderRadius: '999px', marginBottom: '24px', fontSize: '0.9rem', color: '#f9a8d4', fontWeight: 700 }}>
+    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '9px 20px', background: 'rgba(74,222,128,0.12)', border: '1px solid rgba(74,222,128,0.55)', borderRadius: '999px', marginBottom: '24px', fontSize: '0.9rem', color: '#f9a8d4', fontWeight: 700 }}>
       <Clock size={15} /> <strong style={{ color: '#fff', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Birthday Bash</strong>&nbsp;— ends in{' '}
       <strong style={{ fontVariantNumeric: 'tabular-nums', color: '#fff', letterSpacing: '0.02em' }}>{time}</strong>
       <span style={{ color: 'rgba(255,255,255,0.5)' }}>·</span> 15% off sitewide

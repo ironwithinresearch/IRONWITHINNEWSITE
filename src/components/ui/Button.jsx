@@ -107,11 +107,11 @@ export default function Button({
     e.currentTarget.style.transform = 'translateY(-2px)';
     e.currentTarget.style.boxShadow = v.hoverShadow;
     if (variant === 'ghost') {
-      e.currentTarget.style.borderColor = 'rgba(0,207,255,0.3)';
+      e.currentTarget.style.borderColor = 'rgba(168,85,247,0.3)';
     }
     if (variant === 'outline') {
       e.currentTarget.style.borderColor = 'var(--primary-blue)';
-      e.currentTarget.style.background = 'rgba(0,207,255,0.06)';
+      e.currentTarget.style.background = 'rgba(168,85,247,0.06)';
     }
   };
 

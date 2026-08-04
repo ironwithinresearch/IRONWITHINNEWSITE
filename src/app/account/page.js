@@ -21,10 +21,10 @@ import {
 const statusConfig = {
   COMPLETED:  { label: 'Delivered',  color: '#34d399',           bg: 'rgba(52,211,153,0.12)',  border: 'rgba(52,211,153,0.3)',  Icon: CheckCircle2 },
   PROCESSING: { label: 'Processing', color: '#fbbf24',           bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.3)', Icon: Clock },
-  SHIPPED:    { label: 'Shipped',    color: '#00CFFF',           bg: 'rgba(0,207,255,0.12)',  border: 'rgba(0,207,255,0.3)',  Icon: Truck },
+  SHIPPED:    { label: 'Shipped',    color: '#A855F7',           bg: 'rgba(168,85,247,0.12)',  border: 'rgba(168,85,247,0.3)',  Icon: Truck },
   BACKORDER:  { label: 'Backorder',  color: '#f59e0b',           bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.35)', Icon: Clock },
   ON_HOLD:    { label: 'On Hold',    color: '#fbbf24',           bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.3)', Icon: Clock },
-  PENDING:    { label: 'Pending',    color: 'var(--primary-blue)', bg: 'rgba(0,207,255,0.12)', border: 'rgba(0,207,255,0.3)', Icon: Truck },
+  PENDING:    { label: 'Pending',    color: 'var(--primary-blue)', bg: 'rgba(168,85,247,0.12)', border: 'rgba(168,85,247,0.3)', Icon: Truck },
   CANCELLED:  { label: 'Cancelled',  color: '#f87171',           bg: 'rgba(239,68,68,0.12)',  border: 'rgba(239,68,68,0.3)',  Icon: XCircle },
   REFUNDED:   { label: 'Refunded',   color: '#f87171',           bg: 'rgba(239,68,68,0.12)',  border: 'rgba(239,68,68,0.3)',  Icon: XCircle },
   FAILED:     { label: 'Failed',     color: '#f87171',           bg: 'rgba(239,68,68,0.12)',  border: 'rgba(239,68,68,0.3)',  Icon: XCircle },
@@ -122,7 +122,7 @@ function OrdersPanel() {
         <Package size={16} color="var(--primary-blue)" />
         <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 800 }}>My Orders</h2>
         {!loading && (
-          <span style={{ marginLeft: '4px', padding: '2px 9px', background: 'rgba(0,207,255,0.1)', border: '1px solid rgba(0,207,255,0.25)', borderRadius: '999px', fontSize: '0.7rem', fontWeight: 700, color: 'var(--primary-blue)' }}>
+          <span style={{ marginLeft: '4px', padding: '2px 9px', background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.25)', borderRadius: '999px', fontSize: '0.7rem', fontWeight: 700, color: 'var(--primary-blue)' }}>
             {orders.length}
           </span>
         )}
@@ -146,7 +146,7 @@ function OrdersPanel() {
         <div style={{ display: 'flex', gap: '7px', flexWrap: 'wrap' }}>
           {filterOptions.map(f => (
             <button key={f} onClick={() => setFilter(f)}
-              style={{ padding: '7px 14px', borderRadius: '999px', border: `1px solid ${filter === f ? 'var(--primary-blue)' : 'var(--glass-border)'}`, background: filter === f ? 'rgba(0,207,255,0.1)' : 'var(--card-dark)', color: filter === f ? 'var(--primary-blue)' : 'var(--text-secondary)', fontSize: '0.78rem', fontWeight: filter === f ? 600 : 400, cursor: 'pointer', fontFamily: 'var(--font-body)' }}
+              style={{ padding: '7px 14px', borderRadius: '999px', border: `1px solid ${filter === f ? 'var(--primary-blue)' : 'var(--glass-border)'}`, background: filter === f ? 'rgba(168,85,247,0.1)' : 'var(--card-dark)', color: filter === f ? 'var(--primary-blue)' : 'var(--text-secondary)', fontSize: '0.78rem', fontWeight: filter === f ? 600 : 400, cursor: 'pointer', fontFamily: 'var(--font-body)' }}
             >{f}</button>
           ))}
         </div>
@@ -175,7 +175,7 @@ function OrdersPanel() {
             const isOpen  = expandedId === order.id;
             const lineItems = order.lineItems?.nodes || [];
             return (
-              <div key={order.id} style={{ background: 'var(--card-dark)', border: `1px solid ${isOpen ? 'rgba(0,207,255,0.25)' : 'var(--glass-border)'}`, borderRadius: 'var(--radius-xl)', overflow: 'hidden', transition: 'all 0.2s ease', boxShadow: isOpen ? '0 0 20px rgba(0,207,255,0.08)' : 'none' }}>
+              <div key={order.id} style={{ background: 'var(--card-dark)', border: `1px solid ${isOpen ? 'rgba(168,85,247,0.25)' : 'var(--glass-border)'}`, borderRadius: 'var(--radius-xl)', overflow: 'hidden', transition: 'all 0.2s ease', boxShadow: isOpen ? '0 0 20px rgba(168,85,247,0.08)' : 'none' }}>
                 <div onClick={() => setExpandedId(isOpen ? null : order.id)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', cursor: 'pointer', flexWrap: 'wrap', gap: '12px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
                     <div style={{ width: 38, height: 38, borderRadius: 'var(--radius-md)', background: `${sc.color}15`, border: `1px solid ${sc.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -240,7 +240,7 @@ function OrdersPanel() {
                               <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>{product?.name || 'Product'}</div>
                               {attrs.length > 0 && (
                                 <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginTop: '3px' }}>
-                                  {attrs.map((a, ai) => <span key={ai} style={{ padding: '1px 6px', background: 'rgba(0,207,255,0.08)', border: '1px solid rgba(0,207,255,0.2)', borderRadius: '999px', fontSize: '0.62rem', color: 'var(--primary-blue)', fontWeight: 600 }}>{a.name}: {a.value}</span>)}
+                                  {attrs.map((a, ai) => <span key={ai} style={{ padding: '1px 6px', background: 'rgba(168,85,247,0.08)', border: '1px solid rgba(168,85,247,0.2)', borderRadius: '999px', fontSize: '0.62rem', color: 'var(--primary-blue)', fontWeight: 600 }}>{a.name}: {a.value}</span>)}
                                 </div>
                               )}
                               <div style={{ color: 'var(--text-muted)', fontSize: '0.72rem', marginTop: '2px' }}>Qty: {li.quantity}</div>
@@ -788,7 +788,7 @@ export default function AccountPage() {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px' }}>
         <div style={{ textAlign: 'center', maxWidth: 400 }}>
-          <div style={{ width: 64, height: 64, borderRadius: '16px', background: 'linear-gradient(135deg, #00cfff, #ec4899)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+          <div style={{ width: 64, height: 64, borderRadius: '16px', background: 'linear-gradient(135deg, #a855f7, #4ade80)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
             <FlaskConical size={28} color="#fff" />
           </div>
           <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.8rem', fontWeight: 900, marginBottom: '10px' }}>Researcher Account</h2>
@@ -820,7 +820,7 @@ export default function AccountPage() {
 
         {/* ── Profile header ── */}
         <div style={{ background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: '20px', padding: '28px', marginBottom: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px', position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at left, rgba(0,207,255,0.05) 0%, transparent 60%)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at left, rgba(168,85,247,0.05) 0%, transparent 60%)', pointerEvents: 'none' }} />
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px', position: 'relative', zIndex: 1 }}>
             <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--gradient-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: 900, color: '#fff' }}>
               {(customer?.firstName || user?.name || 'U')[0].toUpperCase()}

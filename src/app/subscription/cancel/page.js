@@ -32,7 +32,7 @@ export default function CancelSubscriptionPage() {
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.55, marginBottom: 22 }}>
           {status === 'loading' ? 'Processing…' : message}
         </p>
-        <Link href="/" style={{ display: 'inline-block', padding: '12px 26px', background: 'var(--gradient-primary)', borderRadius: 10, color: '#fff', fontWeight: 700, textDecoration: 'none' }}>Back to Iron Within</Link>
+        <Link href="/" style={{ display: 'inline-block', padding: '12px 26px', background: 'var(--gradient-primary)', borderRadius: 10, color: '#fff', fontWeight: 700, textDecoration: 'none' }}>Back to Immortal Research</Link>
       </div>
     </div>
   );

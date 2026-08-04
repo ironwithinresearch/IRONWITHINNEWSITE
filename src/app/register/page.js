@@ -113,8 +113,8 @@ export default function RegisterPage() {
       <div style={{
         position: 'fixed', inset: 0, pointerEvents: 'none',
         background: `
-          radial-gradient(ellipse at 25% 35%, rgba(124,58,237,0.08) 0%, transparent 55%),
-          radial-gradient(ellipse at 75% 65%, rgba(0,207,255,0.07) 0%, transparent 55%)
+          radial-gradient(ellipse at 25% 35%, rgba(34,197,94,0.08) 0%, transparent 55%),
+          radial-gradient(ellipse at 75% 65%, rgba(168,85,247,0.07) 0%, transparent 55%)
         `,
       }} />
 
@@ -124,10 +124,10 @@ export default function RegisterPage() {
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <div style={{
             width: 56, height: 56, borderRadius: '14px',
-            background: 'linear-gradient(135deg, #00cfff, #ec4899)',
+            background: 'linear-gradient(135deg, #a855f7, #4ade80)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             margin: '0 auto 14px',
-            boxShadow: '0 0 24px rgba(0,207,255,0.4)',
+            boxShadow: '0 0 24px rgba(168,85,247,0.4)',
           }}>
             <FlaskConical size={26} color="#fff" />
           </div>
@@ -259,13 +259,13 @@ export default function RegisterPage() {
               disabled={loading || success || !agree21}
               style={{
                 width: '100%', padding: '13px',
-                background: 'linear-gradient(135deg, #00cfff, #ec4899)',
+                background: 'linear-gradient(135deg, #a855f7, #4ade80)',
                 border: 'none', borderRadius: '10px',
                 color: '#fff', fontWeight: 700, fontSize: '0.95rem',
                 cursor: loading || success ? 'not-allowed' : 'pointer',
                 fontFamily: 'var(--font-body)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                boxShadow: '0 0 20px rgba(0,207,255,0.35)',
+                boxShadow: '0 0 20px rgba(168,85,247,0.35)',
                 opacity: loading || success ? 0.8 : 1,
                 transition: 'all 0.2s ease',
               }}

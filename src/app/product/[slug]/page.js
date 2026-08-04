@@ -235,7 +235,7 @@ export default function ProductPage() {
               minHeight: '320px', marginBottom: '12px', overflow: 'hidden',
               position: 'relative',
             }}>
-              <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(0,207,255,0.06) 0%, transparent 65%)', pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(168,85,247,0.06) 0%, transparent 65%)', pointerEvents: 'none' }} />
               {images[0] ? (
                 <img src={images[0]} alt={product.image?.altText || product.name}
                   style={{ maxHeight: '280px', objectFit: 'contain', position: 'relative', zIndex: 1, padding: '16px' }} />
@@ -272,7 +272,7 @@ export default function ProductPage() {
 
             {['rt-3', 'cjc-ipa', 'mots-c'].includes(product.slug) && (
               <Link href="/continuity"
-                style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '12px', padding: '12px 14px', background: 'rgba(0,207,255,0.07)', border: '1px solid rgba(0,207,255,0.3)', borderRadius: '12px', color: 'var(--text-light)', textDecoration: 'none' }}>
+                style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '12px', padding: '12px 14px', background: 'rgba(168,85,247,0.07)', border: '1px solid rgba(168,85,247,0.3)', borderRadius: '12px', color: 'var(--text-light)', textDecoration: 'none' }}>
                 <CalendarClock size={20} color="var(--primary-blue)" style={{ flexShrink: 0 }} />
                 <span style={{ flex: 1, fontSize: '0.85rem', lineHeight: 1.4 }}>Running a longer study? <strong>Save with a 3 or 6-month plan</strong> — 1 month free + free shipping.</span>
                 <ArrowRight size={15} color="var(--primary-blue)" style={{ flexShrink: 0 }} />
@@ -280,7 +280,7 @@ export default function ProductPage() {
             )}
 
             <a href="https://peptideparadigm.app" target="_blank" rel="noopener noreferrer"
-              style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '12px', padding: '12px 14px', background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.3)', borderRadius: '12px', color: 'var(--text-light)', textDecoration: 'none' }}>
+              style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '12px', padding: '12px 14px', background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '12px', color: 'var(--text-light)', textDecoration: 'none' }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/pp-app-mark.png" alt="Peptide Paradigm" width={42} height={42} style={{ width: 42, height: 42, borderRadius: 9, flexShrink: 0 }} />
               <span style={{ flex: 1, fontSize: '0.85rem', lineHeight: 1.4 }}>Look up <strong>{product.name}</strong> in our free reference guide — the Peptide Paradigm app</span>
@@ -292,7 +292,7 @@ export default function ProductPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
 
             {product.productCategories?.nodes?.[0] && (
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(0,207,255,0.1)', border: '1px solid rgba(0,207,255,0.25)', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 600, color: 'var(--primary-blue)', width: 'fit-content' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.25)', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 600, color: 'var(--primary-blue)', width: 'fit-content' }}>
                 <FlaskConical size={11} />{product.productCategories.nodes[0].name}
               </div>
             )}
@@ -317,7 +317,7 @@ export default function ProductPage() {
                 <span style={{ color: 'var(--text-muted)', fontSize: '1rem', textDecoration: 'line-through' }}>{money(regularUnit)}</span>
               ) : null}
               {subscribe ? (
-                <span style={{ padding: '3px 10px', background: 'rgba(0,207,255,0.14)', border: '1px solid rgba(0,207,255,0.35)', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 700, color: 'var(--primary-blue)' }}>
+                <span style={{ padding: '3px 10px', background: 'rgba(168,85,247,0.14)', border: '1px solid rgba(168,85,247,0.35)', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 700, color: 'var(--primary-blue)' }}>
                   🔁 Subscribe &amp; Save
                 </span>
               ) : savePct > 0 ? (
@@ -384,8 +384,8 @@ export default function ProductPage() {
 
             {/* Certificate of Analysis (COA) */}
             {coa && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '14px 16px', background: 'rgba(0,207,255,0.05)', border: '1px solid rgba(0,207,255,0.25)', borderRadius: '12px' }}>
-                <span style={{ width: 40, height: 40, flexShrink: 0, borderRadius: '10px', background: 'rgba(0,207,255,0.12)', color: 'var(--primary-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '14px 16px', background: 'rgba(168,85,247,0.05)', border: '1px solid rgba(168,85,247,0.25)', borderRadius: '12px' }}>
+                <span style={{ width: 40, height: 40, flexShrink: 0, borderRadius: '10px', background: 'rgba(168,85,247,0.12)', color: 'var(--primary-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <FileText size={20} />
                 </span>
                 <div style={{ flex: 1, minWidth: 0 }}>
@@ -407,7 +407,7 @@ export default function ProductPage() {
                 <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginRight: 4 }}>Batch history:</span>
                 {coa.batches.map((b, i) => (
                   <a key={i} href={b.coaFile} target="_blank" rel="noopener noreferrer"
-                    style={{ fontSize: '0.72rem', color: 'var(--primary-blue)', textDecoration: 'none', padding: '3px 9px', borderRadius: 7, background: 'rgba(0,207,255,0.08)' }}>
+                    style={{ fontSize: '0.72rem', color: 'var(--primary-blue)', textDecoration: 'none', padding: '3px 9px', borderRadius: 7, background: 'rgba(168,85,247,0.08)' }}>
                     {b.batchDate}{i === 0 ? ' · latest' : ''}
                   </a>
                 ))}
@@ -447,7 +447,7 @@ export default function ProductPage() {
                     return (
                       <button key={t.n} onClick={() => setQty(t.n)} style={{
                         padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', minWidth: 78,
-                        background: active ? 'rgba(0,207,255,0.12)' : 'var(--card-dark)',
+                        background: active ? 'rgba(168,85,247,0.12)' : 'var(--card-dark)',
                         border: `1px solid ${active ? 'var(--primary-blue)' : 'var(--glass-border)'}`,
                         color: active ? 'var(--primary-blue)' : 'var(--text-secondary)',
                         fontFamily: 'var(--font-body)', fontWeight: 600,
@@ -482,12 +482,12 @@ export default function ProductPage() {
             {false && inStock && slug !== 'gift-card' && slug !== 'grand-slam-bundle' && slug !== 'long-shot' && (
               <div style={{ display: 'grid', gap: '8px', marginBottom: '14px' }}>
                 <button type="button" onClick={() => setSubscribe(false)}
-                  style={{ textAlign: 'left', display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 14px', borderRadius: '10px', cursor: 'pointer', background: !subscribe ? 'rgba(0,207,255,0.06)' : 'transparent', border: `1px solid ${!subscribe ? 'var(--primary-blue)' : 'var(--glass-border)'}`, color: 'var(--text-light)', fontFamily: 'var(--font-body)' }}>
+                  style={{ textAlign: 'left', display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 14px', borderRadius: '10px', cursor: 'pointer', background: !subscribe ? 'rgba(168,85,247,0.06)' : 'transparent', border: `1px solid ${!subscribe ? 'var(--primary-blue)' : 'var(--glass-border)'}`, color: 'var(--text-light)', fontFamily: 'var(--font-body)' }}>
                   <span style={{ width: 16, height: 16, borderRadius: '50%', border: `2px solid ${!subscribe ? 'var(--primary-blue)' : 'var(--text-muted)'}`, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{!subscribe && <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--primary-blue)' }} />}</span>
                   <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>One-time purchase</span>
                 </button>
                 <button type="button" onClick={() => setSubscribe(true)}
-                  style={{ textAlign: 'left', display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '12px 14px', borderRadius: '10px', cursor: 'pointer', background: subscribe ? 'rgba(0,207,255,0.06)' : 'transparent', border: `1px solid ${subscribe ? 'var(--primary-blue)' : 'var(--glass-border)'}`, color: 'var(--text-light)', fontFamily: 'var(--font-body)' }}>
+                  style={{ textAlign: 'left', display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '12px 14px', borderRadius: '10px', cursor: 'pointer', background: subscribe ? 'rgba(168,85,247,0.06)' : 'transparent', border: `1px solid ${subscribe ? 'var(--primary-blue)' : 'var(--glass-border)'}`, color: 'var(--text-light)', fontFamily: 'var(--font-body)' }}>
                   <span style={{ width: 16, height: 16, borderRadius: '50%', border: `2px solid ${subscribe ? 'var(--primary-blue)' : 'var(--text-muted)'}`, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>{subscribe && <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--primary-blue)' }} />}</span>
                   <span style={{ flex: 1 }}>
                     <span style={{ fontSize: '0.9rem', fontWeight: 700 }}>
@@ -547,8 +547,8 @@ export default function ProductPage() {
 
               {/* <button onClick={() => setWishlisted(v => !v)} style={{
                 width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                background: wishlisted ? 'rgba(236,72,153,0.12)' : 'var(--card-dark)',
-                border: `1px solid ${wishlisted ? 'rgba(236,72,153,0.4)' : 'var(--glass-border)'}`,
+                background: wishlisted ? 'rgba(74,222,128,0.12)' : 'var(--card-dark)',
+                border: `1px solid ${wishlisted ? 'rgba(74,222,128,0.4)' : 'var(--glass-border)'}`,
                 borderRadius: '10px', color: wishlisted ? 'var(--pink)' : 'var(--text-secondary)',
                 cursor: 'pointer', flexShrink: 0,
               }}>
@@ -609,7 +609,7 @@ export default function ProductPage() {
                 {product.related?.nodes?.length > 0 ? product.related.nodes.map(rel => (
                   <Link key={rel.id} href={`/product/${rel.slug}`} style={{ textDecoration: 'none' }}>
                     <div style={{ background: 'var(--bg-dark)', border: '1px solid var(--glass-border)', borderRadius: '12px', padding: '14px', textAlign: 'center', transition: 'all 0.2s ease' }}
-                      onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(0,207,255,0.3)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(168,85,247,0.3)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
                       onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.transform = 'translateY(0)'; }}>
                       {rel.image?.sourceUrl ? (
                         <img src={rel.image.sourceUrl} alt={rel.name} loading="lazy" decoding="async" style={{ height: 60, objectFit: 'contain', margin: '0 auto 10px' }} />

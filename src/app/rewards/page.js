@@ -38,8 +38,8 @@ export default function RewardsPage() {
 
         {/* Hero */}
         <div style={{ textAlign: 'center', marginBottom: '44px' }}>
-          <span style={{ display: 'inline-block', padding: '5px 16px', background: 'rgba(0,207,255,0.1)', border: '1px solid rgba(0,207,255,0.3)', borderRadius: 999, fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--primary-blue)', marginBottom: 16 }}>Loyalty Program</span>
-          <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(2rem,5vw,3rem)', fontWeight: 900, color: '#fff', margin: '0 0 12px' }}>IWR Rewards</h1>
+          <span style={{ display: 'inline-block', padding: '5px 16px', background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.3)', borderRadius: 999, fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--primary-blue)', marginBottom: 16 }}>Loyalty Program</span>
+          <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(2rem,5vw,3rem)', fontWeight: 900, color: '#fff', margin: '0 0 12px' }}>Immortal Rewards</h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', maxWidth: 560, margin: '0 auto' }}>
             Earn points on every order, climb the ranks, and cash in for real money off. The more you research with us, the more you get back.
           </p>

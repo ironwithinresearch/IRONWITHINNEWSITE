@@ -325,7 +325,7 @@ export default function CheckoutPage() {
                 <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>
                   Send <strong style={{ color: 'var(--text-light)' }}>{p2pInfo.total}</strong> via <strong style={{ color: 'var(--text-light)' }}>{p2pInfo.label}</strong> to:
                 </p>
-                <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', fontWeight: 900, color: 'var(--primary-blue)', background: 'rgba(0,207,255,0.08)', borderRadius: '10px', padding: '12px 14px', textAlign: 'center', marginBottom: '12px', wordBreak: 'break-all' }}>
+                <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', fontWeight: 900, color: 'var(--primary-blue)', background: 'rgba(168,85,247,0.08)', borderRadius: '10px', padding: '12px 14px', textAlign: 'center', marginBottom: '12px', wordBreak: 'break-all' }}>
                   {p2pInfo.handle}
                 </div>
                 <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
@@ -333,10 +333,10 @@ export default function CheckoutPage() {
                 </p>
               </div>
             )}
-            <div style={{ textAlign: 'left', background: 'var(--bg-dark)', border: '1px solid rgba(0,207,255,0.25)', borderRadius: '14px', padding: '18px 20px', marginBottom: '26px' }}>
+            <div style={{ textAlign: 'left', background: 'var(--bg-dark)', border: '1px solid rgba(168,85,247,0.25)', borderRadius: '14px', padding: '18px 20px', marginBottom: '26px' }}>
               <div style={{ fontWeight: 800, color: '#fff', fontSize: '1rem', marginBottom: '6px' }}>🎁 Give $25, get $25</div>
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.87rem', lineHeight: 1.55, margin: '0 0 12px' }}>
-                You just earned <strong style={{ color: 'var(--text-light)' }}>IWR Rewards points</strong> on this order. Want more? Share your referral link — your friend gets <strong style={{ color: 'var(--text-light)' }}>$25 off</strong> their first order and you earn <strong style={{ color: 'var(--text-light)' }}>$25</strong> when they buy.
+                You just earned <strong style={{ color: 'var(--text-light)' }}>Immortal Rewards points</strong> on this order. Want more? Share your referral link — your friend gets <strong style={{ color: 'var(--text-light)' }}>$25 off</strong> their first order and you earn <strong style={{ color: 'var(--text-light)' }}>$25</strong> when they buy.
               </p>
               <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                 <Link href="/refer" style={{ padding: '9px 18px', background: 'var(--gradient-primary)', borderRadius: '9px', color: '#fff', fontWeight: 700, fontSize: '0.85rem', textDecoration: 'none' }}>Get your referral link</Link>
@@ -358,18 +358,18 @@ export default function CheckoutPage() {
   }
 
   // ── Account required (no guest checkout) ──
-  // Iron Within requires a verified 21+ account to purchase. Block checkout for
+  // Immortal Research requires a verified 21+ account to purchase. Block checkout for
   // logged-out visitors and route them to sign in / create an account.
   if (authMounted && !isLoggedIn) {
     return (
       <div style={{ minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 24px' }}>
         <div style={{ maxWidth: 460, width: '100%', textAlign: 'center', background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: '20px', padding: '44px 36px' }}>
-          <div style={{ width: 60, height: 60, borderRadius: '14px', background: 'rgba(0,207,255,0.1)', border: '1px solid rgba(0,207,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+          <div style={{ width: 60, height: 60, borderRadius: '14px', background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
             <Lock size={26} color="var(--primary-blue)" />
           </div>
           <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.6rem', fontWeight: 900, color: '#fff', margin: '0 0 12px' }}>Account required to check out</h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.6, margin: '0 0 28px' }}>
-            Iron Within requires a verified <strong style={{ color: 'var(--text-light)' }}>21+ account</strong> to purchase research compounds. Sign in or create your free account to continue — it takes a few seconds.
+            Immortal Research requires a verified <strong style={{ color: 'var(--text-light)' }}>21+ account</strong> to purchase research compounds. Sign in or create your free account to continue — it takes a few seconds.
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <Link href="/register?redirect=/checkout" style={{ padding: '14px', background: 'var(--gradient-primary)', borderRadius: '12px', color: '#fff', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
@@ -404,7 +404,7 @@ export default function CheckoutPage() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0', marginBottom: '48px' }}>
           {steps.map((step, i) => (
             <div key={step} style={{ display: 'flex', alignItems: 'center' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 14px', borderRadius: '10px', background: i === currentStep ? 'rgba(0,207,255,0.1)' : 'transparent' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 14px', borderRadius: '10px', background: i === currentStep ? 'rgba(168,85,247,0.1)' : 'transparent' }}>
                 <div style={{ width: 28, height: 28, borderRadius: '50%', background: i < currentStep ? 'rgba(52,211,153,0.2)' : i === currentStep ? 'var(--gradient-primary)' : 'var(--card-dark)', border: `2px solid ${i < currentStep ? '#34d399' : i === currentStep ? 'transparent' : 'var(--glass-border)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 700, color: i < currentStep ? '#34d399' : '#fff' }}>
                   {i < currentStep ? <CheckCircle2 size={14} /> : i + 1}
                 </div>
@@ -471,7 +471,7 @@ export default function CheckoutPage() {
                             onClick={() => setShipRate(r.id)}
                             style={{
                               textAlign: 'left', padding: '12px 14px', borderRadius: '10px', cursor: 'pointer',
-                              background: active ? 'rgba(0,207,255,0.08)' : 'var(--bg-dark)',
+                              background: active ? 'rgba(168,85,247,0.08)' : 'var(--bg-dark)',
                               border: `1px solid ${active ? 'var(--primary-blue)' : 'var(--glass-border)'}`,
                               display: 'flex', alignItems: 'center', gap: '10px', fontFamily: 'var(--font-body)',
                             }}
@@ -490,7 +490,7 @@ export default function CheckoutPage() {
                 )}
                 <ReviewBlock title="Payment Method">
                   {isZeroDue ? (
-                    <div style={{ padding: '14px', borderRadius: '10px', background: 'rgba(0,207,255,0.08)', border: '1px solid var(--primary-blue)', fontFamily: 'var(--font-body)' }}>
+                    <div style={{ padding: '14px', borderRadius: '10px', background: 'rgba(168,85,247,0.08)', border: '1px solid var(--primary-blue)', fontFamily: 'var(--font-body)' }}>
                       <span style={{ display: 'block', fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-light)' }}>Paid in full by gift card 🎁</span>
                       <span style={{ display: 'block', fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: 2 }}>Your gift card covers this order — nothing due. No card needed.</span>
                     </div>
@@ -523,7 +523,7 @@ export default function CheckoutPage() {
                           onClick={() => setPayMethod(m.id)}
                           style={{
                             textAlign: 'left', padding: '12px 14px', borderRadius: '10px', cursor: 'pointer',
-                            background: active ? 'rgba(0,207,255,0.08)' : 'var(--bg-dark)',
+                            background: active ? 'rgba(168,85,247,0.08)' : 'var(--bg-dark)',
                             border: `1px solid ${active ? 'var(--primary-blue)' : 'var(--glass-border)'}`,
                             display: 'flex', alignItems: 'center', gap: '10px', fontFamily: 'var(--font-body)',
                           }}
@@ -687,7 +687,7 @@ function FormCard({ icon, title, children }) {
   return (
     <div style={{ background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: '20px', padding: '28px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '24px' }}>
-        <div style={{ width: 36, height: 36, borderRadius: '10px', background: 'rgba(0,207,255,0.1)', border: '1px solid rgba(0,207,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: 36, height: 36, borderRadius: '10px', background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           {icon}
         </div>
         <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.05rem', fontWeight: 800 }}>{title}</h2>

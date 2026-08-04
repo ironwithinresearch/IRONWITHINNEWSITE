@@ -94,8 +94,8 @@ export default function LoginPage() {
       <div style={{
         position: 'fixed', inset: 0, pointerEvents: 'none',
         background: `
-          radial-gradient(ellipse at 30% 40%, rgba(0,207,255,0.07) 0%, transparent 55%),
-          radial-gradient(ellipse at 70% 60%, rgba(124,58,237,0.07) 0%, transparent 55%)
+          radial-gradient(ellipse at 30% 40%, rgba(168,85,247,0.07) 0%, transparent 55%),
+          radial-gradient(ellipse at 70% 60%, rgba(34,197,94,0.07) 0%, transparent 55%)
         `,
       }} />
 
@@ -105,10 +105,10 @@ export default function LoginPage() {
         <div style={{ textAlign: 'center', marginBottom: '36px' }}>
           <div style={{
             width: 56, height: 56, borderRadius: '14px',
-            background: 'linear-gradient(135deg, #00cfff, #ec4899)',
+            background: 'linear-gradient(135deg, #a855f7, #4ade80)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             margin: '0 auto 14px',
-            boxShadow: '0 0 24px rgba(0,207,255,0.4)',
+            boxShadow: '0 0 24px rgba(168,85,247,0.4)',
           }}>
             <FlaskConical size={26} color="#fff" />
           </div>
@@ -133,8 +133,8 @@ export default function LoginPage() {
             <div style={{
               display: 'flex', alignItems: 'center', gap: '8px',
               padding: '12px 14px', marginBottom: '20px',
-              background: 'rgba(0,207,255,0.08)',
-              border: '1px solid rgba(0,207,255,0.25)',
+              background: 'rgba(168,85,247,0.08)',
+              border: '1px solid rgba(168,85,247,0.25)',
               borderRadius: '10px', color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.5,
             }}>
               <KeyRound size={15} color="var(--primary-blue)" style={{ flexShrink: 0 }} />
@@ -255,13 +255,13 @@ export default function LoginPage() {
             {/* Submit */}
             <button type="submit" disabled={loading} style={{
               width: '100%', padding: '13px',
-              background: 'linear-gradient(135deg, #00cfff, #ec4899)',
+              background: 'linear-gradient(135deg, #a855f7, #4ade80)',
               border: 'none', borderRadius: '10px',
               color: '#fff', fontWeight: 700, fontSize: '0.95rem',
               cursor: loading ? 'not-allowed' : 'pointer',
               fontFamily: 'var(--font-body)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-              boxShadow: '0 0 20px rgba(0,207,255,0.35)',
+              boxShadow: '0 0 20px rgba(168,85,247,0.35)',
               opacity: loading ? 0.8 : 1,
             }}>
               {loading ? (
@@ -285,7 +285,7 @@ export default function LoginPage() {
             <div style={{
               display: 'flex', alignItems: 'center', gap: '10px',
               marginTop: '20px', padding: '12px 14px',
-              background: 'rgba(0,207,255,0.06)', border: '1px solid rgba(0,207,255,0.2)',
+              background: 'rgba(168,85,247,0.06)', border: '1px solid rgba(168,85,247,0.2)',
               borderRadius: '10px',
             }}>
               <KeyRound size={16} color="var(--primary-blue)" style={{ flexShrink: 0 }} />

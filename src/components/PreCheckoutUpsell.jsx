@@ -31,7 +31,7 @@ export default function PreCheckoutUpsell({ product, onAdd, onSkip }) {
       style={{ position: 'fixed', inset: 0, zIndex: 1100, background: 'rgba(2,5,10,0.74)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
       <div onClick={(e) => e.stopPropagation()}
         style={{ position: 'relative', width: '100%', maxWidth: 440, background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: 20, padding: '30px 28px', textAlign: 'center', boxShadow: '0 20px 60px rgba(0,0,0,0.5)' }}>
-        <div style={{ display: 'inline-block', padding: '4px 12px', background: 'rgba(0,207,255,0.1)', border: '1px solid rgba(0,207,255,0.3)', borderRadius: 999, fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--primary-blue)', marginBottom: 16 }}>
+        <div style={{ display: 'inline-block', padding: '4px 12px', background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.3)', borderRadius: 999, fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--primary-blue)', marginBottom: 16 }}>
           One-time offer
         </div>
         <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', fontWeight: 900, color: '#fff', margin: '0 0 6px' }}>

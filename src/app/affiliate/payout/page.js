@@ -47,7 +47,7 @@ export default function AffiliatePayoutPage() {
   if (d.error === 'auth' || !isLoggedIn) {
     return wrap(
       <div style={{ ...card, textAlign: 'center' }}>
-        <div style={{ width: 56, height: 56, borderRadius: 14, background: 'rgba(0,207,255,0.1)', border: '1px solid rgba(0,207,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 18px' }}><Lock size={24} color="var(--primary-blue)" /></div>
+        <div style={{ width: 56, height: 56, borderRadius: 14, background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 18px' }}><Lock size={24} color="var(--primary-blue)" /></div>
         <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.5rem', fontWeight: 900, margin: '0 0 10px' }}>Affiliate payout settings</h1>
         <p style={{ color: 'var(--text-secondary)', margin: '0 0 24px' }}>Sign in with the email on your affiliate account to choose how you're paid.</p>
         <Link href="/login?redirect=/affiliate/payout" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', background: 'var(--gradient-primary)', borderRadius: 12, color: '#fff', fontWeight: 700, textDecoration: 'none' }}>Sign in <ArrowRight size={16} /></Link>
@@ -90,7 +90,7 @@ export default function AffiliatePayoutPage() {
       </div>
 
       {/* 2x banner */}
-      <div style={{ background: 'linear-gradient(100deg, rgba(52,211,153,0.12), rgba(0,207,255,0.10))', border: '1px solid rgba(52,211,153,0.4)', borderRadius: 16, padding: '16px 18px', marginBottom: 20, textAlign: 'center' }}>
+      <div style={{ background: 'linear-gradient(100deg, rgba(52,211,153,0.12), rgba(168,85,247,0.10))', border: '1px solid rgba(52,211,153,0.4)', borderRadius: 16, padding: '16px 18px', marginBottom: 20, textAlign: 'center' }}>
         <span style={{ fontSize: '0.95rem', color: 'var(--text-light)' }}>
           💰 Take your commission as <strong style={{ color: '#34d399' }}>store credit and it's worth 2×</strong>. A <strong>$100</strong> commission becomes <strong style={{ color: '#34d399' }}>$200</strong> to spend.
         </span>
@@ -102,7 +102,7 @@ export default function AffiliatePayoutPage() {
             <Wallet size={22} color="#34d399" />
             <div style={{ flex: 1 }}>
               <div style={{ fontWeight: 800, color: 'var(--text-light)', fontSize: '1rem' }}>Store credit — 2× value <span style={{ fontSize: '0.7rem', background: 'rgba(52,211,153,0.2)', color: '#34d399', padding: '2px 8px', borderRadius: 20, marginLeft: 6, fontWeight: 800 }}>BEST DEAL</span></div>
-              <div style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: 2 }}>Double your earnings to spend at Iron Within. Auto-applies at checkout, no code.</div>
+              <div style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: 2 }}>Double your earnings to spend at Immortal Research. Auto-applies at checkout, no code.</div>
             </div>
             {inCredit && <Check size={20} color="#34d399" />}
           </div>

@@ -67,7 +67,7 @@ export default function ContinuityPage() {
     { Icon: Truck, t: 'Free U.S. shipping', d: 'Every shipment, the whole plan.' },
     { Icon: Lock, t: 'Locked-in price', d: 'Your price never changes for the term.' },
     { Icon: PackageCheck, t: 'Fresh every month', d: 'We ship one vial at a time — never stockpiled.' },
-    { Icon: Sparkles, t: 'Up to 600 bonus points', d: 'Stacked IWR Rewards on top of your plan.' },
+    { Icon: Sparkles, t: 'Up to 600 bonus points', d: 'Stacked Immortal Rewards on top of your plan.' },
     { Icon: ShieldCheck, t: 'One charge, no card stored', d: 'Prepaid — no recurring billing, ever.' },
   ];
 
@@ -75,7 +75,7 @@ export default function ContinuityPage() {
     <div style={{ maxWidth: 1080, margin: '0 auto', padding: '48px 24px 80px' }}>
       {/* Hero */}
       <div style={{ textAlign: 'center', marginBottom: 44 }}>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '6px 15px', background: 'rgba(0,207,255,0.1)', border: '1px solid rgba(0,207,255,0.3)', borderRadius: 999, fontSize: '0.74rem', fontWeight: 800, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--primary-blue)', marginBottom: 16 }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '6px 15px', background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.3)', borderRadius: 999, fontSize: '0.74rem', fontWeight: 800, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--primary-blue)', marginBottom: 16 }}>
           <CalendarClock size={14} /> Research Plans
         </span>
         <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.4rem', fontWeight: 900, color: '#fff', margin: '0 0 12px', lineHeight: 1.1 }}>
@@ -140,10 +140,10 @@ export default function ContinuityPage() {
                     const isAdding = adding === plan.databaseId;
                     const isAdded = added === plan.databaseId;
                     return (
-                      <div key={months} style={{ border: `1px solid ${best ? 'rgba(0,207,255,0.45)' : 'var(--glass-border)'}`, background: best ? 'rgba(0,207,255,0.05)' : 'transparent', borderRadius: 12, padding: '14px 15px' }}>
+                      <div key={months} style={{ border: `1px solid ${best ? 'rgba(168,85,247,0.45)' : 'var(--glass-border)'}`, background: best ? 'rgba(168,85,247,0.05)' : 'transparent', borderRadius: 12, padding: '14px 15px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                           <span style={{ fontWeight: 800, color: '#fff', fontSize: '0.98rem' }}>{months} Months</span>
-                          <span style={{ fontSize: '0.68rem', fontWeight: 800, letterSpacing: '0.04em', textTransform: 'uppercase', color: best ? '#34d399' : 'var(--primary-blue)', background: best ? 'rgba(52,211,153,0.12)' : 'rgba(0,207,255,0.1)', padding: '3px 9px', borderRadius: 999 }}>{badge}</span>
+                          <span style={{ fontSize: '0.68rem', fontWeight: 800, letterSpacing: '0.04em', textTransform: 'uppercase', color: best ? '#34d399' : 'var(--primary-blue)', background: best ? 'rgba(52,211,153,0.12)' : 'rgba(168,85,247,0.1)', padding: '3px 9px', borderRadius: 999 }}>{badge}</span>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 10 }}>
                           <span style={{ fontSize: '1.5rem', fontWeight: 900, color: '#fff' }}>{fmt(price)}</span>
@@ -152,7 +152,7 @@ export default function ContinuityPage() {
                         <button onClick={() => handleAdd(plan)} disabled={isAdding} style={{
                           width: '100%', padding: '11px', borderRadius: 9, border: 'none', cursor: isAdding ? 'wait' : 'pointer',
                           fontWeight: 700, fontSize: '0.9rem', fontFamily: 'var(--font-body)',
-                          color: '#fff', background: best ? 'linear-gradient(135deg,#00cfff,#ec4899)' : 'var(--card-elevated)',
+                          color: '#fff', background: best ? 'linear-gradient(135deg,#a855f7,#4ade80)' : 'var(--card-elevated)',
                           border: best ? 'none' : '1px solid var(--glass-border)',
                           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
                         }}>
@@ -171,7 +171,7 @@ export default function ContinuityPage() {
       {/* View cart nudge */}
       {added && (
         <div style={{ textAlign: 'center', marginTop: 26 }}>
-          <Link href="/cart" style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '12px 26px', background: 'var(--card-elevated)', border: '1px solid rgba(0,207,255,0.4)', borderRadius: 10, color: 'var(--text-light)', fontWeight: 700, textDecoration: 'none' }}>
+          <Link href="/cart" style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '12px 26px', background: 'var(--card-elevated)', border: '1px solid rgba(168,85,247,0.4)', borderRadius: 10, color: 'var(--text-light)', fontWeight: 700, textDecoration: 'none' }}>
             View cart & check out <ArrowRight size={15} />
           </Link>
         </div>
@@ -187,7 +187,7 @@ export default function ContinuityPage() {
             { n: '3', t: 'Fresh vial every month', d: 'We ship the next one ~every 30 days and email you each time.' },
           ].map((s) => (
             <div key={s.n} style={{ padding: '22px 20px', background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: 14 }}>
-              <div style={{ width: 34, height: 34, borderRadius: '50%', background: 'linear-gradient(135deg,#00cfff,#ec4899)', color: '#fff', fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>{s.n}</div>
+              <div style={{ width: 34, height: 34, borderRadius: '50%', background: 'linear-gradient(135deg,#a855f7,#4ade80)', color: '#fff', fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>{s.n}</div>
               <div style={{ fontWeight: 800, color: '#fff', marginBottom: 5 }}>{s.t}</div>
               <div style={{ color: 'var(--text-muted)', fontSize: '0.86rem', lineHeight: 1.5 }}>{s.d}</div>
             </div>

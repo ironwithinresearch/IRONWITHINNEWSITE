@@ -114,7 +114,7 @@ function SearchInner() {
 
       {/* ── Search Hero ── */}
       <div style={{ padding: '80px 24px 48px', textAlign: 'center', position: 'relative', overflow: 'hidden', borderBottom: '1px solid var(--glass-border)' }}>
-        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse at center top, rgba(0,207,255,0.07) 0%, transparent 65%)' }} />
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse at center top, rgba(168,85,247,0.07) 0%, transparent 65%)' }} />
         <div style={{ position: 'relative', zIndex: 1 }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.72rem', fontWeight: 700, color: 'var(--primary-blue)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '14px' }}>
             <Search size={13} /> Site Search
@@ -142,7 +142,7 @@ function SearchInner() {
           </div>
 
           {activeCategory && (
-            <div style={{ marginTop: '12px', display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(0,207,255,0.1)', border: '1px solid rgba(0,207,255,0.3)', borderRadius: '999px', fontSize: '0.75rem', color: 'var(--primary-blue)', fontWeight: 600 }}>
+            <div style={{ marginTop: '12px', display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.3)', borderRadius: '999px', fontSize: '0.75rem', color: 'var(--primary-blue)', fontWeight: 600 }}>
               <Tag size={11} /> Browsing category: {inputVal}
             </div>
           )}
@@ -285,7 +285,7 @@ function SearchInner() {
                   return (
                     <div key={product.id}
                       style={{ background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-lg)', padding: '16px', display: 'flex', gap: '14px', alignItems: 'center', transition: 'all 0.2s ease' }}
-                      onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(0,207,255,0.3)'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = 'var(--glow-blue)'; }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(168,85,247,0.3)'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = 'var(--glow-blue)'; }}
                       onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
 
                       <Link href={`/product/${product.slug}`} style={{ textDecoration: 'none', flexShrink: 0 }}>

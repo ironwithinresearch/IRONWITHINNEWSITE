@@ -6,7 +6,7 @@ import { Star, Minus, Plus } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { fetchRewards } from '@/lib/rewards';
 
-/* IWR Rewards in the cart: shows what they'll earn, and lets members spend points
+/* Immortal Rewards in the cart: shows what they'll earn, and lets members spend points
    straight off the total with a stepper. The chosen amount is applied at checkout
    as a discount (no coupon code) — controlled by the parent (value + onChange). */
 
@@ -36,13 +36,13 @@ export default function CartRewards({ subtotal = 0, value = 0, onChange }) {
   const perDollar = Number(data?.earn_per_dollar) || 1;
   const earn = Math.floor((Number(subtotal) || 0) * perDollar);
 
-  const box = { background: 'var(--bg-dark)', border: '1px solid rgba(0,207,255,0.22)', borderRadius: 12, padding: '12px 14px', marginBottom: 18, fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.45 };
+  const box = { background: 'var(--bg-dark)', border: '1px solid rgba(168,85,247,0.22)', borderRadius: 12, padding: '12px 14px', marginBottom: 18, fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.45 };
   const tag = { display: 'inline-flex', alignItems: 'center', gap: 5, fontWeight: 800, color: 'var(--primary-blue)', marginRight: 6 };
 
   if (!isLoggedIn) {
     return (
       <div style={box}>
-        <span style={tag}><Star size={13} /> IWR Rewards</span>
+        <span style={tag}><Star size={13} /> Immortal Rewards</span>
         Earn <strong style={{ color: 'var(--text-light)' }}>{earn} points</strong> on this order.{' '}
         <Link href="/rewards" style={{ color: 'var(--primary-blue)', fontWeight: 700 }}>Join free →</Link>
       </div>
@@ -63,7 +63,7 @@ export default function CartRewards({ subtotal = 0, value = 0, onChange }) {
   return (
     <div style={box}>
       <div>
-        <span style={tag}><Star size={13} /> IWR Rewards</span>
+        <span style={tag}><Star size={13} /> Immortal Rewards</span>
         <strong style={{ color: 'var(--text-light)' }}>{balPts.toLocaleString()} pts</strong> (${data.value}) · {data.tier?.current?.name} · earn <strong style={{ color: 'var(--text-light)' }}>{earn}</strong> more here
       </div>
 

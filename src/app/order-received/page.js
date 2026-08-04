@@ -25,7 +25,7 @@ export default function OrderReceived() {
           </p>
 
           {order && (
-            <div style={{ background: 'var(--bg-dark)', border: '1px solid rgba(0,207,255,0.25)', borderRadius: '14px', padding: '16px 20px', marginBottom: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+            <div style={{ background: 'var(--bg-dark)', border: '1px solid rgba(168,85,247,0.25)', borderRadius: '14px', padding: '16px 20px', marginBottom: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
               <Package size={18} color="var(--primary-blue)" />
               <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Order</span>
               <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, color: 'var(--primary-blue)' }}>#{order}</span>

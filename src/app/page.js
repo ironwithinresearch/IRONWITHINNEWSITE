@@ -99,12 +99,12 @@ function FeaturedProducts() {
 
         return (
           <div key={product.id} style={{ background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', display: 'flex', flexDirection: 'column', transition: 'all 0.2s ease', position: 'relative' }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(0,207,255,0.3)'; e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = 'var(--glow-blue)'; }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(168,85,247,0.3)'; e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = 'var(--glow-blue)'; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
 
             {/* Wishlist button */}
             <button onClick={() => wishlisted ? removeFromWishlist(product.id) : addToWishlist(product)}
-              style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 2, width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--glass-bg)', border: `1px solid ${wishlisted ? 'rgba(236,72,153,0.4)' : 'var(--glass-border)'}`, borderRadius: '8px', color: wishlisted ? 'var(--pink)' : '#ec4899', cursor: 'pointer', backdropFilter: 'blur(8px)' }}>
+              style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 2, width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--glass-bg)', border: `1px solid ${wishlisted ? 'rgba(74,222,128,0.4)' : 'var(--glass-border)'}`, borderRadius: '8px', color: wishlisted ? 'var(--pink)' : '#4ade80', cursor: 'pointer', backdropFilter: 'blur(8px)' }}>
               <Heart size={14} fill={wishlisted ? 'currentColor' : 'none'} />
             </button>
 
@@ -179,12 +179,12 @@ export default function Home() {
 
       {/* ══ HERO ══ */}
       <section style={{ position: 'relative', minHeight: '92vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', overflow: 'hidden', padding: '60px 24px' }}>
-        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: `radial-gradient(ellipse at 20% 50%, rgba(124,58,237,0.15) 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, rgba(0,207,255,0.12) 0%, transparent 50%), radial-gradient(ellipse at 50% 90%, rgba(236,72,153,0.10) 0%, transparent 50%)` }} />
-        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.03, backgroundImage: `linear-gradient(rgba(0,207,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,207,255,1) 1px, transparent 1px)`, backgroundSize: '60px 60px' }} />
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: `radial-gradient(ellipse at 20% 50%, rgba(34,197,94,0.15) 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, rgba(168,85,247,0.12) 0%, transparent 50%), radial-gradient(ellipse at 50% 90%, rgba(74,222,128,0.10) 0%, transparent 50%)` }} />
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.03, backgroundImage: `linear-gradient(rgba(168,85,247,1) 1px, transparent 1px), linear-gradient(90deg, rgba(168,85,247,1) 1px, transparent 1px)`, backgroundSize: '60px 60px' }} />
 
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '820px', margin: '0 auto' }}>
           {/* proof pill */}
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', padding: '7px 18px', background: 'rgba(0,207,255,0.08)', border: '1px solid rgba(0,207,255,0.25)', borderRadius: '999px', marginBottom: '26px', fontSize: '0.82rem', color: 'var(--text-light)', fontWeight: 600 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', padding: '7px 18px', background: 'rgba(168,85,247,0.08)', border: '1px solid rgba(168,85,247,0.25)', borderRadius: '999px', marginBottom: '26px', fontSize: '0.82rem', color: 'var(--text-light)', fontWeight: 600 }}>
             Trusted by 1,800+ researchers
           </div>
           <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(2.4rem, 6.5vw, 4.6rem)', fontWeight: 900, lineHeight: 1.08, marginBottom: '20px', letterSpacing: '-0.03em' }}>
@@ -196,7 +196,7 @@ export default function Home() {
           </p>
           <div><SaleCountdown /></div>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
-            <Link href="/shop" style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', padding: '16px 38px', background: 'var(--gradient-primary)', borderRadius: 'var(--radius-md)', color: '#fff', fontWeight: 800, fontSize: '1.05rem', textDecoration: 'none', boxShadow: '0 0 30px rgba(0,207,255,0.5)', fontFamily: 'var(--font-body)' }}>
+            <Link href="/shop" style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', padding: '16px 38px', background: 'var(--gradient-primary)', borderRadius: 'var(--radius-md)', color: '#fff', fontWeight: 800, fontSize: '1.05rem', textDecoration: 'none', boxShadow: '0 0 30px rgba(168,85,247,0.5)', fontFamily: 'var(--font-body)' }}>
               Shop All Research Compounds <ArrowRight size={17} />
             </Link>
           </div>
@@ -255,7 +255,7 @@ export default function Home() {
 
           <div style={{ textAlign: 'center', marginTop: '44px' }}>
             <Link href="/shop" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '13px 32px', border: '2px solid var(--glass-border)', borderRadius: 'var(--radius-md)', color: 'var(--text-light)', fontWeight: 600, textDecoration: 'none', fontFamily: 'var(--font-body)', transition: 'all 0.2s ease' }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--primary-blue)'; e.currentTarget.style.color = 'var(--primary-blue)'; e.currentTarget.style.background = 'rgba(0,207,255,0.08)'; }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--primary-blue)'; e.currentTarget.style.color = 'var(--primary-blue)'; e.currentTarget.style.background = 'rgba(168,85,247,0.08)'; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.color = 'var(--text-light)'; e.currentTarget.style.background = 'transparent'; }}>
               View All Products <ArrowRight size={15} />
             </Link>
@@ -322,7 +322,7 @@ export default function Home() {
       <section style={{ padding: '80px 24px' }}>
         <div className="container">
           <div style={{ position: 'relative', background: 'var(--card-dark)', border: '2px solid var(--glass-border)', borderRadius: 'var(--radius-xl)', padding: 'clamp(36px, 5vw, 64px)', textAlign: 'center', overflow: 'hidden' }}>
-            <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(0,207,255,0.06) 0%, transparent 65%)', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(168,85,247,0.06) 0%, transparent 65%)', pointerEvents: 'none' }} />
             <div style={{ position: 'relative', zIndex: 1 }}>
               <Mail size={36} color="var(--primary-blue)" style={{ margin: '0 auto 16px' }} />
               <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', fontWeight: 900, marginBottom: '16px' }}>

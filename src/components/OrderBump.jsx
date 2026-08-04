@@ -31,7 +31,7 @@ export default function OrderBump({ cartItems, onAdd, onRemove }) {
 
   return (
     <div onClick={busy ? undefined : toggle}
-      style={{ display: 'flex', gap: 12, alignItems: 'flex-start', padding: '14px 16px', margin: '0 0 18px', background: checked ? 'rgba(0,207,255,0.06)' : 'var(--card-dark)', border: `1px dashed ${checked ? 'var(--primary-blue)' : 'rgba(245,158,11,0.5)'}`, borderRadius: 12, cursor: busy ? 'wait' : 'pointer' }}>
+      style={{ display: 'flex', gap: 12, alignItems: 'flex-start', padding: '14px 16px', margin: '0 0 18px', background: checked ? 'rgba(168,85,247,0.06)' : 'var(--card-dark)', border: `1px dashed ${checked ? 'var(--primary-blue)' : 'rgba(245,158,11,0.5)'}`, borderRadius: 12, cursor: busy ? 'wait' : 'pointer' }}>
       <div style={{ width: 22, height: 22, flexShrink: 0, marginTop: 1, borderRadius: 6, border: `2px solid ${checked ? 'var(--primary-blue)' : 'var(--text-muted)'}`, background: checked ? 'var(--primary-blue)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         {checked && <Check size={14} color="#001018" />}
       </div>

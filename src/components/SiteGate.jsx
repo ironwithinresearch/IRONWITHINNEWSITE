@@ -64,29 +64,29 @@ export default function SiteGate() {
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
         background: `
-          radial-gradient(ellipse at 30% 40%, rgba(0,207,255,0.08) 0%, transparent 55%),
-          radial-gradient(ellipse at 70% 60%, rgba(124,58,237,0.08) 0%, transparent 55%)
+          radial-gradient(ellipse at 30% 40%, rgba(168,85,247,0.08) 0%, transparent 55%),
+          radial-gradient(ellipse at 70% 60%, rgba(34,197,94,0.08) 0%, transparent 55%)
         `,
       }} />
 
       <div style={{
         position: 'relative', maxWidth: 480, width: '100%',
         background: 'var(--card-dark, #0d1117)',
-        border: '1px solid var(--glass-border, rgba(0,207,255,0.2))',
+        border: '1px solid var(--glass-border, rgba(168,85,247,0.2))',
         borderRadius: 20, padding: '44px 40px', textAlign: 'center',
-        boxShadow: '0 0 60px rgba(0,207,255,0.12), var(--shadow-lg, 0 32px 64px rgba(0,0,0,0.4))',
+        boxShadow: '0 0 60px rgba(168,85,247,0.12), var(--shadow-lg, 0 32px 64px rgba(0,0,0,0.4))',
       }}>
         <div style={{
           width: 64, height: 64, margin: '0 auto 18px', borderRadius: 18,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          background: 'rgba(0,207,255,0.10)', border: '1px solid rgba(0,207,255,0.30)',
+          background: 'rgba(168,85,247,0.10)', border: '1px solid rgba(168,85,247,0.30)',
         }}>
-          <FlaskConical size={30} color="#00CFFF" />
+          <FlaskConical size={30} color="#A855F7" />
         </div>
 
         <div style={{
           fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.18em',
-          textTransform: 'uppercase', color: '#00CFFF', marginBottom: 10,
+          textTransform: 'uppercase', color: '#A855F7', marginBottom: 10,
         }}>
           21+ researcher access only
         </div>
@@ -112,7 +112,7 @@ export default function SiteGate() {
         <p style={{
           color: 'var(--text-secondary, rgba(255,255,255,0.72))', fontSize: '0.83rem',
           lineHeight: 1.55, margin: '0 0 24px', padding: '12px 14px', borderRadius: 12,
-          background: 'rgba(0,207,255,0.06)', border: '1px solid rgba(0,207,255,0.22)',
+          background: 'rgba(168,85,247,0.06)', border: '1px solid rgba(168,85,247,0.22)',
         }}>
           You&apos;ll confirm you are <strong style={{ color: 'var(--text-light, #fff)' }}>21
           or older</strong> when you create your account. All products are sold
@@ -127,7 +127,7 @@ export default function SiteGate() {
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 9,
               padding: '15px', borderRadius: 12, fontWeight: 800, fontSize: '1rem',
               color: '#04121a', textDecoration: 'none',
-              background: 'linear-gradient(135deg,#00CFFF 0%,#7C3AED 50%,#EC4899 100%)',
+              background: 'linear-gradient(135deg,#A855F7 0%,#22C55E 50%,#4ADE80 100%)',
             }}
           >
             <UserPlus size={18} /> Create my free account

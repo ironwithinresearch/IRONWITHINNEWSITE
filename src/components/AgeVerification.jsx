@@ -43,8 +43,8 @@ export default function AgeVerification() {
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
         background: `
-          radial-gradient(ellipse at 30% 40%, rgba(0,207,255,0.08) 0%, transparent 55%),
-          radial-gradient(ellipse at 70% 60%, rgba(124,58,237,0.08) 0%, transparent 55%)
+          radial-gradient(ellipse at 30% 40%, rgba(168,85,247,0.08) 0%, transparent 55%),
+          radial-gradient(ellipse at 70% 60%, rgba(34,197,94,0.08) 0%, transparent 55%)
         `,
       }} />
 
@@ -53,17 +53,17 @@ export default function AgeVerification() {
         maxWidth: 480,
         width: '100%',
         background: 'var(--card-dark, #0d1117)',
-        border: '1px solid var(--glass-border, rgba(0,207,255,0.2))',
+        border: '1px solid var(--glass-border, rgba(168,85,247,0.2))',
         borderRadius: '20px',
         padding: '48px 40px',
         textAlign: 'center',
-        boxShadow: '0 0 60px rgba(0,207,255,0.12), var(--shadow-lg, 0 32px 64px rgba(0,0,0,0.4))',
+        boxShadow: '0 0 60px rgba(168,85,247,0.12), var(--shadow-lg, 0 32px 64px rgba(0,0,0,0.4))',
         overflow: 'hidden',
       }}>
         {/* Inner glow */}
         <div style={{
           position: 'absolute', inset: 0,
-          background: 'radial-gradient(ellipse at top, rgba(0,207,255,0.05) 0%, transparent 60%)',
+          background: 'radial-gradient(ellipse at top, rgba(168,85,247,0.05) 0%, transparent 60%)',
           pointerEvents: 'none',
         }} />
 
@@ -72,10 +72,10 @@ export default function AgeVerification() {
           <div style={{
             width: 64, height: 64,
             borderRadius: '16px',
-            background: 'linear-gradient(135deg, #00cfff, #ec4899)',
+            background: 'linear-gradient(135deg, #a855f7, #4ade80)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             margin: '0 auto 20px',
-            boxShadow: '0 0 24px rgba(0,207,255,0.45)',
+            boxShadow: '0 0 24px rgba(168,85,247,0.45)',
           }}>
             <FlaskConical size={30} color="#fff" />
           </div>
@@ -84,11 +84,11 @@ export default function AgeVerification() {
           <p style={{
             fontSize: '0.72rem',
             fontWeight: 700,
-            color: 'rgba(0,207,255,0.8)',
+            color: 'rgba(168,85,247,0.8)',
             letterSpacing: '0.12em',
             textTransform: 'uppercase',
             marginBottom: '12px',
-          }}>Iron Within Research</p>
+          }}>Immortal Research</p>
 
           {/* Age badge */}
           <div style={{
@@ -140,7 +140,7 @@ export default function AgeVerification() {
               style={{
                 width: '100%',
                 padding: '15px',
-                background: 'linear-gradient(135deg, #00cfff, #ec4899)',
+                background: 'linear-gradient(135deg, #a855f7, #4ade80)',
                 border: 'none',
                 borderRadius: '12px',
                 color: '#fff',
@@ -148,12 +148,12 @@ export default function AgeVerification() {
                 fontSize: '1rem',
                 cursor: 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                boxShadow: '0 0 24px rgba(0,207,255,0.4)',
+                boxShadow: '0 0 24px rgba(168,85,247,0.4)',
                 transition: 'all 0.2s ease',
                 fontFamily: 'inherit',
               }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 0 36px rgba(0,207,255,0.6)'; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 0 24px rgba(0,207,255,0.4)'; }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 0 36px rgba(168,85,247,0.6)'; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 0 24px rgba(168,85,247,0.4)'; }}
             >
               <CheckCircle2 size={18} />
               Yes, I Am 21 or Older — Enter Site

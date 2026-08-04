@@ -178,16 +178,16 @@ function ShopContent() {
 
                 return (
                   <div key={product.id} style={{ background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column', transition: 'all 0.2s ease', position: 'relative' }}
-                    onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(0,207,255,0.3)'; e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.2)'; }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(168,85,247,0.3)'; e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.2)'; }}
                     onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
 
                     {/* ── Wishlist heart button ── */}
                     <button
                       onClick={(e) => handleWishlist(e, product)}
                       title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-                      style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 2, width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', background: wishlisted ? 'rgba(236,72,153,0.15)' : 'rgba(5,7,18,0.55)', border: `1px solid ${wishlisted ? 'rgba(236,72,153,0.5)' : 'var(--glass-border)'}`, borderRadius: '8px', color: wishlisted ? 'var(--pink, #ec4899)' : '#ec4899', cursor: 'pointer', backdropFilter: 'blur(8px)', transition: 'all 0.15s ease' }}
-                      onMouseEnter={e => { e.currentTarget.style.background = 'rgba(236,72,153,0.15)'; e.currentTarget.style.borderColor = 'rgba(236,72,153,0.5)'; e.currentTarget.style.color = '#ec4899'; }}
-                      onMouseLeave={e => { if (!wishlisted) { e.currentTarget.style.background = 'rgba(5,7,18,0.55)'; e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.color = '#ec4899'; } }}>
+                      style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 2, width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', background: wishlisted ? 'rgba(74,222,128,0.15)' : 'rgba(5,7,18,0.55)', border: `1px solid ${wishlisted ? 'rgba(74,222,128,0.5)' : 'var(--glass-border)'}`, borderRadius: '8px', color: wishlisted ? 'var(--pink, #4ade80)' : '#4ade80', cursor: 'pointer', backdropFilter: 'blur(8px)', transition: 'all 0.15s ease' }}
+                      onMouseEnter={e => { e.currentTarget.style.background = 'rgba(74,222,128,0.15)'; e.currentTarget.style.borderColor = 'rgba(74,222,128,0.5)'; e.currentTarget.style.color = '#4ade80'; }}
+                      onMouseLeave={e => { if (!wishlisted) { e.currentTarget.style.background = 'rgba(5,7,18,0.55)'; e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.color = '#4ade80'; } }}>
                       <Heart size={14} fill={wishlisted ? 'currentColor' : 'none'} />
                     </button>
 
@@ -210,7 +210,7 @@ function ShopContent() {
                         ) : !inStock ? (
                           <div style={{ position: 'absolute', top: '10px', left: '10px', padding: '3px 10px', background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '999px', fontSize: '0.68rem', fontWeight: 600, color: '#f87171' }}>Out of Stock</div>
                         ) : isVariable ? (
-                          <div style={{ position: 'absolute', top: '10px', left: '10px', padding: '3px 10px', background: 'rgba(124,58,237,0.15)', border: '1px solid rgba(124,58,237,0.3)', borderRadius: '999px', fontSize: '0.68rem', fontWeight: 600, color: 'var(--purple)' }}>Options</div>
+                          <div style={{ position: 'absolute', top: '10px', left: '10px', padding: '3px 10px', background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '999px', fontSize: '0.68rem', fontWeight: 600, color: 'var(--purple)' }}>Options</div>
                         ) : null}
                       </div>
                     </Link>

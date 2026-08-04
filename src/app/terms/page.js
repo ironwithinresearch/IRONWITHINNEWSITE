@@ -6,12 +6,12 @@ const sections = [
   {
     title: 'Acceptance of Terms',
     content:
-      'By accessing and using the Iron Within Research website, you agree to comply with and be bound by these Terms & Conditions. If you do not agree with any part of these terms, you should discontinue use of the website immediately.',
+      'By accessing and using the Immortal Research website, you agree to comply with and be bound by these Terms & Conditions. If you do not agree with any part of these terms, you should discontinue use of the website immediately.',
   },
   {
     title: 'Research Use Only',
     content:
-      'All products sold by Iron Within Research are intended solely for laboratory and research purposes. Products are not intended for human consumption, medical use, veterinary use, diagnosis, treatment, or prevention of any disease.',
+      'All products sold by Immortal Research are intended solely for laboratory and research purposes. Products are not intended for human consumption, medical use, veterinary use, diagnosis, treatment, or prevention of any disease.',
   },
   {
     title: 'Eligibility',
@@ -41,12 +41,12 @@ const sections = [
   {
     title: 'Limitation of Liability',
     content:
-      'Iron Within Research shall not be liable for any indirect, incidental, consequential, or special damages arising from the use of our products or website.',
+      'Immortal Research shall not be liable for any indirect, incidental, consequential, or special damages arising from the use of our products or website.',
   },
   {
     title: 'Intellectual Property',
     content:
-      'All content on this website, including logos, graphics, text, and designs, is the property of Iron Within Research and may not be reproduced without permission.',
+      'All content on this website, including logos, graphics, text, and designs, is the property of Immortal Research and may not be reproduced without permission.',
   },
   {
     title: 'Changes to Terms',
@@ -138,8 +138,8 @@ export default function TermsPage() {
               style={{
                 marginTop: '30px',
                 padding: '20px',
-                background: 'rgba(0,207,255,0.08)',
-                border: '1px solid rgba(0,207,255,0.2)',
+                background: 'rgba(168,85,247,0.08)',
+                border: '1px solid rgba(168,85,247,0.2)',
                 borderRadius: 'var(--radius-lg)',
                 display: 'flex',
                 gap: '12px',

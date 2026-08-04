@@ -19,7 +19,7 @@ export default function ReferPage() {
 
   const copy = () => { if (data?.link) { navigator.clipboard?.writeText(data.link); setCopied(true); setTimeout(() => setCopied(false), 1800); } };
   const share = async () => {
-    if (navigator.share && data?.link) { try { await navigator.share({ title: 'Iron Within Research', text: 'Get $25 off your first order at Iron Within Research:', url: data.link }); } catch {} }
+    if (navigator.share && data?.link) { try { await navigator.share({ title: 'Immortal Research', text: 'Get $25 off your first order at Immortal Research:', url: data.link }); } catch {} }
     else copy();
   };
 
@@ -30,7 +30,7 @@ export default function ReferPage() {
     <main style={{ minHeight: '100vh', background: 'var(--bg-dark)', padding: '60px 24px 90px' }}>
       <div className="container" style={{ maxWidth: 820 }}>
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <span style={{ display: 'inline-block', padding: '5px 16px', background: 'rgba(0,207,255,0.1)', border: '1px solid rgba(0,207,255,0.3)', borderRadius: 999, fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--primary-blue)', marginBottom: 16 }}>Refer &amp; Earn</span>
+          <span style={{ display: 'inline-block', padding: '5px 16px', background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.3)', borderRadius: 999, fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--primary-blue)', marginBottom: 16 }}>Refer &amp; Earn</span>
           <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(2rem,5vw,3rem)', fontWeight: 900, color: '#fff', margin: '0 0 12px' }}>Give $25, Get $25</h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', maxWidth: 540, margin: '0 auto' }}>
             Share your link. Your friend gets <strong style={{ color: '#fff' }}>$25 off</strong> their first order, and you earn <strong style={{ color: '#fff' }}>$25 in rewards</strong> when they buy.

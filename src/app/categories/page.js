@@ -14,21 +14,21 @@ import {
 
 // Map category slug → color + icon (fallback for categories without images)
 const categoryStyle = {
-  'healing-recovery':  { color: 'var(--primary-blue)', Icon: HeartPulse,  gradFrom: 'rgba(0,207,255,0.15)',    gradTo: 'rgba(0,207,255,0.03)' },
-  'metabolic-research':{ color: 'var(--pink)',          Icon: Zap,         gradFrom: 'rgba(236,72,153,0.15)',   gradTo: 'rgba(236,72,153,0.03)' },
-  'cognitive-peptides':{ color: 'var(--purple)',        Icon: Brain,       gradFrom: 'rgba(124,58,237,0.15)',   gradTo: 'rgba(124,58,237,0.03)' },
+  'healing-recovery':  { color: 'var(--primary-blue)', Icon: HeartPulse,  gradFrom: 'rgba(168,85,247,0.15)',    gradTo: 'rgba(168,85,247,0.03)' },
+  'metabolic-research':{ color: 'var(--pink)',          Icon: Zap,         gradFrom: 'rgba(74,222,128,0.15)',   gradTo: 'rgba(74,222,128,0.03)' },
+  'cognitive-peptides':{ color: 'var(--purple)',        Icon: Brain,       gradFrom: 'rgba(34,197,94,0.15)',   gradTo: 'rgba(34,197,94,0.03)' },
   'performance':       { color: '#fbbf24',              Icon: Dumbbell,    gradFrom: 'rgba(251,191,36,0.15)',   gradTo: 'rgba(251,191,36,0.03)' },
   'hormonal-research': { color: 'var(--secondary-blue)',Icon: Microscope,  gradFrom: 'rgba(56,189,248,0.15)',   gradTo: 'rgba(56,189,248,0.03)' },
   'growth-hormone':    { color: '#a78bfa',              Icon: Dna,         gradFrom: 'rgba(167,139,250,0.15)',  gradTo: 'rgba(167,139,250,0.03)' },
-  'clothing':          { color: 'var(--primary-blue)',  Icon: Package,     gradFrom: 'rgba(0,207,255,0.15)',    gradTo: 'rgba(0,207,255,0.03)' },
-  'accessories':       { color: 'var(--purple)',        Icon: Star,        gradFrom: 'rgba(124,58,237,0.15)',   gradTo: 'rgba(124,58,237,0.03)' },
+  'clothing':          { color: 'var(--primary-blue)',  Icon: Package,     gradFrom: 'rgba(168,85,247,0.15)',    gradTo: 'rgba(168,85,247,0.03)' },
+  'accessories':       { color: 'var(--purple)',        Icon: Star,        gradFrom: 'rgba(34,197,94,0.15)',   gradTo: 'rgba(34,197,94,0.03)' },
   'hoodies':           { color: '#fbbf24',              Icon: Dumbbell,    gradFrom: 'rgba(251,191,36,0.15)',   gradTo: 'rgba(251,191,36,0.03)' },
-  'tshirts':           { color: 'var(--pink)',          Icon: Zap,         gradFrom: 'rgba(236,72,153,0.15)',   gradTo: 'rgba(236,72,153,0.03)' },
+  'tshirts':           { color: 'var(--pink)',          Icon: Zap,         gradFrom: 'rgba(74,222,128,0.15)',   gradTo: 'rgba(74,222,128,0.03)' },
   'music':             { color: '#34d399',              Icon: Sparkles,    gradFrom: 'rgba(52,211,153,0.15)',   gradTo: 'rgba(52,211,153,0.03)' },
   'decor':             { color: 'var(--secondary-blue)',Icon: FlaskConical,gradFrom: 'rgba(56,189,248,0.15)',   gradTo: 'rgba(56,189,248,0.03)' },
 };
 
-const defaultStyle = { color: 'var(--primary-blue)', Icon: FlaskConical, gradFrom: 'rgba(0,207,255,0.15)', gradTo: 'rgba(0,207,255,0.03)' };
+const defaultStyle = { color: 'var(--primary-blue)', Icon: FlaskConical, gradFrom: 'rgba(168,85,247,0.15)', gradTo: 'rgba(168,85,247,0.03)' };
 
 // Sub-component: products preview per category
 function CategoryProducts({ categorySlug }) {
@@ -81,9 +81,9 @@ export default function CategoriesPage() {
 
       {/* Header */}
       <section style={{ position: 'relative', padding: '80px 24px 60px', textAlign: 'center', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: `radial-gradient(ellipse at 30% 50%, rgba(124,58,237,0.10) 0%, transparent 55%), radial-gradient(ellipse at 70% 30%, rgba(0,207,255,0.08) 0%, transparent 55%)` }} />
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: `radial-gradient(ellipse at 30% 50%, rgba(34,197,94,0.10) 0%, transparent 55%), radial-gradient(ellipse at 70% 30%, rgba(168,85,247,0.08) 0%, transparent 55%)` }} />
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '680px', margin: '0 auto' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '5px 14px', background: 'rgba(0,207,255,0.08)', border: '1px solid rgba(0,207,255,0.22)', borderRadius: '999px', marginBottom: '20px', fontSize: '0.72rem', color: 'var(--primary-blue)', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '5px 14px', background: 'rgba(168,85,247,0.08)', border: '1px solid rgba(168,85,247,0.22)', borderRadius: '999px', marginBottom: '20px', fontSize: '0.72rem', color: 'var(--primary-blue)', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
             <FlaskConical size={12} /> Research Areas
           </div>
           <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(2rem, 5vw, 3.4rem)', fontWeight: 900, lineHeight: 1.1, marginBottom: '16px', letterSpacing: '-0.03em' }}>
@@ -178,7 +178,7 @@ export default function CategoriesPage() {
 
         {/* CTA */}
         <div style={{ position: 'relative', background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-xl)', padding: 'clamp(36px, 5vw, 64px)', textAlign: 'center', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(0,207,255,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(168,85,247,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
           <div style={{ position: 'relative', zIndex: 1 }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.72rem', fontWeight: 700, color: 'var(--primary-blue)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '14px' }}>
               <Search size={12} /> Can't find what you need?

@@ -1,46 +1,63 @@
 /* ═══════════════════════════════════════════════════════════
-   IRON WITHIN RESEARCH — Design Token System
+   IMMORTAL RESEARCH — Design Token System
+   ═══════════════════════════════════════════════════════════
+   Brand = AMETHYST PURPLE (primary accent) + JADE GREEN (energy).
+
+   Legend — the token NAMES are inherited from the previous brand and
+   are kept as-is so ~50 consuming files don't need touching. What they
+   actually paint now:
+     --primary-blue    → brand purple   (links, CTAs, focus, primary glow)
+     --secondary-blue  → deep violet    (gradient partner)
+     --purple          → brand green    (savings, in-stock, accents)
+     --pink            → light green    (highlights)
+   Prefer the --brand-* aliases below in NEW code.
    ═══════════════════════════════════════════════════════════ */
 
 :root {
 
-  /* ── Core Brand Colors ──────────────────────────────────── */
-  --primary-blue:    #00CFFF;
-  --secondary-blue:  #1DA1F2;
-  --purple:          #7C3AED;
-  --pink:            #EC4899;
+  /* ── Brand aliases (use these going forward) ────────────── */
+  --brand-purple:      #A855F7;
+  --brand-violet:      #7C3AED;
+  --brand-green:       #22C55E;
+  --brand-green-light: #4ADE80;
+
+  /* ── Core Brand Colors (legacy names, see legend) ───────── */
+  --primary-blue:    #A855F7;
+  --secondary-blue:  #7C3AED;
+  --purple:          #22C55E;
+  --pink:            #4ADE80;
 
   /* ── Background Scale ───────────────────────────────────── */
-  --bg-dark:         #020617;
-  --bg-deeper:       #010410;
-  --bg-elevated:     #0a1120;
-  --card-dark:       #0F172A;
-  --card-elevated:   #141e33;
+  --bg-dark:         #0A0614;
+  --bg-deeper:       #06030E;
+  --bg-elevated:     #120B20;
+  --card-dark:       #150E26;
+  --card-elevated:   #1D1433;
 
   /* ── Text Scale ─────────────────────────────────────────── */
-  --text-light:      #EAFBFF;
-  --text-secondary:  #94a3b8;
-  --text-muted:      #4b5a72;
+  --text-light:      #F3EFFC;
+  --text-secondary:  #A79DBE;
+  --text-muted:      #6A6083;
 
   /* ── Gradients ──────────────────────────────────────────── */
-  --gradient-primary:   linear-gradient(135deg, #00CFFF 0%, #7C3AED 50%, #EC4899 100%);
-  --gradient-secondary: linear-gradient(135deg, #1DA1F2 0%, #EC4899 100%);
-  --gradient-blue:      linear-gradient(135deg, #00CFFF 0%, #1DA1F2 100%);
-  --gradient-dark:      linear-gradient(180deg, #0F172A 0%, #020617 100%);
-  --gradient-card:      linear-gradient(145deg, #0F172A 0%, #0a1120 100%);
-  --gradient-hero:      radial-gradient(ellipse at 60% 40%, rgba(124,58,237,0.18) 0%, rgba(0,207,255,0.10) 40%, transparent 70%);
+  --gradient-primary:   linear-gradient(135deg, #A855F7 0%, #7C3AED 38%, #22C55E 100%);
+  --gradient-secondary: linear-gradient(135deg, #7C3AED 0%, #22C55E 100%);
+  --gradient-blue:      linear-gradient(135deg, #A855F7 0%, #7C3AED 100%);
+  --gradient-dark:      linear-gradient(180deg, #150E26 0%, #0A0614 100%);
+  --gradient-card:      linear-gradient(145deg, #150E26 0%, #120B20 100%);
+  --gradient-hero:      radial-gradient(ellipse at 60% 40%, rgba(168,85,247,0.20) 0%, rgba(34,197,94,0.10) 40%, transparent 70%);
 
   /* ── Glow Effects ───────────────────────────────────────── */
-  --glow-blue:   0 0 20px rgba(0, 207, 255, 0.45);
-  --glow-pink:   0 0 20px rgba(236, 72, 153, 0.45);
-  --glow-purple: 0 0 20px rgba(124, 58, 237, 0.45);
-  --glow-sm:     0 0 10px rgba(0, 207, 255, 0.25);
+  --glow-blue:   0 0 20px rgba(168, 85, 247, 0.45);
+  --glow-pink:   0 0 20px rgba(74, 222, 128, 0.42);
+  --glow-purple: 0 0 20px rgba(34, 197, 94, 0.45);
+  --glow-sm:     0 0 10px rgba(168, 85, 247, 0.25);
 
   /* ── Glass / Frosted ────────────────────────────────────── */
-  --glass-bg:     rgba(15, 23, 42, 0.65);
-  --glass-border: rgba(0, 207, 255, 0.12);
-  --glass-hover:  rgba(0, 207, 255, 0.06);
-  --overlay:      rgba(5, 7, 18, 0.94);   /* full-screen modal backdrop */
+  --glass-bg:     rgba(21, 14, 38, 0.65);
+  --glass-border: rgba(168, 85, 247, 0.14);
+  --glass-hover:  rgba(168, 85, 247, 0.07);
+  --overlay:      rgba(7, 3, 14, 0.94);   /* full-screen modal backdrop */
 
   /* ── Border Radius ──────────────────────────────────────── */
   --radius-sm:  6px;
@@ -62,7 +79,7 @@
   --shadow-sm:  0 1px 3px rgba(0,0,0,0.5);
   --shadow-md:  0 4px 16px rgba(0,0,0,0.4);
   --shadow-lg:  0 8px 32px rgba(0,0,0,0.5);
-  --shadow-card:0 2px 20px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,207,255,0.06);
+  --shadow-card:0 2px 20px rgba(0,0,0,0.45), 0 0 0 1px rgba(168,85,247,0.08);
 
   /* ── Z-Index Scale ──────────────────────────────────────── */
   --z-base:    1;
@@ -96,43 +113,43 @@
    LIGHT THEME — "light & airy" (default landing)
    Overrides ONLY color/surface/shadow tokens. Accent hues, radii,
    spacing, and typography are inherited from :root unchanged, so the
-   brand (cyan → purple → pink) stays identical — just on a light ground.
+   brand (purple → violet → green) stays identical — just on a light ground.
    ═══════════════════════════════════════════════════════════ */
 [data-theme="light"] {
-  /* backgrounds → airy cool white */
-  --bg-dark:      #F5F8FD;
+  /* backgrounds → airy violet-white */
+  --bg-dark:      #F8F5FD;
   --bg-deeper:    #FFFFFF;
   --bg-elevated:  #FFFFFF;
   --card-dark:    #FFFFFF;
-  --card-elevated:#F7FAFE;
+  --card-elevated:#FAF7FE;
 
-  /* text → cool ink on light */
-  --text-light:     #0C1526;
-  --text-secondary: #51607A;
-  --text-muted:     #93A0B5;
+  /* text → violet ink on light */
+  --text-light:     #17102B;
+  --text-secondary: #574C70;
+  --text-muted:     #9A90B0;
 
   /* dark-only gradients → light equivalents (accent gradients unchanged) */
-  --gradient-dark: linear-gradient(180deg, #FFFFFF 0%, #F5F8FD 100%);
-  --gradient-card: linear-gradient(145deg, #FFFFFF 0%, #F7FAFE 100%);
-  --gradient-hero: radial-gradient(60% 55% at 78% 0%, rgba(236,72,153,0.10), transparent 60%),
-                   radial-gradient(55% 60% at 12% 8%, rgba(0,207,255,0.12), transparent 62%),
-                   linear-gradient(180deg, #FFFFFF, #F5F8FD);
+  --gradient-dark: linear-gradient(180deg, #FFFFFF 0%, #F8F5FD 100%);
+  --gradient-card: linear-gradient(145deg, #FFFFFF 0%, #FAF7FE 100%);
+  --gradient-hero: radial-gradient(60% 55% at 78% 0%, rgba(34,197,94,0.10), transparent 60%),
+                   radial-gradient(55% 60% at 12% 8%, rgba(168,85,247,0.13), transparent 62%),
+                   linear-gradient(180deg, #FFFFFF, #F8F5FD);
 
   /* glows → soft airy shadows (keep a hint of brand color) */
-  --glow-blue:   0 8px 26px -10px rgba(0,207,255,0.40);
-  --glow-pink:   0 8px 26px -10px rgba(236,72,153,0.32);
-  --glow-purple: 0 10px 30px -12px rgba(124,58,237,0.26);
-  --glow-sm:     0 2px 10px rgba(30,50,95,0.10);
+  --glow-blue:   0 8px 26px -10px rgba(168,85,247,0.40);
+  --glow-pink:   0 8px 26px -10px rgba(74,222,128,0.32);
+  --glow-purple: 0 10px 30px -12px rgba(34,197,94,0.26);
+  --glow-sm:     0 2px 10px rgba(60,30,95,0.10);
 
   /* glass → light frosted */
   --glass-bg:     rgba(255,255,255,0.72);
-  --glass-border: rgba(23,40,72,0.09);
-  --glass-hover:  rgba(23,40,72,0.04);
-  --overlay:      rgba(232,238,247,0.90);   /* light frosted backdrop */
+  --glass-border: rgba(45,25,80,0.10);
+  --glass-hover:  rgba(45,25,80,0.04);
+  --overlay:      rgba(238,232,248,0.90);   /* light frosted backdrop */
 
-  /* shadows → soft, cool-tinted (not black) */
-  --shadow-sm:  0 1px 3px rgba(30,50,95,0.08);
-  --shadow-md:  0 6px 20px -8px rgba(30,50,95,0.14);
-  --shadow-lg:  0 18px 44px -18px rgba(30,50,95,0.20);
-  --shadow-card:0 2px 18px -6px rgba(30,50,95,0.12), 0 0 0 1px rgba(23,40,72,0.06);
+  /* shadows → soft, violet-tinted (not black) */
+  --shadow-sm:  0 1px 3px rgba(50,30,95,0.08);
+  --shadow-md:  0 6px 20px -8px rgba(50,30,95,0.14);
+  --shadow-lg:  0 18px 44px -18px rgba(50,30,95,0.20);
+  --shadow-card:0 2px 18px -6px rgba(50,30,95,0.12), 0 0 0 1px rgba(45,25,80,0.07);
 }

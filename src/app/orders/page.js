@@ -16,11 +16,11 @@ import {
 
 const statusConfig = {
   PROCESSING: { label: 'Processing', color: '#fbbf24',             bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.3)', Icon: Clock },
-  SHIPPED:    { label: 'Shipped',    color: '#00CFFF',             bg: 'rgba(0,207,255,0.12)',  border: 'rgba(0,207,255,0.3)',  Icon: Truck },
+  SHIPPED:    { label: 'Shipped',    color: '#A855F7',             bg: 'rgba(168,85,247,0.12)',  border: 'rgba(168,85,247,0.3)',  Icon: Truck },
   COMPLETED:  { label: 'Delivered',  color: '#34d399',             bg: 'rgba(52,211,153,0.12)',  border: 'rgba(52,211,153,0.3)',  Icon: CheckCircle2 },
   BACKORDER:  { label: 'Backorder',  color: '#f59e0b',             bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.35)', Icon: Clock },
   ON_HOLD:    { label: 'On Hold',    color: '#fbbf24',             bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.3)', Icon: Clock },
-  PENDING:    { label: 'Pending',    color: 'var(--primary-blue)', bg: 'rgba(0,207,255,0.12)',  border: 'rgba(0,207,255,0.3)',  Icon: Clock },
+  PENDING:    { label: 'Pending',    color: 'var(--primary-blue)', bg: 'rgba(168,85,247,0.12)',  border: 'rgba(168,85,247,0.3)',  Icon: Clock },
   CANCELLED:  { label: 'Cancelled',  color: '#f87171',             bg: 'rgba(239,68,68,0.12)',  border: 'rgba(239,68,68,0.3)',  Icon: XCircle },
   REFUNDED:   { label: 'Refunded',   color: '#f87171',             bg: 'rgba(239,68,68,0.12)',  border: 'rgba(239,68,68,0.3)',  Icon: XCircle },
   FAILED:     { label: 'Failed',     color: '#f87171',             bg: 'rgba(239,68,68,0.12)',  border: 'rgba(239,68,68,0.3)',  Icon: XCircle },
@@ -107,7 +107,7 @@ export default function OrdersPage() {
           </div>
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             {filterOptions.map(f => (
-              <button key={f} onClick={() => setFilter(f)} style={{ padding: '8px 16px', borderRadius: '999px', border: `1px solid ${filter === f ? 'var(--primary-blue)' : 'var(--glass-border)'}`, background: filter === f ? 'rgba(0,207,255,0.1)' : 'var(--card-dark)', color: filter === f ? 'var(--primary-blue)' : 'var(--text-secondary)', fontSize: '0.82rem', fontWeight: filter === f ? 600 : 400, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>{f}</button>
+              <button key={f} onClick={() => setFilter(f)} style={{ padding: '8px 16px', borderRadius: '999px', border: `1px solid ${filter === f ? 'var(--primary-blue)' : 'var(--glass-border)'}`, background: filter === f ? 'rgba(168,85,247,0.1)' : 'var(--card-dark)', color: filter === f ? 'var(--primary-blue)' : 'var(--text-secondary)', fontSize: '0.82rem', fontWeight: filter === f ? 600 : 400, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>{f}</button>
             ))}
           </div>
         </div>
@@ -151,7 +151,7 @@ export default function OrdersPage() {
               const lineItems = order.lineItems?.nodes || [];
 
               return (
-                <div key={order.id} style={{ background: 'var(--card-dark)', border: `1px solid ${isOpen ? 'rgba(0,207,255,0.25)' : 'var(--glass-border)'}`, borderRadius: 'var(--radius-xl)', overflow: 'hidden', transition: 'all 0.2s ease', boxShadow: isOpen ? '0 0 20px rgba(0,207,255,0.08)' : 'none' }}>
+                <div key={order.id} style={{ background: 'var(--card-dark)', border: `1px solid ${isOpen ? 'rgba(168,85,247,0.25)' : 'var(--glass-border)'}`, borderRadius: 'var(--radius-xl)', overflow: 'hidden', transition: 'all 0.2s ease', boxShadow: isOpen ? '0 0 20px rgba(168,85,247,0.08)' : 'none' }}>
 
                   {/* Order header — click to expand */}
                   <div onClick={() => setExpandedId(isOpen ? null : order.id)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 22px', cursor: 'pointer', flexWrap: 'wrap', gap: '12px' }}>
@@ -229,7 +229,7 @@ export default function OrdersPage() {
                                 {attrs.length > 0 && (
                                   <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginTop: '3px' }}>
                                     {attrs.map((a, ai) => (
-                                      <span key={ai} style={{ padding: '1px 6px', background: 'rgba(0,207,255,0.08)', border: '1px solid rgba(0,207,255,0.2)', borderRadius: '999px', fontSize: '0.65rem', color: 'var(--primary-blue)', fontWeight: 600 }}>
+                                      <span key={ai} style={{ padding: '1px 6px', background: 'rgba(168,85,247,0.08)', border: '1px solid rgba(168,85,247,0.2)', borderRadius: '999px', fontSize: '0.65rem', color: 'var(--primary-blue)', fontWeight: 600 }}>
                                         {a.name}: {a.value}
                                       </span>
                                     ))}

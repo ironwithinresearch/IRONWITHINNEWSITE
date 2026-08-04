@@ -37,7 +37,7 @@ export default function LabReportsPage() {
           aria-hidden
           style={{
             position: 'absolute', inset: 0,
-            background: 'radial-gradient(ellipse at center top, rgba(0,207,255,0.10) 0%, transparent 70%)',
+            background: 'radial-gradient(ellipse at center top, rgba(168,85,247,0.10) 0%, transparent 70%)',
             pointerEvents: 'none',
           }}
         />
@@ -46,7 +46,7 @@ export default function LabReportsPage() {
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
               padding: '6px 14px', borderRadius: 999,
-              background: 'rgba(0,207,255,0.12)', color: 'var(--primary-blue)',
+              background: 'rgba(168,85,247,0.12)', color: 'var(--primary-blue)',
               fontSize: '0.8rem', fontWeight: 600, marginBottom: 20,
               border: '1px solid var(--glass-border)',
             }}
@@ -112,7 +112,7 @@ export default function LabReportsPage() {
             >
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <span style={{ width: 42, height: 42, borderRadius: 'var(--radius-md)', background: 'rgba(0,207,255,0.12)', color: 'var(--primary-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <span style={{ width: 42, height: 42, borderRadius: 'var(--radius-md)', background: 'rgba(168,85,247,0.12)', color: 'var(--primary-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <FileText size={20} />
                   </span>
                   <div>
@@ -176,7 +176,7 @@ export default function LabReportsPage() {
                       style={{
                         fontSize: '0.74rem', color: 'var(--primary-blue)', textDecoration: 'none',
                         display: 'inline-flex', alignItems: 'center', gap: 5,
-                        padding: '4px 9px', borderRadius: 7, background: 'rgba(0,207,255,0.08)',
+                        padding: '4px 9px', borderRadius: 7, background: 'rgba(168,85,247,0.08)',
                       }}
                     >
                       <FileText size={11} /> {b.batchDate}{i === 0 ? ' · latest' : ''}

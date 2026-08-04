@@ -88,7 +88,7 @@ export default function WishlistPage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
               {wishlistItems.map(item => (
                 <div key={item.id} style={{ background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', display: 'flex', flexDirection: 'column', transition: 'all 0.2s ease', opacity: item.stockStatus !== 'IN_STOCK' ? 0.8 : 1 }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(0,207,255,0.28)'; e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.25)'; }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(168,85,247,0.28)'; e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.25)'; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
 
                   {/* Image */}

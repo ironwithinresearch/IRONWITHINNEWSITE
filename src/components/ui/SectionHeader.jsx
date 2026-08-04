@@ -129,7 +129,7 @@ export default function SectionHeader({
           onMouseEnter={e => {
             e.currentTarget.style.color = 'var(--primary-blue)';
             e.currentTarget.style.borderColor = 'var(--primary-blue)';
-            e.currentTarget.style.background = 'rgba(0,207,255,0.05)';
+            e.currentTarget.style.background = 'rgba(168,85,247,0.05)';
           }}
           onMouseLeave={e => {
             e.currentTarget.style.color = 'var(--text-secondary)';
