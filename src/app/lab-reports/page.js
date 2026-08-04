@@ -3,23 +3,27 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import {
-  FlaskConical, FileText, Download, Search, ShieldCheck,
+  FlaskConical, FileText, Search, ShieldCheck,
   BadgeCheck, ArrowRight, X,
 } from 'lucide-react';
-import { coaList } from '@/data/coas';
-
+import { coaList, getBatches } from '@/data/coas';
 /* ── Lab Reports / COAs ──────────────────────────────────────
    Every research compound we carry is independently tested.
-   COA PDFs are self-hosted in /public/coas and listed from
-   src/data/coas.js (keyed by product slug). */
+   COA PDFs are self-hosted in /public/coa-pdf and listed from
+   src/data/coas.js (keyed by product slug).
+
+   One card = one compound = ONE button. The button opens /coas/<slug>,
+   which lists EVERY batch we've tested for that compound. We deliberately
+   don't link individual batch PDFs from here — a wall of per-batch links
+   made the page read as clutter rather than as proof of testing. */
 
 export default function LabReportsPage() {
   const [query, setQuery] = useState('');
 
   const reports = useMemo(() => {
-    const list = [...coaList].sort((a, b) =>
-      (a.productName || '').localeCompare(b.productName || '')
-    );
+    const list = coaList
+      .map((r) => ({ ...r, batchCount: getBatches(r.slug).length }))
+      .sort((a, b) => (a.productName || '').localeCompare(b.productName || ''));
     const q = query.trim().toLowerCase();
     if (!q) return list;
     return list.filter(
@@ -28,6 +32,11 @@ export default function LabReportsPage() {
         (r.slug || '').toLowerCase().includes(q)
     );
   }, [query]);
+
+  const totalBatches = useMemo(
+    () => reports.reduce((n, r) => n + r.batchCount, 0),
+    [reports]
+  );
 
   return (
     <div style={{ background: 'var(--bg-dark)', color: 'var(--text-light)', minHeight: '100vh' }}>
@@ -58,7 +67,8 @@ export default function LabReportsPage() {
           </h1>
           <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', maxWidth: 640, margin: '0 auto 28px', lineHeight: 1.6 }}>
             Every compound we supply is independently tested for identity and purity.
-            Browse and download the Certificate of Analysis (COA) for each product&apos;s batch.
+            Open any compound to view and download the Certificate of Analysis (COA)
+            for every batch we&apos;ve tested.
           </p>
 
           {/* Search */}
@@ -87,7 +97,8 @@ export default function LabReportsPage() {
             )}
           </div>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: 14 }}>
-            {reports.length} {reports.length === 1 ? 'report' : 'reports'} available
+            {reports.length} {reports.length === 1 ? 'compound' : 'compounds'} ·{' '}
+            {totalBatches} {totalBatches === 1 ? 'report' : 'reports'} available
           </p>
         </div>
       </section>
@@ -102,12 +113,14 @@ export default function LabReportsPage() {
           }}
         >
           {reports.map((r) => (
-            <div
+            <Link
               key={r.slug}
+              href={`/coas/${r.slug}`}
               style={{
                 background: 'var(--glass-bg)', border: '1px solid var(--glass-border)',
                 borderRadius: 'var(--radius-lg, 16px)', padding: 22,
                 display: 'flex', flexDirection: 'column', gap: 14,
+                textDecoration: 'none', color: 'inherit',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
@@ -121,8 +134,8 @@ export default function LabReportsPage() {
                     </h3>
                     {r.batchDate ? (
                       <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                        {r.batches && r.batches.length > 1
-                          ? `${r.batches.length} batches tested · latest ${r.batchDate}`
+                        {r.batchCount > 1
+                          ? `${r.batchCount} batches tested · latest ${r.batchDate}`
                           : `Batch tested ${r.batchDate}`}
                       </span>
                     ) : null}
@@ -133,58 +146,19 @@ export default function LabReportsPage() {
                 </span>
               </div>
 
-              <div style={{ display: 'flex', gap: 10, marginTop: 'auto' }}>
-                <a
-                  href={r.coaFile}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7,
-                    padding: '10px 12px', borderRadius: 'var(--radius-md)',
-                    background: 'var(--gradient-primary)', color: '#001018',
-                    fontWeight: 700, fontSize: '0.85rem', textDecoration: 'none',
-                  }}
-                >
-                  <FileText size={15} /> View COA
-                </a>
-                <a
-                  href={r.coaFile}
-                  download
-                  aria-label={`Download ${r.productName} COA`}
-                  style={{
-                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                    padding: '10px 14px', borderRadius: 'var(--radius-md)',
-                    background: 'transparent', border: '1px solid var(--primary-blue)',
-                    color: 'var(--primary-blue)', textDecoration: 'none',
-                  }}
-                >
-                  <Download size={15} />
-                </a>
-              </div>
-
-              {r.batches && r.batches.length > 1 && (
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, paddingTop: 12, borderTop: '1px solid var(--glass-border)' }}>
-                  <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', width: '100%', marginBottom: 2 }}>
-                    Batch history — continued testing:
-                  </span>
-                  {r.batches.map((b, i) => (
-                    <a
-                      key={i}
-                      href={b.coaFile}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{
-                        fontSize: '0.74rem', color: 'var(--primary-blue)', textDecoration: 'none',
-                        display: 'inline-flex', alignItems: 'center', gap: 5,
-                        padding: '4px 9px', borderRadius: 7, background: 'rgba(0,207,255,0.08)',
-                      }}
-                    >
-                      <FileText size={11} /> {b.batchDate}{i === 0 ? ' · latest' : ''}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
+              <span
+                style={{
+                  marginTop: 'auto',
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7,
+                  padding: '11px 12px', borderRadius: 'var(--radius-md)',
+                  background: 'var(--gradient-primary)', color: '#001018',
+                  fontWeight: 700, fontSize: '0.85rem',
+                }}
+              >
+                <FileText size={15} />
+                {r.batchCount > 1 ? `View all ${r.batchCount} reports` : 'View lab report'}
+              </span>
+            </Link>
           ))}
         </div>
 
