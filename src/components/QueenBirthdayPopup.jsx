@@ -59,7 +59,7 @@ export default function QueenBirthdayPopup() {
         <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '0.95rem', lineHeight: 1.55, margin: '0 0 14px' }}>
           Everything is <b style={{ color:'#fff' }}>48% off</b> to celebrate her birthday. Spend $200 and pick a{' '}
           <b style={{ color:'#fff' }}>FREE RETA or TIRZ 10mg</b> — or hit $300 for a full <b style={{ color:'#fff' }}>30mg</b>. Every $300+ order is
-          automatically entered to win a <b style={{ color:'#fff' }}>1-of-1 Immortal Research challenge coin</b> or a chance at <b style={{ color:'#fff' }}>1 of 3 $300 giveaways.</b>
+          automatically entered to win a <b style={{ color:'#fff' }}>1-of-1 Titanium Within Research challenge coin</b> or a chance at <b style={{ color:'#fff' }}>1 of 3 $300 giveaways.</b>
         </p>
         <Link href="/shop" onClick={close} style={{ display: 'block', width: '100%', padding: '14px', borderRadius: 12, background: 'linear-gradient(90deg,#7c3aed,#22c55e,#4ade80)', color: '#04121a', fontWeight: 800, fontSize: '1rem', textDecoration: 'none' }}>
           Shop the Birthday Bash 🐉

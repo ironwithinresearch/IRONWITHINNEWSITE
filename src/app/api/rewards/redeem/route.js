@@ -1,5 +1,5 @@
 // src/app/api/rewards/redeem/route.js
-// Proxy for redeeming Immortal Rewards points → a single-use coupon. Forwards the JWT.
+// Proxy for redeeming TWR Rewards points → a single-use coupon. Forwards the JWT.
 
 import { NextResponse } from 'next/server';
 

@@ -21,7 +21,7 @@ export default function GuaranteeBadge({ style = {} }) {
         </div>
         <div>
           <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-light)', margin: '2px 0 6px' }}>
-            The Immortal Research Purity Guarantee
+            The Titanium Within Research Purity Guarantee
           </h3>
           <p style={{ margin: 0, fontSize: '0.875rem', lineHeight: 1.6, color: 'var(--text-secondary)' }}>
             Every product is independently <strong style={{ color: 'var(--text-light)' }}>third-party lab-tested to 99%+ purity</strong> and ships with a verified Certificate of Analysis. If your order ever isn&apos;t as described, we&apos;ll make it right — <strong style={{ color: 'var(--text-light)' }}>replacement or refund</strong>.

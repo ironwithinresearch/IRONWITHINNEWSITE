@@ -23,9 +23,9 @@ export function generateStaticParams() {
 
 export function generateMetadata({ params }) {
   const coa = getCoaByFile(decodeURIComponent(params.file));
-  if (!coa) return { title: 'Certificates of Analysis | Immortal Research' };
+  if (!coa) return { title: 'Certificates of Analysis | Titanium Within Research' };
   return {
-    title: `${coa.productName} — Certificates of Analysis | Immortal Research`,
+    title: `${coa.productName} — Certificates of Analysis | Titanium Within Research`,
     description: `Every independently tested batch COA for ${coa.productName}, including purity and endotoxin results.`,
     robots: { index: false, follow: true },
   };

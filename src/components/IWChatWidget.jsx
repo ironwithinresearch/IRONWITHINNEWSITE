@@ -1,5 +1,5 @@
 'use client';
-// Immortal Research support chat — floating bubble + panel, mounted site-wide (replaces Re:amaze).
+// Titanium Within Research support chat — floating bubble + panel, mounted site-wide (replaces Re:amaze).
 // Talks to /api/chat (Claude agent: order lookup + live delivery status + replacements + escalation).
 
 import { useState, useRef, useEffect } from 'react';
@@ -33,7 +33,7 @@ function Bub({ role, text, image }) {
 
 export default function IWChatWidget({ autoOpen = false }) {
   const [open, setOpen] = useState(false);
-  const [msgs, setMsgs] = useState([{ role: 'bot', text: "Hey there — I'm the **Immortal Research** assistant. 👋\nI can check your order & delivery status, help with a missing or damaged item, and answer questions about COAs, shipping, and your account. What can I do for you?" }]);
+  const [msgs, setMsgs] = useState([{ role: 'bot', text: "Hey there — I'm the **Titanium Within Research** assistant. 👋\nI can check your order & delivery status, help with a missing or damaged item, and answer questions about COAs, shipping, and your account. What can I do for you?" }]);
   const [val, setVal] = useState('');
   const [img, setImg] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -90,7 +90,7 @@ export default function IWChatWidget({ autoOpen = false }) {
               <img src="/logo-mark.png" alt="" style={{ width: '110%', height: '110%', objectFit: 'cover', mixBlendMode: 'screen' }} />
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 700, fontSize: 14.5, color: '#fff' }}>Immortal Research Assistant</div>
+              <div style={{ fontWeight: 700, fontSize: 14.5, color: '#fff' }}>Titanium Within Research Assistant</div>
               <div style={{ fontSize: 11.5, color: '#5fbf93', display: 'flex', alignItems: 'center', gap: 5 }}>
                 <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#5fbf93', boxShadow: '0 0 8px #5fbf93' }} /> Online · replies instantly
               </div>

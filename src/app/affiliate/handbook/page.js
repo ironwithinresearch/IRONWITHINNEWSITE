@@ -1,6 +1,6 @@
 'use client';
 // src/app/affiliate/handbook/page.js
-// The Immortal Research affiliate handbook — native, gated (lives under /affiliate).
+// The Titanium Within Research affiliate handbook — native, gated (lives under /affiliate).
 // "Print / Save as PDF" uses window.print(); a print stylesheet isolates the
 // handbook so the site chrome is dropped from the printout.
 
@@ -87,20 +87,20 @@ export default function AffiliateHandbookPage() {
 
       {/* masthead */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 18 }}>
-        <Image src="/logo-mark.png" alt="Immortal Research" width={52} height={52} style={{ filter: 'drop-shadow(0 0 12px rgba(168,85,247,0.45))' }} />
+        <Image src="/logo-mark.png" alt="Titanium Within Research" width={52} height={52} style={{ filter: 'drop-shadow(0 0 12px rgba(168,85,247,0.45))' }} />
         <div>
-          <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.15rem', fontWeight: 900, letterSpacing: '0.1em', color: '#fff' }}>IMMORTAL RESEARCH</div>
+          <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.15rem', fontWeight: 900, letterSpacing: '0.1em', color: '#fff' }}>TITANIUM WITHIN RESEARCH</div>
           <div style={{ fontSize: '0.66rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: C.cyan, fontWeight: 700 }}>Research · Lab-Tested Peptides</div>
         </div>
       </div>
       <Eyebrow icon={Sparkles}>Affiliate Program</Eyebrow>
       <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.4rem', fontWeight: 900, color: '#fff', margin: '0 0 12px', letterSpacing: '-0.02em' }}>The Affiliate Handbook</h1>
       <p style={{ color: C.dim, fontSize: '1.08rem', lineHeight: 1.6, maxWidth: '54ch' }}>
-        Everything you need to promote Immortal Research the right way — stay compliant, get customers taken care of fast, and climb from 10% to 20% commission.
+        Everything you need to promote Titanium Within Research the right way — stay compliant, get customers taken care of fast, and climb from 10% to 20% commission.
       </p>
 
       <Section n="00" icon={Sparkles} kicker="Welcome" title="Welcome to the team">
-        <p>You&apos;re now part of the Immortal Research affiliate program — a group of creators and customers who earn real money by putting our research compounds in front of the people looking for them.</p>
+        <p>You&apos;re now part of the Titanium Within Research affiliate program — a group of creators and customers who earn real money by putting our research compounds in front of the people looking for them.</p>
         <p>You share your link or code, someone buys, you earn a commission on every order — and the more you drive, the higher your percentage climbs.</p>
         <Callout tone="info" label="The short version">
           Lead with <B>education, not hype</B>. Never make medical claims. Send problems to <B>support@ironwithin.io</B> fast. Stack the offers. Track your numbers in GoAffPro. Do those five things and you&apos;ll succeed here.
@@ -108,7 +108,7 @@ export default function AffiliateHandbookPage() {
       </Section>
 
       <Section n="01" icon={ShieldAlert} kicker="Compliance" title="The one rule that protects us all">
-        <p>Immortal Research sells <B>research-use-only</B> compounds. That single fact drives how we&apos;re allowed to talk about the products. Get this right and you&apos;ll never have a problem.</p>
+        <p>Titanium Within Research sells <B>research-use-only</B> compounds. That single fact drives how we&apos;re allowed to talk about the products. Get this right and you&apos;ll never have a problem.</p>
         <Callout tone="rule" label="Never do this">
           <Bullets tint={C.pink} items={[
             <><B>No medical claims.</B> Don&apos;t say a product treats, cures, prevents, heals, or diagnoses anything.</>,
@@ -130,7 +130,7 @@ export default function AffiliateHandbookPage() {
       </Section>
 
       <Section n="02" icon={ShieldCheck} kicker="The product" title="What you're promoting">
-        <p>Immortal Research is a fast, modern store carrying a full catalog of research peptides and related compounds. Worth knowing so you can speak to them:</p>
+        <p>Titanium Within Research is a fast, modern store carrying a full catalog of research peptides and related compounds. Worth knowing so you can speak to them:</p>
         <Bullets items={[
           <><B>Tested &amp; transparent</B> — every order ships with a Certificate of Analysis. Always lead here.</>,
           <><B>Account required (21+)</B> — a quick account unlocks rewards, credits, and reorders.</>,
@@ -163,7 +163,7 @@ export default function AffiliateHandbookPage() {
           </table>
         </div>
         <Callout tone="info" label="Get paid 2× — in store credit">
-          Instead of cash, take your commission as Immortal Research store credit worth <B>double</B> — earn $100, get $200 to spend on the store. Best deal we offer if you use the products yourself. Set it at <Link href="/affiliate/payout" style={{ color: C.cyan }}>/affiliate/payout</Link>.
+          Instead of cash, take your commission as Titanium Within Research store credit worth <B>double</B> — earn $100, get $200 to spend on the store. Best deal we offer if you use the products yourself. Set it at <Link href="/affiliate/payout" style={{ color: C.cyan }}>/affiliate/payout</Link>.
         </Callout>
         <Callout tone="rule" label="Keep your code active">
           Your personal discount code has to stay in use. To keep it active, you need to drive <B>at least $1,000 in sales at least once every 2 months</B>. If it goes a full 2 months without hitting that mark, it may be paused until you&apos;re producing again — so keep it circulating.
@@ -187,7 +187,7 @@ export default function AffiliateHandbookPage() {
         <Bullets items={[
           <><B>Explain, don&apos;t hype.</B> &quot;Here&apos;s what this compound is and what studies are looking at&quot; beats &quot;this changed my life&quot; — and keeps you compliant.</>,
           <><B>Show the COAs.</B> A screen recording of a Certificate of Analysis builds more trust than any claim.</>,
-          <><B>Comparison content wins.</B> Purity, price, shipping, testing — line Immortal Research up honestly.</>,
+          <><B>Comparison content wins.</B> Purity, price, shipping, testing — line Titanium Within Research up honestly.</>,
         ]} />
         <p style={{ color: C.ink, fontWeight: 700, marginTop: 18 }}>Make it easy to buy</p>
         <Bullets items={[
@@ -218,7 +218,7 @@ export default function AffiliateHandbookPage() {
 {`To: support@ironwithin.io
 Subject: Order #[order number] — [short description]
 
-Hi Immortal Research team,
+Hi Titanium Within Research team,
 
 Order number: [#_____]
 Account email: [_____]
@@ -238,8 +238,8 @@ Thanks!`}
       </Section>
 
       <Section n="07" icon={Gift} kicker="Loyalty engine" title="The Rewards program">
-        <p>Immortal Research has a full loyalty stack, and every piece is a reason for a customer to buy through <em>you</em> and come back. Know these cold — they&apos;re your closing arguments.</p>
-        <p style={{ color: C.ink, fontWeight: 700, marginTop: 14 }}>Immortal Rewards — points on every order</p>
+        <p>Titanium Within Research has a full loyalty stack, and every piece is a reason for a customer to buy through <em>you</em> and come back. Know these cold — they&apos;re your closing arguments.</p>
+        <p style={{ color: C.ink, fontWeight: 700, marginTop: 14 }}>TWR Rewards — points on every order</p>
         <Bullets items={[
           <>Customers earn <B>1 point per $1</B> spent.</>,
           <><B>250 bonus points</B> just for creating an account.</>,
@@ -281,12 +281,12 @@ Thanks!`}
           <>Grab ready-made assets from the <Link href="/affiliate/resources" style={{ color: C.cyan }}>swipe pack</Link>.</>,
         ]} />
         <Callout tone="info" label="You've got this">
-          Educate, stay compliant, take care of people, and stack the offers. Do that consistently and 15% — then 20% — takes care of itself. Welcome to Immortal Research.
+          Educate, stay compliant, take care of people, and stack the offers. Do that consistently and 15% — then 20% — takes care of itself. Welcome to Titanium Within Research.
         </Callout>
       </Section>
 
       <p style={{ marginTop: 30, paddingTop: 20, borderTop: `1px solid ${C.border}`, color: C.muted, fontSize: '0.82rem', lineHeight: 1.6 }}>
-        Immortal Research products are sold for research purposes only and are not for human consumption. Affiliates must not make medical, therapeutic, or dosing claims, and must market only to audiences 21 and older. Commission rates, thresholds, and program terms may be updated by Immortal Research. This handbook is for approved affiliates — please don&apos;t republish it publicly.
+        Titanium Within Research products are sold for research purposes only and are not for human consumption. Affiliates must not make medical, therapeutic, or dosing claims, and must market only to audiences 21 and older. Commission rates, thresholds, and program terms may be updated by Titanium Within Research. This handbook is for approved affiliates — please don&apos;t republish it publicly.
       </p>
 
       <style dangerouslySetInnerHTML={{ __html: '@media print{ body *{visibility:hidden!important} #iw-handbook, #iw-handbook *{visibility:visible!important} #iw-handbook{position:absolute;left:0;top:0;width:100%;max-width:100%;padding:0 8px} .no-print{display:none!important} }' }} />

@@ -53,7 +53,7 @@ export async function generateMetadata({ params }) {
       openGraph: {
         type: "website",
         url: `${SITE}/product/${slug}`,
-        title: `${p.name} | Immortal Research`,
+        title: `${p.name} | Titanium Within Research`,
         description: desc,
         images: img ? [{ url: img }] : undefined,
       },

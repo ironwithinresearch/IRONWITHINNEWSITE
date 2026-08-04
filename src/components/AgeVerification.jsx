@@ -88,7 +88,7 @@ export default function AgeVerification() {
             letterSpacing: '0.12em',
             textTransform: 'uppercase',
             marginBottom: '12px',
-          }}>Immortal Research</p>
+          }}>Titanium Within Research</p>
 
           {/* Age badge */}
           <div style={{

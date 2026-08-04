@@ -7,12 +7,12 @@ import Link from 'next/link';
 import { Copy, Check, Sparkles, ShieldAlert, ShieldCheck, ArrowRight, Download, Film, Wallet, BookOpen } from 'lucide-react';
 
 const CAPTIONS = [
-  "Doing peptide research? Immortal Research is the only source I trust — 99%+ purity with a Certificate of Analysis on every single vial. Use code [YOURCODE] → ironwithin.io",
-  "If you care about clean inputs, your source matters. Immortal Research third-party lab-tests every batch to 99%+ purity and includes the COA. Code [YOURCODE] for a discount. 🔬",
+  "Doing peptide research? Titanium Within Research is the only source I trust — 99%+ purity with a Certificate of Analysis on every single vial. Use code [YOURCODE] → ironwithin.io",
+  "If you care about clean inputs, your source matters. Titanium Within Research third-party lab-tests every batch to 99%+ purity and includes the COA. Code [YOURCODE] for a discount. 🔬",
   "Restocked my research supplies from @ironwithinresearch again. Fast, discreet shipping and a COA in every order. [YOURCODE] saves you on your first one.",
   "New flagship: the Grand Slam research bundle — three of the most-requested compounds in one box, COA on each vial. Grab it with code [YOURCODE].",
-  "Tip for anyone sourcing research peptides: always demand a Certificate of Analysis. Immortal Research includes one on every vial. That's why I send people there. [YOURCODE]",
-  "Running a longer study? Immortal Research now has prepaid 3 & 6-month Research Plans — lock your supply, get a month free. Use [YOURCODE].",
+  "Tip for anyone sourcing research peptides: always demand a Certificate of Analysis. Titanium Within Research includes one on every vial. That's why I send people there. [YOURCODE]",
+  "Running a longer study? Titanium Within Research now has prepaid 3 & 6-month Research Plans — lock your supply, get a month free. Use [YOURCODE].",
 ];
 
 const HOOKS = [
@@ -39,7 +39,7 @@ const GRAPHICS = [
 const SCRIPTS = [
   {
     title: '"How I vet a supplier" (15–20s)',
-    body: 'HOOK (on camera): "How I vet a research peptide supplier — most fail step 2."\nSHOT: hold up a vial, then show a COA on your phone.\nVO/TEXT: "Step 1: third-party lab tested. Step 2: a Certificate of Analysis on every vial — 99%+ purity. Immortal Research does both."\nCTA: "Code in my caption. Research use only."',
+    body: 'HOOK (on camera): "How I vet a research peptide supplier — most fail step 2."\nSHOT: hold up a vial, then show a COA on your phone.\nVO/TEXT: "Step 1: third-party lab tested. Step 2: a Certificate of Analysis on every vial — 99%+ purity. Titanium Within Research does both."\nCTA: "Code in my caption. Research use only."',
   },
   {
     title: '"Restock unboxing" (15–25s)',
@@ -47,7 +47,7 @@ const SCRIPTS = [
   },
   {
     title: '"The one thing to check" (20–30s)',
-    body: 'HOOK: "Stop buying research peptides without this one thing."\nSHOT: hold a vial, point to the COA.\nVO/TEXT: "A Certificate of Analysis. It proves what\'s actually in the vial. No COA, no buy — Immortal Research includes one on every order, 99%+ purity, third-party tested."\nCTA: "Use my code (caption). For research use only — not for human consumption."',
+    body: 'HOOK: "Stop buying research peptides without this one thing."\nSHOT: hold a vial, point to the COA.\nVO/TEXT: "A Certificate of Analysis. It proves what\'s actually in the vial. No COA, no buy — Titanium Within Research includes one on every order, 99%+ purity, third-party tested."\nCTA: "Use my code (caption). For research use only — not for human consumption."',
   },
 ];
 
@@ -107,7 +107,7 @@ export default function AffiliateResourcesPage() {
           <div style={{ display: 'inline-block', fontSize: '0.66rem', fontWeight: 800, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--primary-blue)', background: 'rgba(168,85,247,0.12)', padding: '3px 9px', borderRadius: 999, marginBottom: 8 }}>New · Earn more</div>
           <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', fontWeight: 800, color: '#fff', margin: '0 0 6px' }}>Get paid in 2× store credit</h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.55, margin: 0 }}>
-            Take your commission as Immortal Research store credit and it's worth <strong style={{ color: 'var(--primary-blue)' }}>double</strong> — a <strong style={{ color: 'var(--text-light)' }}>$100</strong> commission becomes <strong style={{ color: 'var(--primary-blue)' }}>$200</strong> to spend. Auto-applies at checkout, no code. Switch anytime.
+            Take your commission as Titanium Within Research store credit and it's worth <strong style={{ color: 'var(--primary-blue)' }}>double</strong> — a <strong style={{ color: 'var(--text-light)' }}>$100</strong> commission becomes <strong style={{ color: 'var(--primary-blue)' }}>$200</strong> to spend. Auto-applies at checkout, no code. Switch anytime.
           </p>
         </div>
         <Link href="/affiliate/payout" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 26px', background: 'var(--gradient-primary)', borderRadius: 11, color: '#fff', fontWeight: 800, fontSize: '0.95rem', textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 0 20px rgba(168,85,247,0.35)' }}>

@@ -6,7 +6,7 @@ import { Star, Minus, Plus } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { fetchRewards } from '@/lib/rewards';
 
-/* Immortal Rewards in the cart: shows what they'll earn, and lets members spend points
+/* TWR Rewards in the cart: shows what they'll earn, and lets members spend points
    straight off the total with a stepper. The chosen amount is applied at checkout
    as a discount (no coupon code) — controlled by the parent (value + onChange). */
 
@@ -42,7 +42,7 @@ export default function CartRewards({ subtotal = 0, value = 0, onChange }) {
   if (!isLoggedIn) {
     return (
       <div style={box}>
-        <span style={tag}><Star size={13} /> Immortal Rewards</span>
+        <span style={tag}><Star size={13} /> TWR Rewards</span>
         Earn <strong style={{ color: 'var(--text-light)' }}>{earn} points</strong> on this order.{' '}
         <Link href="/rewards" style={{ color: 'var(--primary-blue)', fontWeight: 700 }}>Join free →</Link>
       </div>
@@ -63,7 +63,7 @@ export default function CartRewards({ subtotal = 0, value = 0, onChange }) {
   return (
     <div style={box}>
       <div>
-        <span style={tag}><Star size={13} /> Immortal Rewards</span>
+        <span style={tag}><Star size={13} /> TWR Rewards</span>
         <strong style={{ color: 'var(--text-light)' }}>{balPts.toLocaleString()} pts</strong> (${data.value}) · {data.tier?.current?.name} · earn <strong style={{ color: 'var(--text-light)' }}>{earn}</strong> more here
       </div>
 

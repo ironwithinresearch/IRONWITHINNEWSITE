@@ -79,7 +79,7 @@ export default function GiftCardsPage() {
           <Gift size={15} /> Digital Gift Cards
         </span>
         <h1 style={{ fontSize: 'clamp(1.8rem,4vw,2.6rem)', fontWeight: 800, color: 'var(--text-light)', margin: '0 0 12px' }}>
-          Give the gift of Immortal Research
+          Give the gift of Titanium Within Research
         </h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', maxWidth: 560, margin: '0 auto', lineHeight: 1.55 }}>
           Delivered by email with a personal message. Redeemed at checkout, any unused balance stays on the card. They never expire.

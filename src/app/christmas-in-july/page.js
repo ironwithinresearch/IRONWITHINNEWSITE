@@ -5,7 +5,7 @@ import ScratchCard from '@/components/ScratchCard';
 export const revalidate = 300;
 
 export const metadata = {
-  title: '12 Days of Christmas in July | Immortal Research',
+  title: '12 Days of Christmas in July | Titanium Within Research',
   description: 'A new deal every day, July 11–22 — giveaways, BOGO, bonus days, and a grand finale. Take part in each day to win 1 of 5 $1,000 credits.',
 };
 
@@ -62,7 +62,7 @@ export default async function ChristmasInJuly() {
     <div style={{ minHeight: '100vh', background: 'radial-gradient(ellipse at 50% -10%, rgba(200,16,46,0.22), transparent 55%), radial-gradient(ellipse at 90% 20%, rgba(42,157,92,0.16), transparent 45%), var(--bg-dark, #080b12)', paddingBottom: 90 }}>
       <section style={{ maxWidth: 900, margin: '0 auto', padding: '54px 20px 20px', textAlign: 'center' }}>
         <div style={{ display: 'inline-block', padding: '5px 16px', borderRadius: 999, background: 'rgba(245,197,66,0.14)', border: '1px solid rgba(245,197,66,0.4)', color: '#f5c542', fontWeight: 800, fontSize: '0.72rem', letterSpacing: '0.16em', textTransform: 'uppercase', marginBottom: 18 }}>
-          Immortal Research
+          Titanium Within Research
         </div>
         <h1 style={{ fontFamily: 'var(--font-heading, inherit)', fontSize: 'clamp(2rem, 6vw, 3.4rem)', fontWeight: 900, lineHeight: 1.05, margin: '0 0 8px', color: '#fff' }}>
           🎄 12 Days of <span style={{ background: 'linear-gradient(90deg,#ff5a6e,#f5c542,#3ddc84)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Christmas in July</span>

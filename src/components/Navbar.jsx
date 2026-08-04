@@ -141,9 +141,17 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
-            <img src="/logo-mark.png" alt="Immortal Research" width={36} height={36} style={{ width: 36, height: 36, borderRadius: 'var(--radius-md)', boxShadow: 'var(--glow-blue)', flexShrink: 0, display: 'block' }} />
-            <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '1.1rem', letterSpacing: '-0.01em', background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', display: 'none' }} className="logo-text">
-              Immortal Research
+            <img src="/logo-mark.png" alt="Titanium Within Research" width={36} height={36} style={{ width: 36, height: 36, borderRadius: 'var(--radius-md)', boxShadow: 'var(--glow-blue)', flexShrink: 0, display: 'block' }} />
+            {/* TW-50 signature, compressed for the bar: weight contrast on
+                TITANIUM / WITHIN, RESEARCH set small and letterspaced beneath */}
+            <span style={{ display: 'none', lineHeight: 1.02 }} className="logo-text">
+              <span style={{ display: 'block', fontFamily: 'var(--font-heading)', fontSize: '1.02rem', letterSpacing: '0.02em', background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', whiteSpace: 'nowrap' }}>
+                <span style={{ fontWeight: 800 }}>TITANIUM</span>
+                <span style={{ fontWeight: 300, marginLeft: 6 }}>WITHIN</span>
+              </span>
+              <span style={{ display: 'block', fontSize: '0.56rem', fontWeight: 700, letterSpacing: '0.34em', color: 'var(--brand-green)', marginTop: 2 }}>
+                RESEARCH
+              </span>
             </span>
           </Link>
 

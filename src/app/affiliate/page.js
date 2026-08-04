@@ -49,7 +49,7 @@ const benefits = [
 const steps = [
   { num: '01', title: 'Apply', desc: 'Fill out the quick application form through our GoAffPro portal.' },
   { num: '02', title: 'Get Approved', desc: 'Our team reviews applications promptly. Most are approved within 24 hours.' },
-  { num: '03', title: 'Share Your Link', desc: 'Receive your unique affiliate link and start promoting Immortal Research.' },
+  { num: '03', title: 'Share Your Link', desc: 'Receive your unique affiliate link and start promoting Titanium Within Research.' },
   { num: '04', title: 'Earn Commissions', desc: 'Earn on every qualifying order made through your referral link.' },
 ];
 
@@ -58,7 +58,7 @@ const faqs = [
   { q: 'How are commissions calculated?', a: 'You earn 10% of each order’s subtotal to start (excluding shipping and taxes), rising to 15% once you pass $2,500/month in referred sales and 20% past $15,000/month. Your current rate and earnings show in your dashboard.' },
   { q: 'Do I get content to post?', a: 'Yes — every approved affiliate gets our Swipe Pack: ready-to-post captions, hooks, product images, and the required disclosure. Just add your code and post.' },
   { q: 'When do I get paid?', a: 'Affiliate payouts are processed weekly via Everee. Paying through Everee lets us properly issue your 1099 for tax purposes.' },
-  { q: 'Is there a cost to join?', a: 'No — joining the Immortal Research affiliate program is completely free.' },
+  { q: 'Is there a cost to join?', a: 'No — joining the Titanium Within Research affiliate program is completely free.' },
 ];
 
 export default function AffiliatePage() {
@@ -107,7 +107,7 @@ export default function AffiliatePage() {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
-            }}>Immortal Research</span>
+            }}>Titanium Within Research</span>
           </h1>
 
           <p style={{
@@ -194,7 +194,7 @@ export default function AffiliatePage() {
               <div style={{ display: 'inline-block', fontSize: '0.66rem', fontWeight: 800, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--primary-blue)', background: 'rgba(168,85,247,0.12)', padding: '3px 9px', borderRadius: 999, marginBottom: 8 }}>Already an affiliate?</div>
               <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', fontWeight: 800, color: '#fff', margin: '0 0 6px' }}>Get paid in 2× store credit</h2>
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.55, margin: 0 }}>
-                Take your commission as Immortal Research store credit and it's worth <strong style={{ color: 'var(--primary-blue)' }}>double</strong> — a <strong style={{ color: 'var(--text-light)' }}>$100</strong> commission becomes <strong style={{ color: 'var(--primary-blue)' }}>$200</strong>. Auto-applies at checkout, switch anytime.
+                Take your commission as Titanium Within Research store credit and it's worth <strong style={{ color: 'var(--primary-blue)' }}>double</strong> — a <strong style={{ color: 'var(--text-light)' }}>$100</strong> commission becomes <strong style={{ color: 'var(--primary-blue)' }}>$200</strong>. Auto-applies at checkout, switch anytime.
               </p>
             </div>
             <Link href="/affiliate/payout" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 26px', background: 'var(--gradient-primary)', borderRadius: 11, color: '#fff', fontWeight: 800, fontSize: '0.95rem', textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 0 20px rgba(168,85,247,0.35)' }}>
@@ -395,7 +395,7 @@ export default function AffiliatePage() {
               color: 'var(--text-secondary)', fontSize: '1rem',
               maxWidth: '460px', margin: '0 auto 32px', lineHeight: 1.7,
             }}>
-              Apply today through our GoAffPro portal and start earning commissions on every sale you refer to Immortal Research.
+              Apply today through our GoAffPro portal and start earning commissions on every sale you refer to Titanium Within Research.
             </p>
             <a
               href="https://ironwithin.goaffpro.com/signup"

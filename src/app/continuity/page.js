@@ -67,7 +67,7 @@ export default function ContinuityPage() {
     { Icon: Truck, t: 'Free U.S. shipping', d: 'Every shipment, the whole plan.' },
     { Icon: Lock, t: 'Locked-in price', d: 'Your price never changes for the term.' },
     { Icon: PackageCheck, t: 'Fresh every month', d: 'We ship one vial at a time — never stockpiled.' },
-    { Icon: Sparkles, t: 'Up to 600 bonus points', d: 'Stacked Immortal Rewards on top of your plan.' },
+    { Icon: Sparkles, t: 'Up to 600 bonus points', d: 'Stacked TWR Rewards on top of your plan.' },
     { Icon: ShieldCheck, t: 'One charge, no card stored', d: 'Prepaid — no recurring billing, ever.' },
   ];
 

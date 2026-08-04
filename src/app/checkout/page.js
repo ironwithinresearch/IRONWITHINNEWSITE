@@ -336,7 +336,7 @@ export default function CheckoutPage() {
             <div style={{ textAlign: 'left', background: 'var(--bg-dark)', border: '1px solid rgba(168,85,247,0.25)', borderRadius: '14px', padding: '18px 20px', marginBottom: '26px' }}>
               <div style={{ fontWeight: 800, color: '#fff', fontSize: '1rem', marginBottom: '6px' }}>🎁 Give $25, get $25</div>
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.87rem', lineHeight: 1.55, margin: '0 0 12px' }}>
-                You just earned <strong style={{ color: 'var(--text-light)' }}>Immortal Rewards points</strong> on this order. Want more? Share your referral link — your friend gets <strong style={{ color: 'var(--text-light)' }}>$25 off</strong> their first order and you earn <strong style={{ color: 'var(--text-light)' }}>$25</strong> when they buy.
+                You just earned <strong style={{ color: 'var(--text-light)' }}>TWR Rewards points</strong> on this order. Want more? Share your referral link — your friend gets <strong style={{ color: 'var(--text-light)' }}>$25 off</strong> their first order and you earn <strong style={{ color: 'var(--text-light)' }}>$25</strong> when they buy.
               </p>
               <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                 <Link href="/refer" style={{ padding: '9px 18px', background: 'var(--gradient-primary)', borderRadius: '9px', color: '#fff', fontWeight: 700, fontSize: '0.85rem', textDecoration: 'none' }}>Get your referral link</Link>
@@ -358,7 +358,7 @@ export default function CheckoutPage() {
   }
 
   // ── Account required (no guest checkout) ──
-  // Immortal Research requires a verified 21+ account to purchase. Block checkout for
+  // Titanium Within Research requires a verified 21+ account to purchase. Block checkout for
   // logged-out visitors and route them to sign in / create an account.
   if (authMounted && !isLoggedIn) {
     return (
@@ -369,7 +369,7 @@ export default function CheckoutPage() {
           </div>
           <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.6rem', fontWeight: 900, color: '#fff', margin: '0 0 12px' }}>Account required to check out</h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.6, margin: '0 0 28px' }}>
-            Immortal Research requires a verified <strong style={{ color: 'var(--text-light)' }}>21+ account</strong> to purchase research compounds. Sign in or create your free account to continue — it takes a few seconds.
+            Titanium Within Research requires a verified <strong style={{ color: 'var(--text-light)' }}>21+ account</strong> to purchase research compounds. Sign in or create your free account to continue — it takes a few seconds.
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <Link href="/register?redirect=/checkout" style={{ padding: '14px', background: 'var(--gradient-primary)', borderRadius: '12px', color: '#fff', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>

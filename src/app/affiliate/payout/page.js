@@ -102,7 +102,7 @@ export default function AffiliatePayoutPage() {
             <Wallet size={22} color="#34d399" />
             <div style={{ flex: 1 }}>
               <div style={{ fontWeight: 800, color: 'var(--text-light)', fontSize: '1rem' }}>Store credit — 2× value <span style={{ fontSize: '0.7rem', background: 'rgba(52,211,153,0.2)', color: '#34d399', padding: '2px 8px', borderRadius: 20, marginLeft: 6, fontWeight: 800 }}>BEST DEAL</span></div>
-              <div style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: 2 }}>Double your earnings to spend at Immortal Research. Auto-applies at checkout, no code.</div>
+              <div style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: 2 }}>Double your earnings to spend at Titanium Within Research. Auto-applies at checkout, no code.</div>
             </div>
             {inCredit && <Check size={20} color="#34d399" />}
           </div>

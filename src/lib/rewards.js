@@ -1,6 +1,6 @@
 'use client';
 
-// Immortal Rewards client helpers. Read the JWT from localStorage (same key Apollo uses)
+// TWR Rewards client helpers. Read the JWT from localStorage (same key Apollo uses)
 // and call the same-origin /api/rewards proxies.
 
 function token() {

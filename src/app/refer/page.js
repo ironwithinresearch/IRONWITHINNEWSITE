@@ -19,7 +19,7 @@ export default function ReferPage() {
 
   const copy = () => { if (data?.link) { navigator.clipboard?.writeText(data.link); setCopied(true); setTimeout(() => setCopied(false), 1800); } };
   const share = async () => {
-    if (navigator.share && data?.link) { try { await navigator.share({ title: 'Immortal Research', text: 'Get $25 off your first order at Immortal Research:', url: data.link }); } catch {} }
+    if (navigator.share && data?.link) { try { await navigator.share({ title: 'Titanium Within Research', text: 'Get $25 off your first order at Titanium Within Research:', url: data.link }); } catch {} }
     else copy();
   };
 

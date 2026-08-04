@@ -69,7 +69,7 @@ export default function AffiliateAccess() {
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 18 }}>
-          <Image src="/logo-mark.png" alt="Immortal Research" width={64} height={64} priority
+          <Image src="/logo-mark.png" alt="Titanium Within Research" width={64} height={64} priority
             style={{ filter: 'drop-shadow(0 0 14px rgba(168,85,247,0.45))' }} />
         </div>
 
@@ -88,7 +88,7 @@ export default function AffiliateAccess() {
           Affiliate Access
         </h1>
         <p style={{ margin: '0 0 26px', color: 'var(--text-secondary, #94a3b8)', fontSize: 15, lineHeight: 1.5 }}>
-          Enter the password we shared with you to open the Immortal Research affiliate area.
+          Enter the password we shared with you to open the Titanium Within Research affiliate area.
         </p>
 
         <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>

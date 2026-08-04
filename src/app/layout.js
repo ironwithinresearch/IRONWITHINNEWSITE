@@ -13,15 +13,15 @@ import QueenTheme from "../components/QueenTheme";
 import ShippingPauseNotice from "../components/ShippingPauseNotice";
 import ApolloWrapper from "../lib/ApolloWrapper";
 
-const SITE_NAME = "Immortal Research";
+const SITE_NAME = "Titanium Within Research";
 const SITE_DESC =
   "Research-grade peptides for laboratory research, independently third-party lab-tested with a Certificate of Analysis for every product. For research use only — not for human consumption.";
 
 export const metadata = {
   metadataBase: new URL("https://www.ironwithin.io"),
   title: {
-    default: "Immortal Research — Premium Research Peptides",
-    template: "%s | Immortal Research",
+    default: "Titanium Within Research — Premium Research Peptides",
+    template: "%s | Titanium Within Research",
   },
   description: SITE_DESC,
   applicationName: SITE_NAME,
@@ -32,12 +32,12 @@ export const metadata = {
     type: "website",
     siteName: SITE_NAME,
     url: "https://www.ironwithin.io",
-    title: "Immortal Research — Premium Research Peptides",
+    title: "Titanium Within Research — Premium Research Peptides",
     description: SITE_DESC,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Immortal Research — Premium Research Peptides",
+    title: "Titanium Within Research — Premium Research Peptides",
     description: SITE_DESC,
   },
 };

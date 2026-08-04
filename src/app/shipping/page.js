@@ -267,7 +267,7 @@ export default function ShippingPage() {
                   lineHeight: 1.8,
                 }}
               >
-                Immortal Research reserves the right to refuse shipment to
+                Titanium Within Research reserves the right to refuse shipment to
                 locations where applicable laws, regulations, or restrictions
                 prohibit the delivery of research compounds.
               </p>

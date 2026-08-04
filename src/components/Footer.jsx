@@ -82,7 +82,7 @@ export default function Footer() {
                 fontFamily: 'var(--font-heading)',
                 fontWeight: 800, fontSize: '1rem',
                 letterSpacing: '-0.01em',
-              }}>Immortal Research</span>
+              }}>Titanium Within Research</span>
             </div>
 
             <p style={{
@@ -183,7 +183,7 @@ export default function Footer() {
           paddingBottom: '32px',
         }}>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-            © 2026 Iron Within Nutrition LLC DBA Immortal Research. All rights reserved.{isLuxMe ? '' : ' For research purposes only.'}
+            © 2026 Iron Within Nutrition LLC DBA Titanium Within Research. All rights reserved.{isLuxMe ? '' : ' For research purposes only.'}
           </p>
           {!isLuxMe && (
             <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>
