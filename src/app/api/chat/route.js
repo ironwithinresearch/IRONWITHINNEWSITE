@@ -73,6 +73,7 @@ Iron Within products are sold FOR RESEARCH PURPOSES ONLY and are not for human c
 ## You can take real actions with tools
 - **lookup_order** — check an order's status, its items, and its **live carrier delivery status** (the tool returns live_delivery_status like "Delivered"/"In Transit"/"Out for Delivery" plus estimated_delivery, delivered_on, and the last_scan location — straight from the carrier via ShipStation). Report it in plain, friendly language (e.g. "It was delivered on July 9" or "It's in transit, estimated to arrive July 12 — last scanned in Louisville, KY"). You MUST have the order number AND the email on the account; if the tool says the email doesn't match, reveal nothing and ask them to confirm the email on the order.
 - **request_account_credit** — if a customer reports a missing, damaged, wrong, or leaking item, verify their identity with lookup first, look carefully at any photo they attached, and if the item really is missing/damaged, use this tool. It asks our team to put **account credit** on their account for what they paid for that item, so they can **re-order** — we do NOT send a replacement order. Only for items actually on that order, and confirm which item first. Never request credit for the same item twice — if the tool says it was already made good, escalate instead.
+  **Always establish HOW MANY units are affected and pass it as the quantity argument.** If someone ordered 3 vials and says 2 were missing, that is quantity 2, not 1 — asking for one unit short-changes them and the shortfall has to be fixed by hand later. If they haven't said how many, ask before calling the tool. One call per item: for two different items short on the same order, call it once per item with each item's own quantity.
   Tell the customer plainly: the team is adding account credit they can use at checkout on their next order, and they'll get an email when it's applied. Do NOT promise it is already on their account, do not promise an exact timeframe, and never say we're shipping a replacement.
 - **escalate_to_support** — email the team for anything you can't resolve, billing/payment problems, or when the customer asks for a human. Ask for their email first.
 
@@ -91,7 +92,13 @@ const TOOLS = [
   { name: 'lookup_order', description: 'Look up an order status, tracking, and items. Requires order_number and the account email.',
     input_schema: { type: 'object', properties: { order_number: { type: 'string' }, email: { type: 'string' } }, required: ['order_number', 'email'] } },
   { name: 'request_account_credit', description: 'Ask the team to put account credit on the customer\'s account for a verified missing/damaged/wrong item, so they can re-order. Does not create a replacement order and does not grant the credit — it requests it.',
-    input_schema: { type: 'object', properties: { order_number: { type: 'string' }, email: { type: 'string' }, item_name: { type: 'string' }, reason: { type: 'string' } }, required: ['order_number', 'email', 'item_name', 'reason'] } },
+    input_schema: { type: 'object', properties: {
+      order_number: { type: 'string' },
+      email: { type: 'string' },
+      item_name: { type: 'string' },
+      reason: { type: 'string' },
+      quantity: { type: 'integer', description: 'How many UNITS of this item are missing or damaged. Required — if the customer says "2 vials were missing", pass 2. Defaults to 1 and is capped at the quantity they purchased.' },
+    }, required: ['order_number', 'email', 'item_name', 'reason', 'quantity'] } },
   { name: 'escalate_to_support', description: 'Email the support team.',
     input_schema: { type: 'object', properties: { summary: { type: 'string' }, customer_email: { type: 'string' } }, required: ['summary'] } },
 ];
@@ -135,7 +142,7 @@ async function lookupOrder({ order_number, email }) {
    approves and runs the grant; the customer then re-orders whatever they actually want.
    Credit beats a replacement order here — no second shipment to pay for, and the customer
    can put it toward a different compound or a larger vial. */
-async function requestAccountCredit({ order_number, email, item_name, reason }, ctx = {}) {
+async function requestAccountCredit({ order_number, email, item_name, reason, quantity }, ctx = {}) {
   const v = await lookupOrder({ order_number, email });
   if (!v.verified) return v;
   const key = String(item_name || '').toLowerCase().split(/[\s(]/)[0];
@@ -144,11 +151,20 @@ async function requestAccountCredit({ order_number, email, item_name, reason }, 
   if ((v.already_credited || []).some((x) => String(x).includes(line.name)))
     return { ok: false, note: 'That item was already made good once on this order — do not request credit again; escalate to a human.' };
 
+  /* How MANY units are missing/damaged. This defaulted to 1 and had no way to say otherwise,
+     so a customer reporting "2 vials missing" got half the credit they were owed (order #2436,
+     2026-08-04, needed a manual top-up). Clamp to the quantity actually purchased on that line —
+     we never credit more units than were bought. */
+  const wanted = Math.floor(Number(quantity) || 1);
+  const qty = Math.min(Math.max(wanted, 1), line.qty || 1);
+  const overAsked = wanted > qty;
+
   const { data: o } = await wc(`/orders/${v.order}`);
-  const amount = line.paid_each || 0;
+  const amount = Math.round((line.paid_each || 0) * qty * 100) / 100;
   const custEmail = o.billing?.email || email;
   const custName = `${o.billing?.first_name || ''} ${o.billing?.last_name || ''}`.trim() || custEmail;
-  const grantReason = `${line.name} — ${String(reason || 'reported issue').slice(0, 120)} (order #${v.order})`;
+  const unitNote = qty > 1 ? `${qty} × $${(line.paid_each || 0).toFixed(2)}` : `$${(line.paid_each || 0).toFixed(2)}`;
+  const grantReason = `${qty}× ${line.name} — ${String(reason || 'reported issue').slice(0, 120)} (order #${v.order})`;
 
   // The operator gets a ready-to-run grant command — approving is a copy/paste, not a rebuild.
   await notify({
@@ -157,7 +173,9 @@ async function requestAccountCredit({ order_number, email, item_name, reason }, 
     message: `The support bot verified a customer issue and is REQUESTING account credit so they can re-order.\n\n`
       + `NOTHING HAS BEEN GRANTED YET — this is a request for your approval.\n\n`
       + `Customer: ${custName} <${custEmail}>\nOrder: #${v.order}\nItem: ${line.name}\n`
-      + `Amount paid for that unit: $${amount.toFixed(2)}\nReason given: ${reason}\n\n`
+      + `Units affected: ${qty} of ${line.qty} purchased\n`
+      + `Amount (${unitNote}): $${amount.toFixed(2)}\nReason given: ${reason}\n\n`
+      + (overAsked ? `NOTE: the customer described ${wanted} units but only ${line.qty} were purchased — capped at ${qty}.\n\n` : '')
       + `TO APPROVE — run:\n`
       + `wp iw-credit grant --email=${custEmail} --amount=${amount.toFixed(2)} --reason="${grantReason}" --skip-plugins=wp-graphql-woocommerce --skip-themes\n\n`
       + `The customer is emailed automatically when the credit lands, and it auto-applies at their next checkout.\n`
@@ -169,12 +187,12 @@ async function requestAccountCredit({ order_number, email, item_name, reason }, 
   const creditedList = [...(v.already_credited || []), line.name];
   await wc(`/orders/${v.order}`, { method: 'PUT', body: JSON.stringify({ meta_data: [{ key: '_iw_bot_credit_requested', value: creditedList }] }) });
   await wc(`/orders/${v.order}/notes`, { method: 'POST', body: JSON.stringify({
-    note: `Support bot REQUESTED $${amount.toFixed(2)} account credit for "${line.name}" (not yet granted — awaiting operator approval). Reason: ${reason}`,
+    note: `Support bot REQUESTED $${amount.toFixed(2)} account credit for ${qty}× "${line.name}" (${unitNote}) — not yet granted, awaiting operator approval. Reason: ${reason}`,
     customer_note: false,
   }) });
 
-  return { ok: true, requested: true, amount, item: line.name,
-    message: `Thanks — I've asked our team to put $${amount.toFixed(2)} of account credit on your account for the ${line.name}. You'll get an email once it's applied, and it'll come off automatically at checkout when you re-order. Sorry for the trouble! 🙏` };
+  return { ok: true, requested: true, amount, quantity: qty, item: line.name,
+    message: `Thanks — I've asked our team to put $${amount.toFixed(2)} of account credit on your account for the ${qty > 1 ? `${qty} ` : ''}${line.name}. You'll get an email once it's applied, and it'll come off automatically at checkout when you re-order. Sorry for the trouble! 🙏` };
 }
 
 async function escalate({ summary, customer_email }, ctx = {}) {
