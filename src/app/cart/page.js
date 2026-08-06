@@ -116,7 +116,7 @@ export default function CartPage() {
     // Drop any existing Day-1 gift line first, then add the chosen vial tagged as the pick.
     for (const it of cartItems) {
       const ed = it.extraData || [];
-      const isGift = ed.some(e => (e.key === 'iw_free_gift' && e.value === '1') || (e.key === 'iw_gift_pick' && !!e.value));
+      const isGift = ed.some(e => ((e.key === 'iw_free_gift' || e.key === 'iw_b2s_gift') && e.value === '1') || (e.key === 'iw_gift_pick' && !!e.value));
       const sl = it.product?.node?.slug;
       if (isGift && XJ_GIFT_SLUGS.includes(sl)) { await removeItem(it.key); }
     }
@@ -127,7 +127,7 @@ export default function CartPage() {
   const [giftModalOpen, setGiftModalOpen] = useState(false);
   const xjGiftItem = cartItems.find(it => {
     const ed = it.extraData || [];
-    const isGift = ed.some(e => (e.key === 'iw_free_gift' && e.value === '1') || (e.key === 'iw_gift_pick' && !!e.value));
+    const isGift = ed.some(e => ((e.key === 'iw_free_gift' || e.key === 'iw_b2s_gift') && e.value === '1') || (e.key === 'iw_gift_pick' && !!e.value));
     return isGift && XJ_GIFT_SLUGS.includes(it.product?.node?.slug);
   });
   const xjHasPick = cartItems.some(it => (it.extraData || []).some(e => e.key === 'iw_gift_pick' && !!e.value));
@@ -249,7 +249,7 @@ export default function CartPage() {
                 const variation = item.variation?.node;
                 // Get variation attributes for display
                 const variationAttrs = variation?.attributes?.nodes || [];
-                const isFreeGift = (item.extraData || []).some(e => (((e.key === 'iw_free_gift' || e.key === 'iw_bundle_gift') && e.value === '1') || (e.key === 'iw_gift_pick' && !!e.value)));
+                const isFreeGift = (item.extraData || []).some(e => (((e.key === 'iw_free_gift' || e.key === 'iw_bundle_gift' || e.key === 'iw_b2s_gift') && e.value === '1') || (e.key === 'iw_gift_pick' && !!e.value)));
                 const isXjGift = isFreeGift && XJ_GIFT_SLUGS.includes(product?.slug);
                 const subCadence = subCadenceOf(item);
                 const lineBackorder = !isFreeGift && (variation?.stockStatus === 'ON_BACKORDER' || product?.stockStatus === 'ON_BACKORDER');

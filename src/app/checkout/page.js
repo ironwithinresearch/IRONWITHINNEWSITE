@@ -587,7 +587,7 @@ export default function CheckoutPage() {
             {/* Items */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px' }}>
               {cartItems.map(item => {
-                const isFreeGift = (item.extraData || []).some(e => e.key === 'iw_free_gift' && e.value === '1');
+                const isFreeGift = (item.extraData || []).some(e => (e.key === 'iw_free_gift' || e.key === 'iw_b2s_gift') && e.value === '1');
                 return (
                 <div key={item.key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, minWidth: 0 }}>

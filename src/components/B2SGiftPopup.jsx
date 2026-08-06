@@ -68,7 +68,9 @@ export default function B2SGiftPopup() {
     try {
       if (currentVar !== opt.variationId) {
         if (giftLine?.key) await removeItem(giftLine.key);
-        await addToCart(opt.productId, 1, opt.variationId, { iw_b2s_gift: 1, iw_free_gift: 1 });
+        // Only iw_b2s_gift — iw_free_gift would be pruned by the retired
+        // Queen's Birthday plugin, which still runs and no longer allows these vials.
+        await addToCart(opt.productId, 1, opt.variationId, { iw_b2s_gift: 1 });
         await refetchCart?.();
       }
       window.localStorage.setItem('iw_b2s_gift_picked', String(opt.variationId));
