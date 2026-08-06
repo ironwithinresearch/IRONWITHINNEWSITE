@@ -73,8 +73,8 @@ const B2S_END = Date.parse('2026-08-10T04:59:59Z');
 // discount just gives shoppers a reason to wait, so the teasers are deliberately gone.
 const B2S_MESSAGE = (now) => {
   const drive = ' · every $1,000 sold fills a backpack for a local school (goal: 75) 🎒';
-  if (now >= B2S_SUN_S) return '🎒  BACK 2 SCHOOL BASH — 45% OFF SITEWIDE + a FREE RT-3 or TRZ-2 10mg on $200+ · final day, ends tonight at midnight' + drive;
-  if (now >= B2S_SAT_S) return '🎒  BACK 2 SCHOOL BASH — 40% OFF SITEWIDE today only' + drive;
+  if (now >= B2S_SUN_S) return '🎒  BACK 2 SCHOOL BASH — 40% OFF SITEWIDE + a FREE RT-3 or TRZ-2 10mg on $200+ · final day, ends tonight at midnight' + drive;
+  if (now >= B2S_SAT_S) return '🎒  BACK 2 SCHOOL BASH — 35% OFF SITEWIDE + BUY ONE, GET ONE 1/2 OFF · today only' + drive;
   return '🎒  BACK 2 SCHOOL BASH — spend $200, get a FREE RT-3 10mg or TRZ-2 10mg' + drive;
 };
 

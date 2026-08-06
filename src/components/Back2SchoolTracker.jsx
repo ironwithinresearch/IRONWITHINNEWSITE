@@ -52,8 +52,11 @@ export default function Back2SchoolTracker() {
   const pct     = data?.percent_off ?? 0;
   const gift    = data?.gift_active;
 
+  const bogo = data?.bogo;
   const offer = pct
-    ? `${pct}% OFF SITEWIDE${gift ? ' + free vial on $200+' : ''}`
+    ? `${pct}% OFF SITEWIDE`
+      + (bogo ? ' + buy one, get one 1/2 off' : '')
+      + (gift ? ' + free vial on $200+' : '')
     : (gift ? 'Free RT-3 or TRZ-2 10mg on $200+' : 'Weekend sale');
 
   const NAVY = '#0d1b34';
