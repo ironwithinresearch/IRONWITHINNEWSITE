@@ -62,9 +62,11 @@ export default function Back2SchoolTracker() {
   return (
     <div style={{
       maxWidth: 620, margin: '0 auto 26px', padding: '20px 22px', textAlign: 'left',
-      background: 'linear-gradient(135deg, rgba(232,25,75,0.10), rgba(13,27,52,0.55) 55%)',
-      border: '1px solid rgba(232,25,75,0.45)', borderRadius: 16,
-      boxShadow: '0 10px 34px rgba(0,0,0,0.35)',
+      // Opaque navy on purpose: the storefront has a light/dark toggle and a
+      // translucent card turned muddy over the light theme.
+      background: 'linear-gradient(135deg, #1b2c4d 0%, #0d1b34 55%, #0b1220 100%)',
+      border: `1px solid ${'#e8194b'}`, borderRadius: 16,
+      boxShadow: '0 10px 34px rgba(0,0,0,0.30)',
     }}>
       {/* header: title + countdown */}
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 10, marginBottom: 14 }}>
@@ -95,13 +97,13 @@ export default function Back2SchoolTracker() {
       {/* progress to the next backpack */}
       <div style={{ marginBottom: 15 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem',
-                      color: 'rgba(255,255,255,0.72)', fontWeight: 700, marginBottom: 6 }}>
+                      color: 'rgba(255,255,255,0.80)', fontWeight: 700, marginBottom: 6 }}>
           <span>Next backpack</span>
           <span style={{ color: '#fff' }}>
             ${toNext.toLocaleString(undefined, { maximumFractionDigits: 0 })} to go
           </span>
         </div>
-        <div style={{ height: 12, borderRadius: 999, background: 'rgba(255,255,255,0.12)', overflow: 'hidden' }}>
+        <div style={{ height: 12, borderRadius: 999, background: 'rgba(255,255,255,0.16)', overflow: 'hidden' }}>
           <div style={{
             width: `${nextPct}%`, height: '100%', borderRadius: 999,
             background: `linear-gradient(90deg, ${PINK}, #ff6b8f)`,
@@ -113,7 +115,7 @@ export default function Back2SchoolTracker() {
       {/* progress toward the 75-backpack goal */}
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem',
-                      color: 'rgba(255,255,255,0.72)', fontWeight: 700, marginBottom: 6 }}>
+                      color: 'rgba(255,255,255,0.80)', fontWeight: 700, marginBottom: 6 }}>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
             <Target size={13} /> Goal: {goal} backpacks
           </span>
@@ -122,7 +124,7 @@ export default function Back2SchoolTracker() {
             {packs < goal && <span style={{ color: 'rgba(255,255,255,0.6)' }}> · {goal - packs} to go</span>}
           </span>
         </div>
-        <div style={{ height: 12, borderRadius: 999, background: 'rgba(255,255,255,0.12)', overflow: 'hidden' }}>
+        <div style={{ height: 12, borderRadius: 999, background: 'rgba(255,255,255,0.16)', overflow: 'hidden' }}>
           <div style={{
             width: `${goalPct}%`, height: '100%', borderRadius: 999,
             background: 'linear-gradient(90deg, #2563eb, #60a5fa)',
@@ -131,7 +133,7 @@ export default function Back2SchoolTracker() {
         </div>
       </div>
 
-      <p style={{ margin: '13px 0 0', fontSize: '0.78rem', color: 'rgba(255,255,255,0.62)', lineHeight: 1.5 }}>
+      <p style={{ margin: '13px 0 0', fontSize: '0.78rem', color: 'rgba(255,255,255,0.75)', lineHeight: 1.5 }}>
         Every <strong style={{ color: '#fff' }}>$1,000</strong> sold this weekend fills a backpack for a local
         school. Thank you for helping us make a difference.
       </p>
