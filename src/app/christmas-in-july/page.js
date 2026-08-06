@@ -20,7 +20,7 @@ const ENRICH = {
   5:  { e: '🔥', sub: '40% off RT-3, TRZ-2, Cagrilintide & MOTS-C.' },
   6:  { e: '🧬', sub: '40% off NAD+, Epitalon, Thymosin Alpha-1 & Sermorelin.' },
   7:  { e: '🧠', sub: 'Buy a Semax, get a Selank FREE.' },
-  8:  { e: '💥', sub: '45% off every bundle — Bundle Blowout.' },
+  8:  { e: '💥', sub: '45% off SS-31, TB-500 & BPC-157 — Recovery Blowout.' },
   9:  { e: '🎁', sub: 'Spend $250, get $50 store credit for next time.' },
   10: { e: '🔁', sub: 'Buy 2, get 1 FREE on best-sellers.' },
   11: { e: '🎁', sub: 'A FREE vial — KPV, DSIP, Selank or Semax — on $150+.' },

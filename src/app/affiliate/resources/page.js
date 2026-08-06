@@ -10,7 +10,7 @@ const CAPTIONS = [
   "Doing peptide research? Iron Within Research is the only source I trust — 99%+ purity with a Certificate of Analysis on every single vial. Use code [YOURCODE] → ironwithin.io",
   "If you care about clean inputs, your source matters. Iron Within third-party lab-tests every batch to 99%+ purity and includes the COA. Code [YOURCODE] for a discount. 🔬",
   "Restocked my research supplies from @ironwithinresearch again. Fast, discreet shipping and a COA in every order. [YOURCODE] saves you on your first one.",
-  "New flagship: the Grand Slam research bundle — three of the most-requested compounds in one box, COA on each vial. Grab it with code [YOURCODE].",
+  "Every vial ships with its own Certificate of Analysis — batch, purity, the lot number, all of it. No guessing what you're working with. Code [YOURCODE] → ironwithin.io",
   "Tip for anyone sourcing research peptides: always demand a Certificate of Analysis. Iron Within includes one on every vial. That's why I send people there. [YOURCODE]",
   "Running a longer study? Iron Within now has prepaid 3 & 6-month Research Plans — lock your supply, get a month free. Use [YOURCODE].",
 ];
@@ -164,7 +164,7 @@ export default function AffiliateResourcesPage() {
         <li><strong style={{ color: 'var(--text-light)' }}>99%+ purity</strong>, independently third-party lab-tested</li>
         <li><strong style={{ color: 'var(--text-light)' }}>Certificate of Analysis</strong> on every vial</li>
         <li>Fast, <strong style={{ color: 'var(--text-light)' }}>discreet packaging</strong> on every order</li>
-        <li>Flagship <strong style={{ color: 'var(--text-light)' }}>Grand Slam</strong> & <strong style={{ color: 'var(--text-light)' }}>Long Shot</strong> bundles + prepaid <Link href="/continuity" style={{ color: 'var(--primary-blue)' }}>Research Plans</Link></li>
+        <li>Prepaid 3 &amp; 6-month <Link href="/continuity" style={{ color: 'var(--primary-blue)' }}>Research Plans</Link> — locked-in supply, a month free</li>
         <li>Product images: grab them straight from any <Link href="/shop" style={{ color: 'var(--primary-blue)' }}>product page</Link></li>
       </ul>
 
