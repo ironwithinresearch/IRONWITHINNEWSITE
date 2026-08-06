@@ -62,6 +62,20 @@ const SHIP_END = Date.parse('2026-07-19T05:00:00Z');
 const SHIP_BEFORE = '🚚  SHIPPING NOTICE — order by 2 PM CT this Thursday (Jul 16) to ship right away · orders after that ship Sunday, Jul 19';
 const SHIP_DURING = '🚚  SHIPPING PAUSED until Sunday — any order placed now ships Sun, Jul 19 · thanks for your patience!';
 
+// Back 2 School Peptide Bash — Thu Aug 6 4:00pm CT → Sun Aug 9 11:59:59pm CT (CDT = UTC-5).
+// Phases mirror mu-plugin iw-back2school.php: free vial on $200+ through Friday midnight,
+// 40% Saturday, 45% + free vial Sunday. Every $1k sold fills a backpack (goal 75).
+const B2S_START = Date.parse('2026-08-06T21:00:00Z');
+const B2S_SAT_S = Date.parse('2026-08-08T05:00:00Z');
+const B2S_SUN_S = Date.parse('2026-08-09T05:00:00Z');
+const B2S_END = Date.parse('2026-08-10T04:59:59Z');
+const B2S_MESSAGE = (now) => {
+  const drive = ' · every $1,000 sold fills a backpack for a local school (goal: 75) 🎒';
+  if (now >= B2S_SUN_S) return '🎒  BACK 2 SCHOOL BASH — 45% OFF SITEWIDE + a FREE RT-3 or TRZ-2 10mg on $200+ · final day, ends midnight' + drive;
+  if (now >= B2S_SAT_S) return '🎒  BACK 2 SCHOOL BASH — 40% OFF SITEWIDE today only · 45% + a free vial tomorrow' + drive;
+  return '🎒  BACK 2 SCHOOL BASH — spend $200, get a FREE RT-3 10mg or TRZ-2 10mg · 40% off Saturday, 45% off Sunday' + drive;
+};
+
 // Pay-by-app discount — permanent, not a dated promo, so it lives in the base rotation.
 // Steers volume off cards (card payers pay list; app payers get 10% back off).
 const P2P_MESSAGE = '💸  SAVE 10% — pay with Zelle, Venmo, or Cash App and 10% comes off your total automatically at checkout';
@@ -83,6 +97,7 @@ export default function AnnouncementBar() {
   const [summerActive, setSummerActive] = useState(false);
   const [flashActive, setFlashActive] = useState(false);
   const [qbActive, setQbActive] = useState(false);
+  const [b2sActive, setB2sActive] = useState(false);
   useEffect(() => {
     const now = Date.now();
     const promos = [];
@@ -92,9 +107,11 @@ export default function AnnouncementBar() {
     if (now >= BB_START && now < BB_END) { promos.push(BB_MESSAGE); setBbActive(true); }
     const flashOn = now >= FLASH_START && now < FLASH_END;
     const qbOn = now >= QB_START && now < QB_END;
+    const b2sOn = now >= B2S_START && now < B2S_END;
+    if (b2sOn) { promos.unshift(B2S_MESSAGE(now)); setB2sActive(true); }
     if (qbOn) { promos.unshift(QB_MESSAGE); setQbActive(true); }
     if (!qbOn && flashOn) { promos.unshift(FLASH_MESSAGE); setFlashActive(true); }
-    if (!qbOn && !flashOn && now >= SUMMER_START && now < SUMMER_END) { promos.push(SUMMER_MESSAGE); setSummerActive(true); }
+    if (!b2sOn && !qbOn && !flashOn && now >= SUMMER_START && now < SUMMER_END) { promos.push(SUMMER_MESSAGE); setSummerActive(true); }
     if (now < SALE_ENDS) promos.push(SALE_MESSAGE);
     setMessages([...promos, ...BASE_MESSAGES]);
   }, []);
