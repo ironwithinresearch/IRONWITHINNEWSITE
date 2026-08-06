@@ -6,6 +6,7 @@ import SiteGate from "../components/SiteGate";
 import AffiliateTracker from "../components/AffiliateTracker";
 import ReferralCapture from "../components/ReferralCapture";
 import LeadCapture from "../components/LeadCapture";
+import B2SGiftPopup from "../components/B2SGiftPopup";
 import BirthdayBashPopup from "../components/BirthdayBashPopup";
 import ChristmasJulyPopup from "../components/ChristmasJulyPopup";
 import QueenBirthdayPopup from "../components/QueenBirthdayPopup";
@@ -66,6 +67,7 @@ export default function RootLayout({ children }) {
             {children}
           </main>
           <Footer />
+          <B2SGiftPopup />
           <LeadCapture />
           <BirthdayBashPopup />
           <ChristmasJulyPopup />
