@@ -73,6 +73,13 @@ export default function CartPage() {
  
   const appliedCoupons = cart?.appliedCoupons || [];
 
+  /* Amount the $225 free-US-shipping rule is actually judged on. WooCommerce's
+     WC_Shipping_Free_Shipping subtracts the discount total from the displayed
+     subtotal whenever ignore_discounts is "no", which is how this store is set up.
+     Sale prices are already baked into the line prices, so only coupon codes move
+     this away from the plain subtotal. */
+  const freeShipQualifyingNum = Math.max(0, subtotalNum - num(cart?.discountTotal));
+
   // Referred friends: auto-apply REFER25 ($25 off, min $75) once their cart qualifies.
   useEffect(() => {
     const code = getReferCookie();
@@ -363,9 +370,10 @@ export default function CartPage() {
               <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 800, marginBottom: '20px' }}>Order Summary</h2>
 
               <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}><SaleCountdown /></div>
-              {/* Free-ship threshold measures the subtotal BEFORE discount codes
-                  (WC free_shipping ignore_discounts=yes), so use the pre-coupon subtotal. */}
-              <FreeShippingBar subtotal={subtotalNum} alreadyFree={subscribedCount > 0} />
+              {/* WC free_shipping:7 has ignore_discounts="no", so it tests the subtotal
+                  AFTER discount codes come off. Feed the bar the same number or it
+                  promises free shipping the checkout then refuses to give. */}
+              <FreeShippingBar subtotal={freeShipQualifyingNum} alreadyFree={subscribedCount > 0} />
               <CartRewards subtotal={subtotalNum} value={rewardsPts} onChange={handleRewardsChange} />
               <CartStoreCredit />
 

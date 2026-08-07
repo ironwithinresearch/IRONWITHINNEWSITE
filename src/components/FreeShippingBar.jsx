@@ -4,7 +4,12 @@ import { Truck, Check } from 'lucide-react';
 
 /* Free-shipping progress bar. Gamifies the $225 free-US-shipping threshold:
    "You're $X away from free US shipping" with a fill bar, → "unlocked" at $225+
-   (or when the cart already has free shipping, e.g. a Subscribe & Save item). */
+   (or when the cart already has free shipping, e.g. a Subscribe & Save item).
+
+   `subtotal` MUST be the amount WooCommerce actually judges the rule on — the
+   subtotal minus any coupon discount, because free_shipping:7 runs with
+   ignore_discounts="no". Passing the raw pre-coupon subtotal makes this bar
+   announce free shipping that checkout then declines to give. */
 
 const THRESHOLD = 225;
 const money = (n) => `$${(Math.round(n * 100) / 100).toFixed(2)}`;
