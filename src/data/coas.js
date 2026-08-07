@@ -4,8 +4,9 @@
 
    `batches` (newest first) shows continued batch-over-batch testing. The top-level
    coaFile/batchDate mirror the latest batch (kept for back-compat with single-COA UI).
-   Never repoint a label at /coa-pdf/... directly - the QR must resolve to /coas/<slug>,
-   which renders every batch. */
+   Never print a label pointing at /coa-pdf/... directly - the QR must resolve to
+   /coas/<slug>, which serves ONE PDF containing every batch for that product
+   (see getAllBatchesPdf below + src/app/coas/[file]/route.js). */
 
 export const coaBySlug = {
   '5-amino-1mq-50mg': {
@@ -319,11 +320,25 @@ export function getBatches(slug) {
   return [{ coaFile: coa.coaFile, batchDate: coa.batchDate }];
 }
 
+/* ONE PDF holding every batch COA for a product — what a scanned vial-label QR
+   resolves to. Multi-batch products get a merged file built by
+   tools/merge-coas.py (all batches, newest first, one bookmark each);
+   single-batch products already have a complete record in their one PDF.
+
+   AFTER ADDING A BATCH BELOW, RE-RUN: python3 tools/merge-coas.py
+   (`npm run build` fails if you forget). */
+export function getAllBatchesPdf(slug) {
+  const batches = getBatches(slug);
+  if (!batches.length) return null;
+  return batches.length > 1 ? `/coa-pdf/${slug}-all-batches.pdf` : batches[0].coaFile;
+}
+
 /* Vial-label QR codes are printed with the URL of whichever single batch PDF
    was current at print time (https://ironwithin.io/coas/<file>.pdf). Labels
    already in the field can never be reprinted, so /coas/<file> is served by
-   src/app/coas/[file] — a page listing EVERY batch for that product. This map
-   resolves any batch filename (current or historical) back to its product. */
+   src/app/coas/[file]/route.js — which answers with ONE PDF holding every batch
+   for that product. This map resolves any batch filename (current or
+   historical) back to its product. */
 export const coaSlugByFile = (() => {
   const map = {};
   for (const [slug, coa] of Object.entries(coaBySlug)) {
@@ -337,11 +352,34 @@ export const coaSlugByFile = (() => {
   return map;
 })();
 
+/* Label slugs that don't match a COA key. Printed labels are unrecallable, so
+   a naming drift between the label sheet and this file has to be absorbed here
+   rather than fixed at the printer. */
+const labelSlugAliases = {
+  'tsm-6': 'tesamorelin',   // store hides the Tesamorelin name; labels say TSM-6
+};
+
 export function getCoaByFile(file) {
   if (!file) return null;
   const bare = file.replace(/\.pdf$/i, '');
-  // Accept a bare product slug too (/coas/rt-3) — that's the stable form new
-  // vial labels should be printed with, since it never goes stale.
-  const slug = coaBySlug[bare] ? bare : (coaSlugByFile[file] || coaSlugByFile[bare + '.pdf']);
+
+  const resolve = (s) =>
+    (coaBySlug[s] && s) ||
+    coaSlugByFile[s] ||
+    coaSlugByFile[`${s}.pdf`] ||
+    (labelSlugAliases[s] && coaBySlug[labelSlugAliases[s]] ? labelSlugAliases[s] : null);
+
+  // Exact match first: a bare product slug (/coas/rt-3 — the stable form new
+  // labels are printed with) or any current/historical batch filename.
+  let slug = resolve(bare);
+
+  // Then dose-suffixed label slugs the COA file doesn't break out by dose
+  // (/coas/rt-3-60mg, /coas/bpc-157-20mg). Testing is per compound, not per
+  // vial size, so the compound's COA is the right answer. Exact matches are
+  // tried first, so real keys like `dsip-10mg` are never rewritten.
+  if (!slug && /-\d+(\.\d+)?(mg|mcg|iu|ml)$/i.test(bare)) {
+    slug = resolve(bare.replace(/-\d+(\.\d+)?(mg|mcg|iu|ml)$/i, ''));
+  }
+
   return slug ? { slug, ...coaBySlug[slug] } : null;
 }
