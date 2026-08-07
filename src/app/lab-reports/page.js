@@ -12,10 +12,15 @@ import { coaList, getBatches } from '@/data/coas';
    COA PDFs are self-hosted in /public/coa-pdf and listed from
    src/data/coas.js (keyed by product slug).
 
-   One card = one compound = ONE button. The button opens /coas/<slug>,
-   which lists EVERY batch we've tested for that compound. We deliberately
-   don't link individual batch PDFs from here — a wall of per-batch links
-   made the page read as clutter rather than as proof of testing. */
+   One card = one compound = ONE button, opening /coas/<slug> — the same URL a
+   vial-label QR resolves to, which serves ONE PDF holding every batch we've
+   tested for that compound. We deliberately don't link individual batch PDFs
+   from here — a wall of per-batch links made the page read as clutter rather
+   than as proof of testing.
+
+   Plain <a target="_blank">, NOT next/link: /coas/<slug> is a route handler
+   that 302s to a multi-megabyte PDF, and a Link would prefetch (i.e. download)
+   it on hover. */
 
 export default function LabReportsPage() {
   const [query, setQuery] = useState('');
@@ -113,9 +118,11 @@ export default function LabReportsPage() {
           }}
         >
           {reports.map((r) => (
-            <Link
+            <a
               key={r.slug}
               href={`/coas/${r.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
               style={{
                 background: 'var(--glass-bg)', border: '1px solid var(--glass-border)',
                 borderRadius: 'var(--radius-lg, 16px)', padding: 22,
@@ -158,7 +165,7 @@ export default function LabReportsPage() {
                 <FileText size={15} />
                 {r.batchCount > 1 ? `View all ${r.batchCount} reports` : 'View lab report'}
               </span>
-            </Link>
+            </a>
           ))}
         </div>
 
