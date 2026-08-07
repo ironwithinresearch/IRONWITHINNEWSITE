@@ -260,7 +260,7 @@ export const coaBySlug = {
   'tesamorelin-ipamorelin-5-5': {
     coaFile: '/coa-pdf/tesamorelin-ipamorelin-5-5.pdf',
     batchDate: '8/2/2026 · Lot IWR-2607-TSMIPA10',
-    productName: 'Tesamorelin / Ipamorelin',
+    productName: 'TSM-6 / IPA',
   },
   'thrive': {
     coaFile: '/coa-pdf/thrive.pdf',
