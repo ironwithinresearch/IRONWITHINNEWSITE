@@ -4,8 +4,12 @@ import { useState, useEffect, useMemo } from 'react';
 import { Gift, X, Check } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 
-// Back 2 School free vial. Windows mirror mu-plugin iw-back2school.php:
-// Thu Aug 6 4:00pm CT -> Fri 11:59:59pm CT, then all of Sunday. CDT = UTC-5.
+// Back 2 School free vial — RETIRED Fri Aug 7 when the event became a flat 45%.
+// iw_b2s_gift_active() returns false in the mu-plugin, so the backend no longer adds
+// or honours a free line; this popup must not offer one either, or a shopper picks a
+// vial that silently never arrives. Left in place (rather than deleted) so the next
+// gift promo can re-open the window instead of rebuilding the picker.
+const GIFT_ENABLED  = false;
 const GIFT_W1_START = Date.parse('2026-08-06T21:00:00Z');
 const GIFT_W1_END   = Date.parse('2026-08-08T04:59:59Z');
 const GIFT_W2_START = Date.parse('2026-08-09T05:00:00Z');
@@ -18,7 +22,8 @@ const OPTIONS = [
 ];
 
 const giftWindowOpen = (now) =>
-  (now >= GIFT_W1_START && now <= GIFT_W1_END) || (now >= GIFT_W2_START && now <= GIFT_W2_END);
+  GIFT_ENABLED &&
+  ((now >= GIFT_W1_START && now <= GIFT_W1_END) || (now >= GIFT_W2_START && now <= GIFT_W2_END));
 
 const money = (s) => {
   const n = parseFloat(String(s ?? '').replace(/[^0-9.]/g, ''));

@@ -63,19 +63,22 @@ const SHIP_BEFORE = '🚚  SHIPPING NOTICE — order by 2 PM CT this Thursday (J
 const SHIP_DURING = '🚚  SHIPPING PAUSED until Sunday — any order placed now ships Sun, Jul 19 · thanks for your patience!';
 
 // Back 2 School Peptide Bash — Thu Aug 6 4:00pm CT → Sun Aug 9 11:59:59pm CT (CDT = UTC-5).
-// Phases mirror mu-plugin iw-back2school.php: free vial on $200+ through Friday midnight,
-// 40% Saturday, 45% + free vial Sunday. Every $1k sold fills a backpack (goal 75).
+// Phases mirror mu-plugin iw-back2school.php. REVISED Fri Aug 7: one flat 45% from
+// Fri 8:30pm CT through Saturday, 40% Sunday. The free $200 vial and Saturday's BOGO
+// are both off — 45% is the whole offer. Every $1k sold fills a backpack (goal 75).
 const B2S_START = Date.parse('2026-08-06T21:00:00Z');
-const B2S_SAT_S = Date.parse('2026-08-08T05:00:00Z');
+const B2S_45_S = Date.parse('2026-08-08T01:30:00Z'); // Fri 8:30pm CT
+const B2S_SAT_E = Date.parse('2026-08-09T04:59:59Z'); // Sat 11:59:59pm CT
 const B2S_SUN_S = Date.parse('2026-08-09T05:00:00Z');
 const B2S_END = Date.parse('2026-08-10T04:59:59Z');
-// Each phase advertises ONLY what is live right now. Naming tomorrow's deeper
-// discount just gives shoppers a reason to wait, so the teasers are deliberately gone.
+// Each phase advertises ONLY what is live right now. Naming a later discount just
+// gives shoppers a reason to wait, so the teasers are deliberately gone — and Sunday
+// steps DOWN to 40%, which is all the more reason not to preview it from Saturday.
 const B2S_MESSAGE = (now) => {
   const drive = ' · every $1,000 sold fills a backpack for a local school (goal: 75) 🎒';
-  if (now >= B2S_SUN_S) return '🎒  BACK 2 SCHOOL BASH — 40% OFF SITEWIDE + a FREE RT-3 or TRZ-2 10mg on $200+ · final day, ends tonight at midnight' + drive;
-  if (now >= B2S_SAT_S) return '🎒  BACK 2 SCHOOL BASH — 35% OFF SITEWIDE + BUY ONE, GET ONE 1/2 OFF · today only' + drive;
-  return '🎒  BACK 2 SCHOOL BASH — spend $200, get a FREE RT-3 10mg or TRZ-2 10mg' + drive;
+  if (now >= B2S_SUN_S) return '🎒  BACK 2 SCHOOL BASH — 40% OFF SITEWIDE · final day, ends tonight at midnight' + drive;
+  if (now >= B2S_45_S) return '🎒  BACK 2 SCHOOL BASH — 45% OFF SITEWIDE · no code needed · our deepest discount of the weekend' + drive;
+  return '🎒  BACK 2 SCHOOL BASH — 45% OFF EVERYTHING starts tonight at 8:30pm CT' + drive;
 };
 
 // Pay-by-app discount — permanent, not a dated promo, so it lives in the base rotation.
