@@ -16,7 +16,6 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { UserPlus, LogIn, ShieldCheck, FlaskConical } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { isLuxMePath } from '../lib/luxme';
 
 const GATE_BROWSING = true;
 
@@ -38,18 +37,15 @@ const PUBLIC_PREFIXES = [
 export default function SiteGate() {
   const { isLoggedIn, mounted } = useAuth();
   const pathname = usePathname();
-  const [luxme, setLuxme] = useState(false);
   const [search, setSearch] = useState('');
 
   // Read window-only state in an effect (keeps this out of useSearchParams, which would
   // force a Suspense boundary around the whole app and bail static pages out of SSG).
-  // Lux Me beauty pages stay exempt — they're deep-linked from luxmebyaxion.com.
   useEffect(() => {
-    setLuxme(isLuxMePath());
     setSearch(window.location.search || '');
   }, [pathname]);
 
-  if (!GATE_BROWSING || !mounted || isLoggedIn || luxme) return null;
+  if (!GATE_BROWSING || !mounted || isLoggedIn) return null;
   if (PUBLIC_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + '/'))) return null;
 
   const redirect = encodeURIComponent(pathname + search);

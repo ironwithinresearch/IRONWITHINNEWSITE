@@ -24,8 +24,7 @@ const navLinks = [
 ];
 
 // Curated Shop-by-category menu (order matters). Names fall back to these but are
-// overridden by the live category name when available. Lux Me is brand-new (no products
-// yet) so it can't come from the hideEmpty query — it lives here explicitly.
+// overridden by the live category name when available.
 const SHOP_MENU = [
   { slug: 'performance-research',  name: 'Performance Research' },
   { slug: 'regenerative-research', name: 'Regenerative Research' },
@@ -34,10 +33,6 @@ const SHOP_MENU = [
   { slug: 'continuity-plans',      name: 'Plans',      href: '/continuity' },
   { slug: 'gift-cards',            name: 'Gift Cards',  href: '/gift-cards' },
 ];
-// The Lux Me beauty line is "behind the scenes" on the IW store — hidden from nav,
-// the All-Products grid, search and the categories page. It stays purchasable via the
-// direct links the standalone Lux Me site sends (/shop?category=lux-me and /product/<slug>).
-
 export default function Navbar() {
   const pathname = usePathname();
   const [menuOpen,    setMenuOpen]    = useState(false);
@@ -46,7 +41,7 @@ export default function Navbar() {
   const [accountOpen, setAccountOpen] = useState(false);
   const [shopOpen,    setShopOpen]    = useState(false);
 
-  // Categories for the Shop dropdown (research + product cats), plus the Lux Me beauty line.
+  // Categories for the Shop dropdown (research + product cats).
   const { data: catData } = useQuery(GET_CATEGORIES, { fetchPolicy: 'cache-first' });
   const shopCats = SHOP_MENU.map(m => {
     const live = m.href ? null : (catData?.productCategories?.nodes || []).find(c => c.slug === m.slug);
@@ -171,13 +166,11 @@ export default function Navbar() {
                         </Link>
                         <div style={{ fontSize: '0.62rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-muted)', padding: '10px 12px 4px' }}>Shop by Category</div>
                         {shopCats.map(cat => {
-                          const luxe = cat.slug === 'lux-me';
                           return (
-                            <Link key={cat.slug} href={cat.href} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', padding: '9px 12px', borderRadius: 'var(--radius-md)', color: luxe ? '#e6b8bf' : 'var(--text-secondary)', fontSize: '0.85rem', fontWeight: luxe ? 600 : 400, textDecoration: 'none', transition: 'all 0.12s ease' }}
-                              onMouseEnter={e => { e.currentTarget.style.background = luxe ? 'rgba(212,175,55,0.08)' : 'rgba(0,207,255,0.06)'; e.currentTarget.style.color = luxe ? '#f0cfd4' : 'var(--text-light)'; }}
-                              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = luxe ? '#e6b8bf' : 'var(--text-secondary)'; }}>
+                            <Link key={cat.slug} href={cat.href} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', padding: '9px 12px', borderRadius: 'var(--radius-md)', color: 'var(--text-secondary)', fontSize: '0.85rem', fontWeight: 400, textDecoration: 'none', transition: 'all 0.12s ease' }}
+                              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(0,207,255,0.06)'; e.currentTarget.style.color = 'var(--text-light)'; }}
+                              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-secondary)'; }}>
                               <span>{cat.name}</span>
-                              {luxe && <span style={{ fontSize: '0.55rem', fontWeight: 800, letterSpacing: '0.05em', color: '#1a1207', background: 'linear-gradient(135deg,#e6b8bf,#d4af37)', padding: '2px 6px', borderRadius: '999px' }}>NEW</span>}
                             </Link>
                           );
                         })}
@@ -322,15 +315,11 @@ export default function Navbar() {
               </Link>
               {href === '/shop' && (
                 <div style={{ paddingLeft: '14px', display: 'flex', flexDirection: 'column', gap: '1px', marginTop: '2px' }}>
-                  {shopCats.map(cat => {
-                    const luxe = cat.slug === 'lux-me';
-                    return (
-                      <Link key={cat.slug} href={cat.href} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '11px 18px', borderRadius: 'var(--radius-md)', color: luxe ? '#e6b8bf' : 'var(--text-secondary)', fontWeight: luxe ? 600 : 400, fontSize: '0.9rem', textDecoration: 'none' }}>
-                        {cat.name}
-                        {luxe && <span style={{ fontSize: '0.55rem', fontWeight: 800, color: '#1a1207', background: 'linear-gradient(135deg,#e6b8bf,#d4af37)', padding: '2px 6px', borderRadius: '999px' }}>NEW</span>}
-                      </Link>
-                    );
-                  })}
+                  {shopCats.map(cat => (
+                    <Link key={cat.slug} href={cat.href} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '11px 18px', borderRadius: 'var(--radius-md)', color: 'var(--text-secondary)', fontWeight: 400, fontSize: '0.9rem', textDecoration: 'none' }}>
+                      {cat.name}
+                    </Link>
+                  ))}
                 </div>
               )}
             </div>

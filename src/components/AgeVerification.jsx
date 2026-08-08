@@ -2,16 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { FlaskConical, ShieldAlert, CheckCircle2 } from 'lucide-react';
-import { isLuxMePath } from '../lib/luxme';
 
 export default function AgeVerification() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const verified = sessionStorage.getItem('iwr-age-verified');
-    // Skip the gate on Lux Me beauty pages (don't set verified, so navigating
-    // to a research-compound page later in the session still gates).
-    if (!verified && !isLuxMePath()) setVisible(true);
+    if (!verified) setVisible(true);
   }, []);
 
   const handleConfirm = () => {

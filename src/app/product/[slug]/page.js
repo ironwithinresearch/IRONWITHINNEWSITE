@@ -70,9 +70,6 @@ export default function ProductPage() {
   }
 
   const isVariable = product.__typename === 'VariableProduct';
-  // Lux Me by Axion beauty products are cosmetics, not research compounds —
-  // suppress the research-use disclaimer for the `lux-me` category.
-  const isLuxMe = (product.productCategories?.nodes || []).some(c => c.slug === 'lux-me');
   const variations = product.variations?.nodes || [];
   const images = [
     product.image?.sourceUrl,
@@ -414,15 +411,14 @@ export default function ProductPage() {
               </div>
             )}
 
-            {/* Disclaimer — research-use only; hidden for Lux Me beauty products */}
-            {!isLuxMe && (
-              <div style={{ display: 'flex', gap: '8px', padding: '12px 14px', background: 'rgba(251,191,36,0.06)', border: '1px solid rgba(251,191,36,0.2)', borderRadius: '10px' }}>
-                <Info size={14} color="#fbbf24" style={{ flexShrink: 0, marginTop: 2 }} />
-                <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
-                  For research purposes only. Not for human consumption.
-                </p>
-              </div>
-            )}
+            {/* Disclaimer — research-use only. Applies to every product now that the
+                Lux Me cosmetics line has been removed from the store. */}
+            <div style={{ display: 'flex', gap: '8px', padding: '12px 14px', background: 'rgba(251,191,36,0.06)', border: '1px solid rgba(251,191,36,0.2)', borderRadius: '10px' }}>
+              <Info size={14} color="#fbbf24" style={{ flexShrink: 0, marginTop: 2 }} />
+              <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                For research purposes only. Not for human consumption.
+              </p>
+            </div>
 
             {/* Quantity */}
             <div>
