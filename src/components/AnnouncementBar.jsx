@@ -83,7 +83,11 @@ const B2S_MESSAGE = (now) => {
   // 50% is EARNED at 3+ items, so the headline has to lead with the condition. The
   // discount is a price filter: under 3 items a shopper sees list prices sitewide, and
   // promising "50% OFF SITEWIDE" there makes a working sale look broken.
-  if (now >= B2S_50_S) return '🎒  BACK 2 SCHOOL BASH — BUY 3+ ITEMS, GET 50% OFF · no code needed · our deepest discount of the year' + win + drive;
+  // Free vial opens Sun 5pm CT — must match IW_B2S_GIFT2_S in iw-back2school.php.
+  const gift = now >= Date.parse('2026-08-09T22:00:00Z')
+    ? ' · 🎁 FREE RT-3 10mg or TRZ-2 10mg on orders $200+'
+    : '';
+  if (now >= B2S_50_S) return '🎒  BACK 2 SCHOOL BASH — BUY 3+ ITEMS, GET 50% OFF · no code needed' + gift + win + drive;
   if (now >= B2S_45_S) return '🎒  BACK 2 SCHOOL BASH — 45% OFF SITEWIDE · no code needed · our deepest discount of the weekend' + drive;
   return '🎒  BACK 2 SCHOOL BASH — 45% OFF EVERYTHING starts tonight at 8:30pm CT' + drive;
 };

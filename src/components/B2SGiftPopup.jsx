@@ -5,14 +5,19 @@ import { Gift, X, Check } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 
 // Back 2 School free vial — RETIRED Fri Aug 7 when the event became a flat 45%.
-// iw_b2s_gift_active() returns false in the mu-plugin, so the backend no longer adds
-// or honours a free line; this popup must not offer one either, or a shopper picks a
-// vial that silently never arrives. Left in place (rather than deleted) so the next
-// gift promo can re-open the window instead of rebuilding the picker.
-const GIFT_ENABLED  = false;
+// This popup only OFFERS the vial; iw_b2s_gift_active() in the mu-plugin decides whether
+// one is actually added. Keep the flag and the windows below in step with the backend —
+// if the popup offers a gift the backend will not honour, the shopper picks a vial that
+// silently never arrives.
+const GIFT_ENABLED  = true;
+// Window 1 = the Thu-Fri phase, now past. Kept only so the shape is obvious.
 const GIFT_W1_START = Date.parse('2026-08-06T21:00:00Z');
 const GIFT_W1_END   = Date.parse('2026-08-08T04:59:59Z');
-const GIFT_W2_START = Date.parse('2026-08-09T05:00:00Z');
+// Re-opened Sun 5:00pm CT for the rest of the event. MUST match IW_B2S_GIFT2_S /
+// IW_B2S_END in mu-plugin iw-back2school.php: this popup only OFFERS the vial, the
+// backend decides whether to add it. If the popup opens earlier than the backend, a
+// shopper picks a vial that never lands in their cart.
+const GIFT_W2_START = Date.parse('2026-08-09T22:00:00Z');
 const GIFT_W2_END   = Date.parse('2026-08-10T04:59:59Z');
 const THRESHOLD     = 200;
 
