@@ -39,6 +39,17 @@ const PAY_METHODS = [
 const P2P_DISCOUNT_RATE = 0.10;
 const P2P_DISCOUNT_METHODS = new Set(['iwr_zelle', 'iwr_venmo', 'iwr_cashapp']);
 
+// PAUSED for the 50%-off tier. These MUST stay identical to IW_P2P_PAUSE_FROM/TO in
+// mu-plugin iw-p2p-discount.php: this file only mirrors the backend's math so the buyer
+// can see the discount before placing the order. If the mirror says 10% while the
+// backend has stopped applying it, the customer is quoted one total and charged another.
+const P2P_PAUSE_FROM = Date.parse('2026-08-09T02:00:00Z'); // Sat 9:00pm CT
+const P2P_PAUSE_TO = Date.parse('2026-08-10T04:59:59Z'); // Sun 11:59:59pm CT
+const p2pPaused = () => {
+  const now = Date.now();
+  return now >= P2P_PAUSE_FROM && now <= P2P_PAUSE_TO;
+};
+
 // Any method whose backend gateway answers with an off-site `redirect` rather than
 // completing the order in-place.
 const REDIRECT_METHODS = new Set(['iwr_rail', 'iwr_chargx', CARD_METHOD]);
@@ -167,7 +178,7 @@ export default function CheckoutPage() {
   // what card payers pay; sending via an app takes 10% back off. Applied server-side as a
   // negative fee at order creation (iw-p2p-discount.php, priority 24) — mirrored here so
   // the buyer sees it BEFORE they place the order, and before credit/rewards are figured.
-  const p2pEligible = P2P_DISCOUNT_METHODS.has(payMethod);
+  const p2pEligible = P2P_DISCOUNT_METHODS.has(payMethod) && !p2pPaused();
   const p2pItemsBase = Math.max(0, money(cartSubtotal) || (computedTotalNum - shipCostNum));
   const p2pDiscount = p2pEligible ? round2(p2pItemsBase * P2P_DISCOUNT_RATE) : 0;
   const totalAfterP2P = Math.max(0, round2(computedTotalNum - p2pDiscount));
@@ -535,14 +546,16 @@ export default function CheckoutPage() {
                             <span style={{ display: 'flex', alignItems: 'center', gap: 7, fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-light)' }}>
                               {m.label}
                               {/* The whole point of the pricing change — make the cheaper path obvious. */}
-                              {P2P_DISCOUNT_METHODS.has(m.id) && (
+                              {P2P_DISCOUNT_METHODS.has(m.id) && !p2pPaused() && (
                                 <span style={{ fontSize: '0.68rem', fontWeight: 800, letterSpacing: '0.04em', padding: '2px 7px', borderRadius: 999, color: '#04121a', background: '#34d399' }}>
                                   SAVE 10%
                                 </span>
                               )}
                             </span>
                             <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                              {REDIRECT_METHODS.has(m.id) ? m.desc : `Send your payment to ${m.handle} after placing the order — 10% comes off your total`}
+                              {REDIRECT_METHODS.has(m.id)
+                                ? m.desc
+                                : `Send your payment to ${m.handle} after placing the order${p2pPaused() ? '' : ' — 10% comes off your total'}`}
                             </span>
                           </span>
                         </button>

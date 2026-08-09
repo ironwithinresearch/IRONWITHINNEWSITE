@@ -68,18 +68,29 @@ const SHIP_DURING = '🚚  SHIPPING PAUSED until Sunday — any order placed now
 // are both off — 45% is the whole offer. Every $1k sold fills a backpack (goal 75).
 const B2S_START = Date.parse('2026-08-06T21:00:00Z');
 const B2S_45_S = Date.parse('2026-08-08T01:30:00Z'); // Fri 8:30pm CT
+const B2S_50_S = Date.parse('2026-08-09T02:00:00Z'); // Sat 9:00pm CT — 50% + giveaway
 const B2S_SAT_E = Date.parse('2026-08-09T04:59:59Z'); // Sat 11:59:59pm CT
 const B2S_SUN_S = Date.parse('2026-08-09T05:00:00Z');
 const B2S_END = Date.parse('2026-08-10T04:59:59Z');
 // Each phase advertises ONLY what is live right now. Naming a later discount just
-// gives shoppers a reason to wait, so the teasers are deliberately gone — and Sunday
-// steps DOWN to 40%, which is all the more reason not to preview it from Saturday.
+// gives shoppers a reason to wait, so the teasers are deliberately gone.
+// REVISED Sat Aug 8: 50% from 9pm CT runs straight through to the end — it replaces
+// the 40% Sunday step-down, so there is no longer a phase that gets worse. Keep these
+// timestamps identical to IW_B2S_50_S / IW_B2S_END in mu-plugin iw-back2school.php.
 const B2S_MESSAGE = (now) => {
   const drive = ' · every $1,000 sold fills a backpack for a local school (goal: 75) 🎒';
-  if (now >= B2S_SUN_S) return '🎒  BACK 2 SCHOOL BASH — 40% OFF SITEWIDE · final day, ends tonight at midnight' + drive;
+  const win = ' · 🎁 spend $200+ and you are entered to win the ENTIRE RE:SEQ skincare collection (14 products, $598 value)';
+  if (now >= B2S_50_S) return '🎒  BACK 2 SCHOOL BASH — 50% OFF SITEWIDE · no code needed · our deepest discount of the year' + win + drive;
   if (now >= B2S_45_S) return '🎒  BACK 2 SCHOOL BASH — 45% OFF SITEWIDE · no code needed · our deepest discount of the weekend' + drive;
   return '🎒  BACK 2 SCHOOL BASH — 45% OFF EVERYTHING starts tonight at 8:30pm CT' + drive;
 };
+
+// The 10% pay-by-app discount is PAUSED for the 50% tier (mu-plugin iw-p2p-discount.php
+// stops applying it in the same window). The bar must stop promising it in lockstep —
+// advertising a discount that no longer lands at checkout is a support ticket per order.
+const P2P_PAUSE_FROM = B2S_50_S;
+const P2P_PAUSE_TO = B2S_END;
+const p2pPaused = (now) => now >= P2P_PAUSE_FROM && now <= P2P_PAUSE_TO;
 
 // Pay-by-app discount — permanent, not a dated promo, so it lives in the base rotation.
 // Steers volume off cards (card payers pay list; app payers get 10% back off).
@@ -118,7 +129,9 @@ export default function AnnouncementBar() {
     if (!qbOn && flashOn) { promos.unshift(FLASH_MESSAGE); setFlashActive(true); }
     if (!b2sOn && !qbOn && !flashOn && now >= SUMMER_START && now < SUMMER_END) { promos.push(SUMMER_MESSAGE); setSummerActive(true); }
     if (now < SALE_ENDS) promos.push(SALE_MESSAGE);
-    setMessages([...promos, ...BASE_MESSAGES]);
+    // Drop the pay-by-app line while the 10% is paused, so the bar and checkout agree.
+    const base = p2pPaused(now) ? BASE_MESSAGES.filter((m) => m !== P2P_MESSAGE) : BASE_MESSAGES;
+    setMessages([...promos, ...base]);
   }, []);
 
   // Repeat the message set so the track is wide enough, then render it twice
