@@ -80,7 +80,10 @@ const B2S_END = Date.parse('2026-08-10T04:59:59Z');
 const B2S_MESSAGE = (now) => {
   const drive = ' · every $1,000 sold fills a backpack for a local school (goal: 75) 🎒';
   const win = ' · 🎁 spend $200+ and you are entered to win the ENTIRE RE:SEQ skincare collection (14 products, $598 value)';
-  if (now >= B2S_50_S) return '🎒  BACK 2 SCHOOL BASH — 50% OFF SITEWIDE · no code needed · our deepest discount of the year' + win + drive;
+  // 50% is EARNED at 3+ items, so the headline has to lead with the condition. The
+  // discount is a price filter: under 3 items a shopper sees list prices sitewide, and
+  // promising "50% OFF SITEWIDE" there makes a working sale look broken.
+  if (now >= B2S_50_S) return '🎒  BACK 2 SCHOOL BASH — BUY 3+ ITEMS, GET 50% OFF · no code needed · our deepest discount of the year' + win + drive;
   if (now >= B2S_45_S) return '🎒  BACK 2 SCHOOL BASH — 45% OFF SITEWIDE · no code needed · our deepest discount of the weekend' + drive;
   return '🎒  BACK 2 SCHOOL BASH — 45% OFF EVERYTHING starts tonight at 8:30pm CT' + drive;
 };

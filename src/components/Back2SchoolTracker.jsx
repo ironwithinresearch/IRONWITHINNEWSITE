@@ -53,8 +53,14 @@ export default function Back2SchoolTracker() {
   const gift    = data?.gift_active;
 
   const bogo = data?.bogo;
+  // The 50% tier is earned, not automatic — it needs `min_items` qualifying units in the
+  // cart. Say so in the headline: the discount is applied by a price filter, so a shopper
+  // under the threshold sees LIST prices everywhere, and a bare "50% OFF SITEWIDE" claim
+  // reads as a broken sale rather than an offer they have not unlocked yet.
+  const gated = data?.gated;
+  const minItems = data?.min_items ?? 3;
   const offer = pct
-    ? `${pct}% OFF SITEWIDE`
+    ? (gated ? `BUY ${minItems}+, GET ${pct}% OFF` : `${pct}% OFF SITEWIDE`)
       + (bogo ? ' + buy one, get one 1/2 off' : '')
       + (gift ? ' + free vial on $200+' : '')
     : (gift ? 'Free RT-3 or TRZ-2 10mg on $200+' : 'Weekend sale');

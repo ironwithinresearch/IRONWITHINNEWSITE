@@ -4,6 +4,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@apollo/client';
+import B2SUnlockNudge from '@/components/B2SUnlockNudge';
 import { useCart } from '@/context/CartContext';
 import { decodePriceHtml } from '@/lib/utils';
 import { GET_PRODUCT } from '@/lib/queries/products';
@@ -228,6 +229,13 @@ export default function CartPage() {
         <p style={{ color: 'var(--text-secondary)', marginBottom: '32px' }}>
           {cartLoading ? 'Loading…' : `${cartItems.length} item${cartItems.length !== 1 ? 's' : ''}`}
         </p>
+
+        {/* Buy-3 unlock progress. Counts UNITS, not lines, to match iw_b2s_cart_units()
+            on the backend — 3 of one vial qualifies. Free-gift lines are excluded there
+            too, but they are never in a cart that has not already qualified. */}
+        {cartItems.length > 0 && (
+          <B2SUnlockNudge units={cartItems.reduce((n, i) => n + (i.quantity || 0), 0)} />
+        )}
 
         {cartLoading && cartItems.length === 0 ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}>
