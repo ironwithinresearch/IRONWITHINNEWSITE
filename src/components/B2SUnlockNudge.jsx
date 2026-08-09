@@ -9,16 +9,17 @@ import { useEffect, useState } from 'react';
  * list prices everywhere while the announcement bar advertises 50% off, which reads as
  * a broken sale rather than an offer one item away.
  *
- * Reads /api/b2s WITH credentials so the backend counts the caller's own cart session —
- * the payload's cart_units is per-session, and an uncredentialed fetch would always
- * report an empty cart and permanently show "add 3 more".
+ * Reads /api/b2s only for GLOBAL facts (is the gate on, what is the minimum). The count
+ * comes from the caller via `units`, never from that payload: the route proxies the
+ * backend server-side without the shopper's cart session AND caches publicly, so any
+ * per-session number there is both wrong and shared between shoppers.
  */
 export default function B2SUnlockNudge({ units }) {
   const [data, setData] = useState(null);
 
   useEffect(() => {
     let on = true;
-    fetch('/api/b2s', { credentials: 'include', cache: 'no-store' })
+    fetch('/api/b2s', { cache: 'no-store' })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (on) setData(d); })
       .catch(() => {});
@@ -28,9 +29,9 @@ export default function B2SUnlockNudge({ units }) {
   if (!data?.gated || !data?.percent_off) return null;
 
   const min = data.min_items ?? 3;
-  // Trust the client's own count when we have it — it updates the instant a quantity
-  // changes, whereas the payload is a snapshot from page load.
-  const have = typeof units === 'number' ? units : (data.cart_units ?? 0);
+  // The caller's own count — the only trustworthy source (see above), and it updates
+  // the instant a quantity changes.
+  const have = typeof units === 'number' ? units : 0;
   const need = Math.max(0, min - have);
   const unlocked = need === 0;
 
