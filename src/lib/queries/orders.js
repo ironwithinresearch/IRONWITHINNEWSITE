@@ -18,6 +18,7 @@ export const GET_ORDERS = gql`
           trackingNumber
           trackingProvider
           trackingUrl
+          payUrl
           lineItems {
             nodes {
               quantity
@@ -53,6 +54,7 @@ export const GET_ORDER = gql`
       trackingNumber
       trackingProvider
       trackingUrl
+      payUrl
       customerNote
       billing {
         firstName

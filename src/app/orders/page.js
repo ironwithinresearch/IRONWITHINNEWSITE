@@ -167,6 +167,12 @@ export default function OrdersPage() {
                         <div style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>
                           {formatDate(order.date)} · {lineItems.length} item{lineItems.length !== 1 ? 's' : ''}
                         </div>
+                        {order.payUrl && (
+                          <a href={order.payUrl} onClick={e => e.stopPropagation()}
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginTop: '7px', padding: '7px 13px', background: 'linear-gradient(90deg,#dc2626,#b91c1c)', color: '#fff', fontSize: '0.76rem', fontWeight: 800, textDecoration: 'none', borderRadius: '8px' }}>
+                            Complete payment →
+                          </a>
+                        )}
                         {order.trackingNumber && (
                           <a href={order.trackingUrl || '#'} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}
                             style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', marginTop: '5px', color: '#34d399', fontSize: '0.76rem', fontWeight: 700, textDecoration: 'none' }}>
