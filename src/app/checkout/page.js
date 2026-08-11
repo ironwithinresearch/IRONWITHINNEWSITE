@@ -109,6 +109,24 @@ export default function CheckoutPage() {
   // SnapPay is the card option (ChargeX retired 2026-07-24). If CARD_PAUSED is ever
   // flipped back on, the card row is filtered out entirely and Zelle becomes default.
   const payMethodOptions = isCardPaused() ? PAY_METHODS.filter((m) => m.id !== CARD_METHOD) : PAY_METHODS;
+  // Route Package Protection — customer-paid shipping insurance.
+  // OPT-OUT by design (pre-checked): Route's own guidance is that opt-in roughly halves
+  // attach rate. The buyer can untick it, and the choice rides to the order as meta; the
+  // backend RE-QUOTES before charging, so the price shown here is never trusted as input.
+  const [routeOn, setRouteOn] = useState(true);
+  const [routeQuote, setRouteQuote] = useState(null);
+  useEffect(() => {
+    const sub = money(cartSubtotal) || 0;
+    if (sub <= 0) { setRouteQuote(null); return; }
+    let live = true;
+    fetch(`/api/route-quote?subtotal=${sub}`, { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (live) setRouteQuote(d && d.enabled ? d.insurance_price : null); })
+      .catch(() => {});
+    return () => { live = false; };
+  }, [cartSubtotal]);
+  const routeFee = routeOn && routeQuote ? routeQuote : 0;
+
   // Account store-credit balance (auto-applied at checkout, server-side). Fetched
   // once on mount; the backend is authoritative on how much actually applies.
   const [creditBalance, setCreditBalance] = useState(0);
@@ -181,7 +199,9 @@ export default function CheckoutPage() {
   const p2pEligible = P2P_DISCOUNT_METHODS.has(payMethod) && !p2pPaused();
   const p2pItemsBase = Math.max(0, money(cartSubtotal) || (computedTotalNum - shipCostNum));
   const p2pDiscount = p2pEligible ? round2(p2pItemsBase * P2P_DISCOUNT_RATE) : 0;
-  const totalAfterP2P = Math.max(0, round2(computedTotalNum - p2pDiscount));
+  // Route sits before store credit and rewards, exactly as the backend orders it
+  // (fee at prio 23, credit 25, rewards 26) so those can pay for protection too.
+  const totalAfterP2P = Math.max(0, round2(computedTotalNum - p2pDiscount + routeFee));
 
   const creditApplied = round2(Math.min(creditBalance, Math.max(0, totalAfterP2P)));
   const dueAfterCredit = Math.max(0, round2(totalAfterP2P - creditApplied));
@@ -295,6 +315,7 @@ export default function CheckoutPage() {
       referrerCode: getReferCookie(),
       shippingMethod: shipRate,
       rewardsPts: rewardsAppliedPts,
+      routeSelected: routeFee > 0,
     });
     try {
       const { data, errors } = await checkoutMutation({ variables: input });
@@ -653,6 +674,28 @@ export default function CheckoutPage() {
               {/* Shipping — $0.00 until the review step, then the selected rate */}
               <SummaryRow label="Shipping" htmlValue={shipDisplay} value={undefined} />
               {/* Pay-by-app discount — shown before credit/rewards, matching the backend order */}
+              {/* Route Package Protection — pre-checked (opt-out). Rendered natively rather
+                  than via Route's CDN widget, which the site CSP would block. */}
+              {routeQuote > 0 && (
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 11, padding: '13px 14px', marginBottom: 14,
+                              background: 'rgba(0,207,255,0.05)', border: '1px solid rgba(0,207,255,0.22)', borderRadius: 12 }}>
+                  <input id="routeProtect" type="checkbox" checked={routeOn}
+                    onChange={(e) => setRouteOn(e.target.checked)}
+                    style={{ width: 20, height: 20, accentColor: 'var(--primary-blue)', flex: 'none', marginTop: 1, cursor: 'pointer' }} />
+                  <label htmlFor="routeProtect" style={{ cursor: 'pointer', flex: 1 }}>
+                    <span style={{ display: 'flex', justifyContent: 'space-between', gap: 10, fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                      <span>Package protection</span><span>${routeQuote.toFixed(2)}</span>
+                    </span>
+                    <span style={{ display: 'block', fontSize: '0.76rem', color: 'var(--text-muted)', marginTop: 3, lineHeight: 1.5 }}>
+                      Covers your order if it&apos;s lost, damaged, or stolen in transit. Claims are handled by Route.
+                    </span>
+                  </label>
+                </div>
+              )}
+
+              {routeFee > 0 && (
+                <SummaryRow label="Route Package Protection" value={`$${routeFee.toFixed(2)}`} />
+              )}
               {p2pDiscount > 0 && (
                 <SummaryRow label="Zelle / Venmo / Cash App discount (10%)" value={`- $${p2pDiscount.toFixed(2)}`} valueColor="#34d399" />
               )}

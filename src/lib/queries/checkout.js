@@ -44,7 +44,7 @@ export const CHECKOUT = gql`
 // Build the checkout input object for the mutation
 // paymentMethod: 'cod' for Cash on Delivery (no Stripe needed to test)
 // paymentMethod: 'stripe' when Stripe is integrated
-export function buildCheckoutInput({ billing, transactionId = '', paymentMethod = 'cod', customerNote = '', affiliateRef = '', shippingMethod = '', referrerCode = '', rewardsPts = 0 }) {
+export function buildCheckoutInput({ billing, transactionId = '', paymentMethod = 'cod', customerNote = '', affiliateRef = '', shippingMethod = '', referrerCode = '', rewardsPts = 0, routeSelected = false }) {
   const billingAddress = {
     firstName: billing.firstName || '',
     lastName: billing.lastName || '',
@@ -67,6 +67,9 @@ export function buildCheckoutInput({ billing, transactionId = '', paymentMethod 
   if (referrerCode) metaData.push({ key: '_iw_referrer_code', value: String(referrerCode) });
   if (shippingMethod) metaData.push({ key: '_iw_ship_rate', value: String(shippingMethod) });
   if (rewardsPts > 0) metaData.push({ key: '_iw_rewards_redeem_pts', value: String(rewardsPts) });
+  // Route Package Protection: we send only the yes/no. The PRICE is deliberately not sent —
+  // the backend re-quotes, so a tampered value cannot set someone's own insurance charge.
+  if (routeSelected) metaData.push({ key: '_iw_route_selected', value: '1' });
   // Subscribe & Save items are tagged at the cart-line level (extraData iw_subscribe)
   // and flow to the order line items, so no order-level meta is needed here.
 
