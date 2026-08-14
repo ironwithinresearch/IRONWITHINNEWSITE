@@ -62,42 +62,28 @@ const SHIP_END = Date.parse('2026-07-19T05:00:00Z');
 const SHIP_BEFORE = '🚚  SHIPPING NOTICE — order by 2 PM CT this Thursday (Jul 16) to ship right away · orders after that ship Sunday, Jul 19';
 const SHIP_DURING = '🚚  SHIPPING PAUSED until Sunday — any order placed now ships Sun, Jul 19 · thanks for your patience!';
 
-// Back 2 School Peptide Bash — Thu Aug 6 4:00pm CT → Sun Aug 9 11:59:59pm CT (CDT = UTC-5).
-// Phases mirror mu-plugin iw-back2school.php. REVISED Fri Aug 7: one flat 45% from
-// Fri 8:30pm CT through Saturday, 40% Sunday. The free $200 vial and Saturday's BOGO
-// are both off — 45% is the whole offer. Every $1k sold fills a backpack (goal 75).
-const B2S_START = Date.parse('2026-08-06T21:00:00Z');
-const B2S_45_S = Date.parse('2026-08-08T01:30:00Z'); // Fri 8:30pm CT
-const B2S_50_S = Date.parse('2026-08-09T02:00:00Z'); // Sat 9:00pm CT — 50% + giveaway
-const B2S_SAT_E = Date.parse('2026-08-09T04:59:59Z'); // Sat 11:59:59pm CT
-const B2S_SUN_S = Date.parse('2026-08-09T05:00:00Z');
-const B2S_END = Date.parse('2026-08-10T04:59:59Z');
-// Each phase advertises ONLY what is live right now. Naming a later discount just
-// gives shoppers a reason to wait, so the teasers are deliberately gone.
-// REVISED Sat Aug 8: 50% from 9pm CT runs straight through to the end — it replaces
-// the 40% Sunday step-down, so there is no longer a phase that gets worse. Keep these
-// timestamps identical to IW_B2S_50_S / IW_B2S_END in mu-plugin iw-back2school.php.
-const B2S_MESSAGE = (now) => {
-  const drive = ' · every $1,000 sold fills a backpack for a local school (goal: 75) 🎒';
-  const win = ' · 🎁 spend $200+ and you are entered to win the ENTIRE RE:SEQ skincare collection (14 products, $598 value)';
-  // 50% is EARNED at 3+ items, so the headline has to lead with the condition. The
-  // discount is a price filter: under 3 items a shopper sees list prices sitewide, and
-  // promising "50% OFF SITEWIDE" there makes a working sale look broken.
-  // Free vial opens Sun 5pm CT — must match IW_B2S_GIFT2_S in iw-back2school.php.
-  const gift = now >= Date.parse('2026-08-09T22:00:00Z')
-    ? ' · 🎁 FREE RT-3 10mg or TRZ-2 10mg on orders $200+'
-    : '';
-  if (now >= B2S_50_S) return '🎒  BACK 2 SCHOOL BASH — BUY 3+ ITEMS, GET 50% OFF · no code needed' + gift + win + drive;
-  if (now >= B2S_45_S) return '🎒  BACK 2 SCHOOL BASH — 45% OFF SITEWIDE · no code needed · our deepest discount of the weekend' + drive;
-  return '🎒  BACK 2 SCHOOL BASH — 45% OFF EVERYTHING starts tonight at 8:30pm CT' + drive;
-};
+// Fill the Freezer — Fri Aug 14 7:00am CT → Sun Aug 16 11:59:59pm CT (CDT = UTC-5).
+// BUY 3+ ITEMS, GET 45% OFF. Keep these timestamps identical to IW_B2S_START /
+// IW_B2S_END in mu-plugin iw-fill-the-freezer.php, which is the thing that actually
+// moves prices. No free vial and no BOGO this event — 45% at 3+ is the whole offer.
+const FTF_START = Date.parse('2026-08-14T12:00:00Z');
+const FTF_END = Date.parse('2026-08-17T04:59:59Z');
+// The 45% is EARNED at 3+ items, so the headline has to lead with the condition —
+// a bare "45% OFF SITEWIDE" shown to a one-item cart reads as a broken sale.
+//
+// Unlike the last event, an unqualified cart is NOT left at list price: the summer
+// sale_price (~30%, expires Aug 21) still applies below the threshold, so the real
+// ladder is 30% off → add a 3rd item → 45% off. Say both numbers; the gap between
+// them is the reason to add the third vial.
+const FTF_MESSAGE = '🧊  FILL THE FREEZER — BUY 3+ ITEMS, GET 45% OFF SITEWIDE · no code needed · stack your affiliate code for even more · fewer than 3? the 30% summer sale still applies · ends Sunday at midnight';
 
-// The 10% pay-by-app discount is PAUSED for the 50% tier (mu-plugin iw-p2p-discount.php
-// stops applying it in the same window). The bar must stop promising it in lockstep —
+// The pay-by-app 10% STAYS RUNNING this event (operator call 2026-08-14) — the buy-3
+// gate is doing the margin work instead, so the bar keeps promising it. If it is ever
+// paused again in iw-p2p-discount.php, set this window to match IN LOCKSTEP:
 // advertising a discount that no longer lands at checkout is a support ticket per order.
-const P2P_PAUSE_FROM = B2S_50_S;
-const P2P_PAUSE_TO = B2S_END;
-const p2pPaused = (now) => now >= P2P_PAUSE_FROM && now <= P2P_PAUSE_TO;
+const P2P_PAUSE_FROM = null;
+const P2P_PAUSE_TO = null;
+const p2pPaused = (now) => P2P_PAUSE_FROM !== null && now >= P2P_PAUSE_FROM && now <= P2P_PAUSE_TO;
 
 // Pay-by-app discount — permanent, not a dated promo, so it lives in the base rotation.
 // Steers volume off cards (card payers pay list; app payers get 10% back off).
@@ -120,7 +106,7 @@ export default function AnnouncementBar() {
   const [summerActive, setSummerActive] = useState(false);
   const [flashActive, setFlashActive] = useState(false);
   const [qbActive, setQbActive] = useState(false);
-  const [b2sActive, setB2sActive] = useState(false);
+  const [ftfActive, setFtfActive] = useState(false);
   useEffect(() => {
     const now = Date.now();
     const promos = [];
@@ -130,11 +116,14 @@ export default function AnnouncementBar() {
     if (now >= BB_START && now < BB_END) { promos.push(BB_MESSAGE); setBbActive(true); }
     const flashOn = now >= FLASH_START && now < FLASH_END;
     const qbOn = now >= QB_START && now < QB_END;
-    const b2sOn = now >= B2S_START && now < B2S_END;
-    if (b2sOn) { promos.unshift(B2S_MESSAGE(now)); setB2sActive(true); }
+    const ftfOn = now >= FTF_START && now < FTF_END;
+    if (ftfOn) { promos.unshift(FTF_MESSAGE); setFtfActive(true); }
     if (qbOn) { promos.unshift(QB_MESSAGE); setQbActive(true); }
     if (!qbOn && flashOn) { promos.unshift(FLASH_MESSAGE); setFlashActive(true); }
-    if (!b2sOn && !qbOn && !flashOn && now >= SUMMER_START && now < SUMMER_END) { promos.push(SUMMER_MESSAGE); setSummerActive(true); }
+    // Summer's "30% OFF EVERYTHING" line is suppressed while Fill the Freezer runs —
+    // two sitewide percentages in one ticker is what makes shoppers distrust both.
+    // The 30% is still mentioned, inside FTF_MESSAGE, as the sub-threshold fallback.
+    if (!ftfOn && !qbOn && !flashOn && now >= SUMMER_START && now < SUMMER_END) { promos.push(SUMMER_MESSAGE); setSummerActive(true); }
     if (now < SALE_ENDS) promos.push(SALE_MESSAGE);
     // Drop the pay-by-app line while the 10% is paused, so the bar and checkout agree.
     const base = p2pPaused(now) ? BASE_MESSAGES.filter((m) => m !== P2P_MESSAGE) : BASE_MESSAGES;
@@ -152,7 +141,7 @@ export default function AnnouncementBar() {
       aria-label="Store announcements"
       style={{
         position: 'fixed', top: 0, left: 0, right: 0, height: 36, zIndex: 101,
-        background: qbActive ? 'linear-gradient(90deg,#0a0612,#7c3aed,#22c55e,#7c3aed,#0a0612)' : flashActive ? 'linear-gradient(90deg,#dc2626,#f59e0b,#dc2626)' : xjActive ? 'linear-gradient(90deg,#c8102e,#0f5132,#f5c542,#0f5132,#c8102e)' : j4Active ? 'linear-gradient(90deg,#b22234,#7a1228,#13294b,#7a1228,#b22234)' : bbActive ? 'linear-gradient(90deg,#ec4899,#f5d272)' : summerActive ? 'linear-gradient(90deg,#ffb14a,#ff7a59,#37c8ff)' : 'var(--gradient-primary, linear-gradient(90deg,#00CFFF,#7c3aed))',
+        background: ftfActive ? 'linear-gradient(90deg,#062a45,#0d6f9e,#22d3ee,#0d6f9e,#062a45)' : qbActive ? 'linear-gradient(90deg,#0a0612,#7c3aed,#22c55e,#7c3aed,#0a0612)' : flashActive ? 'linear-gradient(90deg,#dc2626,#f59e0b,#dc2626)' : xjActive ? 'linear-gradient(90deg,#c8102e,#0f5132,#f5c542,#0f5132,#c8102e)' : j4Active ? 'linear-gradient(90deg,#b22234,#7a1228,#13294b,#7a1228,#b22234)' : bbActive ? 'linear-gradient(90deg,#ec4899,#f5d272)' : summerActive ? 'linear-gradient(90deg,#ffb14a,#ff7a59,#37c8ff)' : 'var(--gradient-primary, linear-gradient(90deg,#00CFFF,#7c3aed))',
         color: (j4Active || xjActive || flashActive || qbActive) ? '#fff' : '#001018', overflow: 'hidden', display: 'flex', alignItems: 'center',
         fontFamily: 'var(--font-body)',
       }}

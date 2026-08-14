@@ -17,7 +17,7 @@ import {
   ShoppingCart, Heart, Loader2,
 } from 'lucide-react';
 import SaleCountdown from '@/components/SaleCountdown';
-import Back2SchoolTracker from '@/components/Back2SchoolTracker';
+import FillTheFreezerBanner from '@/components/FillTheFreezerBanner';
 import BirthdayBashBanner from '@/components/BirthdayBashBanner';
 import QueenBirthdayBanner from '@/components/QueenBirthdayBanner';
 import AppPromo from '@/components/AppPromo';
@@ -196,7 +196,7 @@ export default function Home() {
             99%+ purity, independently third-party lab-tested, with a Certificate of Analysis on every vial — shipped in 24 hours.
           </p>
           <div><SaleCountdown /></div>
-          <Back2SchoolTracker />
+          <FillTheFreezerBanner />
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
             <Link href="/shop" style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', padding: '16px 38px', background: 'var(--gradient-primary)', borderRadius: 'var(--radius-md)', color: '#fff', fontWeight: 800, fontSize: '1.05rem', textDecoration: 'none', boxShadow: '0 0 30px rgba(0,207,255,0.5)', fontFamily: 'var(--font-body)' }}>
               Shop All Research Compounds <ArrowRight size={17} />

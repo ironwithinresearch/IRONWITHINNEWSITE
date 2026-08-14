@@ -41,7 +41,7 @@ export default function B2SUnlockNudge({ units }) {
       borderRadius: 14, border: `1px solid ${unlocked ? 'rgba(52,211,153,0.45)' : 'rgba(232,25,75,0.45)'}`,
       background: unlocked ? 'rgba(52,211,153,0.10)' : 'rgba(232,25,75,0.10)',
     }}>
-      <span style={{ fontSize: '1.3rem', lineHeight: 1 }}>{unlocked ? '🎉' : '🎒'}</span>
+      <span style={{ fontSize: '1.3rem', lineHeight: 1 }}>{unlocked ? '🎉' : '🧊'}</span>
       <div style={{ fontSize: '0.9rem', lineHeight: 1.5 }}>
         {unlocked ? (
           <>
