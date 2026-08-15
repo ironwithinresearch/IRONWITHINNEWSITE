@@ -671,6 +671,22 @@ export default function CheckoutPage() {
                   />
                 );
               })}
+              {/* Cart-level fees (e.g. the RT-3 30mg buy-2-get-1). Already inside
+                  cartTotal, so this only itemises what the shopper is being given —
+                  without it the total is right but the reason is invisible. Sits
+                  before Shipping to match the order the cart page uses. */}
+              {(cart?.fees || []).map((f) => {
+                const amt = Number(f.amount) || 0;
+                if (!amt) return null;
+                return (
+                  <SummaryRow
+                    key={f.name}
+                    label={f.name}
+                    value={`${amt < 0 ? '- ' : ''}$${Math.abs(amt).toFixed(2)}`}
+                    valueColor={amt < 0 ? '#34d399' : undefined}
+                  />
+                );
+              })}
               {/* Shipping — $0.00 until the review step, then the selected rate */}
               <SummaryRow label="Shipping" htmlValue={shipDisplay} value={undefined} />
               {/* Pay-by-app discount — shown before credit/rewards, matching the backend order */}

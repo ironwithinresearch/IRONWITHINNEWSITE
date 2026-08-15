@@ -405,6 +405,24 @@ export default function CartPage() {
                   );
                 })}
 
+                {/* Cart-level fees. Promotions like the RT-3 30mg buy-2-get-1 are a
+                    negative fee rather than a price cut, so without this row the
+                    discount is applied at checkout but invisible here — the shopper
+                    sees full price and the offer drives nothing. Positive fees (none
+                    today) would render as a charge, which is also correct. */}
+                {(cart?.fees || []).map((f) => {
+                  const amt = Number(f.amount) || 0;
+                  if (!amt) return null;
+                  return (
+                    <SummaryRow
+                      key={f.name}
+                      label={f.name}
+                      value={`${amt < 0 ? '- ' : ''}$${Math.abs(amt).toFixed(2)}`}
+                      valueColor={amt < 0 ? '#34d399' : undefined}
+                    />
+                  );
+                })}
+
                 {rewardsPts > 0 && (
                   <SummaryRow label={`Rewards (${rewardsPts.toLocaleString()} pts)`} value={`- $${rewardsDollars.toFixed(2)}`} valueColor="#34d399" />
                 )}

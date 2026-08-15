@@ -77,6 +77,19 @@ const FTF_END = Date.parse('2026-08-17T04:59:59Z');
 // them is the reason to add the third vial.
 const FTF_MESSAGE = '🧊  FILL THE FREEZER — BUY 3+ ITEMS, GET 45% OFF SITEWIDE · no code needed · stack your affiliate code for even more · fewer than 3? the 30% summer sale still applies · ends Sunday at midnight';
 
+// RT-3 30mg buy-2-get-1, bolted onto the tail of the sale. Keep these timestamps
+// identical to IW_B2G1_START / IW_B2G1_END in mu-plugin iw-b2g1-rt3.php — the plugin
+// is what actually zeroes the third vial, and a bar that promises it outside that
+// window sends shoppers to a cart that does not honour it.
+//
+// Scoped to RT-3 30mg on purpose (margin: it is the only SKU that carries a third
+// discount on top of 45% + volume + code + pay-by-app), so the copy must NAME the
+// dose. "Buy 2 get 1 free" without it reads as sitewide and every other product
+// then looks broken.
+const B2G1_START = Date.parse('2026-08-15T17:00:00Z');
+const B2G1_END = Date.parse('2026-08-17T04:59:59Z');
+const B2G1_MESSAGE = '🎁  BUY 2 GET 1 FREE on RT-3 30mg — add 3 to your cart and the third is free, automatically · stacks on top of the 45% · this weekend only';
+
 // The pay-by-app 10% STAYS RUNNING this event (operator call 2026-08-14) — the buy-3
 // gate is doing the margin work instead, so the bar keeps promising it. If it is ever
 // paused again in iw-p2p-discount.php, set this window to match IN LOCKSTEP:
@@ -118,6 +131,9 @@ export default function AnnouncementBar() {
     const qbOn = now >= QB_START && now < QB_END;
     const ftfOn = now >= FTF_START && now < FTF_END;
     if (ftfOn) { promos.unshift(FTF_MESSAGE); setFtfActive(true); }
+    // B2G1 leads the ticker while it runs — it is the sharper offer, and it is the
+    // one with a deadline inside the sale rather than at the end of it.
+    if (now >= B2G1_START && now < B2G1_END) promos.unshift(B2G1_MESSAGE);
     if (qbOn) { promos.unshift(QB_MESSAGE); setQbActive(true); }
     if (!qbOn && flashOn) { promos.unshift(FLASH_MESSAGE); setFlashActive(true); }
     // Summer's "30% OFF EVERYTHING" line is suppressed while Fill the Freezer runs —

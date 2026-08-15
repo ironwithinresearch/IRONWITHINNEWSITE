@@ -9,6 +9,10 @@ export const GET_CART = gql`
       totalTax
       shippingTotal
       discountTotal
+      fees {
+        name
+        amount
+      }
       chosenShippingMethods
       availableShippingMethods {
         rates { id label cost }
@@ -147,6 +151,10 @@ export const APPLY_COUPON = gql`
         subtotal
         total
         discountTotal
+        fees {
+          name
+          amount
+        }
         appliedCoupons { code discountAmount }
         contents {
           itemCount
@@ -164,6 +172,10 @@ export const REMOVE_COUPON = gql`
         subtotal
         total
         discountTotal
+        fees {
+          name
+          amount
+        }
         appliedCoupons { code discountAmount }
         contents {
           itemCount
