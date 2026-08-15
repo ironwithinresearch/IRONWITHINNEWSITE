@@ -7,6 +7,10 @@
     "bpc-157-tb500-10mg-8833606.pdf",
     "bpc-157-tb500-10mg.pdf"
   ],
+  "cagrillintide": [
+    "cagrillintide-2026-08-13.pdf",
+    "cagrillintide.pdf"
+  ],
   "glow-bundle": [
     "glow-bundle-6055127.pdf",
     "glow-bundle.pdf"
@@ -25,10 +29,13 @@
     "klow.pdf"
   ],
   "kpv": [
+    "kpv-2026-08-13.pdf",
     "kpv-4451178.pdf",
     "kpv.pdf"
   ],
   "nad": [
+    "nad-1000mg-2026-08-13.pdf",
+    "nad-500mg-2026-08-13.pdf",
     "nad-6384965.pdf",
     "nad.pdf"
   ],
@@ -40,14 +47,20 @@
     "rt-3.pdf"
   ],
   "ss-31": [
+    "ss-31-2026-08-13.pdf",
     "ss-31.pdf",
     "ss-31-2026-06-08.pdf"
+  ],
+  "tb-500": [
+    "tb-500-2026-08-13.pdf",
+    "tb-500-5928420.pdf"
   ],
   "thymosin-alpha-1": [
     "thymosin-alpha-1-batch0063.pdf",
     "thymosin-alpha-1.pdf"
   ],
   "trz-2": [
+    "trz-2-2026-08-13.pdf",
     "trz-2-9109868.pdf",
     "trz-2-6878731.pdf",
     "trz-2.pdf"

@@ -53,9 +53,13 @@ export const coaBySlug = {
     ],
   },
   'cagrillintide': {
-    coaFile: '/coa-pdf/cagrillintide.pdf',
-    batchDate: '8/2/2026 · Lot IWR-2607-CAGL',
+    coaFile: '/coa-pdf/cagrillintide-2026-08-13.pdf',
+    batchDate: '8/13/2026 · Lot IWR-081026CAG',
     productName: 'Cagrillintide',
+    batches: [
+      { coaFile: '/coa-pdf/cagrillintide-2026-08-13.pdf', batchDate: '8/13/2026 · Lot IWR-081026CAG' },
+      { coaFile: '/coa-pdf/cagrillintide.pdf', batchDate: '8/2/2026 · Lot IWR-2607-CAGL' },
+    ],
   },
   'cerebrolysin': {
     coaFile: '/coa-pdf/cerebrolysin.pdf',
@@ -140,10 +144,11 @@ export const coaBySlug = {
     ],
   },
   'kpv': {
-    coaFile: '/coa-pdf/kpv-4451178.pdf',
-    batchDate: '8/2/2026 · Lot IWR-2607-KPV10L',
+    coaFile: '/coa-pdf/kpv-2026-08-13.pdf',
+    batchDate: '8/13/2026 · Lot IWR-081026KPV',
     productName: 'KPV',
     batches: [
+      { coaFile: '/coa-pdf/kpv-2026-08-13.pdf', batchDate: '8/13/2026 · Lot IWR-081026KPV' },
       { coaFile: '/coa-pdf/kpv-4451178.pdf', batchDate: '8/2/2026 · Lot IWR-2607-KPV10L' },
       { coaFile: '/coa-pdf/kpv.pdf', batchDate: '5/6/2026' },
     ],
@@ -179,10 +184,12 @@ export const coaBySlug = {
     productName: 'MT-2',
   },
   'nad': {
-    coaFile: '/coa-pdf/nad-6384965.pdf',
-    batchDate: '8/2/2026',
+    coaFile: '/coa-pdf/nad-1000mg-2026-08-13.pdf',
+    batchDate: '8/13/2026 · 1000mg · Lot IWR-081026NAD1K',
     productName: 'NAD+',
     batches: [
+      { coaFile: '/coa-pdf/nad-1000mg-2026-08-13.pdf', batchDate: '8/13/2026 · 1000mg · Lot IWR-081026NAD1K' },
+      { coaFile: '/coa-pdf/nad-500mg-2026-08-13.pdf', batchDate: '8/13/2026 · 500mg · Lot IWR-081026NAD500' },
       { coaFile: '/coa-pdf/nad-6384965.pdf', batchDate: '8/2/2026' },
       { coaFile: '/coa-pdf/nad.pdf', batchDate: '2/22/2026' },
     ],
@@ -240,18 +247,23 @@ export const coaBySlug = {
     productName: 'SLU-PP-332',
   },
   'ss-31': {
-    coaFile: '/coa-pdf/ss-31.pdf',
-    batchDate: '8/2/2026 · Lot IWR-2607-SS50L',
+    coaFile: '/coa-pdf/ss-31-2026-08-13.pdf',
+    batchDate: '8/13/2026 · Lot IWR-081026SS',
     productName: 'SS-31',
     batches: [
+      { coaFile: '/coa-pdf/ss-31-2026-08-13.pdf', batchDate: '8/13/2026 · Lot IWR-081026SS' },
       { coaFile: '/coa-pdf/ss-31.pdf', batchDate: '8/2/2026 · Lot IWR-2607-SS50L' },
       { coaFile: '/coa-pdf/ss-31-2026-06-08.pdf', batchDate: '6/8/2026' },
     ],
   },
   'tb-500': {
-    coaFile: '/coa-pdf/tb-500-5928420.pdf',
-    batchDate: '8/2/2026 · Lot IWR-2607-TB50010L',
+    coaFile: '/coa-pdf/tb-500-2026-08-13.pdf',
+    batchDate: '8/13/2026 · Lot IWR-081026TB',
     productName: 'TB-500',
+    batches: [
+      { coaFile: '/coa-pdf/tb-500-2026-08-13.pdf', batchDate: '8/13/2026 · Lot IWR-081026TB' },
+      { coaFile: '/coa-pdf/tb-500-5928420.pdf', batchDate: '8/2/2026 · Lot IWR-2607-TB50010L' },
+    ],
   },
   'tesamorelin': {
     coaFile: '/coa-pdf/tesamorelin.pdf',
@@ -288,10 +300,11 @@ export const coaBySlug = {
     productName: 'Thymosin Alpha-1 10mg',
   },
   'trz-2': {
-    coaFile: '/coa-pdf/trz-2-9109868.pdf',
-    batchDate: '8/2/2026',
+    coaFile: '/coa-pdf/trz-2-2026-08-13.pdf',
+    batchDate: '8/13/2026 · Lot IWR-081026TRZ',
     productName: 'TRZ-2',
     batches: [
+      { coaFile: '/coa-pdf/trz-2-2026-08-13.pdf', batchDate: '8/13/2026 · Lot IWR-081026TRZ' },
       { coaFile: '/coa-pdf/trz-2-9109868.pdf', batchDate: '8/2/2026' },
       { coaFile: '/coa-pdf/trz-2-6878731.pdf', batchDate: '6/24/2026 · Lot IWR-6878731' },
       { coaFile: '/coa-pdf/trz-2.pdf', batchDate: '04/16/2026' },
