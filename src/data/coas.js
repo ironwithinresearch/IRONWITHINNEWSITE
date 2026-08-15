@@ -96,6 +96,11 @@ export const coaBySlug = {
     batchDate: '8/2/2026',
     productName: 'GHK-Cu',
   },
+  'ghk-cu-kpv': {
+    coaFile: '/coa-pdf/ghk-cu-kpv-2026-08-13.pdf',
+    batchDate: '8/13/2026 · Lot IWR-081126GHKP',
+    productName: 'GHK-Cu / KPV',
+  },
   'glow-bundle': {
     coaFile: '/coa-pdf/glow-bundle-6055127.pdf',
     batchDate: '8/2/2026 · Lot IWR-2607-GLOWL',
@@ -249,6 +254,11 @@ export const coaBySlug = {
     coaFile: '/coa-pdf/slu-pp-332.pdf',
     batchDate: '8/2/2026 · Lot IWR-2607-SLU5L',
     productName: 'SLU-PP-332',
+  },
+  'snap-8': {
+    coaFile: '/coa-pdf/snap-8-2026-08-13.pdf',
+    batchDate: '8/13/2026 · Lot IWR-081026SNAP',
+    productName: 'SNAP-8',
   },
   'ss-31': {
     coaFile: '/coa-pdf/ss-31-2026-08-13.pdf',
