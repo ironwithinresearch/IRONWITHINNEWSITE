@@ -154,9 +154,13 @@ export const coaBySlug = {
     ],
   },
   'l-glutathione': {
-    coaFile: '/coa-pdf/l-glutathione-2768697.pdf',
-    batchDate: '8/2/2026 · Lot IWR-2607-L',
+    coaFile: '/coa-pdf/l-glutathione-1500mg-2026-08-13.pdf',
+    batchDate: '8/13/2026 · 1500mg · Lot IWR-081026GTT',
     productName: 'L-Glutathione',
+    batches: [
+      { coaFile: '/coa-pdf/l-glutathione-1500mg-2026-08-13.pdf', batchDate: '8/13/2026 · 1500mg · Lot IWR-081026GTT' },
+      { coaFile: '/coa-pdf/l-glutathione-2768697.pdf', batchDate: '8/2/2026 · Lot IWR-2607-L' },
+    ],
   },
   'lemon-bottle': {
     coaFile: '/coa-pdf/lemon-bottle.pdf',
