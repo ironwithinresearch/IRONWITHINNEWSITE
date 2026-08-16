@@ -164,11 +164,20 @@ async function requestAccountCredit({ order_number, email, item_name, reason, qu
   const custEmail = o.billing?.email || email;
   const custName = `${o.billing?.first_name || ''} ${o.billing?.last_name || ''}`.trim() || custEmail;
   const unitNote = qty > 1 ? `${qty} × $${(line.paid_each || 0).toFixed(2)}` : `$${(line.paid_each || 0).toFixed(2)}`;
-  const grantReason = `${qty}× ${line.name} — ${String(reason || 'reported issue').slice(0, 120)} (order #${v.order})`;
 
-  // The operator gets a ready-to-run grant command — approving is a copy/paste, not a rebuild.
+  // The request is QUEUED for approval in the admin app (backend iw-credit-requests.php
+  // materialises it from the `credit` block below). The email is still sent — it is what
+  // actually gets attention — but it now links to the queue instead of carrying a
+  // copy/paste wp-cli line, so a request has a status, cannot be granted twice, and
+  // cannot be lost by scrolling out of an inbox.
   await notify({
     type: 'credit_request', order_id: v.order, reply_to: custEmail,
+    credit: {
+      customer_email: custEmail, customer_name: custName,
+      item_name: line.name, quantity: qty, amount,
+      reason: String(reason || '').slice(0, 500),
+      transcript: ctx.transcript || '',
+    },
     subject: `Account credit requested — $${amount.toFixed(2)} for ${custName} (order #${v.order})`,
     message: `The support bot verified a customer issue and is REQUESTING account credit so they can re-order.\n\n`
       + `NOTHING HAS BEEN GRANTED YET — this is a request for your approval.\n\n`
@@ -176,10 +185,8 @@ async function requestAccountCredit({ order_number, email, item_name, reason, qu
       + `Units affected: ${qty} of ${line.qty} purchased\n`
       + `Amount (${unitNote}): $${amount.toFixed(2)}\nReason given: ${reason}\n\n`
       + (overAsked ? `NOTE: the customer described ${wanted} units but only ${line.qty} were purchased — capped at ${qty}.\n\n` : '')
-      + `TO APPROVE — run:\n`
-      + `wp iw-credit grant --email=${custEmail} --amount=${amount.toFixed(2)} --reason="${grantReason}" --skip-plugins=wp-graphql-woocommerce --skip-themes\n\n`
-      + `The customer is emailed automatically when the credit lands, and it auto-applies at their next checkout.\n`
-      + `TO DECLINE: do nothing, and reply to the customer directly.\n\n`
+      + `Approve or deny it in the admin app — approving grants the credit and emails the customer,\n`
+      + `and it auto-applies at their next checkout. Denying records the decision on the order.\n\n`
       + `--- FULL CHAT CONVERSATION ---\n${ctx.transcript || '(none)'}`,
   });
 
