@@ -9,7 +9,7 @@ const CY = '#37c8ff', NAVY = '#0e1a30', BG = '#050c1c', HAIR = 'rgba(120,180,235
 function render(text) {
   return (text || '').replace(/&/g, '&amp;').replace(/</g, '&lt;')
     .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
-    .replace(/\b(www\.[a-z0-9.-]+\.[a-z]{2,}|ironwithin\.io(?:\/[a-z-]+)?|peptideparadigm\.com)\b/g,
+    .replace(/\b(www\.[a-z0-9.-]+\.[a-z]{2,}|ironwithin\.io(?:\/[a-z-]+)?|peptideparadigm\.app)\b/g,
       (m) => `<a href="https://${m}" target="_blank" rel="noopener" style="color:#93e2ff;font-weight:600">${m}</a>`);
 }
 

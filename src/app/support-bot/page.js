@@ -21,7 +21,7 @@ function Bub({ role, text, image }) {
         {image && <img src={image} alt="attachment" style={{ maxWidth: 180, borderRadius: 8, marginBottom: text ? 8 : 0, display: 'block' }} />}
         <span dangerouslySetInnerHTML={{ __html: (text || '').replace(/&/g, '&amp;').replace(/</g, '&lt;')
           .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
-          .replace(/\b(www\.[a-z0-9.-]+\.[a-z]{2,}|ironwithin\.io(?:\/[a-z-]+)?|peptideparadigm\.com)\b/g, (m) => `<a href="https://${m}" target="_blank" rel="noopener" style="color:#93e2ff;font-weight:600">${m}</a>`) }} />
+          .replace(/\b(www\.[a-z0-9.-]+\.[a-z]{2,}|ironwithin\.io(?:\/[a-z-]+)?|peptideparadigm\.app)\b/g, (m) => `<a href="https://${m}" target="_blank" rel="noopener" style="color:#93e2ff;font-weight:600">${m}</a>`) }} />
       </div>
     </div>
   );
