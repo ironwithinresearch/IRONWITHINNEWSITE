@@ -82,13 +82,16 @@ const FTF_MESSAGE = '🧊  FILL THE FREEZER — BUY 3+ ITEMS, GET 45% OFF SITEWI
 // is what actually zeroes the third vial, and a bar that promises it outside that
 // window sends shoppers to a cart that does not honour it.
 //
-// Scoped to RT-3 30mg on purpose (margin: it is the only SKU that carries a third
-// discount on top of 45% + volume + code + pay-by-app), so the copy must NAME the
-// dose. "Buy 2 get 1 free" without it reads as sitewide and every other product
-// then looks broken.
+// Scoped to the two 30mg SKUs on purpose (margin: only they carry a third discount on
+// top of 45% + volume + code + pay-by-app; both 10mg SKUs go negative), so the copy
+// must NAME the doses. "Buy 2 get 1 free" without them reads as sitewide and every
+// other product then looks broken.
+//
+// It is also counted PER PRODUCT — three of the SAME vial. Two of each earns nothing,
+// so the copy says "of either", never "any 3".
 const B2G1_START = Date.parse('2026-08-15T17:00:00Z');
 const B2G1_END = Date.parse('2026-08-17T04:59:59Z');
-const B2G1_MESSAGE = '🎁  BUY 2 GET 1 FREE on RT-3 30mg — add 3 to your cart and the third is free, automatically · stacks on top of the 45% · this weekend only';
+const B2G1_MESSAGE = '🎁  BUY 2 GET 1 FREE on RT-3 30mg & TRZ-2 30mg — add 3 of either and the third is free, automatically · stacks on top of the 45% · this weekend only';
 
 // The pay-by-app 10% STAYS RUNNING this event (operator call 2026-08-14) — the buy-3
 // gate is doing the margin work instead, so the bar keeps promising it. If it is ever
