@@ -162,9 +162,6 @@ export default function AffiliateHandbookPage() {
             </tbody>
           </table>
         </div>
-        <Callout tone="info" label="Get paid 2× — in store credit">
-          Instead of cash, take your commission as Iron Within store credit worth <B>double</B> — earn $100, get $200 to spend on the store. Best deal we offer if you use the products yourself. Set it at <Link href="/affiliate/payout" style={{ color: C.cyan }}>/affiliate/payout</Link>.
-        </Callout>
         <Callout tone="rule" label="Keep your code active">
           Your personal discount code has to stay in use. To keep it active, you need to drive <B>at least $1,000 in sales at least once every 2 months</B>. If it goes a full 2 months without hitting that mark, it may be paused until you&apos;re producing again — so keep it circulating.
         </Callout>
@@ -275,7 +272,6 @@ Thanks!`}
           <>Log into <B>GoAffPro</B> and grab your referral link + discount code.</>,
           <>Add your <B>link + code</B> to your bio / link-in-bio.</>,
           <>Pick <B>2–3 hero products</B> and read their COAs.</>,
-          <>Set your <B>payout preference</B> — cash or 2× store credit — at <C2>/affiliate/payout</C2>.</>,
           <>Save the <B>support email + template</B> (§06) for any customer who needs help.</>,
           <>Post your <B>first educational piece</B> — compliant, COA-forward, code in the caption.</>,
           <>Grab ready-made assets from the <Link href="/affiliate/resources" style={{ color: C.cyan }}>swipe pack</Link>.</>,
