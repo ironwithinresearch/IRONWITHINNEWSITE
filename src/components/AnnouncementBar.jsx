@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { p2pPaused, p2pEventLive, p2pPct } from '@/lib/p2p';
 
 /* Scrolling announcement ticker, fixed above the navbar (height 36px).
    The navbar (top: 36) and main padding are offset to match. */
@@ -97,13 +98,19 @@ const B2G1_MESSAGE = '🎁  BUY 2 GET 1 FREE on RT-3 30mg & TRZ-2 30mg — add 3
 // gate is doing the margin work instead, so the bar keeps promising it. If it is ever
 // paused again in iw-p2p-discount.php, set this window to match IN LOCKSTEP:
 // advertising a discount that no longer lands at checkout is a support ticket per order.
-const P2P_PAUSE_FROM = null;
-const P2P_PAUSE_TO = null;
-const p2pPaused = (now) => P2P_PAUSE_FROM !== null && now >= P2P_PAUSE_FROM && now <= P2P_PAUSE_TO;
+// Pause state and the live rate both come from src/lib/p2p.js, which mirrors the
+// mu-plugin. Never hardcode the percentage in this file again — advertising a rate the
+// backend is not applying is a support ticket per order.
 
 // Pay-by-app discount — permanent, not a dated promo, so it lives in the base rotation.
-// Steers volume off cards (card payers pay list; app payers get 10% back off).
+// Steers volume off cards (card payers pay list; app payers get the discount back off).
+// This static string is only the SERVER render; the effect below swaps in the live rate.
 const P2P_MESSAGE = '💸  SAVE 10% — pay with Zelle, Venmo, or Cash App and 10% comes off your total automatically at checkout';
+
+// While the 35% weekend runs, the pay-by-app line IS the headline offer — it leads the
+// ticker instead of sitting in the base rotation, because for those three days it is the
+// only discount on the site (summer sale_prices expire the moment it opens).
+const P2P_EVENT_MESSAGE = '💸  35% OFF WHEN YOU PAY BY APP — Zelle, Venmo or Cash App takes 35% off your total automatically · stack your affiliate code on top · this weekend only, ends Sun Aug 23';
 
 const BASE_MESSAGES = [
   P2P_MESSAGE,
@@ -123,6 +130,7 @@ export default function AnnouncementBar() {
   const [flashActive, setFlashActive] = useState(false);
   const [qbActive, setQbActive] = useState(false);
   const [ftfActive, setFtfActive] = useState(false);
+  const [p2pEventActive, setP2pEventActive] = useState(false);
   useEffect(() => {
     const now = Date.now();
     const promos = [];
@@ -144,8 +152,22 @@ export default function AnnouncementBar() {
     // The 30% is still mentioned, inside FTF_MESSAGE, as the sub-threshold fallback.
     if (!ftfOn && !qbOn && !flashOn && now >= SUMMER_START && now < SUMMER_END) { promos.push(SUMMER_MESSAGE); setSummerActive(true); }
     if (now < SALE_ENDS) promos.push(SALE_MESSAGE);
-    // Drop the pay-by-app line while the 10% is paused, so the bar and checkout agree.
-    const base = p2pPaused(now) ? BASE_MESSAGES.filter((m) => m !== P2P_MESSAGE) : BASE_MESSAGES;
+    // Drop the pay-by-app line while the discount is paused, so the bar and checkout
+    // agree; otherwise rewrite it at the rate actually in force.
+    let base;
+    if (p2pPaused(now)) {
+      base = BASE_MESSAGES.filter((m) => m !== P2P_MESSAGE);
+    } else if (p2pEventLive(now)) {
+      base = BASE_MESSAGES.filter((m) => m !== P2P_MESSAGE);
+      promos.unshift(P2P_EVENT_MESSAGE);
+      setP2pEventActive(true);
+    } else {
+      base = BASE_MESSAGES.map((m) =>
+        m === P2P_MESSAGE
+          ? `💸  SAVE ${p2pPct(now)}% — pay with Zelle, Venmo, or Cash App and ${p2pPct(now)}% comes off your total automatically at checkout`
+          : m,
+      );
+    }
     setMessages([...promos, ...base]);
   }, []);
 

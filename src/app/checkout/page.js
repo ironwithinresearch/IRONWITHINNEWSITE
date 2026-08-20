@@ -9,6 +9,7 @@ import { CHECKOUT, buildCheckoutInput } from '../../lib/queries/checkout';
 import { useCart } from '../../context/CartContext';
 import OrderBump from '@/components/OrderBump';
 import { getReferCookie } from '@/lib/referral';
+import { P2P_METHODS, p2pPaused, p2pRate, p2pPct } from '@/lib/p2p';
 import { useAuth } from '../../context/AuthContext';
 import { decodePriceHtml } from '../../lib/utils';
 import { getAffiliateRef } from '../../lib/affiliate';
@@ -35,20 +36,10 @@ const PAY_METHODS = [
   { id: 'iwr_cashapp', label: 'Cash App', handle: '$ironwithinresearch' },
 ];
 
-// Paying by app saves 10% (see mu-plugin iw-p2p-discount.php). Card payers pay list.
-const P2P_DISCOUNT_RATE = 0.10;
-const P2P_DISCOUNT_METHODS = new Set(['iwr_zelle', 'iwr_venmo', 'iwr_cashapp']);
-
-// PAUSED for the 50%-off tier. These MUST stay identical to IW_P2P_PAUSE_FROM/TO in
-// mu-plugin iw-p2p-discount.php: this file only mirrors the backend's math so the buyer
-// can see the discount before placing the order. If the mirror says 10% while the
-// backend has stopped applying it, the customer is quoted one total and charged another.
-const P2P_PAUSE_FROM = Date.parse('2026-08-09T02:00:00Z'); // Sat 9:00pm CT
-const P2P_PAUSE_TO = Date.parse('2026-08-10T04:59:59Z'); // Sun 11:59:59pm CT
-const p2pPaused = () => {
-  const now = Date.now();
-  return now >= P2P_PAUSE_FROM && now <= P2P_PAUSE_TO;
-};
+// Paying by app takes a discount off (see mu-plugin iw-p2p-discount.php). Card payers
+// pay list. The rate is time-varying — 35% for the 2026-08-21..23 event, 10% otherwise —
+// so read it from src/lib/p2p.js rather than hardcoding it here.
+const P2P_DISCOUNT_METHODS = P2P_METHODS;
 
 // Any method whose backend gateway answers with an off-site `redirect` rather than
 // completing the order in-place.
@@ -198,7 +189,7 @@ export default function CheckoutPage() {
   // the buyer sees it BEFORE they place the order, and before credit/rewards are figured.
   const p2pEligible = P2P_DISCOUNT_METHODS.has(payMethod) && !p2pPaused();
   const p2pItemsBase = Math.max(0, money(cartSubtotal) || (computedTotalNum - shipCostNum));
-  const p2pDiscount = p2pEligible ? round2(p2pItemsBase * P2P_DISCOUNT_RATE) : 0;
+  const p2pDiscount = p2pEligible ? round2(p2pItemsBase * p2pRate()) : 0;
   // Route sits before store credit and rewards, exactly as the backend orders it
   // (fee at prio 23, credit 25, rewards 26) so those can pay for protection too.
   const totalAfterP2P = Math.max(0, round2(computedTotalNum - p2pDiscount + routeFee));
@@ -569,14 +560,14 @@ export default function CheckoutPage() {
                               {/* The whole point of the pricing change — make the cheaper path obvious. */}
                               {P2P_DISCOUNT_METHODS.has(m.id) && !p2pPaused() && (
                                 <span style={{ fontSize: '0.68rem', fontWeight: 800, letterSpacing: '0.04em', padding: '2px 7px', borderRadius: 999, color: '#04121a', background: '#34d399' }}>
-                                  SAVE 10%
+                                  SAVE {p2pPct()}%
                                 </span>
                               )}
                             </span>
                             <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                               {REDIRECT_METHODS.has(m.id)
                                 ? m.desc
-                                : `Send your payment to ${m.handle} after placing the order${p2pPaused() ? '' : ' — 10% comes off your total'}`}
+                                : `Send your payment to ${m.handle} after placing the order${p2pPaused() ? '' : ` — ${p2pPct()}% comes off your total`}`}
                             </span>
                           </span>
                         </button>
@@ -713,7 +704,7 @@ export default function CheckoutPage() {
                 <SummaryRow label="Route Package Protection" value={`$${routeFee.toFixed(2)}`} />
               )}
               {p2pDiscount > 0 && (
-                <SummaryRow label="Zelle / Venmo / Cash App discount (10%)" value={`- $${p2pDiscount.toFixed(2)}`} valueColor="#34d399" />
+                <SummaryRow label={`Zelle / Venmo / Cash App discount (${p2pPct()}%)`} value={`- $${p2pDiscount.toFixed(2)}`} valueColor="#34d399" />
               )}
               {/* Store credit (account wallet) — applied like cash, after discounts */}
               {creditApplied > 0 && (
