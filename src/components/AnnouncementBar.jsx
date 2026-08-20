@@ -52,7 +52,10 @@ const FLASH_END = Date.parse('2026-07-28T05:00:00Z');
 const FLASH_MESSAGE = '🔥  TONIGHT ONLY — 45% OFF EVERYTHING · no code needed · plus a FREE RT-3 or TRZ-2 10mg (your pick) on orders $175+ · ends at midnight';
 
 const SUMMER_START = Date.parse('2026-07-01T00:00:00Z');
-const SUMMER_END = Date.parse('2026-08-21T04:59:59Z');
+// Ended early on 20 Aug 16:00 UTC, when the sale_prices were cleared to make room for
+// the 35% pay-by-app event. This timestamp is independent of the prices, so leaving it
+// would keep promising 30% off everything after it had stopped existing.
+const SUMMER_END = Date.parse('2026-08-20T16:00:00Z');
 const SUMMER_MESSAGE = '☀️  SUMMER SALE — 30% OFF EVERYTHING, no code needed · stack your affiliate code for even more · 99%+ purity, COA on every order · ends Aug 20';
 
 // Shipping pause — a short break Thu Jul 16 (2 PM CT) → Sunday Jul 19. Orders placed after
