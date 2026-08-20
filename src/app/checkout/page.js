@@ -9,7 +9,7 @@ import { CHECKOUT, buildCheckoutInput } from '../../lib/queries/checkout';
 import { useCart } from '../../context/CartContext';
 import OrderBump from '@/components/OrderBump';
 import { getReferCookie } from '@/lib/referral';
-import { P2P_METHODS, p2pPaused, p2pRate, p2pPct } from '@/lib/p2p';
+import { P2P_METHODS, p2pPaused, p2pRate, p2pPct, GIFT_OPTIONS, GIFT_MIN, giftQualifies } from '@/lib/p2p';
 import { useAuth } from '../../context/AuthContext';
 import { decodePriceHtml } from '../../lib/utils';
 import { getAffiliateRef } from '../../lib/affiliate';
@@ -96,6 +96,7 @@ export default function CheckoutPage() {
   const [payMethod, setPayMethod] = useState(() => isCardPaused() ? 'iwr_zelle' : CARD_METHOD);
   const [backorderAck, setBackorderAck] = useState(false);
   const [p2pInfo, setP2pInfo] = useState(null);
+  const [giftChoice, setGiftChoice] = useState('');
   const payMethodRef = useRef(isCardPaused() ? 'iwr_zelle' : CARD_METHOD);
   // SnapPay is the card option (ChargeX retired 2026-07-24). If CARD_PAUSED is ever
   // flipped back on, the card row is filtered out entirely and Zelle becomes default.
@@ -190,6 +191,11 @@ export default function CheckoutPage() {
   const p2pEligible = P2P_DISCOUNT_METHODS.has(payMethod) && !p2pPaused();
   const p2pItemsBase = Math.max(0, money(cartSubtotal) || (computedTotalNum - shipCostNum));
   const p2pDiscount = p2pEligible ? round2(p2pItemsBase * p2pRate()) : 0;
+  // Free vial: pay-by-app orders over $200 choose a TRZ-2 10mg or RT-3 10mg. Measured on
+  // the same items base as the discount — what the cart showed — because that is what
+  // iw-p2p-gift.php checks at priority 23, before the 35% comes off at 24.
+  const giftEarned = giftQualifies(p2pItemsBase, payMethod);
+
   // Route sits before store credit and rewards, exactly as the backend orders it
   // (fee at prio 23, credit 25, rewards 26) so those can pay for protection too.
   const totalAfterP2P = Math.max(0, round2(computedTotalNum - p2pDiscount + routeFee));
@@ -307,6 +313,7 @@ export default function CheckoutPage() {
       shippingMethod: shipRate,
       rewardsPts: rewardsAppliedPts,
       routeSelected: routeFee > 0,
+      giftChoice: giftEarned ? giftChoice : '',
     });
     try {
       const { data, errors } = await checkoutMutation({ variables: input });
@@ -705,6 +712,39 @@ export default function CheckoutPage() {
 
               {routeFee > 0 && (
                 <SummaryRow label="Route Package Protection" value={`$${routeFee.toFixed(2)}`} />
+              )}
+              {giftEarned && (
+                <div style={{ margin: '10px 0 14px', padding: '13px 15px', borderRadius: '12px', background: 'rgba(52,211,153,0.10)', border: '1px solid rgba(52,211,153,0.40)' }}>
+                  <div style={{ fontSize: '0.82rem', fontWeight: 800, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '4px' }}>
+                    You&rsquo;ve earned a free vial
+                  </div>
+                  <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>
+                    Pay-by-app orders over ${GIFT_MIN} include one on us. Pick which:
+                  </div>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    {GIFT_OPTIONS.map((g) => (
+                      <button
+                        key={g.key}
+                        type="button"
+                        onClick={() => setGiftChoice(g.key)}
+                        style={{
+                          flex: '1 1 140px', padding: '10px 12px', borderRadius: '9px', cursor: 'pointer',
+                          fontWeight: 700, fontSize: '0.86rem',
+                          background: giftChoice === g.key ? 'rgba(52,211,153,0.22)' : 'transparent',
+                          border: `1px solid ${giftChoice === g.key ? '#34d399' : 'var(--glass-border)'}`,
+                          color: giftChoice === g.key ? '#34d399' : 'var(--text-light)',
+                        }}
+                      >
+                        {giftChoice === g.key ? '\u2713 ' : ''}{g.label}
+                      </button>
+                    ))}
+                  </div>
+                  {!giftChoice && (
+                    <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', marginTop: '8px' }}>
+                      No pick? We&rsquo;ll send whichever is in stock.
+                    </div>
+                  )}
+                </div>
               )}
               {p2pDiscount > 0 && (
                 <SummaryRow label={`Zelle / Venmo / Cash App discount (${p2pPct()}%)`} value={`- $${p2pDiscount.toFixed(2)}`} valueColor="#34d399" />

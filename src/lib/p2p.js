@@ -45,3 +45,26 @@ export const p2pRate = (now = Date.now()) => {
 
 /** Percent for copy: 10 or 35, never "10.0". */
 export const p2pPct = (now = Date.now()) => String(Math.round(p2pRate(now) * 100));
+
+/* ---------------------------------------------------------------------------
+ * Free vial on a qualifying pay-by-app order (21-23 Aug).
+ * Mirrors mu-plugin iw-p2p-gift.php — IW_GIFT_MIN / IW_GIFT_FROM / IW_GIFT_TO and
+ * iw_gift_options(). The backend decides what is actually earned; this only decides
+ * what to OFFER. Showing a vial the backend will not add is the specific way this
+ * kind of promo goes wrong, so the two must move together.
+ * ------------------------------------------------------------------------- */
+
+export const GIFT_MIN = 200;
+export const GIFT_FROM = P2P_EVENT_FROM;
+export const GIFT_TO = P2P_EVENT_TO;
+
+export const GIFT_OPTIONS = [
+  { key: 'trz2', label: 'TRZ-2 10mg' },
+  { key: 'rt3', label: 'RT-3 10mg' },
+];
+
+export const giftActive = (now = Date.now()) => now >= GIFT_FROM && now <= GIFT_TO;
+
+/** Does this cart earn the free vial? Subtotal is items after coupons, before the 35%. */
+export const giftQualifies = (subtotal, payMethod, now = Date.now()) =>
+  giftActive(now) && P2P_METHODS.has(payMethod) && Number(subtotal) > GIFT_MIN;
