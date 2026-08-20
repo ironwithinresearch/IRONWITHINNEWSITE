@@ -351,8 +351,11 @@ export default function CheckoutPage() {
                 <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', fontWeight: 900, color: 'var(--primary-blue)', background: 'rgba(0,207,255,0.08)', borderRadius: '10px', padding: '12px 14px', textAlign: 'center', marginBottom: '12px', wordBreak: 'break-all' }}>
                   {p2pInfo.handle}
                 </div>
-                <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
-                  Include <strong style={{ color: 'var(--text-secondary)' }}>order #{p2pInfo.orderNumber}</strong> in the payment note so we can match your payment. Questions? Email support@ironwithin.io.
+                <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '10px' }}>
+                  Include <strong style={{ color: 'var(--text-secondary)' }}>order #{p2pInfo.orderNumber}</strong> in the payment note so we can match your payment.
+                </p>
+                <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.6, background: 'rgba(52,211,153,0.10)', border: '1px solid rgba(52,211,153,0.35)', borderRadius: '10px', padding: '10px 12px', margin: 0 }}>
+                  <strong style={{ color: '#34d399' }}>Once you&rsquo;ve sent it,</strong> reply to the email we just sent you with a screenshot of the payment &mdash; or send it to <strong style={{ color: 'var(--text-light)' }}>payments@ironwithin.io</strong>. That&rsquo;s the fastest way to get your order released. Questions? Email support@ironwithin.io.
                 </p>
               </div>
             )}
@@ -567,7 +570,7 @@ export default function CheckoutPage() {
                             <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                               {REDIRECT_METHODS.has(m.id)
                                 ? m.desc
-                                : `Send your payment to ${m.handle} after placing the order${p2pPaused() ? '' : ` — ${p2pPct()}% comes off your total`}`}
+                                : `Send your payment to ${m.handle} after placing the order, then reply to our email with a screenshot${p2pPaused() ? '' : ` — ${p2pPct()}% comes off your total`}`}
                             </span>
                           </span>
                         </button>

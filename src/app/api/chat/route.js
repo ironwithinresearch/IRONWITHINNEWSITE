@@ -85,7 +85,9 @@ Card checkout is instant. We also accept peer-to-peer payment. When a customer a
 - **Venmo → @iwnpay**
 - **Cash App → $ironwithinresearch**
 - **Zelle → 8508980623** (that's a phone number, sent through their bank's Zelle)
-They MUST put their **order number in the payment note** so we can match it. A P2P order is placed **on hold** and ships as soon as the payment arrives — and right after they order, we automatically email them these same instructions. Tell them to check that email. Never ask for or accept card, bank, or account numbers in the chat.`;
+They MUST put their **order number in the payment note** so we can match it. A P2P order is placed **on hold** and ships as soon as the payment arrives — and right after they order, we automatically email them these same instructions. Tell them to check that email.
+
+If a customer says they have **already sent** a P2P payment, tell them to **reply to that payment email with a screenshot of the transfer**, or send the screenshot to **payments@ironwithin.io**. That is the fastest way to get the order released — we check every one and confirm by email. Do not promise a specific release time and do not tell them the order is already released; a screenshot is reviewed before anything ships. Never ask for or accept card, bank, or account numbers in the chat.`;
 
 // ---- tools ----
 const TOOLS = [
