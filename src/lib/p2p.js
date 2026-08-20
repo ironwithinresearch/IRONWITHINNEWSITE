@@ -19,12 +19,13 @@ export const P2P_METHODS = new Set(['iwr_zelle', 'iwr_venmo', 'iwr_cashapp']);
 export const P2P_BASE_RATE = 0.1;
 
 /**
- * Weekend event: 35% off when you pay by app, 2026-08-21 → 2026-08-23 CT.
- * Opens the instant the summer sale_prices expire (2026-08-21 04:59:59 UTC), so list
- * price is back and the 35% lands on regular pricing rather than compounding on a sale.
+ * Weekend event: 35% off when you pay by app, running to 2026-08-23 CT.
+ * Brought forward to Thu 20 Aug 11:00am CT. The summer sale_prices were cleared at the
+ * same moment for exactly one reason: stacked on a live 30% sale this lands at ~63% off
+ * list and takes several SKUs under landed cost. The 35% must sit on LIST price.
  */
 export const P2P_EVENT_RATE = 0.35;
-export const P2P_EVENT_FROM = Date.parse('2026-08-21T05:00:00Z'); // Fri 00:00 CT
+export const P2P_EVENT_FROM = Date.parse('2026-08-20T16:00:00Z'); // Thu 11:00am CT — brought forward from Fri
 export const P2P_EVENT_TO = Date.parse('2026-08-24T04:59:59Z'); // Sun 23:59:59 CT
 
 /** Full suspension of the discount. Null = not paused. */

@@ -110,7 +110,7 @@ const P2P_MESSAGE = '💸  SAVE 10% — pay with Zelle, Venmo, or Cash App and 1
 // While the 35% weekend runs, the pay-by-app line IS the headline offer — it leads the
 // ticker instead of sitting in the base rotation, because for those three days it is the
 // only discount on the site (summer sale_prices expire the moment it opens).
-const P2P_EVENT_MESSAGE = '💸  35% OFF WHEN YOU PAY BY APP — Zelle, Venmo or Cash App takes 35% off your total automatically · stack your affiliate code on top · this weekend only, ends Sun Aug 23';
+const P2P_EVENT_MESSAGE = '💸  35% OFF WHEN YOU PAY BY APP — Zelle, Venmo or Cash App takes 35% off your total automatically · spend over $200 and pick a FREE TRZ-2 10mg or RT-3 10mg · stack your affiliate code on top · live now, ends Sun Aug 23';
 
 const BASE_MESSAGES = [
   P2P_MESSAGE,
