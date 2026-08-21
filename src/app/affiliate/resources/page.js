@@ -12,7 +12,6 @@ const CAPTIONS = [
   "Restocked my research supplies from @ironwithinresearch again. Fast, discreet shipping and a COA in every order. [YOURCODE] saves you on your first one.",
   "Every vial ships with its own Certificate of Analysis — batch, purity, the lot number, all of it. No guessing what you're working with. Code [YOURCODE] → ironwithin.io",
   "Tip for anyone sourcing research peptides: always demand a Certificate of Analysis. Iron Within includes one on every vial. That's why I send people there. [YOURCODE]",
-  "Running a longer study? Iron Within now has prepaid 3 & 6-month Research Plans — lock your supply, get a month free. Use [YOURCODE].",
 ];
 
 const HOOKS = [
@@ -27,7 +26,6 @@ const DISCLOSURE = "#ad #affiliate — I earn a commission on purchases made wit
 const GRAPHICS = [
   { src: '/affiliate-assets/g1.png', label: 'Story — Trust' },
   { src: '/affiliate-assets/g2.png', label: 'Story — COA' },
-  { src: '/affiliate-assets/g7.png', label: 'Story — Research Plans' },
   { src: '/affiliate-assets/g8.png', label: 'Story — Why us' },
   { src: '/affiliate-assets/g9.png', label: 'Story — Grand Slam' },
   { src: '/affiliate-assets/g3.png', label: 'Discount — Save' },
@@ -147,7 +145,6 @@ export default function AffiliateResourcesPage() {
         <li><strong style={{ color: 'var(--text-light)' }}>99%+ purity</strong>, independently third-party lab-tested</li>
         <li><strong style={{ color: 'var(--text-light)' }}>Certificate of Analysis</strong> on every vial</li>
         <li>Fast, <strong style={{ color: 'var(--text-light)' }}>discreet packaging</strong> on every order</li>
-        <li>Prepaid 3 &amp; 6-month <Link href="/continuity" style={{ color: 'var(--primary-blue)' }}>Research Plans</Link> — locked-in supply, a month free</li>
         <li>Product images: grab them straight from any <Link href="/shop" style={{ color: 'var(--primary-blue)' }}>product page</Link></li>
       </ul>
 

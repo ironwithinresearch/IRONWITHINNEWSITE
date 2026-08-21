@@ -46,6 +46,17 @@ const nextConfig = {
       },
     ];
   },
+  // Continuity / Research Plans are delisted for now (the six plan products are
+  // drafted in WooCommerce, so /continuity would render an empty offer page).
+  // Redirect rather than 404: the URL is printed in the affiliate handbook and
+  // swipe copy, and affiliates have been linking it. TEMPORARY (307) on purpose —
+  // deleting this block and republishing the products restores the page as-is.
+  // The 10 active prepaid plans keep shipping; iw-continuity.php is untouched.
+  async redirects() {
+    return [
+      { source: "/continuity", destination: "/shop", permanent: false },
+    ];
+  },
 };
 
 module.exports = nextConfig;

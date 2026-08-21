@@ -13,7 +13,6 @@ const footerLinks = {
   ],
   Company: [
     { label: 'Contact', href: '/contact' },
-    { label: 'Research Plans', href: '/continuity' },
     { label: 'Research App', href: 'https://peptideparadigm.app' },
     { label: 'Refer & Earn $25', href: '/refer' },
     { label: 'Rewards', href: '/rewards' },

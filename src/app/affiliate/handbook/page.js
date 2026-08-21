@@ -135,7 +135,7 @@ export default function AffiliateHandbookPage() {
           <><B>Tested &amp; transparent</B> — every order ships with a Certificate of Analysis. Always lead here.</>,
           <><B>Account required (21+)</B> — a quick account unlocks rewards, credits, and reorders.</>,
           <><B>Fast, tracked shipping</B> — US, Canada &amp; international, with real tracking on every order.</>,
-          <><B>Built-in loyalty</B> — points, store credit, referrals &amp; Research Plans keep customers coming back (see §07).</>,
+          <><B>Built-in loyalty</B> — points, store credit &amp; referrals keep customers coming back (see §07).</>,
         ]} />
         <p>Know a handful of hero products well — their COAs, research category, and price — rather than pitching the whole catalog. Depth converts better than breadth.</p>
       </Section>
@@ -189,7 +189,7 @@ export default function AffiliateHandbookPage() {
         <p style={{ color: C.ink, fontWeight: 700, marginTop: 18 }}>Make it easy to buy</p>
         <Bullets items={[
           <><B>Every post has your code.</B> Cut the friction between interested and checkout.</>,
-          <><B>Stack the offers</B> (see §07) — Research Plans, the referral credit, rewards. More reasons to buy.</>,
+          <><B>Stack the offers</B> (see §07) — the referral credit, rewards, store credit. More reasons to buy.</>,
           <><B>Pin and repeat.</B> New followers should hit your offer within seconds.</>,
         ]} />
         <Callout tone="info" label="The math">
@@ -248,7 +248,6 @@ Thanks!`}
         <p style={{ color: C.ink, fontWeight: 700, marginTop: 14 }}>More offers to stack</p>
         <Bullets items={[
           <><B>Refer a friend</B> (code REFER25) — give $25, get $25.</>,
-          <><B>Research Plans</B> — prepaid 3 &amp; 6-month supply with bonus points; big-ticket orders under your code.</>,
           <><B>Store credit &amp; gift cards</B> — spend like cash and auto-apply at checkout.</>,
         ]} />
         <Callout tone="tip" label="Why this matters to you">

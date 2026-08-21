@@ -29,7 +29,6 @@ const SHOP_MENU = [
   { slug: 'regenerative-research', name: 'Regenerative Research' },
   { slug: 'neuro-research',        name: 'Neuro Research' },
   { slug: 'lab-supplies',          name: 'Lab Supplies' },
-  { slug: 'continuity-plans',      name: 'Plans',      href: '/continuity' },
   { slug: 'gift-cards',            name: 'Gift Cards',  href: '/gift-cards' },
 ];
 export default function Navbar() {
