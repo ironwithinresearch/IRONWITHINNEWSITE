@@ -10,6 +10,12 @@ export const GET_PRODUCTS = gql`
         category: $category
         search: $search
         slugIn: $slugIn
+        # WPGraphQL returns DRAFTS to an authenticated administrator, so without this
+        # the operator's own browser shows delisted products in the shop grid while
+        # customers see the real catalogue — and drafts come back with a null slug,
+        # which is what previously white-screened this page. The storefront must never
+        # list anything unpublished, whoever is logged in.
+        status: "publish"
       }
     ) {
       pageInfo {
@@ -147,7 +153,7 @@ export const GET_CATEGORIES = gql`
 
 export const SEARCH_PRODUCTS = gql`
   query SearchProducts($search: String!) {
-    products(where: { search: $search }, first: 20) {
+    products(where: { search: $search, status: "publish" }, first: 20) {
       nodes {
         id
         name
