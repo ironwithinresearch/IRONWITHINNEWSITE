@@ -218,6 +218,11 @@ export const coaBySlug = {
     batchDate: '8/2/2026 · Lot IWR-2607-PIN10L',
     productName: 'Pinealon',
   },
+  'pink-glutathione': {
+    coaFile: '/coa-pdf/pink-glutathione-2026-08-16.pdf',
+    batchDate: '8/16/2026 · 1200mg · Lot IWR-081326Pink',
+    productName: 'Pink Glutathione',
+  },
   'pt-141': {
     coaFile: '/coa-pdf/pt-141.pdf',
     batchDate: '8/2/2026 · Lot IWR-2607-PT14110L',
