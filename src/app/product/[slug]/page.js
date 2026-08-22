@@ -30,6 +30,11 @@ export default function ProductPage() {
   const [wishlisted, setWishlisted] = useState(false);
   const [activeTab, setActiveTab] = useState('description');
   const [cartError, setCartError] = useState('');
+  // Restock waitlist, shown only when the picked dose is sold out AND cannot be
+  // backordered — if it can be backordered the customer should buy, not wait.
+  const [notifyEmail, setNotifyEmail] = useState('');
+  const [notifyState, setNotifyState] = useState('idle');   // idle | busy | done | error
+  const [notifyError, setNotifyError] = useState('');
   const [subscribe, setSubscribe] = useState(false);   // Subscribe & Save
   const [subCadence, setSubCadence] = useState(30);
 
@@ -166,6 +171,40 @@ export default function ProductPage() {
   // Live vial count for the selected dose (null = untracked)
   const stockQty = isVariable ? resolvedVariation?.stockQuantity : product.stockQuantity;
   const hasCount = Number.isFinite(stockQty);
+
+  // What the waitlist row is keyed to: the chosen variation, or the product itself
+  // when it isn't variable. Null means there is nothing specific to wait for yet.
+  const notifyTargetId = isVariable ? (resolvedVariation?.databaseId || null) : (product?.databaseId || null);
+  const canNotify = !buyable && !!notifyTargetId;
+
+  const submitNotify = async (e) => {
+    e.preventDefault();
+    if (notifyState === 'busy') return;
+    setNotifyState('busy');
+    setNotifyError('');
+    try {
+      const res = await fetch('/api/restock-notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: notifyEmail, variation: notifyTargetId, website: '' }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.success) {
+        setNotifyError(data.error || 'Could not save that — please try again.');
+        setNotifyState('error');
+        return;
+      }
+      setNotifyState('done');
+    } catch {
+      setNotifyError('Could not save that — please try again.');
+      setNotifyState('error');
+    }
+  };
+
+  useEffect(() => {
+    setNotifyState('idle');
+    setNotifyError('');
+  }, [notifyTargetId]);
 
   const handleAddToCart = async () => {
     setCartError('');
@@ -549,6 +588,51 @@ export default function ProductPage() {
                 <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
                   <strong style={{ color: '#fbbf24' }}>Available on backorder.</strong> This item is temporarily out of stock — order now and it ships <strong>as soon as it's back in stock</strong>. You'll be charged today to reserve your place in line.
                 </div>
+              </div>
+            )}
+
+            {canNotify && (
+              <div style={{ marginTop: '12px', padding: '14px 16px', background: 'rgba(52,211,153,0.07)', border: '1px solid rgba(52,211,153,0.35)', borderRadius: '12px' }}>
+                {notifyState === 'done' ? (
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                    <CheckCircle2 size={18} color="#34d399" style={{ flexShrink: 0, marginTop: 1 }} />
+                    <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                      <strong style={{ color: '#34d399' }}>You&rsquo;re on the list.</strong> We&rsquo;ll email you the moment this
+                      is back &mdash; before it goes out to anyone else.
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '10px' }}>
+                      <strong style={{ color: '#34d399' }}>Sold out.</strong> Want to know the moment it&rsquo;s back? We&rsquo;ll email you &mdash; no spam, just this one alert.
+                    </div>
+                    <form onSubmit={submitNotify} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                      {/* honeypot — hidden from people, filled by bots */}
+                      <input type="text" name="website" tabIndex={-1} autoComplete="off"
+                        style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, opacity: 0 }} aria-hidden="true" />
+                      <input
+                        type="email" required value={notifyEmail}
+                        onChange={(e) => setNotifyEmail(e.target.value)}
+                        placeholder="you@email.com"
+                        style={{
+                          flex: '1 1 200px', padding: '11px 13px', borderRadius: '9px', fontSize: '0.9rem',
+                          background: 'var(--card-dark)', border: '1px solid var(--glass-border)', color: 'var(--text-light)',
+                        }} />
+                      <button type="submit" disabled={notifyState === 'busy'}
+                        style={{
+                          padding: '11px 20px', borderRadius: '9px', fontWeight: 800, fontSize: '0.88rem',
+                          background: '#34d399', color: '#04201a', border: 'none',
+                          cursor: notifyState === 'busy' ? 'default' : 'pointer',
+                          opacity: notifyState === 'busy' ? 0.7 : 1, whiteSpace: 'nowrap',
+                        }}>
+                        {notifyState === 'busy' ? 'Saving…' : 'Notify me'}
+                      </button>
+                    </form>
+                    {notifyError && (
+                      <div style={{ marginTop: '8px', fontSize: '0.8rem', color: '#f87171' }}>{notifyError}</div>
+                    )}
+                  </>
+                )}
               </div>
             )}
           </div>
