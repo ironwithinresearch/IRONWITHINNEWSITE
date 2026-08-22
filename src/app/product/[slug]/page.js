@@ -43,6 +43,15 @@ export default function ProductPage() {
     if (slug === 'gift-card') router.replace('/gift-cards');
   }, [slug, router]);
 
+  // Clear the restock form when the shopper switches dose, so a "you're on the list"
+  // from one sold-out dose doesn't carry over to the next. Keyed on selectedDose
+  // rather than the resolved variation id because this must sit above the early
+  // returns below — a hook called after them is a conditional hook.
+  useEffect(() => {
+    setNotifyState('idle');
+    setNotifyError('');
+  }, [selectedDose, slug]);
+
   const { data, loading, error } = useQuery(GET_PRODUCT, {
     variables: { slug },
     skip: !slug,
@@ -200,11 +209,6 @@ export default function ProductPage() {
       setNotifyState('error');
     }
   };
-
-  useEffect(() => {
-    setNotifyState('idle');
-    setNotifyError('');
-  }, [notifyTargetId]);
 
   const handleAddToCart = async () => {
     setCartError('');
