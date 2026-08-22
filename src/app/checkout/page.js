@@ -48,7 +48,7 @@ const REDIRECT_METHODS = new Set(['iwr_rail', 'iwr_chargx', CARD_METHOD]);
 // Card kill switch. Cards run on SnapPay via pay.ironwithin.io as of 2026-07-26
 // (ChargeX stopped processing on the 24th). Set to true to pull the card option from
 // checkout instantly — keep it in step with CARDS_ENABLED in PaymentMethods.jsx.
-const CARD_PAUSED = false;
+const CARD_PAUSED = true;
 const isCardPaused = () => CARD_PAUSED;
 
 
@@ -536,7 +536,7 @@ export default function CheckoutPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     {isCardPaused() && (
                       <div style={{ padding: '11px 13px', borderRadius: '10px', background: 'rgba(245,158,11,0.09)', border: '1px solid rgba(245,158,11,0.4)', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-                        💳 <strong style={{ color: '#fbbf24' }}>Card payments are temporarily unavailable.</strong> You can check out instantly below with <strong>Zelle, Venmo, or Cash App</strong> — just send payment and we'll ship right away.
+                        💳 <strong style={{ color: '#fbbf24' }}>We&rsquo;re not taking card right now.</strong> Check out with <strong>Zelle, Venmo, or Cash App</strong> below — it takes a minute, {p2pPct()}% comes off your total{giftEarned ? ', and your free vial is included' : ''}, and we ship as soon as your payment lands.
                       </div>
                     )}
                     {(creditApplied > 0 || rewardsApplied > 0) && (

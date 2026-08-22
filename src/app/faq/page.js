@@ -71,7 +71,10 @@ const faqs = [
   {
     category: 'ordering',
     q: 'What payment methods do you accept?',
-    a: 'We accept major credit and debit cards (Visa, Mastercard, American Express, Discover), as well as Zelle, Venmo, and Cash App. Card payments are handled on a dedicated secure payment page — all card transactions are encrypted, and we never store your card details.',
+    // Card is off at checkout (CARD_PAUSED in app/checkout/page.js, CARDS_ENABLED in
+    // PaymentMethods.jsx). Keep this answer in step with those two flags — an FAQ that
+    // promises card while checkout refuses it is a support ticket per reader.
+    a: 'Right now we take Zelle, Venmo, and Cash App. You pick one at checkout, send the payment, and we ship as soon as it lands — paying this way also takes a discount off your total. Card payments are paused at the moment.',
   },
   {
     category: 'ordering',
