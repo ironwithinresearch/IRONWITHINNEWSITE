@@ -30,12 +30,16 @@ const wc = async (path, opts = {}) => {
 };
 const notify = async (payload) => {
   try {
-    await fetch(`${WC_URL}/wp-json/iw/v1/bot-notify`, {
+    const res = await fetch(`${WC_URL}/wp-json/iw/v1/bot-notify`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-IW-Bot-Secret': NOTIFY_SECRET },
       body: JSON.stringify(payload),
     });
-  } catch { /* non-fatal */ }
+    // The credit path needs the reply: the backend decides whether a small make-good
+    // was granted on the spot, and the bot must not tell the customer to wait for
+    // something that already landed (or claim it landed when it is still queued).
+    return await res.json().catch(() => ({}));
+  } catch { return {}; }
 };
 
 // Live carrier status for an order via ShipStation (already knows the UPS status).
@@ -74,7 +78,7 @@ Iron Within products are sold FOR RESEARCH PURPOSES ONLY and are not for human c
 - **lookup_order** — check an order's status, its items, and its **live carrier delivery status** (the tool returns live_delivery_status like "Delivered"/"In Transit"/"Out for Delivery" plus estimated_delivery, delivered_on, and the last_scan location — straight from the carrier via ShipStation). Report it in plain, friendly language (e.g. "It was delivered on July 9" or "It's in transit, estimated to arrive July 12 — last scanned in Louisville, KY"). You MUST have the order number AND the email on the account; if the tool says the email doesn't match, reveal nothing and ask them to confirm the email on the order.
 - **request_account_credit** — if a customer reports a missing, damaged, wrong, or leaking item, verify their identity with lookup first, look carefully at any photo they attached, and if the item really is missing/damaged, use this tool. It asks our team to put **account credit** on their account for what they paid for that item, so they can **re-order** — we do NOT send a replacement order. Only for items actually on that order, and confirm which item first. Never request credit for the same item twice — if the tool says it was already made good, escalate instead.
   **Always establish HOW MANY units are affected and pass it as the quantity argument.** If someone ordered 3 vials and says 2 were missing, that is quantity 2, not 1 — asking for one unit short-changes them and the shortfall has to be fixed by hand later. If they haven't said how many, ask before calling the tool. One call per item: for two different items short on the same order, call it once per item with each item's own quantity.
-  Tell the customer plainly: the team is adding account credit they can use at checkout on their next order, and they'll get an email when it's applied. Do NOT promise it is already on their account, do not promise an exact timeframe, and never say we're shipping a replacement.
+  The tool result tells you what actually happened — say that, and nothing else. If it comes back with granted = true, the credit is ALREADY on their account: say so plainly. If granted = false, it is waiting on the team: say the team is adding it and they'll get an email when it's applied, do NOT say it is already there, and do not promise a timeframe. Either way, never say we're shipping a replacement.
 - **escalate_to_support** — email the team for anything you can't resolve, billing/payment problems, or when the customer asks for a human. Ask for their email first.
 
 ## Store facts
@@ -178,7 +182,7 @@ async function requestAccountCredit({ order_number, email, item_name, reason, qu
   // actually gets attention — but it now links to the queue instead of carrying a
   // copy/paste wp-cli line, so a request has a status, cannot be granted twice, and
   // cannot be lost by scrolling out of an inbox.
-  await notify({
+  const outcome = await notify({
     type: 'credit_request', order_id: v.order, reply_to: custEmail,
     credit: {
       customer_email: custEmail, customer_name: custName,
@@ -201,12 +205,26 @@ async function requestAccountCredit({ order_number, email, item_name, reason, qu
   // audit trail on the original order
   const creditedList = [...(v.already_credited || []), line.name];
   await wc(`/orders/${v.order}`, { method: 'PUT', body: JSON.stringify({ meta_data: [{ key: '_iw_bot_credit_requested', value: creditedList }] }) });
+  // Small make-goods are granted on the spot by the backend; larger ones still queue.
+  // The note and the reply must both reflect which actually happened — telling a
+  // customer to wait for credit that already landed, or that credit landed when it is
+  // still pending, are equally bad in opposite directions.
+  const granted = !!outcome?.auto;
+
   await wc(`/orders/${v.order}/notes`, { method: 'POST', body: JSON.stringify({
-    note: `Support bot REQUESTED $${amount.toFixed(2)} account credit for ${qty}× "${line.name}" (${unitNote}) — not yet granted, awaiting operator approval. Reason: ${reason}`,
+    note: granted
+      ? `Support bot AUTO-GRANTED $${amount.toFixed(2)} account credit for ${qty}× "${line.name}" (${unitNote}) — under the $75 auto-approval limit, customer emailed. Reason: ${reason}`
+      : `Support bot REQUESTED $${amount.toFixed(2)} account credit for ${qty}× "${line.name}" (${unitNote}) — not yet granted, awaiting operator approval. Reason: ${reason}`,
     customer_note: false,
   }) });
 
-  return { ok: true, requested: true, amount, quantity: qty, item: line.name,
+  if (granted) {
+    return { ok: true, requested: true, granted: true, amount, quantity: qty, item: line.name,
+      balance: outcome?.balance ?? null,
+      message: `Thanks — I've put $${amount.toFixed(2)} of account credit on your account for the ${qty > 1 ? `${qty} ` : ''}${line.name}, and it's there now. It comes off automatically at checkout when you re-order, and I've emailed you a confirmation. Sorry for the trouble! 🙏` };
+  }
+
+  return { ok: true, requested: true, granted: false, amount, quantity: qty, item: line.name,
     message: `Thanks — I've asked our team to put $${amount.toFixed(2)} of account credit on your account for the ${qty > 1 ? `${qty} ` : ''}${line.name}. You'll get an email once it's applied, and it'll come off automatically at checkout when you re-order. Sorry for the trouble! 🙏` };
 }
 
