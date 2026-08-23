@@ -93,11 +93,15 @@ export default function CheckoutPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
-  const [payMethod, setPayMethod] = useState(() => isCardPaused() ? 'iwr_zelle' : CARD_METHOD);
+  // NO DEFAULT — the buyer must choose. A pre-selected method silently decides things
+  // that change the price: the pay-by-app discount only exists for Zelle/Venmo/Cash App,
+  // so defaulting to one quoted a discount the buyer never asked for, and defaulting to
+  // card quoted list price. Making it an explicit choice keeps the quote honest.
+  const [payMethod, setPayMethod] = useState('');
   const [backorderAck, setBackorderAck] = useState(false);
   const [p2pInfo, setP2pInfo] = useState(null);
   const [giftChoice, setGiftChoice] = useState('');
-  const payMethodRef = useRef(isCardPaused() ? 'iwr_zelle' : CARD_METHOD);
+  const payMethodRef = useRef('');
   // SnapPay is the card option (ChargeX retired 2026-07-24). If CARD_PAUSED is ever
   // flipped back on, the card row is filtered out entirely and Zelle becomes default.
   const payMethodOptions = isCardPaused() ? PAY_METHODS.filter((m) => m.id !== CARD_METHOD) : PAY_METHODS;
@@ -216,6 +220,8 @@ export default function CheckoutPage() {
   // explicit "I understand this ships when back in stock" acknowledgment to place.
   const hasBackorder = (cartItems || []).some(i =>
     i.variation?.node?.stockStatus === 'ON_BACKORDER' || i.product?.node?.stockStatus === 'ON_BACKORDER');
+  // A $0 order still needs no method — store credit / gift card settle it server-side.
+  const methodChosen = !!payMethod || isZeroDue;
   const fullyCovered = computedTotalNum > 0 && dueAfterAll <= 0.005;
   const noRailDue = isZeroDue || fullyCovered;
   const effectiveMethod = isZeroDue ? 'iw_giftcard' : (fullyCovered ? 'iw_storecredit' : payMethod);
@@ -300,6 +306,7 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     if (hasBackorder && !backorderAck) return; // require backorder acknowledgment
+    if (!methodChosen) return;                 // nothing is pre-selected; the buyer must pick
     payMethodRef.current = effectiveMethod;
     const billingInfo = billing.sameAsShipping ? shipping : billing;
     // Subscribe & Save items are tagged on the cart lines (extraData iw_subscribe),
@@ -599,10 +606,18 @@ export default function CheckoutPage() {
                   </label>
                 )}
 
-                <button onClick={handlePlaceOrder} disabled={placingOrder || (hasBackorder && !backorderAck)}
-                  style={{ width: '100%', padding: '14px', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: (placingOrder || (hasBackorder && !backorderAck)) ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: 'var(--glow-blue)', opacity: (placingOrder || (hasBackorder && !backorderAck)) ? 0.6 : 1 }}>
+                {!methodChosen && (
+                  <div style={{ marginBottom: '10px', padding: '11px 13px', borderRadius: '10px', background: 'rgba(0,207,255,0.07)', border: '1px solid rgba(0,207,255,0.35)', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                    Pick how you&rsquo;d like to pay above to place your order.
+                  </div>
+                )}
+
+                <button onClick={handlePlaceOrder} disabled={placingOrder || (hasBackorder && !backorderAck) || !methodChosen}
+                  style={{ width: '100%', padding: '14px', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: (placingOrder || (hasBackorder && !backorderAck) || !methodChosen) ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: 'var(--glow-blue)', opacity: (placingOrder || (hasBackorder && !backorderAck) || !methodChosen) ? 0.6 : 1 }}>
                   {placingOrder ? (
                     <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Placing Order…</>
+                  ) : !methodChosen ? (
+                    <><Lock size={15} /> Choose a payment method</>
                   ) : noRailDue ? (
                     <><Lock size={15} /> Complete Order — $0.00 due</>
                   ) : REDIRECT_METHODS.has(payMethod) ? (
