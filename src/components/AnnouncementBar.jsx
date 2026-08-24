@@ -213,8 +213,8 @@ export default function AnnouncementBar() {
       aria-label="Store announcements"
       style={{
         position: 'fixed', top: 0, left: 0, right: 0, height: 36, zIndex: 101,
-        background: ldActive ? 'linear-gradient(90deg,#b22234,#7a1228,#13294b,#7a1228,#b22234)' : ftfActive ? 'linear-gradient(90deg,#062a45,#0d6f9e,#22d3ee,#0d6f9e,#062a45)' : qbActive ? 'linear-gradient(90deg,#0a0612,#7c3aed,#22c55e,#7c3aed,#0a0612)' : flashActive ? 'linear-gradient(90deg,#dc2626,#f59e0b,#dc2626)' : xjActive ? 'linear-gradient(90deg,#c8102e,#0f5132,#f5c542,#0f5132,#c8102e)' : j4Active ? 'linear-gradient(90deg,#b22234,#7a1228,#13294b,#7a1228,#b22234)' : bbActive ? 'linear-gradient(90deg,#ec4899,#f5d272)' : summerActive ? 'linear-gradient(90deg,#ffb14a,#ff7a59,#37c8ff)' : 'var(--gradient-primary, linear-gradient(90deg,#00CFFF,#7c3aed))',
-        color: (j4Active || xjActive || flashActive || qbActive) ? '#fff' : '#001018', overflow: 'hidden', display: 'flex', alignItems: 'center',
+        background: ldActive ? 'linear-gradient(90deg,#b22234,#a3243a,#1d4ed8,#a3243a,#b22234)' : ftfActive ? 'linear-gradient(90deg,#062a45,#0d6f9e,#22d3ee,#0d6f9e,#062a45)' : qbActive ? 'linear-gradient(90deg,#0a0612,#7c3aed,#22c55e,#7c3aed,#0a0612)' : flashActive ? 'linear-gradient(90deg,#dc2626,#f59e0b,#dc2626)' : xjActive ? 'linear-gradient(90deg,#c8102e,#0f5132,#f5c542,#0f5132,#c8102e)' : j4Active ? 'linear-gradient(90deg,#b22234,#7a1228,#13294b,#7a1228,#b22234)' : bbActive ? 'linear-gradient(90deg,#ec4899,#f5d272)' : summerActive ? 'linear-gradient(90deg,#ffb14a,#ff7a59,#37c8ff)' : 'var(--gradient-primary, linear-gradient(90deg,#00CFFF,#7c3aed))',
+        color: (ldActive || j4Active || xjActive || flashActive || qbActive) ? '#fff' : '#001018', overflow: 'hidden', display: 'flex', alignItems: 'center',
         fontFamily: 'var(--font-body)',
       }}
     >
