@@ -4,13 +4,14 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { CHECKOUT, buildCheckoutInput } from '../../lib/queries/checkout';
 import { useCart } from '../../context/CartContext';
 import OrderBump from '@/components/OrderBump';
 import { getReferCookie } from '@/lib/referral';
 import { P2P_METHODS, p2pPaused, p2pRate, p2pPct, GIFT_OPTIONS, GIFT_MIN, giftQualifies } from '@/lib/p2p';
 import { useAuth } from '../../context/AuthContext';
+import { GET_CUSTOMER } from '../../lib/queries/auth';
 import { decodePriceHtml } from '../../lib/utils';
 import { getAffiliateRef } from '../../lib/affiliate';
 import { fetchStoreCredit } from '../../lib/storeCredit';
@@ -164,6 +165,41 @@ export default function CheckoutPage() {
     firstName: '', lastName: '', email: user?.email || '',
     phone: '', address: '', city: '', state: '', zip: '', country: 'US',
   });
+
+  /* Saved address prefill.
+     WooCommerce already stores an address per customer — 1,276 accounts have one — and
+     the checkout simply never read it, so returning customers retyped everything.
+
+     Only EMPTY fields are filled, and only once, so this can never overwrite something
+     the customer is in the middle of typing, and never fights them if they are entering a
+     different address on purpose. Shipping is preferred over billing because that is what
+     the parcel follows; billing is the fallback for accounts that only have one. */
+  const { data: custData } = useQuery(GET_CUSTOMER, {
+    skip: !isLoggedIn,
+    fetchPolicy: 'cache-and-network',
+  });
+  const [addressPrefilled, setAddressPrefilled] = useState(false);
+
+  useEffect(() => {
+    const c = custData?.customer;
+    if (!c || addressPrefilled) return;
+    const saved = (c.shipping?.address1 ? c.shipping : c.billing) || {};
+    if (!saved.address1) return;
+
+    setShipping((prev) => ({
+      ...prev,
+      firstName: prev.firstName || saved.firstName || c.firstName || '',
+      lastName:  prev.lastName  || saved.lastName  || c.lastName  || '',
+      email:     prev.email     || c.email || '',
+      phone:     prev.phone     || c.billing?.phone || '',
+      address:   prev.address   || saved.address1 || '',
+      city:      prev.city      || saved.city || '',
+      state:     prev.state     || saved.state || '',
+      zip:       prev.zip       || saved.postcode || '',
+      country:   prev.country   || saved.country || 'US',
+    }));
+    setAddressPrefilled(true);
+  }, [custData, addressPrefilled]);
 
   const [billing, setBilling] = useState({ sameAsShipping: true });
   const [payment, setPayment] = useState({ cardName: '', cardNumber: '', expiry: '', cvv: '' });
@@ -503,6 +539,11 @@ export default function CheckoutPage() {
           <div>
             {currentStep === 0 && (
               <FormCard icon={<Truck size={17} color="var(--primary-blue)" />} title="Shipping Information">
+                {addressPrefilled && (
+                  <div style={{ marginBottom: '14px', padding: '10px 13px', borderRadius: '10px', background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.3)', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                    We&rsquo;ve filled in your saved address. Change anything below if this order is going somewhere else.
+                  </div>
+                )}
                 <form onSubmit={async e => { e.preventDefault(); fireStartedCheckout(); await setShippingAddress(shipping); setCurrentStep(1); }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                     <Field label="First Name *" value={shipping.firstName} onChange={v => setShipping(s => ({ ...s, firstName: v }))} placeholder="John" required />
