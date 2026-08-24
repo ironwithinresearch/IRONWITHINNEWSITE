@@ -14,7 +14,7 @@ import GuaranteeBadge from '@/components/GuaranteeBadge';
 import SaleCountdown from '@/components/SaleCountdown';
 import {
   FlaskConical, ShoppingCart, Heart, ChevronRight,
-  Shield, Truck, BadgeCheck, Minus, Plus,
+  BadgeCheck, Minus, Plus,
   Loader2, CheckCircle2, AlertCircle, Info, Package,
   FileText, Download, BookOpen, ArrowRight,
 } from 'lucide-react';
@@ -30,6 +30,7 @@ export default function ProductPage() {
   const [addedToCart, setAddedToCart] = useState(false);
   const [wishlisted, setWishlisted] = useState(false);
   const [activeTab, setActiveTab] = useState('description');
+  const [showAllBatches, setShowAllBatches] = useState(false);
   const [cartError, setCartError] = useState('');
   // Restock waitlist, shown only when the picked dose is sold out AND cannot be
   // backordered — if it can be backordered the customer should buy, not wait.
@@ -295,20 +296,9 @@ export default function ProductPage() {
               </div>
             )}
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '16px' }}>
-              {[
-                { Icon: Shield, label: 'Lab Verified', sub: '3rd-party tested' },
-                { Icon: Truck, label: 'Fast Shipping', sub: 'Discreet packaging' },
-              ].map(t => (
-                <div key={t.label} style={{ background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: '12px', padding: '14px 12px', textAlign: 'center' }}>
-                  <t.Icon size={18} color="var(--primary-blue)" style={{ margin: '0 auto 6px', display: 'block' }} />
-                  <div style={{ fontSize: '0.78rem', fontWeight: 600, marginBottom: '2px' }}>{t.label}</div>
-                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{t.sub}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* Guarantee + proof (risk reversal) — under the vial */}
+            {/* One trust block, not three. The Lab Verified / Fast Shipping pair that used
+                to sit here repeated two of the four claims GuaranteeBadge already makes,
+                16px above it — the same reassurance stated twice reads as filler. */}
             <GuaranteeBadge style={{ marginTop: '16px' }} />
 
             <a href="https://peptideparadigm.app" target="_blank" rel="noopener noreferrer"
@@ -437,12 +427,18 @@ export default function ProductPage() {
             {coa && coa.batches && coa.batches.length > 1 && (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center', padding: '0 2px' }}>
                 <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginRight: 4 }}>Batch history:</span>
-                {coa.batches.map((b, i) => (
+                {(showAllBatches ? coa.batches : coa.batches.slice(0, 1)).map((b, i) => (
                   <a key={i} href={b.coaFile} target="_blank" rel="noopener noreferrer"
                     style={{ fontSize: '0.72rem', color: 'var(--primary-blue)', textDecoration: 'none', padding: '3px 9px', borderRadius: 7, background: 'rgba(0,207,255,0.08)' }}>
-                    {b.batchDate}{i === 0 ? ' · latest' : ''}
+                    {b.batchDate}{i === 0 && !showAllBatches ? ' · latest' : ''}
                   </a>
                 ))}
+                {!showAllBatches && (
+                  <button type="button" onClick={() => setShowAllBatches(true)}
+                    style={{ fontSize: '0.72rem', color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: '3px 4px', textDecoration: 'underline' }}>
+                    +{coa.batches.length - 1} earlier {coa.batches.length - 1 === 1 ? 'batch' : 'batches'}
+                  </button>
+                )}
               </div>
             )}
 
