@@ -7,6 +7,8 @@ import Link from 'next/link';
 import { Copy, Check, Sparkles, ShieldAlert, ShieldCheck, ArrowRight, Download, Film, BookOpen } from 'lucide-react';
 
 const CAPTIONS = [
+  "LABOR DAY: buy one get one free on everything at Iron Within — add 2 of the same item and the 2nd is free automatically, no code needed. My code [YOURCODE] stacks on top. Ends Mon Sep 7 at midnight.",
+  "BOGO on every peptide at Iron Within through Labor Day. 2 of the same item = the 2nd free, applied at checkout. 99%+ purity, COA on every order. Use [YOURCODE] and it stacks.",
   "Doing peptide research? Iron Within Research is the only source I trust — 99%+ purity with a Certificate of Analysis on every single vial. Use code [YOURCODE] → ironwithin.io",
   "If you care about clean inputs, your source matters. Iron Within third-party lab-tests every batch to 99%+ purity and includes the COA. Code [YOURCODE] for a discount. 🔬",
   "Restocked my research supplies from @ironwithinresearch again. Fast, discreet shipping and a COA in every order. [YOURCODE] saves you on your first one.",
@@ -24,6 +26,10 @@ const HOOKS = [
 const DISCLOSURE = "#ad #affiliate — I earn a commission on purchases made with my code. For research use only. Not for human consumption.";
 
 const GRAPHICS = [
+  // Labor Day B1G1, 24 Aug – 7 Sep. Leads the grid while it runs; pull these two when
+  // it ends or affiliates keep posting an offer the cart no longer honours.
+  { src: '/affiliate-assets/labor-day-story.jpg', label: 'Labor Day — Story (BOGO)' },
+  { src: '/affiliate-assets/labor-day-landscape.jpg', label: 'Labor Day — Post (BOGO)' },
   { src: '/affiliate-assets/g1.png', label: 'Story — Trust' },
   { src: '/affiliate-assets/g2.png', label: 'Story — COA' },
   { src: '/affiliate-assets/g8.png', label: 'Story — Why us' },
