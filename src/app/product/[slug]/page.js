@@ -174,6 +174,14 @@ export default function ProductPage() {
   //    server-side by the IW Volume Pricing mu-plugin (2.5% @2, 5% @3+).
   //  • legacy tiers (>1 variation/dose): discount is baked into the tier prices,
   //    picked by price rank above.
+  /* The photo follows the dose. Each variation now carries its own render in
+     WooCommerce (they all pointed at the 10mg shot until 2026-08-23), so selecting a
+     dose is a lookup rather than a guess. Falls back to the gallery position the
+     shopper last clicked, then to the main image. */
+  const variationImage = resolvedVariation?.image?.sourceUrl || null;
+  const activeImage =
+    variationImage || images[Math.min(imgIndex, Math.max(images.length - 1, 0))] || images[0];
+
   const volPct = qty >= 3 ? 0.05 : qty >= 2 ? 0.025 : 0;
   const isDoseOnly = isVariable && doseTiers.length <= 1;
 
@@ -316,7 +324,7 @@ export default function ProductPage() {
                       pointer cursor but NO click handler at all, and the main image was
                       hardcoded to images[0] — it promised interaction and did nothing. */}
                   <img
-                    src={images[Math.min(imgIndex, images.length - 1)]}
+                    src={activeImage}
                     alt={product.image?.altText || product.name}
                     onClick={() => images.length > 1 && setImgIndex((i) => (i + 1) % images.length)}
                     style={{
@@ -358,9 +366,9 @@ export default function ProductPage() {
                     key={i} type="button" aria-label={`Image ${i + 1}`}
                     onClick={() => setImgIndex(i)}
                     style={{
-                      width: i === imgIndex ? 22 : 7, height: 7, borderRadius: 999, border: 'none',
-                      padding: 0, cursor: 'pointer', transition: 'all .2s ease',
-                      background: i === imgIndex ? 'var(--primary-blue)' : 'var(--glass-border)',
+                      width: images[i] === activeImage ? 22 : 7, height: 7, borderRadius: 999,
+                      border: 'none', padding: 0, cursor: 'pointer', transition: 'all .2s ease',
+                      background: images[i] === activeImage ? 'var(--primary-blue)' : 'var(--glass-border)',
                     }}
                   />
                 ))}
