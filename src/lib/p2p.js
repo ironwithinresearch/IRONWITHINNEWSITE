@@ -28,9 +28,20 @@ export const P2P_EVENT_RATE = 0.35;
 export const P2P_EVENT_FROM = Date.parse('2026-08-20T16:00:00Z'); // Thu 11:00am CT — brought forward from Fri
 export const P2P_EVENT_TO = Date.parse('2026-08-24T04:59:59Z'); // Sun 23:59:59 CT
 
-/** Full suspension of the discount. Null = not paused. */
-export const P2P_PAUSE_FROM = null;
-export const P2P_PAUSE_TO = null;
+/**
+ * Full suspension of the discount. Null = not paused.
+ *
+ * PAUSED FOR THE LABOR DAY B1G1. Margin requirement, not a preference: stacked on
+ * buy-one-get-one plus a 15% affiliate code, the pay-by-app rate takes six SKUs below
+ * landed cost (AOD 9604 -$9.04, Semax -$4.07, MT-2 -$3.21, Selank -$2.07,
+ * Cagrillintide -$0.98, GHK-Cu 50mg -$0.83 per two-vial order).
+ *
+ * MUST match IW_P2P_PAUSE_FROM / IW_P2P_PAUSE_TO in mu-plugin iw-p2p-discount.php.
+ * If this file says the discount is live and the backend does not, every pay-by-app
+ * customer is quoted 10% below what they are charged.
+ */
+export const P2P_PAUSE_FROM = Date.parse('2026-08-24T13:00:00Z'); // Mon 9:00am ET
+export const P2P_PAUSE_TO = Date.parse('2026-09-08T04:00:00Z');   // midnight ending Mon 7 Sep ET
 
 export const p2pPaused = (now = Date.now()) =>
   P2P_PAUSE_FROM !== null && now >= P2P_PAUSE_FROM && now <= P2P_PAUSE_TO;

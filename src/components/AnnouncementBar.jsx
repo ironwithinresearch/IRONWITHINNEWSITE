@@ -97,6 +97,23 @@ const B2G1_START = Date.parse('2026-08-15T17:00:00Z');
 const B2G1_END = Date.parse('2026-08-17T04:59:59Z');
 const B2G1_MESSAGE = '🎁  BUY 2 GET 1 FREE on RT-3 30mg & TRZ-2 30mg — add 3 of either and the third is free, automatically · stacks on top of the 45% · this weekend only';
 
+// Labor Day — Mon 24 Aug 9:00am ET through midnight ending Mon 7 Sep ET.
+// BUY 1 GET 1 FREE SITEWIDE. Keep these identical to IW_LD_START / IW_LD_END in
+// mu-plugin iw-labor-day.php, which is what actually zeroes the second vial.
+//
+// Counted PER VARIATION — two of the SAME item earns one free. One each of two
+// different products earns nothing, so the copy says "2 of the same item" and never
+// "any 2"; that distinction is the whole difference between a working sale and a
+// support ticket.
+//
+// The pay-by-app discount is PAUSED for this window (see p2p.js). That is a margin
+// requirement: stacked on B1G1 plus a 15% code it takes six SKUs below landed cost.
+// The bar drops the pay-by-app line automatically while p2pPaused() is true, so this
+// message must not imply any additional app discount.
+const LD_START = Date.parse('2026-08-24T13:00:00Z');
+const LD_END = Date.parse('2026-09-08T04:00:00Z');
+const LD_MESSAGE = '🇺🇸  LABOR DAY — BUY 1 GET 1 FREE SITEWIDE · add 2 of the same item and the 2nd is free, automatically · no code needed · stack your affiliate code on top · bundles & gift cards keep their own pricing · ends Mon Sep 7 at midnight';
+
 // The pay-by-app 10% STAYS RUNNING this event (operator call 2026-08-14) — the buy-3
 // gate is doing the margin work instead, so the bar keeps promising it. If it is ever
 // paused again in iw-p2p-discount.php, set this window to match IN LOCKSTEP:
@@ -134,6 +151,7 @@ export default function AnnouncementBar() {
   const [qbActive, setQbActive] = useState(false);
   const [ftfActive, setFtfActive] = useState(false);
   const [p2pEventActive, setP2pEventActive] = useState(false);
+  const [ldActive, setLdActive] = useState(false);
   useEffect(() => {
     const now = Date.now();
     const promos = [];
@@ -148,6 +166,8 @@ export default function AnnouncementBar() {
     // B2G1 leads the ticker while it runs — it is the sharper offer, and it is the
     // one with a deadline inside the sale rather than at the end of it.
     if (now >= B2G1_START && now < B2G1_END) promos.unshift(B2G1_MESSAGE);
+    const ldOn = now >= LD_START && now < LD_END;
+    if (ldOn) { promos.unshift(LD_MESSAGE); setLdActive(true); }
     if (qbOn) { promos.unshift(QB_MESSAGE); setQbActive(true); }
     if (!qbOn && flashOn) { promos.unshift(FLASH_MESSAGE); setFlashActive(true); }
     // Summer's "30% OFF EVERYTHING" line is suppressed while Fill the Freezer runs —
@@ -185,7 +205,7 @@ export default function AnnouncementBar() {
       aria-label="Store announcements"
       style={{
         position: 'fixed', top: 0, left: 0, right: 0, height: 36, zIndex: 101,
-        background: ftfActive ? 'linear-gradient(90deg,#062a45,#0d6f9e,#22d3ee,#0d6f9e,#062a45)' : qbActive ? 'linear-gradient(90deg,#0a0612,#7c3aed,#22c55e,#7c3aed,#0a0612)' : flashActive ? 'linear-gradient(90deg,#dc2626,#f59e0b,#dc2626)' : xjActive ? 'linear-gradient(90deg,#c8102e,#0f5132,#f5c542,#0f5132,#c8102e)' : j4Active ? 'linear-gradient(90deg,#b22234,#7a1228,#13294b,#7a1228,#b22234)' : bbActive ? 'linear-gradient(90deg,#ec4899,#f5d272)' : summerActive ? 'linear-gradient(90deg,#ffb14a,#ff7a59,#37c8ff)' : 'var(--gradient-primary, linear-gradient(90deg,#00CFFF,#7c3aed))',
+        background: ldActive ? 'linear-gradient(90deg,#b22234,#7a1228,#13294b,#7a1228,#b22234)' : ftfActive ? 'linear-gradient(90deg,#062a45,#0d6f9e,#22d3ee,#0d6f9e,#062a45)' : qbActive ? 'linear-gradient(90deg,#0a0612,#7c3aed,#22c55e,#7c3aed,#0a0612)' : flashActive ? 'linear-gradient(90deg,#dc2626,#f59e0b,#dc2626)' : xjActive ? 'linear-gradient(90deg,#c8102e,#0f5132,#f5c542,#0f5132,#c8102e)' : j4Active ? 'linear-gradient(90deg,#b22234,#7a1228,#13294b,#7a1228,#b22234)' : bbActive ? 'linear-gradient(90deg,#ec4899,#f5d272)' : summerActive ? 'linear-gradient(90deg,#ffb14a,#ff7a59,#37c8ff)' : 'var(--gradient-primary, linear-gradient(90deg,#00CFFF,#7c3aed))',
         color: (j4Active || xjActive || flashActive || qbActive) ? '#fff' : '#001018', overflow: 'hidden', display: 'flex', alignItems: 'center',
         fontFamily: 'var(--font-body)',
       }}
