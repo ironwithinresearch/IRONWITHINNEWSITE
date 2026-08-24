@@ -32,7 +32,7 @@ const steps = ['Shipping', 'Review'];
 const CARD_METHOD = 'iwr_snappay';
 const PAY_METHODS = [
   { id: CARD_METHOD,   label: 'Credit / Debit Card', desc: 'Pay by card on our secure encrypted page.' },
-  { id: 'iwr_peptidespay', label: 'Credit / Debit Card', desc: 'Pay by card right here — no redirect.' },
+  { id: 'iwr_peptidespay', label: 'Credit / Debit Card', desc: 'Enter your card after placing the order — nothing to send, no screenshot needed. Visa, Mastercard, Amex & Discover.' },
   { id: 'iwr_zelle',   label: 'Zelle',    handle: '8508980623' },
   { id: 'iwr_venmo',   label: 'Venmo',    handle: '@iwnpay' },
   { id: 'iwr_cashapp', label: 'Cash App', handle: '$ironwithinresearch' },
@@ -624,9 +624,9 @@ export default function CheckoutPage() {
                               )}
                             </span>
                             <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                              {REDIRECT_METHODS.has(m.id)
-                                ? m.desc
-                                : `Send your payment to ${m.handle} after placing the order, then reply to our email with a screenshot${p2pPaused() ? '' : ` — ${p2pPct()}% comes off your total`}`}
+                              {m.handle
+                                ? `Send your payment to ${m.handle} after placing the order, then reply to our email with a screenshot${p2pPaused() ? '' : ` — ${p2pPct()}% comes off your total`}`
+                                : m.desc}
                             </span>
                           </span>
                         </button>

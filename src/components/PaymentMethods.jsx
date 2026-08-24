@@ -74,7 +74,7 @@ const MC_ENABLED = true;
 // Card processing restored 2026-07-26 (SnapPay, via the isolated pay app). Flip to
 // false to pull all card-network logos sitewide if a processor goes down again —
 // keep it in step with CARD_PAUSED in app/checkout/page.js.
-const CARDS_ENABLED = false;
+const CARDS_ENABLED = true;
 
 export default function PaymentMethods({
   label = 'We Accept',
