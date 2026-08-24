@@ -18,6 +18,7 @@ import { fetchStoreCredit } from '../../lib/storeCredit';
 import { getRewardsRedeemPts, setRewardsRedeemPts, fetchRewards } from '../../lib/rewards';
 import PaymentMethods from '../../components/PaymentMethods';
 import PeptidesPayContainer from '../../components/PeptidesPayContainer';
+import DispatchNotice from '../../components/DispatchNotice';
 import {
   ShieldCheck, CreditCard, Truck, ChevronRight,
   Lock, CheckCircle2, Package, ArrowRight,
@@ -539,6 +540,7 @@ export default function CheckoutPage() {
           <div>
             {currentStep === 0 && (
               <FormCard icon={<Truck size={17} color="var(--primary-blue)" />} title="Shipping Information">
+                <DispatchNotice compact style={{ marginBottom: '14px' }} />
                 {addressPrefilled && (
                   <div style={{ marginBottom: '14px', padding: '10px 13px', borderRadius: '10px', background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.3)', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
                     We&rsquo;ve filled in your saved address. Change anything below if this order is going somewhere else.

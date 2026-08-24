@@ -46,7 +46,7 @@ const faqs = [
   {
     category: 'shipping',
     q: 'How fast do you ship?',
-    a: 'Standard domestic delivery is 2–4 business days once your order ships. Express options (1–2 days) are available at checkout. International orders typically arrive within 7–14 business days.',
+    a: 'We ship Monday to Friday, with a 4:00pm CT carrier pickup each weekday. Order before 2:00pm CT and it goes out the same day; after that it goes on the next working day, and anything after 2:00pm CT on Friday ships Monday afternoon. Once it is moving, standard domestic delivery is 2\u20134 business days, express is 1\u20132, and international is typically 7\u201314.',
   },
   {
     category: 'shipping',

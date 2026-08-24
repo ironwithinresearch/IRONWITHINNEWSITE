@@ -15,7 +15,7 @@ const sections = [
     icon: Clock,
     title: 'Order Processing',
     content:
-      'Orders are typically processed within 1–2 business days after payment confirmation. Orders placed on weekends or holidays will be processed on the next business day.',
+      'We ship Monday to Friday. The carrier collects at 4:00pm CT each weekday. Orders placed before 2:00pm CT go out on that same day\u2019s collection; orders placed after 2:00pm CT go out on the next working day. Anything ordered after 2:00pm CT on Friday ships Monday afternoon \u2014 we do not ship at weekends or on public holidays.',
   },
   {
     icon: Truck,
