@@ -311,8 +311,6 @@ export default function ProductPage() {
             {/* Guarantee + proof (risk reversal) — under the vial */}
             <GuaranteeBadge style={{ marginTop: '16px' }} />
 
-            <DispatchNotice style={{ marginTop: '12px' }} />
-
             <a href="https://peptideparadigm.app" target="_blank" rel="noopener noreferrer"
               style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '12px', padding: '12px 14px', background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.3)', borderRadius: '12px', color: 'var(--text-light)', textDecoration: 'none' }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -549,6 +547,8 @@ export default function ProductPage() {
             )}
 
             <div style={{ marginBottom: '12px' }}><SaleCountdown /></div>
+
+            <DispatchNotice style={{ marginBottom: '12px' }} />
 
             {/* Add to cart + wishlist */}
             <div style={{ display: 'flex', gap: '12px' }}>
