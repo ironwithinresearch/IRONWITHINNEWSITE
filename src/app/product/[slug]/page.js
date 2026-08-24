@@ -2,7 +2,7 @@
 // src/app/product/[slug]/page.js
 // NOTE: Rename folder from [id] to [slug]
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import DispatchNotice from '@/components/DispatchNotice';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
@@ -16,8 +16,16 @@ import {
   FlaskConical, ShoppingCart, Heart, ChevronRight,
   BadgeCheck, Minus, Plus,
   Loader2, CheckCircle2, AlertCircle, Info, Package,
-  FileText, Download, BookOpen, ArrowRight,
+  FileText, Download, BookOpen, ArrowRight, ChevronLeft,
 } from 'lucide-react';
+
+const galleryArrow = {
+  position: 'absolute', top: '50%', transform: 'translateY(-50%)', zIndex: 2,
+  width: 34, height: 34, borderRadius: '50%', display: 'flex', alignItems: 'center',
+  justifyContent: 'center', cursor: 'pointer',
+  background: 'rgba(10,17,25,0.72)', border: '1px solid var(--glass-border)',
+  color: 'var(--text-light)', backdropFilter: 'blur(6px)',
+};
 
 export default function ProductPage() {
   const { slug } = useParams();
@@ -31,6 +39,7 @@ export default function ProductPage() {
   const [wishlisted, setWishlisted] = useState(false);
   const [activeTab, setActiveTab] = useState('description');
   const [showAllBatches, setShowAllBatches] = useState(false);
+  const [imgIndex, setImgIndex] = useState(0);
   const [cartError, setCartError] = useState('');
   // Restock waitlist, shown only when the picked dose is sold out AND cannot be
   // backordered — if it can be backordered the customer should buy, not wait.
@@ -65,6 +74,29 @@ export default function ProductPage() {
 
   const product = data?.product;
   const coa = getCoa(slug);
+
+  /* The short description under the price and the first paragraph of the Description tab
+     are the same sentence — the WooCommerce short_description is copied verbatim out of
+     the full description. Shown one under the other it just reads as a stutter.
+
+     Strip that leading "Product Description" block from the TAB, not the top: the blurb
+     above the fold earns its place, and the tab still has Key Research Characteristics,
+     the classification and Specifications underneath.
+
+     Only removes the block when its text genuinely matches, so a product whose long
+     description opens differently keeps everything. */
+  const descriptionHtml = useMemo(() => {
+    const full = product?.description || '';
+    const short = product?.shortDescription || '';
+    if (!full || !short) return full;
+    const strip = (h) => h.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+    const shortText = strip(short);
+    if (!shortText) return full;
+    return full.replace(
+      /<div>\s*<h3[^>]*>\s*Product Description\s*<\/h3>\s*<p[^>]*>([\s\S]*?)<\/p>\s*<\/div>/i,
+      (match, para) => (strip(para) === shortText ? '' : match),
+    );
+  }, [product?.description, product?.shortDescription]);
 
   if (loading) {
     return (
@@ -278,20 +310,59 @@ export default function ProductPage() {
               position: 'relative',
             }}>
               <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(0,207,255,0.06) 0%, transparent 65%)', pointerEvents: 'none' }} />
-              {images[0] ? (
-                <img src={images[0]} alt={product.image?.altText || product.name}
-                  style={{ maxHeight: '280px', objectFit: 'contain', position: 'relative', zIndex: 1, padding: '16px' }} />
+              {images.length ? (
+                <>
+                  {/* Click the image itself to advance. The old thumbnail strip had a
+                      pointer cursor but NO click handler at all, and the main image was
+                      hardcoded to images[0] — it promised interaction and did nothing. */}
+                  <img
+                    src={images[Math.min(imgIndex, images.length - 1)]}
+                    alt={product.image?.altText || product.name}
+                    onClick={() => images.length > 1 && setImgIndex((i) => (i + 1) % images.length)}
+                    style={{
+                      maxHeight: '280px', objectFit: 'contain', position: 'relative', zIndex: 1,
+                      padding: '16px', cursor: images.length > 1 ? 'pointer' : 'default',
+                    }}
+                  />
+
+                  {images.length > 1 && (
+                    <>
+                      <button
+                        type="button" aria-label="Previous image"
+                        onClick={() => setImgIndex((i) => (i - 1 + images.length) % images.length)}
+                        style={{ ...galleryArrow, left: 10 }}
+                      >
+                        <ChevronLeft size={18} />
+                      </button>
+                      <button
+                        type="button" aria-label="Next image"
+                        onClick={() => setImgIndex((i) => (i + 1) % images.length)}
+                        style={{ ...galleryArrow, right: 10 }}
+                      >
+                        <ChevronRight size={18} />
+                      </button>
+                    </>
+                  )}
+                </>
               ) : (
                 <FlaskConical size={80} color="var(--primary-blue)" style={{ opacity: 0.3 }} />
               )}
             </div>
 
+            {/* Dots rather than a thumbnail strip: four near-identical vial shots at 64px
+                read as noise, and they cost a row of vertical space above the fold. */}
             {images.length > 1 && (
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                {images.map((src, i) => (
-                  <div key={i} style={{ width: 64, height: 64, borderRadius: '10px', border: '1px solid var(--glass-border)', overflow: 'hidden', cursor: 'pointer', background: 'var(--bg-elevated)' }}>
-                    <img src={src} alt="" loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                  </div>
+              <div style={{ display: 'flex', gap: 7, justifyContent: 'center', marginTop: -2 }}>
+                {images.map((_, i) => (
+                  <button
+                    key={i} type="button" aria-label={`Image ${i + 1}`}
+                    onClick={() => setImgIndex(i)}
+                    style={{
+                      width: i === imgIndex ? 22 : 7, height: 7, borderRadius: 999, border: 'none',
+                      padding: 0, cursor: 'pointer', transition: 'all .2s ease',
+                      background: i === imgIndex ? 'var(--primary-blue)' : 'var(--glass-border)',
+                    }}
+                  />
                 ))}
               </div>
             )}
@@ -658,7 +729,7 @@ export default function ProductPage() {
 
           <div style={{ background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: '16px', padding: '28px', color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.8 }}>
             {activeTab === 'description' && (
-              <div dangerouslySetInnerHTML={{ __html: product.description || product.shortDescription || 'No description available.' }} />
+              <div dangerouslySetInnerHTML={{ __html: descriptionHtml || product.shortDescription || 'No description available.' }} />
             )}
             {activeTab === 'specifications' && (
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
