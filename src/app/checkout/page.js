@@ -57,11 +57,11 @@ const isCardPaused = () => CARD_PAUSED;
 // redirect. Its own switch on purpose — SnapPay and this one are independent, so bringing
 // one back does not require touching the other.
 //
-// OFF until a real transaction has been put through it. An untested card option is worse
-// than no card option: the buyer gets stuck mid-payment. Flip to true, place one small
-// order, then leave it on.
+// LIVE 2026-08-23. Place one small real order through it before relying on it; if the
+// card form ever renders as an empty box the cause is a CSP host (see PAY_HOSTS in
+// next.config.js) and the browser console names it. Set to false to pull card instantly.
 const PP_METHOD  = 'iwr_peptidespay';
-const PP_ENABLED = false;
+const PP_ENABLED = true;
 
 
 // Countries for the checkout address (ISO 3166-1 alpha-2 codes — WooCommerce format).
@@ -236,6 +236,10 @@ export default function CheckoutPage() {
   const hasBackorder = (cartItems || []).some(i =>
     i.variation?.node?.stockStatus === 'ON_BACKORDER' || i.product?.node?.stockStatus === 'ON_BACKORDER');
   // A $0 order still needs no method — store credit / gift card settle it server-side.
+  // Card is available if EITHER rail is up. The paused-card notice keys off this, not off
+  // SnapPay alone — otherwise turning the second rail on leaves a banner apologising for
+  // the absence of a method that is right there in the list.
+  const cardAvailable = !isCardPaused() || PP_ENABLED;
   const methodChosen = !!payMethod || isZeroDue;
   const fullyCovered = computedTotalNum > 0 && dueAfterAll <= 0.005;
   const noRailDue = isZeroDue || fullyCovered;
@@ -579,7 +583,7 @@ export default function CheckoutPage() {
                     </div>
                   ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {isCardPaused() && (
+                    {!cardAvailable && (
                       <div style={{ padding: '11px 13px', borderRadius: '10px', background: 'rgba(245,158,11,0.09)', border: '1px solid rgba(245,158,11,0.4)', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
                         💳 <strong style={{ color: '#fbbf24' }}>We&rsquo;re not taking card right now.</strong> Check out with <strong>Zelle, Venmo, or Cash App</strong> below — it takes a minute, {p2pPct()}% comes off your total{giftEarned ? ', and your free vial is included' : ''}, and we ship as soon as your payment lands.
                       </div>

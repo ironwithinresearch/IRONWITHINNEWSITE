@@ -74,7 +74,7 @@ const faqs = [
     // Card is off at checkout (CARD_PAUSED in app/checkout/page.js, CARDS_ENABLED in
     // PaymentMethods.jsx). Keep this answer in step with those two flags — an FAQ that
     // promises card while checkout refuses it is a support ticket per reader.
-    a: 'Right now we take Zelle, Venmo, and Cash App. You pick one at checkout, send the payment, and we ship as soon as it lands — paying this way also takes a discount off your total. Card payments are paused at the moment.',
+    a: 'We take credit and debit cards, plus Zelle, Venmo, and Cash App. Card payments are entered on a secure encrypted form at checkout and we never store your card details. Paying by app takes a discount off your total.',
   },
   {
     category: 'ordering',
