@@ -133,7 +133,15 @@ const P2P_MESSAGE = '💸  SAVE 10% — pay with Zelle, Venmo, or Cash App and 1
 const P2P_EVENT_MESSAGE = '💸  35% OFF WHEN YOU PAY BY APP — Zelle, Venmo or Cash App takes 35% off your total automatically · spend over $200 and pick a FREE TRZ-2 10mg or RT-3 10mg · stack your affiliate code on top · live now, ends Sun Aug 23';
 
 const BASE_MESSAGES = [
-  P2P_MESSAGE,
+  // P2P_MESSAGE removed from the rotation 2026-08-24 (operator call). The pay-by-app
+  // discount is paused for the Labor Day B1G1 anyway, and the bar should not carry a
+  // "SAVE 10%" line while the headline offer is buy-one-get-one — two competing savings
+  // claims in one ticker is what makes shoppers distrust both.
+  //
+  // The constant and the rate-rewriting logic below are deliberately left intact: if the
+  // 10% is ever advertised again, put P2P_MESSAGE back in this array and it resumes
+  // reading the live rate from p2p.js rather than a hardcoded number.
+
   '🔬  Certificate of Analysis available for every product',
   '🧪  Research-grade peptides, independently lab-tested',
   '📱  New — the free Peptide Paradigm reference guide. Look up any compound.',
