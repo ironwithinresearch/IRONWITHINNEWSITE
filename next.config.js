@@ -44,6 +44,13 @@ const nextConfig = {
         source: "/:path*",
         headers: securityHeaders,
       },
+      {
+        // Apple Pay domain association. The file deliberately has NO extension, so without
+        // this it is served as application/octet-stream. Apple's verifier fetches it over
+        // HTTPS at this exact path and casing — no redirect, no auth, no rename.
+        source: "/.well-known/apple-developer-merchantid-domain-association",
+        headers: [{ key: "Content-Type", value: "text/plain; charset=utf-8" }],
+      },
     ];
   },
   // Continuity / Research Plans are delisted for now (the six plan products are
