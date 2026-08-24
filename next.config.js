@@ -9,15 +9,34 @@
 // styles (a nonce-based strict CSP would need middleware — future hardening).
 // The payment-rail handoff is a top-level window.location navigation, which CSP
 // does not restrict, so checkout is unaffected.
+// PeptidesPayment / SellAbroad card rail.
+//   app.sellabroad.com  — the widget script and the payment iframe
+//   oms.sellabroad.com  — the API the widget posts carts and charges to
+//   *.basistheory.com   — their card vault; it renders the card fields in its own
+//                         iframe, so it needs script AND frame, not just connect
+// A missing host here does not error — the payment form simply renders as an empty
+// box. That is exactly why Route's widget was never usable on this site, and it is
+// the failure mode to check first if the card form ever goes blank. The browser
+// console names the blocked host; add it here.
+const PAY_HOSTS = {
+  script: ["https://app.sellabroad.com", "https://js.basistheory.com"],
+  frame: ["https://app.sellabroad.com", "https://*.basistheory.com"],
+  connect: [
+    "https://app.sellabroad.com",
+    "https://oms.sellabroad.com",
+    "https://api.basistheory.com",
+  ],
+};
+
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://api.goaffpro.com https://api2.goaffpro.com",
+  `script-src 'self' 'unsafe-inline' https://api.goaffpro.com https://api2.goaffpro.com ${PAY_HOSTS.script.join(" ")}`,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' data: https://fonts.gstatic.com",
   "img-src 'self' data: blob: https:",
   "media-src 'self'",
-  "connect-src 'self' https://bhidasowgm.onrocket.site https://api.goaffpro.com https://api2.goaffpro.com",
-  "frame-src 'self'",
+  `connect-src 'self' https://bhidasowgm.onrocket.site https://api.goaffpro.com https://api2.goaffpro.com ${PAY_HOSTS.connect.join(" ")}`,
+  `frame-src 'self' ${PAY_HOSTS.frame.join(" ")}`,
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
