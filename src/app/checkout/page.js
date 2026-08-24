@@ -16,6 +16,7 @@ import { getAffiliateRef } from '../../lib/affiliate';
 import { fetchStoreCredit } from '../../lib/storeCredit';
 import { getRewardsRedeemPts, setRewardsRedeemPts, fetchRewards } from '../../lib/rewards';
 import PaymentMethods from '../../components/PaymentMethods';
+import PeptidesPayContainer from '../../components/PeptidesPayContainer';
 import {
   ShieldCheck, CreditCard, Truck, ChevronRight,
   Lock, CheckCircle2, Package, ArrowRight,
@@ -31,6 +32,7 @@ const steps = ['Shipping', 'Review'];
 const CARD_METHOD = 'iwr_snappay';
 const PAY_METHODS = [
   { id: CARD_METHOD,   label: 'Credit / Debit Card', desc: 'Pay by card on our secure encrypted page.' },
+  { id: 'iwr_peptidespay', label: 'Credit / Debit Card', desc: 'Pay by card right here — no redirect.' },
   { id: 'iwr_zelle',   label: 'Zelle',    handle: '8508980623' },
   { id: 'iwr_venmo',   label: 'Venmo',    handle: '@iwnpay' },
   { id: 'iwr_cashapp', label: 'Cash App', handle: '$ironwithinresearch' },
@@ -50,6 +52,16 @@ const REDIRECT_METHODS = new Set(['iwr_rail', 'iwr_chargx', CARD_METHOD]);
 // checkout instantly — keep it in step with CARDS_ENABLED in PaymentMethods.jsx.
 const CARD_PAUSED = true;
 const isCardPaused = () => CARD_PAUSED;
+
+// Second card rail: PeptidesPayment (SellAbroad), embedded on this page rather than a
+// redirect. Its own switch on purpose — SnapPay and this one are independent, so bringing
+// one back does not require touching the other.
+//
+// OFF until a real transaction has been put through it. An untested card option is worse
+// than no card option: the buyer gets stuck mid-payment. Flip to true, place one small
+// order, then leave it on.
+const PP_METHOD  = 'iwr_peptidespay';
+const PP_ENABLED = false;
 
 
 // Countries for the checkout address (ISO 3166-1 alpha-2 codes — WooCommerce format).
@@ -100,11 +112,14 @@ export default function CheckoutPage() {
   const [payMethod, setPayMethod] = useState('');
   const [backorderAck, setBackorderAck] = useState(false);
   const [p2pInfo, setP2pInfo] = useState(null);
+  const [ppOrder, setPpOrder] = useState(null);   // { id, key } once a card order is placed
   const [giftChoice, setGiftChoice] = useState('');
   const payMethodRef = useRef('');
   // SnapPay is the card option (ChargeX retired 2026-07-24). If CARD_PAUSED is ever
   // flipped back on, the card row is filtered out entirely and Zelle becomes default.
-  const payMethodOptions = isCardPaused() ? PAY_METHODS.filter((m) => m.id !== CARD_METHOD) : PAY_METHODS;
+  const payMethodOptions = PAY_METHODS
+    .filter((m) => !(isCardPaused() && m.id === CARD_METHOD))
+    .filter((m) => PP_ENABLED || m.id !== PP_METHOD);
   // Route Package Protection — customer-paid shipping insurance.
   // OPT-OUT by design (pre-checked): Route's own guidance is that opt-in roughly halves
   // attach rate. The buyer can untick it, and the choice rides to the order as meta; the
@@ -269,6 +284,23 @@ export default function CheckoutPage() {
     // Gift-card-paid ($0 due) orders are complete already — no P2P instructions.
     const num = result?.order?.orderNumber || result?.order?.databaseId || '';
     setOrderNumber(num);
+
+    // Container rail: the order exists and is unpaid; the card form mounts on the
+    // order-placed screen below and the webhook is what marks it paid.
+    if (method === PP_METHOD) {
+      const id = result?.order?.databaseId;
+      const key = result?.order?.orderKey;
+      if (id && key) {
+        setPpOrder({ id, key });
+      } else {
+        alert('Your order was placed but the card form could not be opened. Please email support@ironwithin.io with order #' + num + ' — nothing has been charged.');
+      }
+      setRewardsRedeemPts(0);
+      setOrderPlaced(true);
+      refetchCart();
+      return;
+    }
+
     if (!REDIRECT_METHODS.has(method) && method !== 'iw_giftcard' && method !== 'iw_storecredit') {
       const m = PAY_METHODS.find((x) => x.id === method);
       setP2pInfo({
@@ -342,17 +374,23 @@ export default function CheckoutPage() {
               <CheckCircle2 size={40} color="#34d399" />
             </div>
             <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '2rem', fontWeight: 900, marginBottom: '12px' }}>
-              {p2pInfo ? 'Order Placed!' : 'Order Confirmed!'}
+              {ppOrder ? 'Almost done' : p2pInfo ? 'Order Placed!' : 'Order Confirmed!'}
             </h1>
             <p style={{ color: 'var(--text-secondary)', marginBottom: '8px' }}>
-              {p2pInfo
+              {ppOrder
+                ? 'Enter your card below to complete payment. Your order is saved — nothing has been charged yet.'
+                : p2pInfo
                 ? 'One more step — send your payment below. Your order ships as soon as payment is received.'
                 : 'Thank you for your order. Your research peptides are being prepared for shipment.'}
             </p>
             {orderNumber && (
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: p2pInfo ? '20px' : '32px' }}>
-                Order #{orderNumber} · Confirmation sent to {shipping.email}
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: (p2pInfo || ppOrder) ? '20px' : '32px' }}>
+                Order #{orderNumber}{ppOrder ? '' : ` · Confirmation sent to ${shipping.email}`}
               </p>
+            )}
+
+            {ppOrder && (
+              <PeptidesPayContainer orderId={ppOrder.id} orderKey={ppOrder.key} />
             )}
             {p2pInfo && (
               <div style={{ textAlign: 'left', background: 'var(--bg-dark)', border: '1px solid var(--primary-blue)', borderRadius: '14px', padding: '20px', marginBottom: '28px' }}>

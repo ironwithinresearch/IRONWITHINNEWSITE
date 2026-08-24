@@ -10,6 +10,7 @@ export const CHECKOUT = gql`
         id
         databaseId
         orderNumber
+        orderKey
         status
         total
         subtotal
