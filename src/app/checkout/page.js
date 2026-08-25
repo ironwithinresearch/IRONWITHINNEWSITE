@@ -27,14 +27,21 @@ import {
  
 const steps = ['Shipping', 'Review'];
 
-// Payment methods. iwr_snappay = card; its backend gateway returns a `redirect` to the
-// isolated payment app at pay.ironwithin.io, so no card data ever touches this app.
+// Payment methods. iwr_card is the ROUTER (mu-plugin iw-card-router.php): one card option
+// for the buyer, and the backend decides which acquirer actually takes it, rotating volume
+// between them and failing a declined order over to the other one. It answers with a
+// `redirect` when it picks KeyBilling (the isolated pay app at pay.ironwithin.io) and with
+// an empty redirect when it picks PeptidesPayment, whose card form mounts on the order
+// screen. Either way no card data touches this app.
+//
+// Do NOT point this back at a single acquirer. It was `iwr_snappay` until 2026-08-25, long
+// after that rail stopped settling — every card buyer was being sent to a processor that
+// had not paid out in a month.
 // The rest are manual P2P gateways (iw-p2p-pay.php) — the order is placed on-hold and
 // the buyer is shown send-to instructions.
-const CARD_METHOD = 'iwr_snappay';
+const CARD_METHOD = 'iwr_card';
 const PAY_METHODS = [
-  { id: CARD_METHOD,   label: 'Credit / Debit Card', desc: 'Pay by card on our secure encrypted page.' },
-  { id: 'iwr_peptidespay', label: 'Credit / Debit Card', desc: 'Enter your card after placing the order — nothing to send, no screenshot needed. Visa, Mastercard, Amex & Discover.' },
+  { id: CARD_METHOD,   label: 'Credit / Debit Card', desc: 'Pay securely by card. Visa, Mastercard, American Express & Discover.' },
   { id: 'iwr_zelle',   label: 'Zelle',    handle: '8508980623' },
   { id: 'iwr_venmo',   label: 'Venmo',    handle: '@IronWithinPeps' },
   { id: 'iwr_cashapp', label: 'Cash App', handle: '$ironwithinresearch' },
@@ -302,7 +309,14 @@ export default function CheckoutPage() {
 
     // Card: follow the Stripe redirect. `order` is expected to be null for guests
     // here; the redirect URL is authoritative, so ignore the order error.
-    if (REDIRECT_METHODS.has(method)) {
+    // The router answers with an EMPTY redirect when it picks the container rail, because
+    // PeptidesPayment mounts its own card form on the order screen rather than sending the
+    // buyer off-site. That is a success, not a failure — so a missing redirect is only an
+    // error when we also have no order to fall through to.
+    const routedToContainer =
+      method === CARD_METHOD && !result?.redirect && !!result?.order?.databaseId;
+
+    if (REDIRECT_METHODS.has(method) && !routedToContainer) {
       if (result?.redirect) {
         setRewardsRedeemPts(0); // order created — points already reserved on it
         window.location.href = result.redirect;
@@ -328,7 +342,7 @@ export default function CheckoutPage() {
 
     // Container rail: the order exists and is unpaid; the card form mounts on the
     // order-placed screen below and the webhook is what marks it paid.
-    if (method === PP_METHOD) {
+    if (method === PP_METHOD || routedToContainer) {
       const id = result?.order?.databaseId;
       const key = result?.order?.orderKey;
       if (id && key) {
