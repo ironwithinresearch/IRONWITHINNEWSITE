@@ -36,7 +36,7 @@ const PAY_METHODS = [
   { id: CARD_METHOD,   label: 'Credit / Debit Card', desc: 'Pay by card on our secure encrypted page.' },
   { id: 'iwr_peptidespay', label: 'Credit / Debit Card', desc: 'Enter your card after placing the order — nothing to send, no screenshot needed. Visa, Mastercard, Amex & Discover.' },
   { id: 'iwr_zelle',   label: 'Zelle',    handle: '8508980623' },
-  { id: 'iwr_venmo',   label: 'Venmo',    handle: '@iwnpay' },
+  { id: 'iwr_venmo',   label: 'Venmo',    handle: '@IronWithinPeps' },
   { id: 'iwr_cashapp', label: 'Cash App', handle: '$ironwithinresearch' },
 ];
 
