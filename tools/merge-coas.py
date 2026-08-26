@@ -64,17 +64,10 @@ def expected_manifest(coas):
 # followed by mg/ml/mcg, so lot numbers and instrument readings are not mistaken for a
 # vial size. Sorted numerically because "5mg" must not sort after "30mg".
 STRENGTH_RE = re.compile(r"\b(\d{1,3})\s?(mg|ml|mcg)\b", re.I)
-# A certificate is full of numbers followed by "mg" — assay results, recovery figures,
-# instrument readings. Only a handful are vial sizes we actually sell, so match against
-# the real ones rather than trying to blocklist the noise. RT-3's report alone yields
-# 23mg, 31mg, 76mg, 93mg; printing those in the index would be its own kind of wrong.
-VIAL_SIZES = {
-    "1mg", "2mg", "3mg", "5mg", "6mg", "10mg", "15mg", "20mg", "25mg", "30mg",
-    "40mg", "50mg", "60mg", "70mg", "80mg", "100mg", "120mg", "150mg", "200mg",
-    "250mg", "500mg", "600mg", "1000mg", "1200mg", "1500mg",
-    "1ml", "2ml", "5ml", "10ml", "30ml",
-    "250mcg", "500mcg", "1000mcg",
-}
+# Nothing is filtered. An earlier version tried to keep only "real" vial sizes, which
+# meant the index could hide a strength a customer was actually holding — the same
+# failure this index exists to fix, only in reverse. Print whatever the certificate
+# says and let the reader match it against the vial in their hand.
 
 
 def strengths_in(reader):
@@ -82,9 +75,7 @@ def strengths_in(reader):
     text = " ".join((page.extract_text() or "") for page in reader.pages)
     found = set()
     for num, unit in STRENGTH_RE.findall(text):
-        v = f"{int(num)}{unit.lower()}"
-        if v in VIAL_SIZES:
-            found.add(v)
+        found.add(f"{int(num)}{unit.lower()}")
     return sorted(found, key=lambda x: int(re.match(r"\d+", x).group()))
 
 
