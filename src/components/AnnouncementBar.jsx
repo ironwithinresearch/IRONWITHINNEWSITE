@@ -101,8 +101,9 @@ const B2G1_MESSAGE = '🎁  BUY 2 GET 1 FREE on RT-3 30mg & TRZ-2 30mg — add 3
 // BUY 1 GET 1 FREE SITEWIDE. Keep these identical to IW_LD_START / IW_LD_END in
 // mu-plugin iw-labor-day.php, which is what actually zeroes the second vial.
 //
-// Counted PER VARIATION — two of the SAME item earns one free. One each of two
-// different products earns nothing, so the copy says "2 of the same item" and never
+// MIX AND MATCH since 2026-08-26: every eligible unit in the cart is sorted by price and
+// every second one is free, so ANY two items qualify and the shopper pays for the dearer
+// of each pair. The copy must say "any 2 items" — it previously said "2 of the same" and
 // "any 2"; that distinction is the whole difference between a working sale and a
 // support ticket.
 //
@@ -112,7 +113,7 @@ const B2G1_MESSAGE = '🎁  BUY 2 GET 1 FREE on RT-3 30mg & TRZ-2 30mg — add 3
 // message must not imply any additional app discount.
 const LD_START = Date.parse('2026-08-24T13:00:00Z');
 const LD_END = Date.parse('2026-09-08T04:00:00Z');
-const LD_MESSAGE = '🇺🇸  LABOR DAY — BUY 1 GET 1 FREE SITEWIDE · add 2 of the same item and the 2nd is free, automatically · no code needed · stack your affiliate code on top · bundles & gift cards keep their own pricing · ends Mon Sep 7 at midnight';
+const LD_MESSAGE = '🇺🇸  LABOR DAY — BUY 1 GET 1 FREE SITEWIDE · mix & match ANY 2 items and the cheaper one is free, automatically · no code needed · stack your affiliate code on top · bundles & gift cards keep their own pricing · ends Mon Sep 7 at midnight';
 
 // The pay-by-app 10% STAYS RUNNING this event (operator call 2026-08-14) — the buy-3
 // gate is doing the margin work instead, so the bar keeps promising it. If it is ever
