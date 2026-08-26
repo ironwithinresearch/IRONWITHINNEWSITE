@@ -56,10 +56,17 @@ const P2P_DISCOUNT_METHODS = P2P_METHODS;
 // completing the order in-place.
 const REDIRECT_METHODS = new Set(['iwr_rail', 'iwr_chargx', CARD_METHOD]);
 
-// Card kill switch. Cards run on SnapPay via pay.ironwithin.io as of 2026-07-26
-// (ChargeX stopped processing on the 24th). Set to true to pull the card option from
-// checkout instantly — keep it in step with CARDS_ENABLED in PaymentMethods.jsx.
-const CARD_PAUSED = true;
+// Card kill switch. Set to true to pull the card option from checkout instantly — keep it
+// in step with CARDS_ENABLED in PaymentMethods.jsx.
+//
+// ⚠ THIS NOW HIDES ALL CARD PAYMENT, NOT ONE RAIL. It was left true on 22 Aug when SnapPay
+// stopped settling, which was harmless then: CARD_METHOD pointed at the dead iwr_snappay
+// and PeptidesPayment sat in the list as its own separate entry, unaffected by this filter.
+// The moment CARD_METHOD became the router (iwr_card) and the two card entries collapsed
+// into one, this flag silently removed the only card option from checkout — no error, no
+// banner, just no way to pay by card. Card checkout produced nothing for a day.
+// If you set this true, you are turning off card entirely. Say so out loud.
+const CARD_PAUSED = false;
 const isCardPaused = () => CARD_PAUSED;
 
 // Second card rail: PeptidesPayment (SellAbroad), embedded on this page rather than a
