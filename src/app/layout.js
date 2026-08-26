@@ -13,6 +13,10 @@ import QueenBirthdayPopup from "../components/QueenBirthdayPopup";
 import QueenTheme from "../components/QueenTheme";
 import ShippingPauseNotice from "../components/ShippingPauseNotice";
 import ApolloWrapper from "../lib/ApolloWrapper";
+// Vercel Web Analytics. Added 2026-08-26 — the store had NO analytics at all, so traffic
+// had to be estimated by counting unique IPs in the Apache log. Serves its script and
+// beacons from /_vercel/insights on this same origin, so the CSP needs no new host.
+import { Analytics } from "@vercel/analytics/react";
 
 const SITE_NAME = "Iron Within Research";
 const SITE_DESC =
@@ -74,6 +78,7 @@ export default function RootLayout({ children }) {
           <QueenBirthdayPopup />
           <ShippingPauseNotice />
         </ApolloWrapper>
+        <Analytics />
       </body>
     </html>
   );
