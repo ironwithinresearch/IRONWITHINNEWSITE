@@ -89,3 +89,17 @@ export const giftActive = (now = Date.now()) => now >= GIFT_FROM && now <= GIFT_
 /** Does this cart earn the free vial? Subtotal is items after coupons. Any payment method. */
 export const giftQualifies = (subtotal, _payMethod, now = Date.now()) =>
   giftActive(now) && Number(subtotal) >= GIFT_MIN;
+
+/* ---------------------------------------------------------------------------
+ * $500 giveaway — 5 × $100 store credit, orders OVER $250, 29–31 Aug.
+ * Mirrors mu-plugin iw-giveaway.php (IW_GA_FROM / IW_GA_TO / IW_GA_THRESHOLD).
+ * Entry is tagged on PAYMENT, so an unpaid order is not an entry.
+ * ------------------------------------------------------------------------- */
+
+export const GA_MIN = 250;
+export const GA_PRIZE_EACH = 100;
+export const GA_WINNERS = 5;
+export const GA_FROM = Date.parse('2026-08-29T12:00:00Z'); // 8:00am ET Sat 29 Aug
+export const GA_TO = Date.parse('2026-09-01T03:59:59Z');   // 11:59:59pm ET Sun 31 Aug
+
+export const giveawayActive = (now = Date.now()) => now >= GA_FROM && now <= GA_TO;

@@ -7,8 +7,9 @@ import Link from 'next/link';
 import { Copy, Check, Sparkles, ShieldAlert, ShieldCheck, ArrowRight, Download, Film, BookOpen } from 'lucide-react';
 
 const CAPTIONS = [
-  "Two things running at Iron Within right now: BUY 1 GET 1 FREE sitewide — mix & match any 2 items and the cheaper one is free — and at $225+ you also pick a FREE vial, RT-3 10mg or TRZ-2 10mg, with free US shipping. Both apply automatically. My code [YOURCODE] stacks on top. BOGO ends Mon Sep 7.",
-  "BOGO on everything at Iron Within through Sep 7 — any 2 items, cheaper one free. Get to $225 and you also choose a free RT-3 10mg or TRZ-2 10mg plus free shipping. No codes needed for either; [YOURCODE] still comes off the total.",
+  "Three things at Iron Within this weekend: BUY 1 GET 1 FREE sitewide — any 2 items, cheaper one free. At $225+ you also pick a FREE vial (RT-3 10mg or TRZ-2 10mg) with free US shipping. And every order over $250 is entered to win — 5 people get $100 store credit each, $500 total, drawn Monday. All automatic. [YOURCODE] stacks on top.",
+  "$500 GIVEAWAY at Iron Within — 5 winners, $100 store credit each. Every order over $250 between now and Sunday night is entered automatically, no entry form. That is on top of buy-1-get-1-free sitewide and a free vial at $225+. Use [YOURCODE].",
+  "BOGO on everything at Iron Within through Sep 7 — any 2 items, cheaper one free. Get to $225 and you also choose a free RT-3 10mg or TRZ-2 10mg plus free shipping. Over $250 this weekend and you are in the $500 giveaway too. [YOURCODE] comes off the total.",
   "LABOR DAY: buy one get one free on everything at Iron Within — mix & match ANY 2 items and the cheaper one is free automatically, no code needed. My code [YOURCODE] stacks on top. Ends Mon Sep 7 at midnight.",
   "BOGO on every peptide at Iron Within through Labor Day. Any 2 items — the cheaper one is free, applied at checkout. 99%+ purity, COA on every order. Use [YOURCODE] and it stacks.",
   "Doing peptide research? Iron Within Research is the only source I trust — 99%+ purity with a Certificate of Analysis on every single vial. Use code [YOURCODE] → ironwithin.io",

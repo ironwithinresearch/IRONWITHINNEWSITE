@@ -14,7 +14,8 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { GIFT_MIN, GIFT_OPTIONS, GIFT_FROM, GIFT_TO } from '@/lib/p2p';
+import { GIFT_MIN, GIFT_OPTIONS, GIFT_FROM, GIFT_TO,
+         GA_MIN, GA_PRIZE_EACH, GA_WINNERS, giveawayActive } from '@/lib/p2p';
 import { isLoggedIn } from '@/lib/auth';
 
 const KEY = 'iw_gift_promo_v1';
@@ -147,6 +148,29 @@ export default function GiftPromoPopup() {
               + free US shipping on the same order
             </div>
           </div>
+
+          {/* Third block only while the giveaway window is open — it closes a day before
+              the BOGO, and a popup still advertising a closed draw is worse than silence. */}
+          {giveawayActive() && (
+            <div style={{
+              border: '1px solid rgba(251,191,36,0.45)', background: 'rgba(251,191,36,0.09)',
+              borderRadius: 12, padding: '16px 16px 14px', marginBottom: 18,
+            }}>
+              <div style={{
+                fontSize: '0.66rem', letterSpacing: '.12em', textTransform: 'uppercase',
+                color: '#fbbf24', fontWeight: 800, marginBottom: 6,
+              }}>
+                This weekend only · ends Sun 31 Aug
+              </div>
+              <div style={{ color: '#fff', fontSize: '1.45rem', fontWeight: 900, lineHeight: 1.1 }}>
+                ${GA_PRIZE_EACH * GA_WINNERS} giveaway
+              </div>
+              <div style={{ color: 'rgba(255,255,255,0.68)', fontSize: '0.86rem', marginTop: 6, lineHeight: 1.5 }}>
+                {GA_WINNERS} winners get <strong style={{ color: '#fcd34d' }}>${GA_PRIZE_EACH} store credit</strong> each.
+                Every order over ${GA_MIN} is entered automatically.
+              </div>
+            </div>
+          )}
 
           <Link
             href="/shop"
