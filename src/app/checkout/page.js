@@ -840,7 +840,7 @@ export default function CheckoutPage() {
                     You&rsquo;ve earned a free vial
                   </div>
                   <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>
-                    Pay-by-app orders over ${GIFT_MIN} include one on us. Pick which:
+                    Orders of ${GIFT_MIN}+ include one on us, free shipping too. Pick which:
                   </div>
                   <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                     {GIFT_OPTIONS.map((g) => (
