@@ -45,7 +45,7 @@ export const CHECKOUT = gql`
 // Build the checkout input object for the mutation
 // paymentMethod: 'cod' for Cash on Delivery (no Stripe needed to test)
 // paymentMethod: 'stripe' when Stripe is integrated
-export function buildCheckoutInput({ billing, transactionId = '', paymentMethod = 'cod', customerNote = '', affiliateRef = '', shippingMethod = '', referrerCode = '', rewardsPts = 0, routeSelected = false, giftChoice = '' }) {
+export function buildCheckoutInput({ billing, transactionId = '', paymentMethod = 'cod', customerNote = '', affiliateRef = '', shippingMethod = '', referrerCode = '', rewardsPts = 0, routeSelected = false, giftChoice = '', ppOrderId = '', ppProxyUrl = '', ppProxyId = '' }) {
   const billingAddress = {
     firstName: billing.firstName || '',
     lastName: billing.lastName || '',
@@ -74,6 +74,14 @@ export function buildCheckoutInput({ billing, transactionId = '', paymentMethod 
   // - _iw_gift_choice: which free vial the buyer picked on a qualifying P2P order.
   //   iw-p2p-gift.php decides whether it is actually earned; this only carries the choice.
   if (giftChoice) metaData.push({ key: '_iw_gift_choice', value: String(giftChoice) });
+  // PayPal: the id the buyer approved inside the proxy's iframe, plus WHICH proxy served it.
+  // The capture must go back to that same proxy — another one has never seen the order — and
+  // rotation can move on between rendering the frame and placing the order.
+  if (ppOrderId) {
+    metaData.push({ key: '_iw_paypal_pp_order_id', value: String(ppOrderId) });
+    if (ppProxyUrl) metaData.push({ key: '_iw_paypal_proxy_url', value: String(ppProxyUrl) });
+    if (ppProxyId) metaData.push({ key: '_iw_paypal_proxy_id', value: String(ppProxyId) });
+  }
   // Subscribe & Save items are tagged at the cart-line level (extraData iw_subscribe)
   // and flow to the order line items, so no order-level meta is needed here.
 

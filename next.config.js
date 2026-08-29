@@ -28,6 +28,20 @@ const PAY_HOSTS = {
   ],
 };
 
+// PayPal, via paypal-proxy-phantom. The buyer approves inside an IFRAME served by one of
+// the configured proxies, which postMessages the approved PayPal order id back to us.
+//
+// ⚠ ALL THREE proxies must be listed, not just the currently-active one. The plugin rotates
+// between them on amount and availability, so the iframe host changes without warning — and
+// a host missing here does not error, the frame just renders blank. That is the same silent
+// failure that made Route's widget unusable and it costs an order every time.
+// Read the live list with: wp eval 'print_r(get_option(OPT_MECOM_PAYPAL_PROXIES));'
+const PAYPAL_PROXY_HOSTS = [
+  "https://ironbeautycare.com",
+  "https://ironpawpremium.com",
+  "https://ironhealthymeals.com",
+];
+
 // VerifyPass — teacher / military / first-responder verification on /heroes.
 //   *.verifypass.com  — the widget script and the verification iframe
 // Their exact host is not published; if the widget renders as an empty box, the browser
@@ -46,8 +60,8 @@ const csp = [
   "font-src 'self' data: https://fonts.gstatic.com",
   "img-src 'self' data: blob: https:",
   "media-src 'self'",
-  `connect-src 'self' https://bhidasowgm.onrocket.site https://api.goaffpro.com https://api2.goaffpro.com ${PAY_HOSTS.connect.join(" ")} ${VERIFY_HOSTS.connect.join(" ")}`,
-  `frame-src 'self' ${PAY_HOSTS.frame.join(" ")} ${VERIFY_HOSTS.frame.join(" ")}`,
+  `connect-src 'self' https://bhidasowgm.onrocket.site https://api.goaffpro.com https://api2.goaffpro.com ${PAY_HOSTS.connect.join(" ")} ${VERIFY_HOSTS.connect.join(" ")} ${PAYPAL_PROXY_HOSTS.join(" ")}`,
+  `frame-src 'self' ${PAY_HOSTS.frame.join(" ")} ${VERIFY_HOSTS.frame.join(" ")} ${PAYPAL_PROXY_HOSTS.join(" ")}`,
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",

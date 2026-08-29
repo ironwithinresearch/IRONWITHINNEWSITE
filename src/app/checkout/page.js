@@ -9,6 +9,7 @@ import { CHECKOUT, buildCheckoutInput } from '../../lib/queries/checkout';
 import { useCart } from '../../context/CartContext';
 import OrderBump from '@/components/OrderBump';
 import { getReferCookie } from '@/lib/referral';
+import PayPalFrame from '@/components/PayPalFrame';
 import { P2P_METHODS, p2pPaused, p2pRate, p2pPct, GIFT_OPTIONS, GIFT_MIN, giftQualifies } from '@/lib/p2p';
 import { useAuth } from '../../context/AuthContext';
 import { GET_CUSTOMER } from '../../lib/queries/auth';
@@ -141,6 +142,12 @@ export default function CheckoutPage() {
   const [p2pInfo, setP2pInfo] = useState(null);
   const [ppOrder, setPpOrder] = useState(null);   // { id, key } once a card order is placed
   const [giftChoice, setGiftChoice] = useState('');
+  const [ppApproved, setPpApproved] = useState(null);   // { ppOrderId, proxyId, proxyUrl }
+
+  // PayPal is approved INSIDE the iframe before the order is placed, so Place Order has to
+  // wait for it. Submitting first produces a WooCommerce order with no PayPal id, which the
+  // gateway rejects as "[19]" — an order the buyer believes failed and we cannot capture.
+  const awaitingPayPal = payMethod === PAYPAL_METHOD && !ppApproved;
   const payMethodRef = useRef('');
   // SnapPay is the card option (ChargeX retired 2026-07-24). If CARD_PAUSED is ever
   // flipped back on, the card row is filtered out entirely and Zelle becomes default.
@@ -427,6 +434,9 @@ export default function CheckoutPage() {
       rewardsPts: rewardsAppliedPts,
       routeSelected: routeFee > 0,
       giftChoice: giftEarned ? giftChoice : '',
+      ppOrderId: ppApproved?.ppOrderId || '',
+      ppProxyUrl: ppApproved?.proxyUrl || '',
+      ppProxyId: ppApproved?.proxyId || '',
     });
     try {
       const { data, errors } = await checkoutMutation({ variables: input });
@@ -730,12 +740,30 @@ export default function CheckoutPage() {
                   </div>
                 )}
 
-                <button onClick={handlePlaceOrder} disabled={placingOrder || (hasBackorder && !backorderAck) || !methodChosen}
-                  style={{ width: '100%', padding: '14px', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: (placingOrder || (hasBackorder && !backorderAck) || !methodChosen) ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: 'var(--glow-blue)', opacity: (placingOrder || (hasBackorder && !backorderAck) || !methodChosen) ? 0.6 : 1 }}>
+                {payMethod === PAYPAL_METHOD && (
+                  <div style={{ marginBottom: '1rem' }}>
+                    <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
+                      {ppApproved
+                        ? '✓ PayPal approved — place your order to finish.'
+                        : 'Approve with PayPal below, then place your order.'}
+                    </div>
+                    {!ppApproved && (
+                      <PayPalFrame
+                        onApproved={setPpApproved}
+                        onError={(m) => alert(`PayPal: ${m}`)}
+                      />
+                    )}
+                  </div>
+                )}
+
+                <button onClick={handlePlaceOrder} disabled={placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal}
+                  style={{ width: '100%', padding: '14px', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: (placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal) ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: 'var(--glow-blue)', opacity: (placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal) ? 0.6 : 1 }}>
                   {placingOrder ? (
                     <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Placing Order…</>
                   ) : !methodChosen ? (
                     <><Lock size={15} /> Choose a payment method</>
+                  ) : awaitingPayPal ? (
+                    <><Lock size={15} /> Approve with PayPal above</>
                   ) : noRailDue ? (
                     <><Lock size={15} /> Complete Order — $0.00 due</>
                   ) : REDIRECT_METHODS.has(payMethod) ? (
