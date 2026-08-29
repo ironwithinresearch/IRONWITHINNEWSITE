@@ -13,20 +13,41 @@
  *   {name:'mecom-paypalBodyResizeCreditForm', value:<px>}
  *   {name:'mecom-paypalOpenCreditFormFail',   value:<message>}
  *   'mecom-paypalMakeFullIframeCreditForm' / '…Normal' / '…CloseCreditForm'
+ *
+ * THE CONTRACT RUNS BOTH WAYS, and the outbound half is the one that is easy to miss. The
+ * proxy's createOrder() reads `window.wooCheckoutFormInfo`, which it only ever populates from
+ * a {name:'mecom-paypalSendOrderInfo', value:…} message posted IN by the parent. Until that
+ * arrives the buttons render, look completely normal, and do nothing at all when clicked —
+ * no console error, no message, no popup. We post it as soon as the frame loads and again
+ * whenever the buyer edits their details, because the payload carries their email and address.
  */
 
 import { useEffect, useRef, useState } from 'react';
 
-export default function PayPalFrame({ onApproved, onError }) {
-  const [frame, setFrame] = useState(null);   // { url, origin, proxy_id }
+export default function PayPalFrame({ billing, wooSession, onApproved, onError }) {
+  const [frame, setFrame] = useState(null);   // { url, origin, proxy_id, order_info }
   const [height, setHeight] = useState(150);
   const [full, setFull] = useState(false);
   const [failed, setFailed] = useState('');
   const originRef = useRef('');
+  const iframeRef = useRef(null);
+  // The payload can only be delivered once the frame's own script is listening. Posting it
+  // before onload silently lands nowhere.
+  const [loaded, setLoaded] = useState(false);
+
+  // Serialised so the effect re-runs when the buyer actually changes something, rather than
+  // on every keystroke-induced re-render of the parent (billing is a fresh object each time).
+  const billingKey = JSON.stringify(billing || {});
 
   useEffect(() => {
     let alive = true;
-    fetch('/api/paypal-frame', { cache: 'no-store' })
+    const qs = new URLSearchParams(
+      Object.entries(JSON.parse(billingKey)).filter(([, v]) => v)
+    ).toString();
+    fetch(`/api/paypal-frame?${qs}`, {
+      cache: 'no-store',
+      headers: wooSession ? { 'woocommerce-session': `Session ${wooSession}` } : {},
+    })
       .then((r) => r.json())
       .then((d) => {
         if (!alive) return;
@@ -36,7 +57,24 @@ export default function PayPalFrame({ onApproved, onError }) {
       })
       .catch(() => alive && setFailed('PayPal is unavailable right now.'));
     return () => { alive = false; };
-  }, []);
+  }, [billingKey, wooSession]);
+
+  /**
+   * Hand the iframe its order info.
+   *
+   * Posted to the proxy's own origin, never '*' — the plugin's own checkout_hook.js uses '*',
+   * but this payload carries the buyer's email and address and there is no reason to broadcast
+   * it to whatever else may be framed on the page.
+   *
+   * Re-posted whenever order_info changes: the cart total lives in it, so a buyer who edits
+   * their cart or address and then pays would otherwise authorise the previous amount.
+   */
+  useEffect(() => {
+    const info = frame?.order_info;
+    const win = iframeRef.current?.contentWindow;
+    if (!info || !win || !frame?.origin || !loaded) return;
+    win.postMessage({ name: 'mecom-paypalSendOrderInfo', value: info }, frame.origin);
+  }, [frame, loaded]);
 
   useEffect(() => {
     function listener(event) {
@@ -81,6 +119,8 @@ export default function PayPalFrame({ onApproved, onError }) {
   return (
     <iframe
       title="PayPal"
+      ref={iframeRef}
+      onLoad={() => setLoaded(true)}
       src={frame.url}
       referrerPolicy="no-referrer"
       height={height}

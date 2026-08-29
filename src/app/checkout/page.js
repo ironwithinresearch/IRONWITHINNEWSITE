@@ -195,6 +195,11 @@ export default function CheckoutPage() {
     return () => { on = false; };
   }, []);
 
+  // Read once on mount, not during render — this is localStorage, and reading it on the
+  // server pass is what has caused hydration mismatches on this page before.
+  const [wooSession, setWooSession] = useState('');
+  useEffect(() => { try { setWooSession(localStorage.getItem('woo_session') || ''); } catch { /* private mode */ } }, []);
+
   const [shipping, setShipping] = useState({
     firstName: '', lastName: '', email: user?.email || '',
     phone: '', address: '', city: '', state: '', zip: '', country: 'US',
@@ -749,6 +754,21 @@ export default function CheckoutPage() {
                     </div>
                     {!ppApproved && (
                       <PayPalFrame
+                        /* The frame needs the buyer's details BEFORE they click: PayPal is
+                           handed the email and address up front, and the proxy screens them
+                           against its own blocklists. The session is what gives the backend
+                           the cart the amount is built from. */
+                        billing={{
+                          email: shipping.email,
+                          first_name: shipping.firstName,
+                          last_name: shipping.lastName,
+                          address_1: shipping.address,
+                          city: shipping.city,
+                          state: shipping.state,
+                          postcode: shipping.zip,
+                          country: shipping.country || 'US',
+                        }}
+                        wooSession={wooSession}
                         onApproved={setPpApproved}
                         onError={(m) => alert(`PayPal: ${m}`)}
                       />
