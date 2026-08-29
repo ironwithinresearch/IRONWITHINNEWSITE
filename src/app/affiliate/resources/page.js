@@ -7,8 +7,8 @@ import Link from 'next/link';
 import { Copy, Check, Sparkles, ShieldAlert, ShieldCheck, ArrowRight, Download, Film, BookOpen } from 'lucide-react';
 
 const CAPTIONS = [
-  "NEW at Iron Within: spend $225 and you pick a FREE vial — RT-3 10mg or TRZ-2 10mg, your choice, plus free US shipping on the same order. Any payment method. My code [YOURCODE] stacks on top.",
-  "Free vial time. $225+ at Iron Within gets you a full-size RT-3 10mg or TRZ-2 10mg on the house, free shipping included. Pick yours at checkout — [YOURCODE] still comes off the total.",
+  "Two things running at Iron Within right now: BUY 1 GET 1 FREE sitewide — mix & match any 2 items and the cheaper one is free — and at $225+ you also pick a FREE vial, RT-3 10mg or TRZ-2 10mg, with free US shipping. Both apply automatically. My code [YOURCODE] stacks on top. BOGO ends Mon Sep 7.",
+  "BOGO on everything at Iron Within through Sep 7 — any 2 items, cheaper one free. Get to $225 and you also choose a free RT-3 10mg or TRZ-2 10mg plus free shipping. No codes needed for either; [YOURCODE] still comes off the total.",
   "LABOR DAY: buy one get one free on everything at Iron Within — mix & match ANY 2 items and the cheaper one is free automatically, no code needed. My code [YOURCODE] stacks on top. Ends Mon Sep 7 at midnight.",
   "BOGO on every peptide at Iron Within through Labor Day. Any 2 items — the cheaper one is free, applied at checkout. 99%+ purity, COA on every order. Use [YOURCODE] and it stacks.",
   "Doing peptide research? Iron Within Research is the only source I trust — 99%+ purity with a Certificate of Analysis on every single vial. Use code [YOURCODE] → ironwithin.io",
@@ -30,8 +30,8 @@ const DISCLOSURE = "#ad #affiliate — I earn a commission on purchases made wit
 const GRAPHICS = [
   // Labor Day B1G1, 24 Aug – 7 Sep. Leads the grid while it runs; pull these two when
   // it ends or affiliates keep posting an offer the cart no longer honours.
-  { src: '/affiliate-assets/free-vial-225-post.png', label: 'Free vial at $225 — Post' },
-  { src: '/affiliate-assets/free-vial-225-story.png', label: 'Free vial at $225 — Story' },
+  { src: '/affiliate-assets/promo-combo-post.png', label: 'BOGO + free vial — Post' },
+  { src: '/affiliate-assets/promo-combo-story.png', label: 'BOGO + free vial — Story' },
   { src: '/affiliate-assets/labor-day-story.jpg', label: 'Labor Day — Story (BOGO)' },
   { src: '/affiliate-assets/labor-day-landscape.jpg', label: 'Labor Day — Post (BOGO)' },
   { src: '/affiliate-assets/g1.png', label: 'Story — Trust' },
