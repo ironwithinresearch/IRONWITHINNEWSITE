@@ -40,8 +40,19 @@ const steps = ['Shipping', 'Review'];
 // The rest are manual P2P gateways (iw-p2p-pay.php) — the order is placed on-hold and
 // the buyer is shown send-to instructions.
 const CARD_METHOD = 'iwr_card';
+
+// PayPal. iwr_paypal is a WRAPPER around the paypal-proxy-phantom gateway, not that gateway
+// itself — see mu-plugin iw-paypal-headless.php. The plugin picks its proxy in a wp_head
+// action and reads it back from the WooCommerce session, so calling mecom_paypal directly
+// from a headless checkout fails EVERY order with "we cannot process your payment right
+// now [12]", which reads like a decline but is a missing session value. Never point this at
+// mecom_paypal.
+const PAYPAL_METHOD = 'iwr_paypal';
+const PAYPAL_ENABLED = true;
+
 const PAY_METHODS = [
   { id: CARD_METHOD,   label: 'Credit / Debit Card', desc: 'Pay securely by card. Visa, Mastercard, American Express & Discover.' },
+  { id: PAYPAL_METHOD, label: 'PayPal', desc: 'Pay with your PayPal balance, bank or any card through PayPal.' },
   { id: 'iwr_zelle',   label: 'Zelle',    handle: '8508980623' },
   { id: 'iwr_venmo',   label: 'Venmo',    handle: '@IronWithinPeps' },
   { id: 'iwr_cashapp', label: 'Cash App', handle: '$ironwithinresearch' },
@@ -54,7 +65,7 @@ const P2P_DISCOUNT_METHODS = P2P_METHODS;
 
 // Any method whose backend gateway answers with an off-site `redirect` rather than
 // completing the order in-place.
-const REDIRECT_METHODS = new Set(['iwr_rail', 'iwr_chargx', CARD_METHOD]);
+const REDIRECT_METHODS = new Set(['iwr_rail', 'iwr_chargx', CARD_METHOD, PAYPAL_METHOD]);
 
 // Card kill switch. Set to true to pull the card option from checkout instantly — keep it
 // in step with CARDS_ENABLED in PaymentMethods.jsx.
@@ -135,6 +146,7 @@ export default function CheckoutPage() {
   // flipped back on, the card row is filtered out entirely and Zelle becomes default.
   const payMethodOptions = PAY_METHODS
     .filter((m) => !(isCardPaused() && m.id === CARD_METHOD))
+    .filter((m) => PAYPAL_ENABLED || m.id !== PAYPAL_METHOD)
     .filter((m) => PP_ENABLED || m.id !== PP_METHOD);
   // Route Package Protection — customer-paid shipping insurance.
   // OPT-OUT by design (pre-checked): Route's own guidance is that opt-in roughly halves
