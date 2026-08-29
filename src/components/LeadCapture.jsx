@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { GIFT_FROM, GIFT_TO } from '@/lib/p2p';
+import { isLoggedIn } from '@/lib/auth';
 
 /* Email lead-capture popup. Appears after a short delay or on exit-intent,
    offers 10% off the first order for an email, and shows the code on success.
@@ -24,6 +26,10 @@ export default function LeadCapture() {
   useEffect(() => {
     const now = Date.now();
     if (now >= BB_START && now < BB_END) return;        // Birthday Bash popup owns the sale window
+    // A signed-in shopper inside the free-vial window gets GiftPromoPopup instead. They have
+    // already given us their email, so spending the one interruption we get on asking for it
+    // again is waste — and two popups in one visit is worse than either alone.
+    if (now >= GIFT_FROM && now < GIFT_TO && isLoggedIn()) return;
     let saved = null;
     try { saved = localStorage.getItem(KEY); } catch { /* ignore */ }
     if (saved === 'done') return;                       // already signed up

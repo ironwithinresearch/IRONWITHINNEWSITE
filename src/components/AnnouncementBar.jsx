@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { p2pPaused, p2pEventLive, p2pPct } from '@/lib/p2p';
+import { p2pPaused, p2pEventLive, p2pPct, GIFT_MIN, GIFT_FROM, GIFT_TO } from '@/lib/p2p';
 
 /* Scrolling announcement ticker, fixed above the navbar (height 36px).
    The navbar (top: 36) and main padding are offset to match. */
@@ -115,6 +115,15 @@ const LD_START = Date.parse('2026-08-24T13:00:00Z');
 const LD_END = Date.parse('2026-09-08T04:00:00Z');
 const LD_MESSAGE = '🇺🇸  LABOR DAY — BUY 1 GET 1 FREE SITEWIDE · mix & match ANY 2 items and the cheaper one is free, automatically · no code needed · stack your affiliate code on top · bundles & gift cards keep their own pricing · ends Mon Sep 7 at midnight';
 
+// Free vial at $225+, from 8:00am ET Sat 29 Aug. Window and threshold are IMPORTED from
+// p2p.js rather than restated here, because that file is the same source the checkout
+// chooser and mu-plugin iw-p2p-gift.php mirror. A bar advertising a threshold the cart
+// does not honour is a support ticket per order, and hardcoding the number here is exactly
+// how the Labor Day copy ended up describing a rule the backend had stopped applying.
+//
+// $225 is also the free-shipping minimum, which is why the two are sold as one line.
+const GIFT_MESSAGE = `🎁  SPEND $${GIFT_MIN}+ AND PICK A FREE VIAL — RT-3 10mg or TRZ-2 10mg, on us · free US shipping at $${GIFT_MIN} too · any payment method · choose yours at checkout`;
+
 // The pay-by-app 10% STAYS RUNNING this event (operator call 2026-08-14) — the buy-3
 // gate is doing the margin work instead, so the bar keeps promising it. If it is ever
 // paused again in iw-p2p-discount.php, set this window to match IN LOCKSTEP:
@@ -177,6 +186,9 @@ export default function AnnouncementBar() {
     if (now >= B2G1_START && now < B2G1_END) promos.unshift(B2G1_MESSAGE);
     const ldOn = now >= LD_START && now < LD_END;
     if (ldOn) { promos.unshift(LD_MESSAGE); setLdActive(true); }
+    // Sits behind the sitewide BOGO rather than ahead of it — the free vial is a
+    // threshold reward, and a shopper needs the headline discount first.
+    if (now >= GIFT_FROM && now < GIFT_TO) promos.push(GIFT_MESSAGE);
     if (qbOn) { promos.unshift(QB_MESSAGE); setQbActive(true); }
     if (!qbOn && flashOn) { promos.unshift(FLASH_MESSAGE); setFlashActive(true); }
     // Summer's "30% OFF EVERYTHING" line is suppressed while Fill the Freezer runs —
