@@ -28,15 +28,26 @@ const PAY_HOSTS = {
   ],
 };
 
+// VerifyPass — teacher / military / first-responder verification on /heroes.
+//   *.verifypass.com  — the widget script and the verification iframe
+// Their exact host is not published; if the widget renders as an empty box, the browser
+// console names the blocked origin and it goes here. Same failure mode as the card form
+// above, and the same first thing to check.
+const VERIFY_HOSTS = {
+  script: ["https://*.verifypass.com", "https://verifypass.com"],
+  frame: ["https://*.verifypass.com", "https://verifypass.com"],
+  connect: ["https://*.verifypass.com", "https://verifypass.com"],
+};
+
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline' https://api.goaffpro.com https://api2.goaffpro.com ${PAY_HOSTS.script.join(" ")}`,
+  `script-src 'self' 'unsafe-inline' https://api.goaffpro.com https://api2.goaffpro.com ${PAY_HOSTS.script.join(" ")} ${VERIFY_HOSTS.script.join(" ")}`,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' data: https://fonts.gstatic.com",
   "img-src 'self' data: blob: https:",
   "media-src 'self'",
-  `connect-src 'self' https://bhidasowgm.onrocket.site https://api.goaffpro.com https://api2.goaffpro.com ${PAY_HOSTS.connect.join(" ")}`,
-  `frame-src 'self' ${PAY_HOSTS.frame.join(" ")}`,
+  `connect-src 'self' https://bhidasowgm.onrocket.site https://api.goaffpro.com https://api2.goaffpro.com ${PAY_HOSTS.connect.join(" ")} ${VERIFY_HOSTS.connect.join(" ")}`,
+  `frame-src 'self' ${PAY_HOSTS.frame.join(" ")} ${VERIFY_HOSTS.frame.join(" ")}`,
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",

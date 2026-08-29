@@ -20,6 +20,7 @@ const footerLinks = {
   ],
   Support: [
     { label: 'Lab Reports & COAs', href: '/lab-reports' },
+    { label: 'Teacher / Military / First Responder', href: '/heroes' },
     { label: 'FAQ', href: '/faq' },
     { label: 'Shipping Info', href: '/shipping' },
     { label: 'Refund Policy', href: '/refund' },

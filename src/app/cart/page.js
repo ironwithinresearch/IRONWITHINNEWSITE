@@ -74,12 +74,23 @@ export default function CartPage() {
  
   const appliedCoupons = cart?.appliedCoupons || [];
 
-  /* Amount the $225 free-US-shipping rule is actually judged on. WooCommerce's
-     WC_Shipping_Free_Shipping subtracts the discount total from the displayed
-     subtotal whenever ignore_discounts is "no", which is how this store is set up.
-     Sale prices are already baked into the line prices, so only coupon codes move
-     this away from the plain subtotal. */
-  const freeShipQualifyingNum = Math.max(0, subtotalNum - num(cart?.discountTotal));
+  /* Amount the $225 free-US-shipping rule is actually judged on. This MUST mirror
+     iw-freeship-net.php on the backend: the subtotal, less coupon discounts, less
+     any NEGATIVE cart fee (currently the BOGO promo). WooCommerce's own min_amount
+     test subtracts coupons only and is blind to cart fees, which is why both sides
+     net them off by hand. Get this wrong and the bar announces free shipping that
+     checkout then declines to give. */
+  const cartFeeDiscounts = (cart?.fees || []).reduce((sum, f) => {
+    const raw = f?.amount;
+    const amt = typeof raw === 'number'
+      ? raw
+      : parseFloat(String(raw ?? '').replace(/[^0-9.-]/g, '')) || 0;
+    return amt < 0 ? sum + amt : sum;
+  }, 0);
+  const freeShipQualifyingNum = Math.max(
+    0,
+    subtotalNum - num(cart?.discountTotal) + cartFeeDiscounts,
+  );
 
   // Referred friends: auto-apply REFER25 ($25 off, min $75) once their cart qualifies.
   useEffect(() => {

@@ -6,10 +6,11 @@ import { Truck, Check } from 'lucide-react';
    "You're $X away from free US shipping" with a fill bar, → "unlocked" at $225+
    (or when the cart already has free shipping, e.g. a Subscribe & Save item).
 
-   `subtotal` MUST be the amount WooCommerce actually judges the rule on — the
-   subtotal minus any coupon discount, because free_shipping:7 runs with
-   ignore_discounts="no". Passing the raw pre-coupon subtotal makes this bar
-   announce free shipping that checkout then declines to give. */
+   `subtotal` MUST be the amount the rule is actually judged on — the subtotal
+   minus coupon discounts AND minus negative cart fees (the BOGO promo). Woo's own
+   min_amount test only subtracts coupons, so iw-freeship-net.php tightens it on the
+   backend and cart/page.js computes the matching figure here. Passing the raw
+   subtotal makes this bar announce free shipping that checkout then declines. */
 
 const THRESHOLD = 225;
 const money = (n) => `$${(Math.round(n * 100) / 100).toFixed(2)}`;
