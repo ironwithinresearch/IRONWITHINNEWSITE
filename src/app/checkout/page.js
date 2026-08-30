@@ -68,6 +68,33 @@ const PAYPAL_ENABLED = false;
 // volume each day, after which card falls back to the acquirer rotator until the 6am Central
 // reset — see mu-plugin iw-card-daily-cap.php and /api/card-rail. The buyer picks "Credit /
 // Debit Card" either way and never has to know which processor is behind it.
+/**
+ * One-tap payment links. MIRRORS mu-plugin iw-p2p-paylinks.php — if a handle or a URL shape
+ * changes, both move together, the same way the promo constants do.
+ *
+ * Zelle is absent deliberately: it has no public deep-link scheme (it lives inside each bank's
+ * own app), so any URL here would be a guess that silently fails for most customers.
+ *
+ * The prefill is a SUGGESTION. Both apps let the payer edit the amount and the note before
+ * sending, so this speeds up paying — it never proves what was paid.
+ */
+function p2pAppLink(method, amount, orderNumber) {
+  const amt = Number(amount || 0).toFixed(2);
+  if (!amt || amt === '0.00') return '';
+  if (method === 'iwr_venmo') {
+    const q = new URLSearchParams({
+      txn: 'pay', audience: 'private',
+      recipients: 'IronWithinPeps',
+      amount: amt, note: `Order #${orderNumber}`,
+    });
+    return `https://venmo.com/?${q.toString()}`;
+  }
+  // Cash App's path form. The $ stays literal, and there is NO note parameter — the order
+  // number has to be asked for in the copy or the payment arrives unmatchable.
+  if (method === 'iwr_cashapp') return `https://cash.app/$ironwithinresearch/${amt}`;
+  return '';
+}
+
 const PAY_METHODS = [
   { id: CARD_METHOD,   label: 'Credit / Debit Card', desc: 'Pay securely by card. Visa, Mastercard, American Express & Discover.' },
   { id: 'iwr_zelle',   label: 'Zelle',    handle: '8508980623' },
@@ -137,6 +164,12 @@ const COUNTRIES = [
 function plainPrice(price) {
   if (!price) return '';
   return price.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/<[^>]+>/g, '').trim();
+}
+
+// Woo hands totals back as display strings ("$&nbsp;1,234.56"). The pay links need a bare
+// decimal — a thousands separator is rejected by both Venmo and Cash App.
+function priceToNumber(price) {
+  return parseFloat(String(price || '').replace(/[^0-9.]/g, '')) || 0;
 }
 
 export default function CheckoutPage() {
@@ -423,9 +456,12 @@ export default function CheckoutPage() {
     if (!REDIRECT_METHODS.has(method) && method !== 'iw_giftcard' && method !== 'iw_storecredit') {
       const m = PAY_METHODS.find((x) => x.id === method);
       setP2pInfo({
+        method,                                   // needed to build the one-tap app link
         label: m?.label || 'P2P',
         handle: m?.handle || '',
         total: plainPrice(result?.order?.total || cartTotal),
+        // The deep links need a bare decimal — "1,234.56" is rejected by both apps.
+        amount: String(priceToNumber(result?.order?.total || cartTotal) || ''),
         orderNumber: num,
       });
     }
@@ -522,6 +558,24 @@ export default function CheckoutPage() {
                 <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>
                   Send <strong style={{ color: 'var(--text-light)' }}>{p2pInfo.total}</strong> via <strong style={{ color: 'var(--text-light)' }}>{p2pInfo.label}</strong> to:
                 </p>
+                {p2pAppLink(p2pInfo.method, p2pInfo.amount, p2pInfo.orderNumber) && (
+                  <a
+                    href={p2pAppLink(p2pInfo.method, p2pInfo.amount, p2pInfo.orderNumber)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'block', textAlign: 'center', textDecoration: 'none',
+                      background: p2pInfo.method === 'iwr_venmo' ? '#008CFF' : '#00D54B',
+                      color: p2pInfo.method === 'iwr_venmo' ? '#fff' : '#00320f',
+                      fontWeight: 800, fontSize: '1rem', padding: '14px 20px',
+                      borderRadius: '10px', marginBottom: '12px',
+                    }}
+                  >
+                    Pay with {p2pInfo.label}
+                  </a>
+                )}
+                {/* The handle stays visible under the button on purpose: the deep link does
+                    nothing useful on a desktop browser, and not everyone has the app. */}
                 <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', fontWeight: 900, color: 'var(--primary-blue)', background: 'rgba(0,207,255,0.08)', borderRadius: '10px', padding: '12px 14px', textAlign: 'center', marginBottom: '12px', wordBreak: 'break-all' }}>
                   {p2pInfo.handle}
                 </div>
