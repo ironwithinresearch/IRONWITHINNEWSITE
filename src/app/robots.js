@@ -7,8 +7,11 @@ export default function robots() {
       allow: "/",
       disallow: ["/account", "/cart", "/checkout", "/orders", "/wishlist", "/search", "/api/"],
     },
-    // Sitemap disabled 2026-07-27 (app/sitemap.js.disabled). Advertising a sitemap URL
-    // that 404s is worse than advertising none, so the reference comes out with it.
+    // Restored 2026-08-30: the route generates again (63 URLs, verified in the build), so the
+    // reason it was pulled — a sitemap URL that 404d — no longer applies. Advertising a sitemap
+    // that 404s is worse than advertising none, so if sitemap.js is ever disabled again, this
+    // line must come out with it.
+    sitemap: `${SITE}/sitemap.xml`,
     host: SITE,
   };
 }
