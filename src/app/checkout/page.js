@@ -49,7 +49,20 @@ const CARD_METHOD = 'iwr_card';
 // now [12]", which reads like a decline but is a missing session value. Never point this at
 // mecom_paypal.
 const PAYPAL_METHOD = 'iwr_paypal';
-const PAYPAL_ENABLED = true;
+
+// ⚠ OFF 2026-08-30 — operator is pausing PayPal at checkout until it can be finished properly.
+//
+// With this false, cardIsPayPal can never be true, so the card option routes to the acquirer
+// rotator (iwr_card) for every order regardless of the daily allowance. The backend cap is
+// disabled in step with it (IW_CDC_ENABLED in iw-card-daily-cap.php) so /api/card-rail also
+// answers 'rotator' — either one alone would do it, but leaving them disagreeing is how someone
+// later "fixes" the wrong side.
+//
+// THIS DOES NOT KILL THE PAY-LINKS ALREADY SENT. Those are signed order-pay URLs on the backend
+// (iw-paypal-paylink.php) served by the mecom_paypal gateway, which stays enabled on purpose —
+// 18 customers were emailed one on 29-30 Aug covering ~$3,750 of reopened orders, and switching
+// that gateway off would strand every one of them on a dead link.
+const PAYPAL_ENABLED = false;
 
 // PayPal is NOT listed separately. It is the card option itself for the first $2,700 of PayPal
 // volume each day, after which card falls back to the acquirer rotator until the 6am Central
