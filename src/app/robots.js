@@ -7,11 +7,11 @@ export default function robots() {
       allow: "/",
       disallow: ["/account", "/cart", "/checkout", "/orders", "/wishlist", "/search", "/api/"],
     },
-    // Restored 2026-08-30: the route generates again (63 URLs, verified in the build), so the
-    // reason it was pulled — a sitemap URL that 404d — no longer applies. Advertising a sitemap
-    // that 404s is worse than advertising none, so if sitemap.js is ever disabled again, this
-    // line must come out with it.
-    sitemap: `${SITE}/sitemap.xml`,
+    // Sitemap OFF by operator decision (2026-08-30). app/sitemap.js is renamed .disabled, so
+    // the route does not exist — and the reference comes out with it, because advertising a
+    // sitemap URL that 404s is worse than advertising none. The generator itself is untouched;
+    // restoring is a rename plus this line. It was briefly re-enabled during a site check and
+    // turned straight back off; do not "fix" it again without asking.
     host: SITE,
   };
 }
