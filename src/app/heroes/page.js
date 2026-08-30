@@ -15,20 +15,29 @@
  * forwarded to anyone, and every affiliate coupon here is individual_use, so a service code
  * would replace a customer's affiliate code rather than stack with it.
  *
- * THE WIDGET SLOT BELOW IS EMPTY until the embed snippet is pasted in from the VerifyPass
- * dashboard — their host is not published anywhere, so it cannot be written blind. The CSP
- * in next.config.js already allows *.verifypass.com for script, frame and connect; if the
- * widget ever renders as a blank box, the browser console names the blocked origin and it
- * goes in VERIFY_HOSTS there.
+ * The verification link is VerifyPass's own hosted flow, opened in a popup. Their dashboard also
+ * offers ready-made button markup; it is deliberately NOT used, because it ships unstyled and
+ * would land a grey system button in the middle of a themed page. All their snippets do is
+ * window.open() this same URL.
+ *
+ * WHY THE SIGNED-IN EMAIL IS SHOWN SO PROMINENTLY: the discount attaches to whatever address the
+ * customer verifies WITH. Verify under a personal address that is not the store account and the
+ * webhook still succeeds — it is held as pending and claimed if that address ever signs in — so
+ * nothing errors, the customer simply never sees their discount and contacts support. VerifyPass
+ * does have a prefill API, but it is not publicly documented and passing an unknown parameter
+ * risks breaking their page, so the address is put in front of the customer instead.
  */
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { isLoggedIn } from '@/lib/auth';
+import { isLoggedIn, getUser } from '@/lib/auth';
 
 // Set to true to pull the page again. Keep in step with IW_SVC_ENABLED on the backend.
 const HIDDEN = false;
+
+// From VerifyPass → Widgets → Installation ("Verification" direct link).
+const VERIFY_URL = 'https://verifypass.com/auth/d16cea5a4c';
 
 const GROUPS = [
   { icon: '🎖️', label: 'Military', detail: 'Active duty, reserve, veterans and military family' },
@@ -40,10 +49,27 @@ export default function HeroesPage() {
   if (HIDDEN) notFound();
 
   const [signedIn, setSignedIn] = useState(null);
+  const [email, setEmail] = useState('');
 
   // Read auth in an effect, never during render — these pages are static, and reading
   // localStorage on the server render is what has caused hydration mismatches here before.
-  useEffect(() => { setSignedIn(isLoggedIn()); }, []);
+  useEffect(() => {
+    setSignedIn(isLoggedIn());
+    const u = getUser();
+    setEmail(u?.email || u?.user_email || '');
+  }, []);
+
+  // Popup rather than a new tab: the customer keeps the store page behind them, and closing
+  // the popup returns them to where they were. Falls back to a tab if the popup is blocked —
+  // never silently does nothing, which would read as a dead button.
+  const openVerify = () => {
+    const w = 480, h = 760;
+    const left = window.screenX + Math.max(0, (window.outerWidth - w) / 2);
+    const top = window.screenY + Math.max(0, (window.outerHeight - h) / 2);
+    const win = window.open(VERIFY_URL, 'verifypass',
+      `width=${w},height=${h},left=${left},top=${top},resizable=yes,scrollbars=yes`);
+    if (!win) window.open(VERIFY_URL, '_blank', 'noopener');
+  };
 
   return (
     <main style={{ maxWidth: 780, margin: '0 auto', padding: '3rem 1.25rem 4rem' }}>
@@ -116,11 +142,40 @@ export default function HeroesPage() {
             <h2 style={{ fontSize: '1.15rem', margin: '0 0 0.6rem', fontWeight: 700 }}>
               Verify your status
             </h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: 1.6, margin: 0 }}>
-              Verification is handled by VerifyPass. It takes about a minute, and your
-              documents go to them — never to us.
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 1.1rem' }}>
+              Takes about a minute. Verification is handled by VerifyPass — your documents go to
+              them and are never seen or stored by us.
             </p>
-            {/* embed snippet goes here */}
+
+            {/* The address to verify with, stated before they click rather than after. */}
+            {email ? (
+              <p style={{
+                fontSize: '0.9rem', lineHeight: 1.55, margin: '0 0 1.1rem',
+                padding: '0.7rem 0.9rem', borderRadius: 8,
+                background: 'var(--glass, rgba(255,255,255,0.04))',
+                border: '1px solid var(--glass-border, rgba(255,255,255,0.12))',
+              }}>
+                Please verify using <strong>{email}</strong> — the same address as your account,
+                so the discount lands on it.
+              </p>
+            ) : null}
+
+            <button
+              type="button"
+              onClick={openVerify}
+              style={{
+                display: 'inline-block', background: 'var(--accent, #00A8D6)', color: '#fff',
+                border: 'none', fontWeight: 700, fontSize: '1rem', padding: '0.9rem 2rem',
+                borderRadius: 8, cursor: 'pointer', fontFamily: 'inherit',
+              }}
+            >
+              Verify my status
+            </button>
+
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.55, margin: '1rem 0 0' }}>
+              Once you&rsquo;re verified the 15% applies automatically at checkout. There is no code
+              to enter.
+            </p>
           </>
         )}
       </section>
