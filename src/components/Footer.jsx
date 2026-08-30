@@ -17,6 +17,7 @@ const footerLinks = {
     { label: 'Refer & Earn $25', href: '/refer' },
     { label: 'Rewards', href: '/rewards' },
     { label: 'Partners', href: '/affiliate' },
+    { label: 'Teacher / Military / First Responder', href: '/heroes' },
   ],
   Support: [
     { label: 'Lab Reports & COAs', href: '/lab-reports' },

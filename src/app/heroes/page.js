@@ -1,14 +1,13 @@
 'use client';
 /* Teacher / military / first-responder verification.
  *
- * ⚠ HIDDEN 2026-08-30 on operator instruction. HIDDEN = true makes this route 404 and the
- * footer link is removed; the page itself is kept intact so re-enabling is a one-line change.
+ * LIVE again 2026-08-30. HIDDEN pulls the route (404) and must stay in step with
+ * IW_SVC_ENABLED in mu-plugin iw-service-discount.php — one on and one off gives you either a
+ * live page that grants nothing, or a discount nobody can sign up for.
  *
- * Nothing was lost by hiding it: at the time it went dark there were ZERO verified accounts and
- * ZERO orders had ever taken the discount, because the VerifyPass webhook was still returning
- * "bad secret" and no real verification had ever landed. The backend discount is switched off
- * separately in mu-plugin iw-service-discount.php — BOTH have to be flipped to bring it back,
- * or the page returns and silently grants nothing.
+ * THE WIDGET SLOT BELOW IS STILL EMPTY until the embed snippet is pasted in from the VerifyPass
+ * dashboard (Widgets → Installation). Everything else is wired: their webhook posts to
+ * /wp-json/iw/v1/verifypass with the secret on the URL, and the 15% attaches to the account.
  *
  * 15% off, verified once by VerifyPass and then attached permanently to the customer's
  * ACCOUNT — mu-plugin iw-service-discount.php applies it as a cart discount at every future
@@ -28,8 +27,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { isLoggedIn } from '@/lib/auth';
 
-// Set to false to bring the page back. Also re-enable IW_SVC_ENABLED on the backend.
-const HIDDEN = true;
+// Set to true to pull the page again. Keep in step with IW_SVC_ENABLED on the backend.
+const HIDDEN = false;
 
 const GROUPS = [
   { icon: '🎖️', label: 'Military', detail: 'Active duty, reserve, veterans and military family' },
