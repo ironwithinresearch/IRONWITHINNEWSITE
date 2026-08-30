@@ -51,9 +51,12 @@ const CARD_METHOD = 'iwr_card';
 const PAYPAL_METHOD = 'iwr_paypal';
 const PAYPAL_ENABLED = true;
 
+// PayPal is NOT listed separately. It is the card option itself for the first $2,700 of PayPal
+// volume each day, after which card falls back to the acquirer rotator until the 6am Central
+// reset — see mu-plugin iw-card-daily-cap.php and /api/card-rail. The buyer picks "Credit /
+// Debit Card" either way and never has to know which processor is behind it.
 const PAY_METHODS = [
   { id: CARD_METHOD,   label: 'Credit / Debit Card', desc: 'Pay securely by card. Visa, Mastercard, American Express & Discover.' },
-  { id: PAYPAL_METHOD, label: 'PayPal', desc: 'Pay with your PayPal balance, bank or any card through PayPal.' },
   { id: 'iwr_zelle',   label: 'Zelle',    handle: '8508980623' },
   { id: 'iwr_venmo',   label: 'Venmo',    handle: '@IronWithinPeps' },
   { id: 'iwr_cashapp', label: 'Cash App', handle: '$ironwithinresearch' },
@@ -138,6 +141,18 @@ export default function CheckoutPage() {
   // so defaulting to one quoted a discount the buyer never asked for, and defaulting to
   // card quoted list price. Making it an explicit choice keeps the quote honest.
   const [payMethod, setPayMethod] = useState('');
+
+  // Which rail card payments take right now. Starts as 'rotator' rather than null so a failed
+  // or slow lookup renders the always-available rail instead of an empty payment step.
+  const [cardRail, setCardRail] = useState('rotator');
+  useEffect(() => {
+    let alive = true;
+    fetch('/api/card-rail', { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((d) => { if (alive && d?.rail) setCardRail(d.rail); })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, []);
   const [backorderAck, setBackorderAck] = useState(false);
   const [p2pInfo, setP2pInfo] = useState(null);
   const [ppOrder, setPpOrder] = useState(null);   // { id, key } once a card order is placed
@@ -147,7 +162,12 @@ export default function CheckoutPage() {
   // PayPal is approved INSIDE the iframe before the order is placed, so Place Order has to
   // wait for it. Submitting first produces a WooCommerce order with no PayPal id, which the
   // gateway rejects as "[19]" — an order the buyer believes failed and we cannot capture.
-  const awaitingPayPal = payMethod === PAYPAL_METHOD && !ppApproved;
+  // The card option is PayPal-backed while the day's allowance holds. The buyer's selection
+  // stays CARD_METHOD; only the gateway we submit changes.
+  const cardIsPayPal = payMethod === CARD_METHOD && cardRail === 'paypal' && PAYPAL_ENABLED;
+  const chosenMethod = cardIsPayPal ? PAYPAL_METHOD : payMethod;
+
+  const awaitingPayPal = cardIsPayPal && !ppApproved;
   const payMethodRef = useRef('');
   // SnapPay is the card option (ChargeX retired 2026-07-24). If CARD_PAUSED is ever
   // flipped back on, the card row is filtered out entirely and Zelle becomes default.
@@ -318,7 +338,7 @@ export default function CheckoutPage() {
   const methodChosen = !!payMethod || isZeroDue;
   const fullyCovered = computedTotalNum > 0 && dueAfterAll <= 0.005;
   const noRailDue = isZeroDue || fullyCovered;
-  const effectiveMethod = isZeroDue ? 'iw_giftcard' : (fullyCovered ? 'iw_storecredit' : payMethod);
+  const effectiveMethod = isZeroDue ? 'iw_giftcard' : (fullyCovered ? 'iw_storecredit' : chosenMethod);
   // Amount actually charged via the selected method (after store credit + rewards).
   const dueDisplay = fmt(noRailDue ? 0 : dueAfterAll);
 
@@ -745,12 +765,15 @@ export default function CheckoutPage() {
                   </div>
                 )}
 
-                {payMethod === PAYPAL_METHOD && (
+                {cardIsPayPal && (
                   <div style={{ marginBottom: '1rem' }}>
                     <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
+                      {/* This sits under "Credit / Debit Card", so it must not read as
+                          PayPal-only — the frame offers a "Debit or Credit Card" button too,
+                          and a card payer who thinks they need a PayPal account leaves. */}
                       {ppApproved
-                        ? '✓ PayPal approved — place your order to finish.'
-                        : 'Approve with PayPal below, then place your order.'}
+                        ? '✓ Payment approved — place your order to finish.'
+                        : 'Pay by card or PayPal below, then place your order.'}
                     </div>
                     {!ppApproved && (
                       <PayPalFrame
