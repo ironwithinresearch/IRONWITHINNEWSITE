@@ -84,7 +84,7 @@ function p2pAppLink(method, amount, orderNumber) {
   if (method === 'iwr_venmo') {
     const q = new URLSearchParams({
       txn: 'pay', audience: 'private',
-      recipients: 'IronWithinPeps',
+      recipients: 'iwnpay',
       amount: amt, note: `Order #${orderNumber}`,
     });
     return `https://venmo.com/?${q.toString()}`;
@@ -98,7 +98,7 @@ function p2pAppLink(method, amount, orderNumber) {
 const PAY_METHODS = [
   { id: CARD_METHOD,   label: 'Credit / Debit Card', desc: 'Pay securely by card. Visa, Mastercard, American Express & Discover.' },
   { id: 'iwr_zelle',   label: 'Zelle',    handle: '8508980623' },
-  { id: 'iwr_venmo',   label: 'Venmo',    handle: '@IronWithinPeps' },
+  { id: 'iwr_venmo',   label: 'Venmo',    handle: '@iwnpay' },
   { id: 'iwr_cashapp', label: 'Cash App', handle: '$ironwithinresearch' },
 ];
 
