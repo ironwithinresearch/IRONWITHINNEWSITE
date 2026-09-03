@@ -296,7 +296,7 @@ export const coaBySlug = {
   },
   'thrive': {
     coaFile: '/coa-pdf/thrive.pdf',
-    batchDate: '8/2/2026 · Lot IWR-2607-THRIVEL',
+    batchDate: '8/2/2026 · Lot IWR-2607-THRIVE',
     productName: 'Thrive',
   },
   'thymalin': {
