@@ -116,10 +116,11 @@ export const coaBySlug = {
     productName: 'IGF-1 LR3',
   },
   'ipa': {
-    coaFile: '/coa-pdf/ipa-batch0063.pdf',
-    batchDate: '8/2/2026 · Lot IWR-2607-IPA10L',
+    coaFile: '/coa-pdf/ipa-2026-08-28.pdf',
+    batchDate: '8/28/2026 · Lot IWR-082526IPA',
     productName: 'Ipa',
     batches: [
+      { coaFile: '/coa-pdf/ipa-2026-08-28.pdf', batchDate: '8/28/2026 · Lot IWR-082526IPA' },
       { coaFile: '/coa-pdf/ipa-batch0063.pdf', batchDate: '8/2/2026 · Lot IWR-2607-IPA10L' },
       { coaFile: '/coa-pdf/ipa-2026-04-16.pdf', batchDate: '4/16/2026 · Lot IWR-6499787' },
       { coaFile: '/coa-pdf/ipa.pdf', batchDate: '2/22/2026' },
@@ -214,9 +215,13 @@ export const coaBySlug = {
     productName: 'PE-22-28',
   },
   'pinealon': {
-    coaFile: '/coa-pdf/pinealon.pdf',
-    batchDate: '8/2/2026 · Lot IWR-2607-PIN10L',
+    coaFile: '/coa-pdf/pinealon-2026-08-28.pdf',
+    batchDate: '8/28/2026 · Lot IWR-082526PIN',
     productName: 'Pinealon',
+    batches: [
+      { coaFile: '/coa-pdf/pinealon-2026-08-28.pdf', batchDate: '8/28/2026 · Lot IWR-082526PIN' },
+      { coaFile: '/coa-pdf/pinealon.pdf', batchDate: '8/2/2026 · Lot IWR-2607-PIN10L' },
+    ],
   },
   'pink-glutathione': {
     coaFile: '/coa-pdf/pink-glutathione-2026-08-16.pdf',
@@ -229,10 +234,12 @@ export const coaBySlug = {
     productName: 'PT-141',
   },
   'rt-3': {
-    coaFile: '/coa-pdf/rt-3-batch0063.pdf',
-    batchDate: '8/2/2026',
+    coaFile: '/coa-pdf/rt-3-2026-08-28-30mg.pdf',
+    batchDate: '8/28/2026 · 30mg · Lot IWR-082526RT30',
     productName: 'RT-3',
     batches: [
+      { coaFile: '/coa-pdf/rt-3-2026-08-28-30mg.pdf', batchDate: '8/28/2026 · 30mg · Lot IWR-082526RT30' },
+      { coaFile: '/coa-pdf/rt-3-2026-08-28-20mg.pdf', batchDate: '8/28/2026 · 20mg · Lot IWR-082526RT20' },
       { coaFile: '/coa-pdf/rt-3-batch0063.pdf', batchDate: '8/2/2026' },
       { coaFile: '/coa-pdf/rt-3-5859103.pdf', batchDate: '6/24/2026 · Lot IWR-5859103' },
       { coaFile: '/coa-pdf/rt-3-4862753.pdf', batchDate: '6/24/2026 · Lot IWR-4862753' },
@@ -266,10 +273,11 @@ export const coaBySlug = {
     productName: 'SNAP-8',
   },
   'ss-31': {
-    coaFile: '/coa-pdf/ss-31-2026-08-13.pdf',
-    batchDate: '8/13/2026 · Lot IWR-081026SS',
+    coaFile: '/coa-pdf/ss-31-2026-08-28.pdf',
+    batchDate: '8/28/2026 · Lot IWR-082526SS',
     productName: 'SS-31',
     batches: [
+      { coaFile: '/coa-pdf/ss-31-2026-08-28.pdf', batchDate: '8/28/2026 · Lot IWR-082526SS' },
       { coaFile: '/coa-pdf/ss-31-2026-08-13.pdf', batchDate: '8/13/2026 · Lot IWR-081026SS' },
       { coaFile: '/coa-pdf/ss-31.pdf', batchDate: '8/2/2026 · Lot IWR-2607-SS50L' },
       { coaFile: '/coa-pdf/ss-31-2026-06-08.pdf', batchDate: '6/8/2026' },

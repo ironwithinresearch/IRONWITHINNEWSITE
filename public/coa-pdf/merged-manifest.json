@@ -16,6 +16,7 @@
     "glow-bundle.pdf"
   ],
   "ipa": [
+    "ipa-2026-08-28.pdf",
     "ipa-batch0063.pdf",
     "ipa-2026-04-16.pdf",
     "ipa.pdf"
@@ -43,7 +44,13 @@
     "nad-6384965.pdf",
     "nad.pdf"
   ],
+  "pinealon": [
+    "pinealon-2026-08-28.pdf",
+    "pinealon.pdf"
+  ],
   "rt-3": [
+    "rt-3-2026-08-28-30mg.pdf",
+    "rt-3-2026-08-28-20mg.pdf",
     "rt-3-batch0063.pdf",
     "rt-3-5859103.pdf",
     "rt-3-4862753.pdf",
@@ -51,6 +58,7 @@
     "rt-3.pdf"
   ],
   "ss-31": [
+    "ss-31-2026-08-28.pdf",
     "ss-31-2026-08-13.pdf",
     "ss-31.pdf",
     "ss-31-2026-06-08.pdf"
