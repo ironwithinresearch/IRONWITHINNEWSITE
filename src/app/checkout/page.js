@@ -10,12 +10,15 @@ import { useCart } from '../../context/CartContext';
 import OrderBump from '@/components/OrderBump';
 import { getReferCookie } from '@/lib/referral';
 import PayPalFrame from '@/components/PayPalFrame';
-import { P2P_METHODS, p2pPaused, p2pRate, p2pPct, GIFT_OPTIONS, GIFT_MIN, giftQualifies } from '@/lib/p2p';
+import { P2P_METHODS, p2pPaused, p2pRate, p2pPct, GIFT_OPTIONS, GIFT_MIN, giftQualifies, giftQualifying } from '@/lib/p2p';
 import { useAuth } from '../../context/AuthContext';
 import { GET_CUSTOMER } from '../../lib/queries/auth';
 import { decodePriceHtml } from '../../lib/utils';
 import { getAffiliateRef } from '../../lib/affiliate';
 import { fetchStoreCredit } from '../../lib/storeCredit';
+import { creditEligibility } from '../../lib/creditEligibility';
+import { ladderQualifying } from '../../lib/p2p';
+import SpendLadder from '../../components/SpendLadder';
 import { getRewardsRedeemPts, setRewardsRedeemPts, fetchRewards } from '../../lib/rewards';
 import PaymentMethods from '../../components/PaymentMethods';
 import PeptidesPayContainer from '../../components/PeptidesPayContainer';
@@ -27,6 +30,7 @@ import {
 } from 'lucide-react';
  
 const steps = ['Shipping', 'Review'];
+const SUPPORT_EMAIL = 'support@ironwithin.io';
 
 // Payment methods. iwr_card is the ROUTER (mu-plugin iw-card-router.php): one card option
 // for the buyer, and the backend decides which acquirer actually takes it, rotating volume
@@ -180,6 +184,12 @@ export default function CheckoutPage() {
   const { isLoggedIn, user, mounted: authMounted } = useAuth();
 
   const [currentStep, setCurrentStep] = useState(0);
+  /* Checkout failures used to be native alert()s. On a phone an alert is a dead end:
+     the buyer taps OK and is back on the same screen with nothing telling them what to
+     do, and the message is gone for good. These render inline, stay put, and say what
+     happens next. */
+  const [checkoutError, setCheckoutError] = useState(null); // { title, body }
+  const [payOpenFailed, setPayOpenFailed] = useState(false); // order exists, card form didn't
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
   // NO DEFAULT — the buyer must choose. A pre-selected method silently decides things
@@ -351,16 +361,30 @@ export default function CheckoutPage() {
   const p2pEligible = P2P_DISCOUNT_METHODS.has(payMethod) && !p2pPaused();
   const p2pItemsBase = Math.max(0, money(cartSubtotal) || (computedTotalNum - shipCostNum));
   const p2pDiscount = p2pEligible ? round2(p2pItemsBase * p2pRate()) : 0;
-  // Free vial: pay-by-app orders over $200 choose a TRZ-2 10mg or RT-3 10mg. Measured on
-  // the same items base as the discount — what the cart showed — because that is what
-  // iw-p2p-gift.php checks at priority 23, before the 35% comes off at 24.
-  const giftEarned = giftQualifies(p2pItemsBase, payMethod);
+  // Free vial: ANY payment method at $225+ chooses a TRZ-2 10mg or RT-3 10mg.
+  // Judged on giftQualifying(), which mirrors iw_gift_qualifying_total() — items after
+  // coupons, minus negative cart fees, then the P2P rate where it applies. NOT the raw
+  // items base: a $240 cart with a 15% code nets $204, and offering a vial the backend
+  // refuses is worse than not offering one.
+  const giftBase = giftQualifying(cart, p2pEligible);
+  const giftEarned = giftQualifies(giftBase, payMethod);
 
   // Route sits before store credit and rewards, exactly as the backend orders it
   // (fee at prio 23, credit 25, rewards 26) so those can pay for protection too.
   const totalAfterP2P = Math.max(0, round2(computedTotalNum - p2pDiscount + routeFee));
 
-  const creditApplied = round2(Math.min(creditBalance, Math.max(0, totalAfterP2P)));
+  // The wallet is withheld from carts already carrying a free-unit offer or more than
+  // 30% off. Enforced server-side in iw-store-credit-limits.php; mirrored here so the
+  // checkout never quotes a credit the backend then refuses to apply.
+  // Spend ladder: judged on items after coupons minus negative cart fees — the same
+  // figure the cart's shipping bar uses and iw_ladder_qualifying_total() computes.
+  const ladderBase = ladderQualifying(cart);
+
+  const creditRule = creditEligibility(cart);
+  const creditApplied = creditRule.eligible
+    ? round2(Math.min(creditBalance, Math.max(0, totalAfterP2P)))
+    : 0;
+  const creditWithheld = creditBalance > 0 && !creditRule.eligible;
   const dueAfterCredit = Math.max(0, round2(totalAfterP2P - creditApplied));
 
   // Rewards: spend chosen points (500 pts = $5) off whatever is still due after store
@@ -420,15 +444,31 @@ export default function CheckoutPage() {
         return;
       }
       const reason = errors?.[0]?.message;
-      alert(reason
-        ? `Checkout error: ${reason}`
-        : 'Checkout error: no payment link was returned. Please try again, or email support@ironwithin.io.');
+      setCheckoutError({
+        title: 'We couldn’t open the payment page',
+        body: (
+          <>
+            {reason ? `${reason} ` : ''}Nothing has been charged and your cart is still here.
+            Try Place Order again, or choose Zelle, Venmo or Cash App below — those go through
+            straight away. Still stuck? Email <strong>{SUPPORT_EMAIL}</strong>.
+          </>
+        ),
+      });
       return;
     }
 
     // P2P / gift card: an order must actually have been placed. No result = real failure.
     if (!result) {
-      alert(`Checkout error: ${errors?.[0]?.message || 'We could not place your order. Please try again.'}`);
+      setCheckoutError({
+        title: 'Your order wasn’t placed',
+        body: (
+          <>
+            {errors?.[0]?.message || 'Something went wrong on our side.'} Nothing has been charged.
+            Your cart is unchanged — press Place Order to try again, or email{' '}
+            <strong>{SUPPORT_EMAIL}</strong> and we’ll take the order manually.
+          </>
+        ),
+      });
       return;
     }
 
@@ -445,7 +485,10 @@ export default function CheckoutPage() {
       if (id && key) {
         setPpOrder({ id, key });
       } else {
-        alert('Your order was placed but the card form could not be opened. Please email support@ironwithin.io with order #' + num + ' — nothing has been charged.');
+        // The order is real and UNPAID. This used to fire an alert and then drop the buyer
+        // on a screen headed "Order Confirmed!" telling them their peptides were being
+        // prepared — for an order nobody had paid for. The success screen now handles it.
+        setPayOpenFailed(true);
       }
       setRewardsRedeemPts(0);
       setOrderPlaced(true);
@@ -492,6 +535,7 @@ export default function CheckoutPage() {
   };
 
   const handlePlaceOrder = async () => {
+    setCheckoutError(null);                    // a retry starts clean
     if (hasBackorder && !backorderAck) return; // require backorder acknowledgment
     if (!methodChosen) return;                 // nothing is pre-selected; the buyer must pick
     payMethodRef.current = effectiveMethod;
@@ -517,7 +561,16 @@ export default function CheckoutPage() {
       finishCheckout(data, errors);
     } catch (err) {
       // Network / unexpected errors only — GraphQL errors arrive via errorPolicy:'all'.
-      alert(`Checkout error: ${err.message}`);
+      setCheckoutError({
+        title: 'We couldn’t reach the store',
+        body: (
+          <>
+            Your connection dropped before the order went through, so nothing has been charged
+            and nothing has been placed. Check your signal and press Place Order again.
+            {err?.message ? <span style={{ display: 'block', marginTop: 6, color: 'var(--text-muted)', fontSize: '0.8rem' }}>{err.message}</span> : null}
+          </>
+        ),
+      });
     }
   };
 
@@ -528,14 +581,16 @@ export default function CheckoutPage() {
         <div style={{ maxWidth: 500, width: '100%', textAlign: 'center', background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: '24px', padding: '56px 40px', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(52,211,153,0.07) 0%, transparent 70%)', pointerEvents: 'none' }} />
           <div style={{ position: 'relative', zIndex: 1 }}>
-            <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'rgba(52,211,153,0.15)', border: '2px solid rgba(52,211,153,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
-              <CheckCircle2 size={40} color="#34d399" />
+            <div style={{ width: 80, height: 80, borderRadius: '50%', background: payOpenFailed ? 'rgba(251,191,36,0.15)' : 'rgba(52,211,153,0.15)', border: `2px solid ${payOpenFailed ? 'rgba(251,191,36,0.45)' : 'rgba(52,211,153,0.4)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+              {payOpenFailed ? <Info size={40} color="#fbbf24" /> : <CheckCircle2 size={40} color="#34d399" />}
             </div>
             <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '2rem', fontWeight: 900, marginBottom: '12px' }}>
-              {ppOrder ? 'Almost done' : p2pInfo ? 'Order Placed!' : 'Order Confirmed!'}
+              {payOpenFailed ? 'Payment still needed' : ppOrder ? 'Almost done' : p2pInfo ? 'Order Placed!' : 'Order Confirmed!'}
             </h1>
             <p style={{ color: 'var(--text-secondary)', marginBottom: '8px' }}>
-              {ppOrder
+              {payOpenFailed
+                ? 'Your order is saved but the card form could not open, so nothing has been paid yet.'
+                : ppOrder
                 ? 'Enter your card below to complete payment. Your order is saved — nothing has been charged yet.'
                 : p2pInfo
                 ? 'One more step — send your payment below. Your order ships as soon as payment is received.'
@@ -549,6 +604,19 @@ export default function CheckoutPage() {
 
             {ppOrder && (
               <PeptidesPayContainer orderId={ppOrder.id} orderKey={ppOrder.key} />
+            )}
+            {payOpenFailed && (
+              <Notice
+                tone="warn"
+                title={`Order #${orderNumber} is saved and unpaid`}
+                body={
+                  <>
+                    Nothing has been charged. Email <strong>{SUPPORT_EMAIL}</strong> with your order
+                    number and we’ll send you a payment link, or reply to your order email to pay by
+                    Zelle, Venmo or Cash App. Your stock is held.
+                  </>
+                }
+              />
             )}
             {p2pInfo && (
               <div style={{ textAlign: 'left', background: 'var(--bg-dark)', border: '1px solid var(--primary-blue)', borderRadius: '14px', padding: '20px', marginBottom: '28px' }}>
@@ -683,22 +751,22 @@ export default function CheckoutPage() {
                 )}
                 <form onSubmit={async e => { e.preventDefault(); fireStartedCheckout(); await setShippingAddress(shipping); setCurrentStep(1); }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
-                    <Field label="First Name *" value={shipping.firstName} onChange={v => setShipping(s => ({ ...s, firstName: v }))} placeholder="John" required />
-                    <Field label="Last Name *" value={shipping.lastName} onChange={v => setShipping(s => ({ ...s, lastName: v }))} placeholder="Doe" required />
+                    <Field label="First Name *" autoComplete="given-name" value={shipping.firstName} onChange={v => setShipping(s => ({ ...s, firstName: v }))} placeholder="John" required />
+                    <Field label="Last Name *" autoComplete="family-name" value={shipping.lastName} onChange={v => setShipping(s => ({ ...s, lastName: v }))} placeholder="Doe" required />
                   </div>
                   <div style={{ height: 14 }} />
-                  <Field label="Email *" type="email" value={shipping.email} onChange={v => setShipping(s => ({ ...s, email: v }))} placeholder="you@example.com" required />
+                  <Field label="Email *" autoComplete="email" inputMode="email" type="email" value={shipping.email} onChange={v => setShipping(s => ({ ...s, email: v }))} placeholder="you@example.com" required />
                   <div style={{ height: 14 }} />
-                  <Field label="Phone" value={shipping.phone} onChange={v => setShipping(s => ({ ...s, phone: v }))} placeholder="+1 (555) 000-0000" />
+                  <Field label="Phone" autoComplete="tel" inputMode="tel" value={shipping.phone} onChange={v => setShipping(s => ({ ...s, phone: v }))} placeholder="+1 (555) 000-0000" />
                   <div style={{ height: 14 }} />
-                  <Field label="Street Address *" value={shipping.address} onChange={v => setShipping(s => ({ ...s, address: v }))} placeholder="123 Research Blvd" required />
+                  <Field label="Street Address *" autoComplete="address-line1" value={shipping.address} onChange={v => setShipping(s => ({ ...s, address: v }))} placeholder="123 Research Blvd" required />
                   <div style={{ height: 14 }} />
-                  <SelectField label="Country *" value={shipping.country} onChange={v => setShipping(s => ({ ...s, country: v }))} options={COUNTRIES} required />
+                  <SelectField label="Country *" autoComplete="country" value={shipping.country} onChange={v => setShipping(s => ({ ...s, country: v }))} options={COUNTRIES} required />
                   <div style={{ height: 14 }} />
                   <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '14px' }}>
-                    <Field label="City *" value={shipping.city} onChange={v => setShipping(s => ({ ...s, city: v }))} placeholder="City" required />
-                    <Field label="State / Province" value={shipping.state} onChange={v => setShipping(s => ({ ...s, state: v }))} placeholder="State / Province" />
-                    <Field label="Postal Code *" value={shipping.zip} onChange={v => setShipping(s => ({ ...s, zip: v }))} placeholder="Postal code" required />
+                    <Field label="City *" autoComplete="address-level2" value={shipping.city} onChange={v => setShipping(s => ({ ...s, city: v }))} placeholder="City" required />
+                    <Field label="State / Province" autoComplete="address-level1" value={shipping.state} onChange={v => setShipping(s => ({ ...s, state: v }))} placeholder="State / Province" />
+                    <Field label="Postal Code *" autoComplete="postal-code" inputMode="text" value={shipping.zip} onChange={v => setShipping(s => ({ ...s, zip: v }))} placeholder="Postal code" required />
                   </div>
                   <div style={{ height: 18 }} />
                   <Disclaimer />
@@ -860,11 +928,16 @@ export default function CheckoutPage() {
                         }}
                         wooSession={wooSession}
                         onApproved={setPpApproved}
-                        onError={(m) => alert(`PayPal: ${m}`)}
+                        onError={(m) => setCheckoutError({
+                          title: 'PayPal couldn’t complete',
+                          body: <>{m} Nothing has been charged. Pick another payment method below, or try PayPal again.</>,
+                        })}
                       />
                     )}
                   </div>
                 )}
+
+                {checkoutError && <Notice title={checkoutError.title} body={checkoutError.body} />}
 
                 <button onClick={handlePlaceOrder} disabled={placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal}
                   style={{ width: '100%', padding: '14px', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: (placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal) ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: 'var(--glow-blue)', opacity: (placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal) ? 0.6 : 1 }}>
@@ -1020,7 +1093,14 @@ export default function CheckoutPage() {
               {p2pDiscount > 0 && (
                 <SummaryRow label={`Zelle / Venmo / Cash App discount (${p2pPct()}%)`} value={`- $${p2pDiscount.toFixed(2)}`} valueColor="#34d399" />
               )}
+              <SpendLadder subtotal={ladderBase} />
+
               {/* Store credit (account wallet) — applied like cash, after discounts */}
+              {creditWithheld && (
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.45, padding: '6px 0' }}>
+                  Your ${creditBalance.toFixed(2)} store credit stays on your account — {creditRule.reason.replace(/^Store credit /, '').replace(/\.$/, '')}.
+                </div>
+              )}
               {creditApplied > 0 && (
                 <SummaryRow label="Store Credit" value={`- $${creditApplied.toFixed(2)}`} valueColor="#34d399" />
               )}
@@ -1074,11 +1154,35 @@ function FormCard({ icon, title, children }) {
   );
 }
 
-function Field({ label, type = 'text', value, onChange, placeholder, required, maxLength }) {
+/* `autoComplete` is not decoration: without a recognised token on each input, iOS and
+   Android will not offer to fill the address at all, and every buyer types nine fields by
+   hand on a phone. `inputMode` picks the right keyboard for email and postal codes. */
+/* Inline failure notice. role="alert" so screen readers announce it the way the native
+   alert() used to, without trapping anyone in a modal. */
+function Notice({ title, body, tone = 'error' }) {
+  const red = tone === 'error';
+  return (
+    <div role="alert" style={{
+      display: 'flex', alignItems: 'flex-start', gap: '10px', textAlign: 'left',
+      padding: '14px 16px', borderRadius: '12px', marginBottom: '14px',
+      background: red ? 'rgba(248,113,113,0.08)' : 'rgba(251,191,36,0.08)',
+      border: `1px solid ${red ? 'rgba(248,113,113,0.35)' : 'rgba(251,191,36,0.35)'}`,
+    }}>
+      <Info size={18} color={red ? '#f87171' : '#fbbf24'} style={{ flexShrink: 0, marginTop: 1 }} />
+      <div style={{ fontSize: '0.86rem', lineHeight: 1.6, color: 'var(--text-secondary)' }}>
+        <strong style={{ color: 'var(--text-light)', display: 'block', marginBottom: 2 }}>{title}</strong>
+        {body}
+      </div>
+    </div>
+  );
+}
+
+function Field({ label, type = 'text', value, onChange, placeholder, required, maxLength, autoComplete, inputMode }) {
   return (
     <div>
       <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 500, color: 'var(--text-secondary)', marginBottom: '6px' }}>{label}</label>
       <input type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} required={required} maxLength={maxLength}
+        autoComplete={autoComplete} inputMode={inputMode}
         style={{ width: '100%', padding: '11px 14px', background: 'var(--bg-dark)', border: '1px solid var(--glass-border)', borderRadius: '10px', color: 'var(--text-light)', fontFamily: 'var(--font-body)', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }}
         onFocus={e => e.target.style.borderColor = 'var(--primary-blue)'}
         onBlur={e => e.target.style.borderColor = 'var(--glass-border)'} />
@@ -1086,11 +1190,11 @@ function Field({ label, type = 'text', value, onChange, placeholder, required, m
   );
 }
 
-function SelectField({ label, value, onChange, options, required }) {
+function SelectField({ label, value, onChange, options, required, autoComplete }) {
   return (
     <div>
       <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 500, color: 'var(--text-secondary)', marginBottom: '6px' }}>{label}</label>
-      <select value={value} onChange={e => onChange(e.target.value)} required={required}
+      <select value={value} onChange={e => onChange(e.target.value)} required={required} autoComplete={autoComplete}
         style={{ width: '100%', padding: '11px 14px', background: 'var(--bg-dark)', border: '1px solid var(--glass-border)', borderRadius: '10px', color: 'var(--text-light)', fontFamily: 'var(--font-body)', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box', appearance: 'none', cursor: 'pointer' }}
         onFocus={e => e.target.style.borderColor = 'var(--primary-blue)'}
         onBlur={e => e.target.style.borderColor = 'var(--glass-border)'}>

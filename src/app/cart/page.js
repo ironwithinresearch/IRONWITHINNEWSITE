@@ -14,6 +14,8 @@ import FreeShippingBar from '@/components/FreeShippingBar';
 import CartRewards from '@/components/CartRewards';
 import { getRewardsRedeemPts, setRewardsRedeemPts } from '@/lib/rewards';
 import CartStoreCredit from '@/components/CartStoreCredit';
+import SpendLadder from '@/components/SpendLadder';
+import { GIFT_MIN } from '@/lib/p2p';
 import SaleCountdown from '@/components/SaleCountdown';
 import PaymentMethods from '@/components/PaymentMethods';
 import {
@@ -24,16 +26,18 @@ import {
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { getReferCookie } from '@/lib/referral';
 
-// Queen's Birthday Bash tiered "your pick" free gift — mutually exclusive, highest tier only:
-//   $300+   -> free RETA / TIRZ 30mg
-//   $200–$299 -> free RETA / TIRZ 10mg
-// A cart only ever earns ONE gift (the highest tier it reaches), never both.
+// Free vial picker. ONE tier, mirroring mu-plugin iw-p2p-gift.php: IW_GIFT_MIN = $225
+// and iw_gift_options() = TRZ-2 10mg (1033) / RT-3 10mg (520).
+//
+// This carried the retired Queen's Birthday Bash ladder until 4 Sep 2026 — $200 for a
+// 10mg and $300 for a THIRTY mg — and both were wrong in ways that cost money:
+//   * $200 offered a vial the backend refuses until $225, so the cart promised one and
+//     the order arrived without it.
+//   * the 30mg tier gave away the two highest-contribution SKUs in the catalogue
+//     (~$70 each) and the backend has never had a 30mg option to honour it with.
+// Keep this table equal to iw_gift_options(); if they drift, the cart lies.
 const XJ_GIFT_TIERS = [
-  { min: 300, dose: '30mg', opts: [
-    { vid: 523, pid: 310, label: 'RETA 30mg', slug: 'rt-3' },
-    { vid: 524, pid: 319, label: 'TIRZ 30mg', slug: 'trz-2' },
-  ] },
-  { min: 200, dose: '10mg', opts: [
+  { min: GIFT_MIN, dose: '10mg', opts: [
     { vid: 520, pid: 310, label: 'RETA 10mg', slug: 'rt-3' },
     { vid: 1033, pid: 319, label: 'TIRZ 10mg', slug: 'trz-2' },
   ] },
@@ -60,12 +64,6 @@ export default function CartPage() {
 
   const subtotalNum = parseFloat(cartSubtotal?.replace(/[^0-9.]/g, '') || '0');
 
-  // Pick the highest gift tier the paid subtotal earns ($300 -> 30mg, $200 -> 10mg).
-  // giftOpts drives the picker; activeGiftVids tells us if a gift line is the right tier.
-  const activeGiftTier = XJ_GIFT_TIERS.find(t => subtotalNum >= t.min) || null;
-  const giftOpts = activeGiftTier ? activeGiftTier.opts : [];
-  const activeGiftVids = new Set(giftOpts.map(o => o.vid));
-  const giftDose = activeGiftTier?.dose || '30mg';
   // Cart total EXCLUDING shipping — shipping is chosen at checkout review, so the
   // cart shouldn't show it (the WC session may already carry a default rate).
   const num = (s) => parseFloat(String(s || '').replace(/&nbsp;/g, '').replace(/[^0-9.]/g, '') || '0');
@@ -91,6 +89,15 @@ export default function CartPage() {
     0,
     subtotalNum - num(cart?.discountTotal) + cartFeeDiscounts,
   );
+
+  // Free vial, judged on the DISCOUNT-NET subtotal rather than the raw one — the same
+  // figure the shipping bar uses and iw_gift_qualifying_total() computes server-side.
+  // On the raw subtotal a $240 cart carrying a 15% code showed the vial while the
+  // backend, seeing $204, added nothing; the customer chose a gift that never came.
+  const activeGiftTier = XJ_GIFT_TIERS.find(t => freeShipQualifyingNum >= t.min) || null;
+  const giftOpts = activeGiftTier ? activeGiftTier.opts : [];
+  const activeGiftVids = new Set(giftOpts.map(o => o.vid));
+  const giftDose = activeGiftTier?.dose || '10mg';
 
   // Referred friends: auto-apply REFER25 ($25 off, min $75) once their cart qualifies.
   useEffect(() => {
@@ -393,8 +400,11 @@ export default function CartPage() {
                   AFTER discount codes come off. Feed the bar the same number or it
                   promises free shipping the checkout then refuses to give. */}
               <FreeShippingBar subtotal={freeShipQualifyingNum} alreadyFree={subscribedCount > 0} />
+              {/* Same discount-net figure as the shipping bar — the ladder is judged
+                  on exactly what iw_ladder_qualifying_total() measures server-side. */}
+              <SpendLadder subtotal={freeShipQualifyingNum} />
               <CartRewards subtotal={subtotalNum} value={rewardsPts} onChange={handleRewardsChange} />
-              <CartStoreCredit />
+              <CartStoreCredit cart={cart} />
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <SummaryRow label="Subtotal" rawValue={cartSubtotal} />
@@ -506,7 +516,7 @@ export default function CartPage() {
           <div onClick={e => e.stopPropagation()} style={{ maxWidth: 440, width: '100%', background: 'var(--card-dark, #0e1a30)', border: '1px solid var(--glass-border)', borderRadius: '20px', padding: '30px 26px', boxShadow: '0 30px 80px -20px rgba(0,0,0,0.85)', textAlign: 'center' }}>
             <div style={{ fontSize: '2.2rem', marginBottom: '8px' }}>🎁</div>
             <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '1.35rem', marginBottom: '6px', color: 'var(--text-light)' }}>You&apos;ve unlocked a FREE vial!</h3>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '22px' }}>Queen&apos;s Birthday Bash — pick your FREE RETA or TIRZ {giftDose}. Yours free at checkout. 👑</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '22px' }}>Orders ${GIFT_MIN}+ include a free vial — pick your RETA or TIRZ {giftDose}. Added free at checkout. 🎁</p>
             <div style={{ display: 'flex', gap: '12px', marginBottom: '18px' }}>
               {giftOpts.map(opt => {
                 const active = currentGiftSlug === opt.slug;

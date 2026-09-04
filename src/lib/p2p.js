@@ -91,6 +91,83 @@ export const giftQualifies = (subtotal, _payMethod, now = Date.now()) =>
   giftActive(now) && Number(subtotal) >= GIFT_MIN;
 
 /* ---------------------------------------------------------------------------
+ * Labor Day SPEND LADDER — three cumulative free vials at $175 / $275 / $425.
+ *
+ * Mirrors mu-plugin iw-spend-ladder.php (IW_LADDER_FROM / IW_LADDER_TO and
+ * iw_ladder_rungs()). The backend decides what is actually added to the order;
+ * this only decides what to SHOW. Promising a rung the backend will not give is
+ * the specific way this kind of promo goes wrong, so the two move together.
+ *
+ * The amount judged is the DISCOUNT-NET subtotal — items after coupons, minus
+ * negative cart fees (the B1G1). Same figure FreeShippingBar is fed, and the
+ * same one iw_ladder_qualifying_total() computes. Passing the raw subtotal would
+ * promise a vial checkout then declines.
+ * ------------------------------------------------------------------------- */
+
+export const LADDER_FROM = Date.parse('2026-09-04T13:00:00Z'); // Fri 4 Sep, 9:00am ET
+export const LADDER_TO = Date.parse('2026-09-08T04:00:00Z');   // midnight ending Mon 7 Sep ET
+
+export const LADDER_RUNGS = [
+  { min: 175, label: 'Semax 10mg', value: 40.95 },
+  { min: 275, label: 'KPV 10mg', value: 47.95 },
+  { min: 425, label: '5-Amino-1MQ 50mg', value: 100.95 },
+];
+
+export const ladderActive = (now = Date.now()) => now >= LADDER_FROM && now <= LADDER_TO;
+
+/** Items after coupons, minus negative cart fees. Matches the server exactly. */
+export const ladderQualifying = (cart) => {
+  const num = (v) => {
+    if (typeof v === 'number') return Number.isFinite(v) ? v : 0;
+    if (!v) return 0;
+    const n = parseFloat(String(v).replace(/[^0-9.-]/g, ''));
+    return Number.isFinite(n) ? n : 0;
+  };
+  // Store credit, rewards and gift cards are ways of PAYING, not discounts, and must
+  // never buy a customer down out of a rung. They are order fees applied after this
+  // runs, so they cannot appear here — this matches the guard in the mu-plugin and
+  // states the intent for whoever moves one of them earlier.
+  const PAYMENT = ['store credit', 'rewards', 'gift card', 'giftcard'];
+  const fees = (cart?.fees || []).reduce((sum, f) => {
+    const name = String(f?.name || '').toLowerCase();
+    if (PAYMENT.some((k) => name.includes(k))) return sum;
+    const a = num(f?.amount);
+    return a < 0 ? sum + a : sum;
+  }, 0);
+  return Math.max(0, num(cart?.subtotal) - num(cart?.discountTotal) + fees);
+};
+
+/**
+ * What the SERVER will judge the free vial on — mirrors iw_gift_qualifying_total():
+ * items after coupons, minus negative cart fees, then the P2P rate for the orders
+ * that actually receive it.
+ *
+ * Until 4 Sep 2026 checkout measured the free vial on the RAW subtotal, and that was
+ * wrong in the direction that costs trust: a $240 cart carrying a 15% affiliate code
+ * nets $204, so the page announced "you've earned a free vial", let the buyer pick
+ * one, and the backend then added nothing. Offer only what the server will give.
+ *
+ * Deliberately NOT the same variable the P2P discount is figured on — that one is the
+ * raw items base on purpose, because the discount is a percentage OF it.
+ */
+export const giftQualifying = (cart, p2pApplies = false) =>
+  ladderQualifying(cart) * (p2pApplies ? 1 - p2pRate() : 1);
+
+/** Which rungs this amount has earned, and what the next one needs. */
+export const ladderStatus = (amount, now = Date.now()) => {
+  const s = Number(amount) || 0;
+  const earned = LADDER_RUNGS.filter((r) => s >= r.min);
+  const next = LADDER_RUNGS.find((r) => s < r.min) || null;
+  return {
+    active: ladderActive(now),
+    earned,
+    next,
+    remaining: next ? Math.round((next.min - s) * 100) / 100 : 0,
+    value: earned.reduce((t, r) => t + r.value, 0),
+  };
+};
+
+/* ---------------------------------------------------------------------------
  * $500 giveaway — 5 × $100 store credit, orders OVER $250, 29–31 Aug.
  * Mirrors mu-plugin iw-giveaway.php (IW_GA_FROM / IW_GA_TO / IW_GA_THRESHOLD).
  * Entry is tagged on PAYMENT, so an unpaid order is not an entry.
