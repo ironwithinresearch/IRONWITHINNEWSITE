@@ -342,6 +342,55 @@ export const coaBySlug = {
     batchDate: '8/2/2026 · Lot IWR-2607-VIP10L',
     productName: 'VIP',
   },
+
+  /* Nasal spray line — Summit BioAnalytics SBA-26-0170..0178, reported
+     6 Aug 2026. Full QC panel on the finished 15 mL solution, so the lot
+     on the certificate is the lot printed on the bottle. */
+  'bpc-157-tb-500-nasal': {
+    coaFile: '/coa-pdf/bpc-157-tb-500-nasal-2026-08-06.pdf',
+    batchDate: '8/6/2026 · Lot IWR-100031S',
+    productName: 'BPC-157 / TB-500 Nasal Spray',
+  },
+  'dsip-nasal': {
+    coaFile: '/coa-pdf/dsip-nasal-2026-08-06.pdf',
+    batchDate: '8/6/2026 · Lot IWR-100024S',
+    productName: 'DSIP Nasal Spray',
+  },
+  'ghk-cu-nasal': {
+    coaFile: '/coa-pdf/ghk-cu-nasal-2026-08-06.pdf',
+    batchDate: '8/6/2026 · Lot IWR-100030S',
+    productName: 'GHK-Cu Nasal Spray',
+  },
+  'kpv-nasal': {
+    coaFile: '/coa-pdf/kpv-nasal-2026-08-06.pdf',
+    batchDate: '8/6/2026 · Lot IWR-100029S',
+    productName: 'KPV Nasal Spray',
+  },
+  'mt-2-nasal': {
+    coaFile: '/coa-pdf/mt-2-nasal-2026-08-06.pdf',
+    batchDate: '8/6/2026 · Lot IWR-100028S',
+    productName: 'MT-2 Nasal Spray',
+  },
+  'nad-nasal': {
+    coaFile: '/coa-pdf/nad-nasal-2026-08-06.pdf',
+    batchDate: '8/6/2026 · Lot IWR-100023S',
+    productName: 'NAD+ Nasal Spray',
+  },
+  'pt-141-nasal': {
+    coaFile: '/coa-pdf/pt-141-nasal-2026-08-06.pdf',
+    batchDate: '8/6/2026 · Lot IWR-100027S',
+    productName: 'PT-141 Nasal Spray',
+  },
+  'selank-nasal': {
+    coaFile: '/coa-pdf/selank-nasal-2026-08-06.pdf',
+    batchDate: '8/6/2026 · Lot IWR-100026S',
+    productName: 'Selank Nasal Spray',
+  },
+  'semax-nasal': {
+    coaFile: '/coa-pdf/semax-nasal-2026-08-06.pdf',
+    batchDate: '8/6/2026 · Lot IWR-100025S',
+    productName: 'Semax Nasal Spray',
+  },
 }
 
 export function getCoa(slug) {
