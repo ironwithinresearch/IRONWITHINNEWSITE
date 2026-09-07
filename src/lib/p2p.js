@@ -108,7 +108,7 @@ export const LADDER_FROM = Date.parse('2026-09-04T13:00:00Z'); // Fri 4 Sep, 9:0
 export const LADDER_TO = Date.parse('2026-09-08T04:00:00Z');   // midnight ending Mon 7 Sep ET
 
 export const LADDER_RUNGS = [
-  { min: 175, label: 'Semax 10mg', value: 40.95 },
+  { min: 175, label: 'Selank 10mg', value: 55.95 },
   { min: 275, label: 'KPV 10mg', value: 47.95 },
   { min: 425, label: '5-Amino-1MQ 50mg', value: 100.95 },
 ];
