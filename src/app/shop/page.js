@@ -35,7 +35,9 @@ function ShopContent() {
   const { data: catData } = useQuery(GET_CATEGORIES);
   // Gift cards aren't peptides — keep them out of the shop grid + category filters
   // (they have their own /gift-cards page).
-  const categories = (catData?.productCategories?.nodes || []).filter(c => c.slug !== 'gift-cards' && c.slug !== 'continuity-plans');
+  // 'uncategorized' only holds a published payment-test product, which the
+  // grid already drops — a tab that filters to an empty page is worse than none.
+  const categories = (catData?.productCategories?.nodes || []).filter(c => c.slug !== 'gift-cards' && c.slug !== 'continuity-plans' && c.slug !== 'uncategorized');
 
   const { data, loading, error } = useQuery(GET_PRODUCTS, {
     variables: {

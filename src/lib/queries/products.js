@@ -138,8 +138,15 @@ export const GET_PRODUCT = gql`
 `;
 
 export const GET_CATEGORIES = gql`
+  # first: 100 is NOT optional. WPGraphQL pages this connection at 10 by
+  # default, and the store's term list is led by a run of legacy empty
+  # categories ("1", "10mg", accessories, bundles, capsules, clothing,
+  # continuity-plans, hoodies, ...). Without it the page came back with only
+  # Gift Cards and Lab Supplies, so EVERY real category filter — Performance,
+  # Regenerative, Neuro, Nasal Sprays — was missing from the shop tabs.
+  # Same trap as variations(first: 100).
   query GetCategories {
-    productCategories(where: { hideEmpty: true }) {
+    productCategories(first: 100, where: { hideEmpty: true }) {
       nodes {
         id
         name
