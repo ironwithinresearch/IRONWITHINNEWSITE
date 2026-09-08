@@ -77,7 +77,7 @@ export const p2pPct = (now = Date.now()) => String(Math.round(p2pRate(now) * 100
 
 export const GIFT_MIN = 225;
 export const GIFT_FROM = Date.parse('2026-08-29T12:00:00Z'); // 8:00am ET (EDT = UTC-4)
-export const GIFT_TO = Date.parse('2027-08-28T00:00:00Z');   // open-ended; shorten to end it
+export const GIFT_TO = Date.parse('2026-09-08T23:00:00Z');   // ENDED — no prizes on anything
 
 export const GIFT_OPTIONS = [
   { key: 'trz2', label: 'TRZ-2 10mg' },
