@@ -40,9 +40,22 @@ export const FF_WINDOWS = [
 export const FF_SEASON_START = Date.parse('2026-09-11T20:00:00Z');
 export const FF_SEASON_END = Date.parse(FF_WINDOWS[FF_WINDOWS.length - 1].end);
 
-/* Headline depth. Must never exceed a discount some SKU in the live week actually carries —
-   week 1's deepest is RT-3 30mg at 60% off $173.95. */
-export const FF_HEADLINE = 60;
+/* Headline depth, and whether it is FLAT or a ceiling.
+
+   Week 1 changed from a tiered 15-60% sheet to a FLAT 50% sitewide on 12 Sep. That distinction
+   drives the copy: a tiered sale must say "up to X%" because most products are shallower, and a
+   flat sale must NOT, because "up to 50%" on a straight 50% sale undersells every product on it.
+
+   MUST match iw_ff_percent() in wp-content/mu-plugins/iw-freaky-fridays.php. The backend is the
+   authority on what is actually charged; this only drives what the site SAYS. The backend now
+   derives its own headline from the percent so it cannot drift internally — but this constant
+   can still drift from the backend, so change both in one commit. The store has shipped that
+   exact bug before: a window closed server-side while the storefront kept advertising it. */
+export const FF_HEADLINE = 50;
+export const FF_FLAT = true;   // false => copy should read "up to {FF_HEADLINE}%"
+
+/* Products deliberately NOT in the sale, for copy that needs to say so. */
+export const FF_EXCLUDED_NOTE = 'Aminos, gift cards, merch and bundles are not in the sale.';
 
 export const FF_NAME = 'FREAKY FRIDAYS';
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { p2pPaused, p2pEventLive, p2pPct, GIFT_MIN, GIFT_FROM, GIFT_TO } from '@/lib/p2p';
-import { ffLive, ffCurrent, ffCountdownTo, ffFormat, FF_HEADLINE, FF_WINDOWS } from '@/lib/freakyFridays';
+import { ffLive, ffCurrent, ffCountdownTo, ffFormat, FF_HEADLINE, FF_FLAT, FF_WINDOWS } from '@/lib/freakyFridays';
 
 /* Scrolling announcement ticker, fixed above the navbar (height 36px).
    The navbar (top: 36) and main padding are offset to match. */
@@ -221,7 +221,7 @@ export default function AnnouncementBar() {
       const left = ffFormat(ffCountdownTo(now).ms);
       setFfActive(true);
       promos.unshift(
-        `\uD83C\uDF83  FREAKY FRIDAYS \u2014 week ${w.week} of ${FF_WINDOWS.length} is LIVE \u00B7 up to ${FF_HEADLINE}% OFF, no code needed \u00B7 stack your creator code for even more${left ? ` \u00B7 ends in ${left}` : ''}`,
+        `\uD83C\uDF83  FREAKY FRIDAYS \u2014 week ${w.week} of ${FF_WINDOWS.length} is LIVE \u00B7 ${FF_FLAT ? '' : 'up to '}${FF_HEADLINE}% OFF SITEWIDE, no code needed \u00B7 stack your creator code for even more${left ? ` \u00B7 ends in ${left}` : ''}`,
       );
     }
     setMessages([...promos, ...base]);
