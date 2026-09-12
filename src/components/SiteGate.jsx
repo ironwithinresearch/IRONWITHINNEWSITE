@@ -77,12 +77,12 @@ export default function SiteGate() {
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           background: 'rgba(0,207,255,0.10)', border: '1px solid rgba(0,207,255,0.30)',
         }}>
-          <FlaskConical size={30} color="#00CFFF" />
+          <FlaskConical size={30} color="var(--primary-blue, #00CFFF)" />
         </div>
 
         <div style={{
           fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.18em',
-          textTransform: 'uppercase', color: '#00CFFF', marginBottom: 10,
+          textTransform: 'uppercase', color: 'var(--primary-blue, #00CFFF)', marginBottom: 10,
         }}>
           21+ researcher access only
         </div>
@@ -123,7 +123,7 @@ export default function SiteGate() {
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 9,
               padding: '15px', borderRadius: 12, fontWeight: 800, fontSize: '1rem',
               color: '#04121a', textDecoration: 'none',
-              background: 'linear-gradient(135deg,#00CFFF 0%,#7C3AED 50%,#EC4899 100%)',
+              background: 'linear-gradient(135deg,var(--primary-blue, #00CFFF) 0%,var(--purple, #7C3AED) 50%,var(--pink, #EC4899) 100%)',
             }}
           >
             <UserPlus size={18} /> Create my free account

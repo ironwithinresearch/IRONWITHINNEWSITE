@@ -101,7 +101,7 @@ export default function AffiliateResourcesPage() {
               The rules, commission tiers, how to handle a customer problem, the rewards program, and how to grow your %. <strong style={{ color: 'var(--text-light)' }}>Read it first</strong> — printable / save-as-PDF inside.
             </p>
           </div>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 26px', background: 'var(--gradient-secondary, linear-gradient(135deg,#7C3AED,#EC4899))', borderRadius: 11, color: '#fff', fontWeight: 800, fontSize: '0.95rem', whiteSpace: 'nowrap', boxShadow: '0 0 20px rgba(124,58,237,0.35)' }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 26px', background: 'var(--gradient-secondary, linear-gradient(135deg,var(--purple, #7C3AED),var(--pink, #EC4899)))', borderRadius: 11, color: '#fff', fontWeight: 800, fontSize: '0.95rem', whiteSpace: 'nowrap', boxShadow: '0 0 20px rgba(124,58,237,0.35)' }}>
             Read the handbook <ArrowRight size={16} />
           </span>
         </div>

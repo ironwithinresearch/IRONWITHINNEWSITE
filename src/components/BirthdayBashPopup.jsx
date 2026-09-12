@@ -44,7 +44,7 @@ export default function BirthdayBashPopup() {
         </Link>
         <div style={{ padding: '18px 20px 22px', textAlign: 'center' }}>
           <Link href="/shop" onClick={dismiss}
-            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '100%', boxSizing: 'border-box', padding: '14px', background: 'linear-gradient(90deg,#ec4899,#f5d272)', borderRadius: 10, color: '#0a0a0a', fontWeight: 800, fontSize: '1rem', textDecoration: 'none' }}>
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '100%', boxSizing: 'border-box', padding: '14px', background: 'linear-gradient(90deg,var(--pink, #ec4899),#f5d272)', borderRadius: 10, color: '#0a0a0a', fontWeight: 800, fontSize: '1rem', textDecoration: 'none' }}>
             Shop 15% Off — No Code Needed
           </Link>
           <button onClick={dismiss} style={{ marginTop: 12, background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '0.78rem', cursor: 'pointer' }}>No thanks</button>

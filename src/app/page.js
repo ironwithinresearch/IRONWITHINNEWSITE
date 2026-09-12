@@ -3,6 +3,7 @@
 // All other sections remain identical to original
 
 import Link from 'next/link';
+import FreakyFridaysBanner from "../components/FreakyFridaysBanner";
 import Image from 'next/image';
 import { useQuery } from '@apollo/client';
 import { GET_PRODUCTS } from '@/lib/queries/products';
@@ -105,7 +106,7 @@ function FeaturedProducts() {
 
             {/* Wishlist button */}
             <button onClick={() => wishlisted ? removeFromWishlist(product.id) : addToWishlist(product)}
-              style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 2, width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--glass-bg)', border: `1px solid ${wishlisted ? 'rgba(236,72,153,0.4)' : 'var(--glass-border)'}`, borderRadius: '8px', color: wishlisted ? 'var(--pink)' : '#ec4899', cursor: 'pointer', backdropFilter: 'blur(8px)' }}>
+              style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 2, width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--glass-bg)', border: `1px solid ${wishlisted ? 'rgba(236,72,153,0.4)' : 'var(--glass-border)'}`, borderRadius: '8px', color: wishlisted ? 'var(--pink)' : 'var(--pink, #ec4899)', cursor: 'pointer', backdropFilter: 'blur(8px)' }}>
               <Heart size={14} fill={wishlisted ? 'currentColor' : 'none'} />
             </button>
 
@@ -220,6 +221,12 @@ export default function Home() {
 
       {/* ══ QUEEN'S BIRTHDAY BASH (Jul 28–Aug 2) ══ */}
       <QueenBirthdayBanner />
+
+      {/* Freaky Fridays — the live weekly series. Self-gates to the season and to each
+          window, so it simply disappears after Halloween with nothing to remove. */}
+      <div style={{ padding: '0 24px', maxWidth: 1200, margin: '0 auto' }}>
+        <FreakyFridaysBanner />
+      </div>
 
       {/* ══ STATS BAR ══ */}
       <section style={{ background: 'var(--card-dark)', borderTop: '1px solid var(--glass-border)', borderBottom: '1px solid var(--glass-border)', padding: '36px 24px' }}>

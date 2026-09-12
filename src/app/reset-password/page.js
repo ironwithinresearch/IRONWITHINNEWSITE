@@ -320,7 +320,7 @@ function ResetPasswordInner() {
                     disabled={loading || (confirmPassword && confirmPassword !== password)}
                     style={{
                       width: '100%', padding: '13px',
-                      background: 'linear-gradient(135deg, #00cfff, #ec4899)',
+                      background: 'linear-gradient(135deg, var(--primary-blue, #00cfff), var(--pink, #ec4899))',
                       border: 'none', borderRadius: '10px',
                       color: '#fff', fontWeight: 700, fontSize: '1rem',
                       cursor: loading ? 'not-allowed' : 'pointer',

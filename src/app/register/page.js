@@ -124,7 +124,7 @@ export default function RegisterPage() {
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <div style={{
             width: 56, height: 56, borderRadius: '14px',
-            background: 'linear-gradient(135deg, #00cfff, #ec4899)',
+            background: 'linear-gradient(135deg, var(--primary-blue, #00cfff), var(--pink, #ec4899))',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             margin: '0 auto 14px',
             boxShadow: '0 0 24px rgba(0,207,255,0.4)',
@@ -259,7 +259,7 @@ export default function RegisterPage() {
               disabled={loading || success || !agree21}
               style={{
                 width: '100%', padding: '13px',
-                background: 'linear-gradient(135deg, #00cfff, #ec4899)',
+                background: 'linear-gradient(135deg, var(--primary-blue, #00cfff), var(--pink, #ec4899))',
                 border: 'none', borderRadius: '10px',
                 color: '#fff', fontWeight: 700, fontSize: '0.95rem',
                 cursor: loading || success ? 'not-allowed' : 'pointer',

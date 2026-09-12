@@ -72,7 +72,7 @@ export default function ShippingPauseNotice() {
         {PAYMENT_NOTICE_ACTIVE && (
           <div style={{ marginTop: shipActive ? 4 : 0, padding: '16px 16px', borderRadius: 14, background: 'rgba(0,207,255,0.06)', border: '1px solid rgba(0,207,255,0.28)', textAlign: 'left' }}>
             {!shipActive && (
-              <div style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#00CFFF', textAlign: 'center', marginBottom: 8 }}>Payment notice</div>
+              <div style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--primary-blue, #00CFFF)', textAlign: 'center', marginBottom: 8 }}>Payment notice</div>
             )}
             <h3 style={{ fontFamily: 'var(--font-heading, inherit)', fontSize: shipActive ? '1.02rem' : '1.35rem', fontWeight: 800, color: '#fff', margin: shipActive ? '0 0 8px' : '0 0 10px', textAlign: shipActive ? 'left' : 'center' }}>
               Accepted payment methods

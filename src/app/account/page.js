@@ -21,7 +21,7 @@ import {
 const statusConfig = {
   COMPLETED:  { label: 'Delivered',  color: '#34d399',           bg: 'rgba(52,211,153,0.12)',  border: 'rgba(52,211,153,0.3)',  Icon: CheckCircle2 },
   PROCESSING: { label: 'Processing', color: '#fbbf24',           bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.3)', Icon: Clock },
-  SHIPPED:    { label: 'Shipped',    color: '#00CFFF',           bg: 'rgba(0,207,255,0.12)',  border: 'rgba(0,207,255,0.3)',  Icon: Truck },
+  SHIPPED:    { label: 'Shipped',    color: 'var(--primary-blue, #00CFFF)',           bg: 'rgba(0,207,255,0.12)',  border: 'rgba(0,207,255,0.3)',  Icon: Truck },
   BACKORDER:  { label: 'Backorder',  color: '#f59e0b',           bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.35)', Icon: Clock },
   ON_HOLD:    { label: 'On Hold',    color: '#fbbf24',           bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.3)', Icon: Clock },
   PENDING:    { label: 'Pending',    color: 'var(--primary-blue)', bg: 'rgba(0,207,255,0.12)', border: 'rgba(0,207,255,0.3)', Icon: Truck },
@@ -794,7 +794,7 @@ export default function AccountPage() {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px' }}>
         <div style={{ textAlign: 'center', maxWidth: 400 }}>
-          <div style={{ width: 64, height: 64, borderRadius: '16px', background: 'linear-gradient(135deg, #00cfff, #ec4899)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+          <div style={{ width: 64, height: 64, borderRadius: '16px', background: 'linear-gradient(135deg, var(--primary-blue, #00cfff), var(--pink, #ec4899))', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
             <FlaskConical size={28} color="#fff" />
           </div>
           <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.8rem', fontWeight: 900, marginBottom: '10px' }}>Researcher Account</h2>

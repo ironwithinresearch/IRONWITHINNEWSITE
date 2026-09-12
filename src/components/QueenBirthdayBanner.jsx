@@ -36,7 +36,7 @@ export default function QueenBirthdayBanner() {
             Spend $200 and pick a <b style={{ color:'#fff' }}>FREE RETA or TIRZ 10mg</b> — or hit $300 for a full <b style={{ color:'#fff' }}>30mg</b>. Every $300+ order is entered to win a{' '}
             <b style={{ color:'#fff' }}>1-of-1 Iron Within challenge coin</b> or a chance at <b style={{ color:'#fff' }}>1 of 3 $300 giveaways.</b>
           </p>
-          <Link href="/shop" style={{ display: 'inline-block', marginTop: 12, padding: '14px 40px', borderRadius: 12, background: 'linear-gradient(90deg,#7c3aed,#22c55e,#4ade80)', color: '#04121a', fontWeight: 800, fontSize: '1.02rem', textDecoration: 'none' }}>
+          <Link href="/shop" style={{ display: 'inline-block', marginTop: 12, padding: '14px 40px', borderRadius: 12, background: 'linear-gradient(90deg,var(--purple, #7c3aed),#22c55e,#4ade80)', color: '#04121a', fontWeight: 800, fontSize: '1.02rem', textDecoration: 'none' }}>
             Shop the Bash →
           </Link>
           <div style={{ marginTop: 12, fontSize: '0.76rem', color: 'rgba(134,239,172,0.75)' }}>No code needed · ends Sunday, Aug 2 at midnight CT</div>

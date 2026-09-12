@@ -178,8 +178,8 @@ export default function ForgotPasswordPage() {
               <div key={s} style={{
                 height: 4, width: isActive ? 32 : 12,
                 borderRadius: '2px',
-                background: isDone || isActive ? 'var(--gradient-primary, linear-gradient(135deg, #00cfff, #ec4899))' : 'var(--glass-border)',
-                background: isDone ? '#34d399' : isActive ? 'linear-gradient(135deg, #00cfff, #ec4899)' : 'rgba(255,255,255,0.1)',
+                background: isDone || isActive ? 'var(--gradient-primary, linear-gradient(135deg, var(--primary-blue, #00cfff), var(--pink, #ec4899)))' : 'var(--glass-border)',
+                background: isDone ? '#34d399' : isActive ? 'linear-gradient(135deg, var(--primary-blue, #00cfff), var(--pink, #ec4899))' : 'rgba(255,255,255,0.1)',
                 transition: 'all 0.3s ease',
               }} />
             );
@@ -264,7 +264,7 @@ export default function ForgotPasswordPage() {
 
                   <button type="submit" disabled={checkingUser} style={{
                     width: '100%', padding: '13px',
-                    background: 'linear-gradient(135deg, #00cfff, #ec4899)',
+                    background: 'linear-gradient(135deg, var(--primary-blue, #00cfff), var(--pink, #ec4899))',
                     border: 'none', borderRadius: '10px',
                     color: '#fff', fontWeight: 700, fontSize: '1rem',
                     cursor: checkingUser ? 'not-allowed' : 'pointer',
@@ -464,7 +464,7 @@ export default function ForgotPasswordPage() {
                       disabled={updating || (!!confirmPassword && confirmPassword !== newPassword)}
                       style={{
                         flex: 1, padding: '13px',
-                        background: 'linear-gradient(135deg, #00cfff, #ec4899)',
+                        background: 'linear-gradient(135deg, var(--primary-blue, #00cfff), var(--pink, #ec4899))',
                         border: 'none', borderRadius: '10px',
                         color: '#fff', fontWeight: 700, fontSize: '1rem',
                         cursor: updating ? 'not-allowed' : 'pointer',
@@ -513,7 +513,7 @@ export default function ForgotPasswordPage() {
                   borderRadius: '2px', overflow: 'hidden',
                 }}>
                   <div style={{
-                    height: '100%', background: 'linear-gradient(135deg, #00cfff, #ec4899)',
+                    height: '100%', background: 'linear-gradient(135deg, var(--primary-blue, #00cfff), var(--pink, #ec4899))',
                     borderRadius: '2px', animation: 'progress 2.5s linear forwards',
                   }} />
                 </div>

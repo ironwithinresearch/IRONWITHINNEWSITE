@@ -12,6 +12,7 @@ import BirthdayBashPopup from "../components/BirthdayBashPopup";
 import ChristmasJulyPopup from "../components/ChristmasJulyPopup";
 import QueenBirthdayPopup from "../components/QueenBirthdayPopup";
 import QueenTheme from "../components/QueenTheme";
+import FreakyFridaysTheme from "../components/FreakyFridaysTheme";
 import ShippingPauseNotice from "../components/ShippingPauseNotice";
 import ApolloWrapper from "../lib/ApolloWrapper";
 // Vercel Web Analytics. Added 2026-08-26 — the store had NO analytics at all, so traffic
@@ -66,6 +67,7 @@ export default function RootLayout({ children }) {
           {/* Account wall (carries the 21+ confirmation). The standalone age pop-up
               is retired — age is confirmed on the register form's 21+ checkbox. */}
           <SiteGate />
+          <FreakyFridaysTheme />
           <AnnouncementBar />
           <Navbar />
           <main style={{ minHeight: '100vh', paddingTop: 'calc(var(--navbar-height, 68px) + 36px)' }}>

@@ -32,7 +32,7 @@ export default function BirthdayBashBanner() {
         </Link>
         <div style={{ textAlign: 'center', marginTop: '20px' }}>
           <Link href="/shop"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', padding: '15px 38px', background: 'linear-gradient(90deg,#ec4899,#f5d272)', borderRadius: '12px', color: '#0a0a0a', fontWeight: 800, fontSize: '1.05rem', textDecoration: 'none', boxShadow: '0 0 30px rgba(236,72,153,0.4)' }}>
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', padding: '15px 38px', background: 'linear-gradient(90deg,var(--pink, #ec4899),#f5d272)', borderRadius: '12px', color: '#0a0a0a', fontWeight: 800, fontSize: '1.05rem', textDecoration: 'none', boxShadow: '0 0 30px rgba(236,72,153,0.4)' }}>
             Shop the Birthday Bash — 15% Off <ArrowRight size={17} />
           </Link>
           <p style={{ marginTop: '12px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>

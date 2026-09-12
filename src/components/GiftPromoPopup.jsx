@@ -92,7 +92,7 @@ export default function GiftPromoPopup() {
         <div style={{ position: 'relative', padding: '30px 26px 24px', textAlign: 'center' }}>
           <div style={{
             fontSize: 11, letterSpacing: '.16em', textTransform: 'uppercase',
-            color: '#00A8D6', fontWeight: 700, marginBottom: 12,
+            color: 'var(--primary-blue, #00A8D6)', fontWeight: 700, marginBottom: 12,
           }}>
             Iron Within Research
           </div>
@@ -105,7 +105,7 @@ export default function GiftPromoPopup() {
           }}>
             <div style={{
               fontSize: '0.66rem', letterSpacing: '.12em', textTransform: 'uppercase',
-              color: '#00A8D6', fontWeight: 800, marginBottom: 6,
+              color: 'var(--primary-blue, #00A8D6)', fontWeight: 800, marginBottom: 6,
             }}>
               Sitewide · ends Mon Sep 7
             </div>
@@ -176,7 +176,7 @@ export default function GiftPromoPopup() {
             href="/shop"
             onClick={() => close(true)}
             style={{
-              display: 'block', background: '#00A8D6', color: '#fff', textDecoration: 'none',
+              display: 'block', background: 'var(--primary-blue, #00A8D6)', color: '#fff', textDecoration: 'none',
               fontWeight: 800, fontSize: '1rem', padding: '14px 20px', borderRadius: 9,
               marginBottom: 12,
             }}

@@ -23,7 +23,7 @@ export default function AppPromo() {
               Look up any compound — mechanisms, references, and the latest research, organized and searchable. The <strong style={{ color: 'var(--text-light)' }}>Peptide Paradigm</strong> app is the reference layer that pairs with your bench work. Free on iPhone &amp; Android.
             </p>
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-              <a href={APPLE_URL} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 9, padding: '13px 26px', background: 'linear-gradient(90deg,#7c3aed,#c026d3)', borderRadius: 12, color: '#fff', fontWeight: 800, fontSize: '0.95rem', textDecoration: 'none', boxShadow: '0 0 26px rgba(124,58,237,0.4)' }}>
+              <a href={APPLE_URL} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 9, padding: '13px 26px', background: 'linear-gradient(90deg,var(--purple, #7c3aed),#c026d3)', borderRadius: 12, color: '#fff', fontWeight: 800, fontSize: '0.95rem', textDecoration: 'none', boxShadow: '0 0 26px rgba(124,58,237,0.4)' }}>
                 <Smartphone size={16} /> App Store
               </a>
               <a href={PLAY_URL} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 9, padding: '13px 26px', background: 'var(--card-elevated)', border: '1px solid rgba(124,58,237,0.4)', borderRadius: 12, color: 'var(--text-light)', fontWeight: 800, fontSize: '0.95rem', textDecoration: 'none' }}>

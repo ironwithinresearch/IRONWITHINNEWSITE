@@ -152,7 +152,7 @@ export default function ContinuityPage() {
                         <button onClick={() => handleAdd(plan)} disabled={isAdding} style={{
                           width: '100%', padding: '11px', borderRadius: 9, border: 'none', cursor: isAdding ? 'wait' : 'pointer',
                           fontWeight: 700, fontSize: '0.9rem', fontFamily: 'var(--font-body)',
-                          color: '#fff', background: best ? 'linear-gradient(135deg,#00cfff,#ec4899)' : 'var(--card-elevated)',
+                          color: '#fff', background: best ? 'linear-gradient(135deg,var(--primary-blue, #00cfff),var(--pink, #ec4899))' : 'var(--card-elevated)',
                           border: best ? 'none' : '1px solid var(--glass-border)',
                           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
                         }}>
@@ -187,7 +187,7 @@ export default function ContinuityPage() {
             { n: '3', t: 'Fresh vial every month', d: 'We ship the next one ~every 30 days and email you each time.' },
           ].map((s) => (
             <div key={s.n} style={{ padding: '22px 20px', background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: 14 }}>
-              <div style={{ width: 34, height: 34, borderRadius: '50%', background: 'linear-gradient(135deg,#00cfff,#ec4899)', color: '#fff', fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>{s.n}</div>
+              <div style={{ width: 34, height: 34, borderRadius: '50%', background: 'linear-gradient(135deg,var(--primary-blue, #00cfff),var(--pink, #ec4899))', color: '#fff', fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>{s.n}</div>
               <div style={{ fontWeight: 800, color: '#fff', marginBottom: 5 }}>{s.t}</div>
               <div style={{ color: 'var(--text-muted)', fontSize: '0.86rem', lineHeight: 1.5 }}>{s.d}</div>
             </div>

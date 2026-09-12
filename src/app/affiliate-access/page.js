@@ -78,7 +78,7 @@ export default function AffiliateAccess() {
             display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 12,
             padding: '5px 12px', borderRadius: 999,
             border: '1px solid var(--glass-border, rgba(0,207,255,0.12))',
-            color: '#00CFFF', fontSize: 12, letterSpacing: '0.14em', textTransform: 'uppercase', fontWeight: 600,
+            color: 'var(--primary-blue, #00CFFF)', fontSize: 12, letterSpacing: '0.14em', textTransform: 'uppercase', fontWeight: 600,
           }}
         >
           <Lock size={13} /> Affiliates Only
@@ -103,12 +103,12 @@ export default function AffiliateAccess() {
             style={{
               width: '100%', padding: '14px 16px', fontSize: 16,
               background: 'var(--bg-deeper, #010410)',
-              border: `1px solid ${err ? '#EC4899' : 'var(--glass-border, rgba(0,207,255,0.12))'}`,
+              border: `1px solid ${err ? 'var(--pink, #EC4899)' : 'var(--glass-border, rgba(0,207,255,0.12))'}`,
               borderRadius: 12, color: 'var(--text-light, #EAFBFF)', outline: 'none',
             }}
           />
           {err ? (
-            <div style={{ color: '#EC4899', fontSize: 14, textAlign: 'left', margin: '-4px 2px 0' }}>{err}</div>
+            <div style={{ color: 'var(--pink, #EC4899)', fontSize: 14, textAlign: 'left', margin: '-4px 2px 0' }}>{err}</div>
           ) : null}
           <button
             type="submit"
@@ -118,7 +118,7 @@ export default function AffiliateAccess() {
               width: '100%', padding: '14px 18px', fontSize: 16, fontWeight: 700,
               border: 'none', borderRadius: 12, cursor: loading || !pw ? 'default' : 'pointer',
               color: '#001018', opacity: loading || !pw ? 0.6 : 1,
-              background: 'linear-gradient(135deg, #00CFFF 0%, #7C3AED 50%, #EC4899 100%)',
+              background: 'linear-gradient(135deg, var(--primary-blue, #00CFFF) 0%, var(--purple, #7C3AED) 50%, var(--pink, #EC4899) 100%)',
               boxShadow: '0 0 20px rgba(0,207,255,0.35)', transition: 'opacity .15s',
             }}
           >
@@ -129,7 +129,7 @@ export default function AffiliateAccess() {
 
         <p style={{ margin: '22px 0 0', color: 'var(--text-muted, #4b5a72)', fontSize: 13 }}>
           Not an affiliate yet?{' '}
-          <a href="mailto:support@ironwithin.io" style={{ color: '#00CFFF', textDecoration: 'none' }}>
+          <a href="mailto:support@ironwithin.io" style={{ color: 'var(--primary-blue, #00CFFF)', textDecoration: 'none' }}>
             Ask us to join
           </a>
         </p>

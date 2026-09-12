@@ -69,7 +69,7 @@ export default function AgeVerification() {
           <div style={{
             width: 64, height: 64,
             borderRadius: '16px',
-            background: 'linear-gradient(135deg, #00cfff, #ec4899)',
+            background: 'linear-gradient(135deg, var(--primary-blue, #00cfff), var(--pink, #ec4899))',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             margin: '0 auto 20px',
             boxShadow: '0 0 24px rgba(0,207,255,0.45)',
@@ -137,7 +137,7 @@ export default function AgeVerification() {
               style={{
                 width: '100%',
                 padding: '15px',
-                background: 'linear-gradient(135deg, #00cfff, #ec4899)',
+                background: 'linear-gradient(135deg, var(--primary-blue, #00cfff), var(--pink, #ec4899))',
                 border: 'none',
                 borderRadius: '12px',
                 color: '#fff',

@@ -265,7 +265,7 @@ export default function AffiliatePage() {
               { pct: '20%', name: 'Elite', req: '$15,000+ in referred sales / month', best: false },
             ].map((t) => (
               <div key={t.name} style={{ background: 'var(--card-dark)', border: `1px solid ${t.best ? 'rgba(0,207,255,0.45)' : 'var(--glass-border)'}`, borderRadius: 'var(--radius-lg)', padding: '30px 24px', textAlign: 'center', position: 'relative' }}>
-                {t.best && <span style={{ position: 'absolute', top: -11, left: '50%', transform: 'translateX(-50%)', background: 'linear-gradient(135deg,#00cfff,#ec4899)', color: '#fff', fontSize: '0.64rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', padding: '4px 12px', borderRadius: 999, whiteSpace: 'nowrap' }}>Aim here</span>}
+                {t.best && <span style={{ position: 'absolute', top: -11, left: '50%', transform: 'translateX(-50%)', background: 'linear-gradient(135deg,var(--primary-blue, #00cfff),var(--pink, #ec4899))', color: '#fff', fontSize: '0.64rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', padding: '4px 12px', borderRadius: 999, whiteSpace: 'nowrap' }}>Aim here</span>}
                 <div style={{ fontFamily: 'var(--font-heading)', fontSize: '2.6rem', fontWeight: 900, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', lineHeight: 1 }}>{t.pct}</div>
                 <div style={{ fontWeight: 800, color: '#fff', margin: '8px 0 4px' }}>{t.name}</div>
                 <div style={{ color: 'var(--text-muted)', fontSize: '0.82rem', lineHeight: 1.5 }}>{t.req}</div>

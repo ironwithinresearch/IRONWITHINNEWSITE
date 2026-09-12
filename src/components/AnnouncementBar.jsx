@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { p2pPaused, p2pEventLive, p2pPct, GIFT_MIN, GIFT_FROM, GIFT_TO } from '@/lib/p2p';
+import { ffLive, ffCurrent, ffCountdownTo, ffFormat, FF_HEADLINE, FF_WINDOWS } from '@/lib/freakyFridays';
 
 /* Scrolling announcement ticker, fixed above the navbar (height 36px).
    The navbar (top: 36) and main padding are offset to match. */
@@ -170,6 +171,7 @@ export default function AnnouncementBar() {
   const [ftfActive, setFtfActive] = useState(false);
   const [p2pEventActive, setP2pEventActive] = useState(false);
   const [ldActive, setLdActive] = useState(false);
+  const [ffActive, setFfActive] = useState(false);
   useEffect(() => {
     const now = Date.now();
     const promos = [];
@@ -212,6 +214,16 @@ export default function AnnouncementBar() {
           : m,
       );
     }
+    // Freaky Fridays leads the ticker while a window is open. Everything above it in this
+    // effect is a past event kept for reference; this is the only live promo.
+    if (ffLive(now)) {
+      const w = ffCurrent(now);
+      const left = ffFormat(ffCountdownTo(now).ms);
+      setFfActive(true);
+      promos.unshift(
+        `\uD83C\uDF83  FREAKY FRIDAYS \u2014 week ${w.week} of ${FF_WINDOWS.length} is LIVE \u00B7 up to ${FF_HEADLINE}% OFF, no code needed \u00B7 stack your creator code for even more${left ? ` \u00B7 ends in ${left}` : ''}`,
+      );
+    }
     setMessages([...promos, ...base]);
   }, []);
 
@@ -226,8 +238,8 @@ export default function AnnouncementBar() {
       aria-label="Store announcements"
       style={{
         position: 'fixed', top: 0, left: 0, right: 0, height: 36, zIndex: 101,
-        background: ldActive ? 'linear-gradient(90deg,#b22234,#a3243a,#1d4ed8,#a3243a,#b22234)' : ftfActive ? 'linear-gradient(90deg,#062a45,#0d6f9e,#22d3ee,#0d6f9e,#062a45)' : qbActive ? 'linear-gradient(90deg,#0a0612,#7c3aed,#22c55e,#7c3aed,#0a0612)' : flashActive ? 'linear-gradient(90deg,#dc2626,#f59e0b,#dc2626)' : xjActive ? 'linear-gradient(90deg,#c8102e,#0f5132,#f5c542,#0f5132,#c8102e)' : j4Active ? 'linear-gradient(90deg,#b22234,#7a1228,#13294b,#7a1228,#b22234)' : bbActive ? 'linear-gradient(90deg,#ec4899,#f5d272)' : summerActive ? 'linear-gradient(90deg,#ffb14a,#ff7a59,#37c8ff)' : 'var(--gradient-primary, linear-gradient(90deg,#00CFFF,#7c3aed))',
-        color: (ldActive || j4Active || xjActive || flashActive || qbActive) ? '#fff' : '#001018', overflow: 'hidden', display: 'flex', alignItems: 'center',
+        background: ffActive ? 'linear-gradient(90deg,#0A0603,#FF6A00,#FFB020,#FF6A00,#0A0603)' : ldActive ? 'linear-gradient(90deg,#b22234,#a3243a,#1d4ed8,#a3243a,#b22234)' : ftfActive ? 'linear-gradient(90deg,#062a45,#0d6f9e,#22d3ee,#0d6f9e,#062a45)' : qbActive ? 'linear-gradient(90deg,#0a0612,var(--purple, #7c3aed),#22c55e,var(--purple, #7c3aed),#0a0612)' : flashActive ? 'linear-gradient(90deg,#dc2626,#f59e0b,#dc2626)' : xjActive ? 'linear-gradient(90deg,#c8102e,#0f5132,#f5c542,#0f5132,#c8102e)' : j4Active ? 'linear-gradient(90deg,#b22234,#7a1228,#13294b,#7a1228,#b22234)' : bbActive ? 'linear-gradient(90deg,var(--pink, #ec4899),#f5d272)' : summerActive ? 'linear-gradient(90deg,#ffb14a,#ff7a59,#37c8ff)' : 'var(--gradient-primary, linear-gradient(90deg,var(--primary-blue, #00CFFF),var(--purple, #7c3aed)))',
+        color: (ffActive || ldActive || j4Active || xjActive || flashActive || qbActive) ? '#fff' : '#001018', overflow: 'hidden', display: 'flex', alignItems: 'center',
         fontFamily: 'var(--font-body)',
       }}
     >

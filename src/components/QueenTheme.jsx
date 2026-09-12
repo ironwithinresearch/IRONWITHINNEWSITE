@@ -11,7 +11,7 @@ const CSS = `
   :root, :root[data-theme="light"], :root[data-theme="dark"] {
     --primary-blue: #22c55e;
     --secondary-blue: #a855f7;
-    --gradient-primary: linear-gradient(135deg,#7c3aed 0%,#22c55e 55%,#4ade80 100%);
+    --gradient-primary: linear-gradient(135deg,var(--purple, #7c3aed) 0%,#22c55e 55%,#4ade80 100%);
     --gradient-blue: linear-gradient(135deg,#a855f7 0%,#22c55e 100%);
     --glow-blue: 0 0 22px rgba(34,197,94,0.5);
     --glow-sm: 0 0 10px rgba(34,197,94,0.3);

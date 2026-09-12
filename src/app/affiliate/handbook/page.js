@@ -12,9 +12,9 @@ import {
 } from 'lucide-react';
 
 const C = {
-  cyan: '#00CFFF',
+  cyan: 'var(--primary-blue, #00CFFF)',
   green: '#34d399',
-  pink: '#EC4899',
+  pink: 'var(--pink, #EC4899)',
   card: 'var(--card-dark)',
   cardEl: 'var(--card-elevated)',
   border: 'var(--glass-border)',

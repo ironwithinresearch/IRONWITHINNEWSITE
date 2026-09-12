@@ -200,7 +200,7 @@ export default function Navbar() {
                   position: 'absolute', top: '1px', right: '1px',
                   minWidth: 17, height: 17,
                   borderRadius: '999px',
-                  background: 'linear-gradient(135deg, #ec4899, #db2777)',
+                  background: 'linear-gradient(135deg, var(--pink, #ec4899), #db2777)',
                   color: '#fff', fontSize: '0.58rem', fontWeight: 800,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   padding: '0 4px',
