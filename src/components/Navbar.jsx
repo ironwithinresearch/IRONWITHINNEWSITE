@@ -29,6 +29,7 @@ const SHOP_MENU = [
   { slug: 'regenerative-research', name: 'Regenerative Research' },
   { slug: 'neuro-research',        name: 'Neuro Research' },
   { slug: 'nasal-sprays',          name: 'Nasal Sprays' },
+  { slug: 'aminos',                name: 'Aminos' },
   { slug: 'lab-supplies',          name: 'Lab Supplies' },
   { slug: 'gift-cards',            name: 'Gift Cards',  href: '/gift-cards' },
 ];
