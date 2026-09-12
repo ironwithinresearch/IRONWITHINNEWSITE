@@ -247,7 +247,7 @@ Thanks!`}
         <p style={{ margin: '6px 0' }}>As customers climb, their multiplier grows (up to 2× earning): <B>Iron → Steel → Titanium → Black Label</B>.</p>
         <p style={{ color: C.ink, fontWeight: 700, marginTop: 14 }}>More offers to stack</p>
         <Bullets items={[
-          <><B>Refer a friend</B> (code REFER25) — give $25, get $25.</>,
+
           <><B>Store credit &amp; gift cards</B> — spend like cash and auto-apply at checkout.</>,
         ]} />
         <Callout tone="tip" label="Why this matters to you">

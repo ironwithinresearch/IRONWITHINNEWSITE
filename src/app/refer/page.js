@@ -31,9 +31,10 @@ export default function ReferPage() {
       <div className="container" style={{ maxWidth: 820 }}>
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
           <span style={{ display: 'inline-block', padding: '5px 16px', background: 'rgba(0,207,255,0.1)', border: '1px solid rgba(0,207,255,0.3)', borderRadius: 999, fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--primary-blue)', marginBottom: 16 }}>Refer &amp; Earn</span>
-          <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(2rem,5vw,3rem)', fontWeight: 900, color: '#fff', margin: '0 0 12px' }}>Give $25, Get $25</h1>
+          <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(2rem,5vw,3rem)', fontWeight: 900, color: '#fff', margin: '0 0 12px' }}>Earn $25 Per Referral</h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', maxWidth: 540, margin: '0 auto' }}>
-            Share your link. Your friend gets <strong style={{ color: '#fff' }}>$25 off</strong> their first order, and you earn <strong style={{ color: '#fff' }}>$25 in rewards</strong> when they buy.
+            Share your link. When a fellow researcher orders for the first time, you earn{' '}
+            <strong style={{ color: '#fff' }}>2,500 reward points ($25)</strong>.
           </p>
         </div>
 
@@ -70,7 +71,7 @@ export default function ReferPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14 }}>
           {[
             { n: '1', t: 'Share your link', d: 'Send your unique link to fellow researchers.' },
-            { n: '2', t: 'They save $25', d: 'Your friend gets $25 off their first order of $75+.' },
+            { n: '2', t: 'They place an order', d: 'Your link tags their first order to you automatically.' },
             { n: '3', t: 'You earn $25', d: 'You get 2,500 reward points ($25) once they order.' },
           ].map((s) => (
             <div key={s.n} style={card}>

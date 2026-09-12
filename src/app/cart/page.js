@@ -24,7 +24,6 @@ import {
   Loader2,
 } from 'lucide-react';
 import { useState, useMemo, useEffect, useRef } from 'react';
-import { getReferCookie } from '@/lib/referral';
 
 // Free vial picker. ONE tier, mirroring mu-plugin iw-p2p-gift.php: IW_GIFT_MIN = $225
 // and iw_gift_options() = TRZ-2 10mg (1033) / RT-3 10mg (520).
@@ -99,14 +98,11 @@ export default function CartPage() {
   const activeGiftVids = new Set(giftOpts.map(o => o.vid));
   const giftDose = activeGiftTier?.dose || '10mg';
 
-  // Referred friends: auto-apply REFER25 ($25 off, min $75) once their cart qualifies.
-  useEffect(() => {
-    const code = getReferCookie();
-    if (!code || subtotalNum < 75) return;
-    if (appliedCoupons.some((c) => (c.code || '').toUpperCase() === 'REFER25')) return;
-    applyCoupon('REFER25').catch(() => {});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subtotalNum]);
+  // REFER25 auto-apply REMOVED (12 Sep 2026). The friend-side $25 coupon is retired and the
+  // WooCommerce coupon is deleted, so this effect would have fired applyCoupon() at a code the
+  // server can no longer resolve on every cart render — a silent failed request per referred
+  // visitor. The referrer-side reward is unaffected: iw-referral.php credits 2,500 points on a
+  // referred friend's first paid order and does not depend on this coupon.
 
   // Subscribe & Save: read the cadence tag straight off each cart item's extraData.
   const subCadenceOf = (item) => {
