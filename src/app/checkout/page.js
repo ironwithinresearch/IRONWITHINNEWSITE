@@ -831,7 +831,7 @@ export default function CheckoutPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     {!cardAvailable && (
                       <div style={{ padding: '11px 13px', borderRadius: '10px', background: 'rgba(245,158,11,0.09)', border: '1px solid rgba(245,158,11,0.4)', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-                        💳 <strong style={{ color: '#fbbf24' }}>We&rsquo;re not taking card right now.</strong> Check out with <strong>Zelle, Venmo, or Cash App</strong> below — it takes a minute, {p2pPct()}% comes off your total{giftEarned ? ', and your free vial is included' : ''}, and we ship as soon as your payment lands.
+                        💳 <strong style={{ color: '#fbbf24' }}>We&rsquo;re not taking card right now.</strong> Check out with <strong>Zelle, Venmo, or Cash App</strong> below — it takes a minute{p2pPaused() ? '' : `, ${p2pPct()}% comes off your total`}{giftEarned ? ', and your free vial is included' : ''}, and we ship as soon as your payment lands.
                       </div>
                     )}
                     {(creditApplied > 0 || rewardsApplied > 0) && (

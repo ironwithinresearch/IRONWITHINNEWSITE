@@ -43,8 +43,23 @@ export const P2P_EVENT_TO = Date.parse('2026-08-24T04:59:59Z'); // Sun 23:59:59 
 export const P2P_PAUSE_FROM = Date.parse('2026-08-24T13:00:00Z'); // Mon 9:00am ET
 export const P2P_PAUSE_TO = Date.parse('2026-09-08T04:00:00Z');   // midnight ending Mon 7 Sep ET
 
+/* HARD OFF — operator, 12 Sep 2026. The pay-by-app discount is switched off entirely.
+ *
+ * A flag, not another date window, and for the reason the windows kept failing: each one
+ * expired quietly and turned the 10% back on with nobody deciding to. The window above ran out
+ * on 8 Sep and the discount had been live again ever since, unintentionally.
+ *
+ * MUST match IW_P2P_DISCOUNT_OFF in mu-plugin iw-p2p-discount.php. If this says the discount is
+ * live and the backend does not, every pay-by-app customer is quoted 10% BELOW what they are
+ * charged and only finds out on the order.
+ *
+ * The payment METHODS are untouched — Zelle, Venmo and Cash App still check out. Only the 10%
+ * for using them is gone. */
+export const P2P_DISCOUNT_OFF = true;
+
 export const p2pPaused = (now = Date.now()) =>
-  P2P_PAUSE_FROM !== null && now >= P2P_PAUSE_FROM && now <= P2P_PAUSE_TO;
+  P2P_DISCOUNT_OFF ||
+  (P2P_PAUSE_FROM !== null && now >= P2P_PAUSE_FROM && now <= P2P_PAUSE_TO);
 
 export const p2pEventLive = (now = Date.now()) =>
   now >= P2P_EVENT_FROM && now <= P2P_EVENT_TO;
