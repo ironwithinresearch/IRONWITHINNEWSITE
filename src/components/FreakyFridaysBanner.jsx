@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
-  ffCurrent, ffNext, ffCountdownTo, ffFormat, ffSeason,
+  ffCurrent, ffNext, ffCountdownTo, ffFormat, ffSeason, ffWindowLabel,
   FF_HEADLINE, FF_WINDOWS,
 } from '@/lib/freakyFridays';
 
@@ -26,11 +26,16 @@ export default function FreakyFridaysBanner() {
       if (!ffSeason(now)) return setS(null);
       const cur = ffCurrent(now);
       const cd = ffCountdownTo(now);
+      const win = cur || ffNext(now);
       setS({
         live: !!cur,
-        week: (cur || ffNext(now) || {}).week ?? null,
+        week: (win || {}).week ?? null,
         label: ffFormat(cd.ms),
         kind: cd.kind,
+        // Derived from the schedule, never hardcoded: week 1 is a weekend and the rest are a
+        // single 12-hour Friday, so a fixed "Monday 8:30pm" would be wrong seven times out of
+        // eight.
+        when: ffWindowLabel(win),
       });
     };
     tick();
@@ -111,12 +116,12 @@ export default function FreakyFridaysBanner() {
             {live ? (
               <>
                 Up to <strong style={{ color: '#FFB020' }}>{FF_HEADLINE}% off</strong> — no code needed,
-                and your creator code still stacks on top. Closes Monday 8:30pm CT.
+                and your creator code still stacks on top. {s.when ? <>Runs {s.when}.</> : null}
               </>
             ) : (
               <>
-                A new drop every Friday at <strong style={{ color: '#FFB020' }}>8:30pm CT</strong>, running
-                through Halloween. Different products, different depth, every week.
+                A new drop every Friday, running through Halloween — different products and a
+                different depth each week. {s.when ? <>Next: <strong style={{ color: '#FFB020' }}>{s.when}</strong>.</> : null}
               </>
             )}
           </p>

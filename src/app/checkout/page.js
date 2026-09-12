@@ -405,9 +405,14 @@ export default function CheckoutPage() {
   // SnapPay alone — otherwise turning the second rail on leaves a banner apologising for
   // the absence of a method that is right there in the list.
   const cardAvailable = !isCardPaused() || PP_ENABLED;
-  const methodChosen = !!payMethod || isZeroDue;
   const fullyCovered = computedTotalNum > 0 && dueAfterAll <= 0.005;
   const noRailDue = isZeroDue || fullyCovered;
+  // noRailDue, NOT isZeroDue. isZeroDue is only true when the CART total is already zero
+  // (a 100% coupon); it is false when the cart costs money and store credit or rewards
+  // settle it. That case is fullyCovered, and it left the buyer looking at "Paid in full —
+  // no card needed" beside a disabled button asking them to choose a payment method, with
+  // nothing to choose. Nothing is due in either case, so neither needs a rail.
+  const methodChosen = !!payMethod || noRailDue;
   const effectiveMethod = isZeroDue ? 'iw_giftcard' : (fullyCovered ? 'iw_storecredit' : chosenMethod);
   // Amount actually charged via the selected method (after store credit + rewards).
   const dueDisplay = fmt(noRailDue ? 0 : dueAfterAll);

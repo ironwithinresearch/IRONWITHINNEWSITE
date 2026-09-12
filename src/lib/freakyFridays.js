@@ -9,20 +9,24 @@
    hardcoded timestamps and went on advertising a gift that no longer existed.
    Change a date here and change it there, in the same commit.
 
-   Times are stored as explicit UTC instants rather than local strings, because CT is UTC-5
-   (CDT) for weeks 1-7 and the final window CLOSES on Mon 2 Nov, after DST ends on 1 Nov —
-   a flat -5 would close it an hour late. The instants below already account for that. */
+   Times are stored as explicit UTC instants rather than local strings. Every window now falls
+   before DST ends on 1 Nov, so all of them are CDT (UTC-5); the backend resolves the same
+   schedule through America/Chicago by name, so moving a window past 1 Nov stays correct there
+   — but these literals would NOT, and would need recomputing. */
 
 export const FF_WINDOWS = [
+  // Week 1 is the LAUNCH and runs the whole weekend: Fri 8:30pm -> Mon 8:30pm CT, 72 hours.
   { week: 1, start: '2026-09-12T01:30:00Z', end: '2026-09-15T01:30:00Z' },
-  { week: 2, start: '2026-09-19T01:30:00Z', end: '2026-09-22T01:30:00Z' },
-  { week: 3, start: '2026-09-26T01:30:00Z', end: '2026-09-29T01:30:00Z' },
-  { week: 4, start: '2026-10-03T01:30:00Z', end: '2026-10-06T01:30:00Z' },
-  { week: 5, start: '2026-10-10T01:30:00Z', end: '2026-10-13T01:30:00Z' },
-  { week: 6, start: '2026-10-17T01:30:00Z', end: '2026-10-20T01:30:00Z' },
-  { week: 7, start: '2026-10-24T01:30:00Z', end: '2026-10-27T01:30:00Z' },
-  // DST ends Sun 1 Nov, so this Monday close is CST (UTC-6) = 02:30Z, not 01:30Z.
-  { week: 8, start: '2026-10-31T01:30:00Z', end: '2026-11-03T02:30:00Z' },
+  // Weeks 2-8 are a single 12-hour Friday, 8am -> 8pm CT. Shorter on purpose: the launch buys
+  // the habit, the rest stay events rather than a standing discount.
+  { week: 2, start: '2026-09-18T13:00:00Z', end: '2026-09-19T01:00:00Z' },
+  { week: 3, start: '2026-09-25T13:00:00Z', end: '2026-09-26T01:00:00Z' },
+  { week: 4, start: '2026-10-02T13:00:00Z', end: '2026-10-03T01:00:00Z' },
+  { week: 5, start: '2026-10-09T13:00:00Z', end: '2026-10-10T01:00:00Z' },
+  { week: 6, start: '2026-10-16T13:00:00Z', end: '2026-10-17T01:00:00Z' },
+  { week: 7, start: '2026-10-23T13:00:00Z', end: '2026-10-24T01:00:00Z' },
+  // Closes Fri 30 Oct 8pm CT — the night before Halloween.
+  { week: 8, start: '2026-10-30T13:00:00Z', end: '2026-10-31T01:00:00Z' },
 ];
 
 /* The SEASON is deliberately wider than the sale windows.
@@ -82,4 +86,24 @@ export function ffFormat(ms) {
   if (d > 0) return `${d}d ${h}h ${String(m).padStart(2, '0')}m`;
   if (h > 0) return `${h}h ${String(m).padStart(2, '0')}m`;
   return `${m}m`;
+}
+
+/** Human wording for a window, derived from the data so copy can never drift from the schedule.
+    Week 1 is a weekend; the rest are a single Friday. Rendered in CT, which is how the store
+    talks to customers. */
+export function ffWindowLabel(w) {
+  if (!w) return '';
+  const opt = { timeZone: 'America/Chicago' };
+  const d = new Date(Date.parse(w.start));
+  const e = new Date(Date.parse(w.end));
+  const day = (x) => x.toLocaleDateString('en-US', { ...opt, weekday: 'long' });
+  const time = (x) =>
+    x.toLocaleTimeString('en-US', { ...opt, hour: 'numeric', minute: '2-digit' })
+      .replace(':00', '')
+      .replace(' AM', 'am')
+      .replace(' PM', 'pm');
+  const sameDay = day(d) === day(e) && Date.parse(w.end) - Date.parse(w.start) < 86400000;
+  return sameDay
+    ? `${day(d)} ${time(d)}–${time(e)} CT`
+    : `${day(d)} ${time(d)} – ${day(e)} ${time(e)} CT`;
 }

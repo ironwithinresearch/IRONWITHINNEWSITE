@@ -17,6 +17,8 @@ import { GET_CATEGORIES } from '@/lib/queries/products';
 const navLinks = [
    { href: '/',      label: 'Home'       },
   { href: '/shop',      label: 'Shop'       },
+  { href: '/merch',     label: 'Merch'      },
+  { href: '/giveaway',  label: 'Cruise'     },
   { href: '/rewards',   label: 'Rewards'    },
   { href: '/lab-reports',label: 'Lab Reports' },
   { href: '/contact',   label: 'Contact'    },
