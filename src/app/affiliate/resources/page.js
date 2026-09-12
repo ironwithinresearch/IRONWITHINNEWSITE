@@ -29,11 +29,6 @@ const HOOKS = [
 const DISCLOSURE = "#ad #affiliate — I earn a commission on purchases made with my code. For research use only. Not for human consumption.";
 
 const GRAPHICS = [
-  // Labor Day spend ladder, 4–7 Sep — the B1G1 with three free vials stacked on it.
-  // Leads the grid for the last weekend. PULL THESE TWO MONDAY NIGHT with the rest of
-  // the Labor Day set: a graphic naming $175/$275/$425 outlives the promo that honours it.
-  { src: '/affiliate-assets/labor-day-stack-story.png', label: 'BOGO + 3 free vials — Story' },
-  { src: '/affiliate-assets/labor-day-stack-post.png', label: 'BOGO + 3 free vials — Post' },
   // Labor Day B1G1, 24 Aug – 7 Sep. Leads the grid while it runs; pull these two when
   // it ends or affiliates keep posting an offer the cart no longer honours.
   { src: '/affiliate-assets/promo-combo-post.png', label: 'BOGO + free vial — Post' },

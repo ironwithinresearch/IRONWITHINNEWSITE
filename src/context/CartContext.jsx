@@ -1,7 +1,7 @@
 'use client';
 // src/context/CartContext.jsx
 
-import { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react';
+import { createContext, useContext, useState, useCallback, useRef } from 'react';
 import { useQuery, useMutation, useApolloClient } from '@apollo/client';
 import {
   GET_CART,
@@ -15,9 +15,6 @@ import {
 } from '../lib/queries/cart';
 
 const CartContext = createContext({});
-
-/* Codes the shopper applied, remembered across a WooCommerce session reset. See applyCoupon(). */
-const COUPON_KEY = 'iw_applied_coupons';
 
 export function CartProvider({ children }) {
   const client = useApolloClient();
@@ -56,7 +53,6 @@ export function CartProvider({ children }) {
   });
 
   const cart = data?.cart || null;
-
   const cartItems = cart?.contents?.nodes || [];
   const itemCount = cart?.contents?.itemCount || 0;
   const cartTotal = cart?.total || '$0.00';
@@ -154,51 +150,9 @@ export function CartProvider({ children }) {
     },
   });
 
-  /* WooCommerce keeps applied coupons on the SESSION only — persistent_cart_update() saves
-     `{ cart: ... }` and nothing else. So when apollo-client's recovery link drops a stale
-     woo_session (they expire ~48h) the shopper's ITEMS come back from the persistent cart and
-     their discount code silently does not. That reads as "my code got kicked at checkout".
-     Remembering the codes here, and re-applying them when they go missing, is what closes it. */
   const applyCoupon = useCallback(async (code) => {
     await applyCouponMutation({ variables: { code } });
-    try {
-      const kept = new Set(JSON.parse(localStorage.getItem(COUPON_KEY) || '[]'));
-      kept.add(String(code).toLowerCase());
-      localStorage.setItem(COUPON_KEY, JSON.stringify([...kept]));
-    } catch { /* private mode */ }
   }, [applyCouponMutation]);
-
-  /* ⚠️ THIS MUST STAY BELOW applyCouponMutation. It was placed above it and the dependency
-     array touched the const inside its temporal dead zone — "Cannot access 'F' before
-     initialization" on every render, which took the whole storefront to a white screen
-     (React #423, hydration failed) on 2026-09-05. A dep array is evaluated during render,
-     not on mount. */
-  /* Put back any code that went missing with a dropped session.
-     Only re-applies codes this browser recorded via applyCoupon(), never invents one, and
-     silently gives up if the code is no longer valid — a shopper should not be shown an error
-     for a repair they did not ask for. Runs once per code per page life. */
-  const restoredRef = useRef(new Set());
-  useEffect(() => {
-    if (!cart || cartLoading) return;
-    if (!(cart.contents?.nodes?.length > 0)) return;      // nothing to restore onto
-    let kept = [];
-    try { kept = JSON.parse(localStorage.getItem(COUPON_KEY) || '[]'); } catch { return; }
-    if (!kept.length) return;
-    const applied = new Set((cart.appliedCoupons || []).map((c) => (c.code || '').toLowerCase()));
-    const missing = kept.filter((c) => !applied.has(c) && !restoredRef.current.has(c));
-    if (!missing.length) return;
-    missing.forEach((code) => {
-      restoredRef.current.add(code);
-      applyCouponMutation({ variables: { code } }).catch(() => {
-        // No longer valid (expired, used up, or now blocked by the stacking policy).
-        // Forget it so we do not retry on every load.
-        try {
-          const next = JSON.parse(localStorage.getItem(COUPON_KEY) || '[]').filter((c) => c !== code);
-          localStorage.setItem(COUPON_KEY, JSON.stringify(next));
-        } catch { /* ignore */ }
-      });
-    });
-  }, [cart, cartLoading, applyCouponMutation]);
 
   // ── REMOVE COUPON ──
   const [removeCouponMutation] = useMutation(REMOVE_COUPON, {
@@ -212,12 +166,6 @@ export function CartProvider({ children }) {
 
   const removeCoupon = useCallback(async (code) => {
     await removeCouponMutation({ variables: { code } });
-    // Forget it deliberately: a code the shopper took off must never be re-applied for them.
-    try {
-      const kept = JSON.parse(localStorage.getItem(COUPON_KEY) || '[]')
-        .filter((c) => c !== String(code).toLowerCase());
-      localStorage.setItem(COUPON_KEY, JSON.stringify(kept));
-    } catch { /* private mode */ }
   }, [removeCouponMutation]);
 
   // ── SHIPPING: set address (so rates calculate), then choose a rate ──

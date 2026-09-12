@@ -37,7 +37,7 @@ function ShopContent() {
   // (they have their own /gift-cards page).
   // 'uncategorized' only holds a published payment-test product, which the
   // grid already drops — a tab that filters to an empty page is worse than none.
-  const categories = (catData?.productCategories?.nodes || []).filter(c => c.slug !== 'gift-cards' && c.slug !== 'continuity-plans' && c.slug !== 'merch' && c.slug !== 'uncategorized');
+  const categories = (catData?.productCategories?.nodes || []).filter(c => c.slug !== 'gift-cards' && c.slug !== 'continuity-plans' && c.slug !== 'uncategorized');
 
   const { data, loading, error } = useQuery(GET_PRODUCTS, {
     variables: {
@@ -55,8 +55,6 @@ function ShopContent() {
   const products = [...(data?.products?.nodes || [])]
     .filter(p => p?.slug)
     .filter(p => p.slug !== 'gift-card' && !p.slug.includes('-month-plan'))
-    // Merch lives at /merch — it is not a research product and does not belong in this grid.
-    .filter(p => !(p.productCategories?.nodes || []).some(c => c.slug === 'merch'))
     .sort((a, b) =>
     (a.name || '').localeCompare(b.name || '', undefined, { numeric: true, sensitivity: 'base' })
   );

@@ -3,10 +3,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Loader2, AlertCircle } from 'lucide-react';
 
-// Same WordPress origin the Apollo client uses; the REST namespace lives beside /graphql.
-const BACKEND = (process.env.NEXT_PUBLIC_GRAPHQL_URL || 'https://bhidasowgm.onrocket.site/graphql')
-  .replace(/\/graphql\/?$/, '');
-
 /**
  * PeptidesPayment (SellAbroad) embedded card form.
  *
@@ -28,63 +24,11 @@ export default function PeptidesPayContainer({ orderId, orderKey, onUnavailable 
   const mountRef = useRef(null);
   const startedRef = useRef(false);
 
-  /* Forward what happens on this step to the order it happens to.
-     Half the buyers routed here were leaving with nothing recorded — no decline, no
-     error, no trace — which made "they changed their mind", "the form never rendered"
-     and "it declined silently" the same event in the data. The widget already reports
-     paymentShown / paymentMethodChanged / payClicked / paymentError; this sends them
-     on. Best-effort and non-blocking: a failed beacon must never affect a payment. */
-  const report = useRef((event, detail) => {
-    try {
-      // Everything rides in the QUERY STRING, and the beacon carries no body. A JSON
-      // body would trigger a CORS preflight this cross-origin backend does not answer
-      // for REST, and a text/plain body is not parsed into REST params at all — either
-      // way the event would vanish. Query params are read by get_param() and make this
-      // a simple request, so no preflight and no CORS headers are needed: nothing here
-      // reads the response.
-      const qs = new URLSearchParams({
-        order: String(orderId),
-        key: orderKey,
-        event,
-        detail: detail || '',
-      });
-      const url = `${BACKEND}/wp-json/iw/v1/pp-funnel?${qs.toString()}`;
-      // sendBeacon survives the buyer closing the tab, which is exactly when most of
-      // these events matter.
-      if (navigator.sendBeacon) {
-        navigator.sendBeacon(url);
-      } else {
-        fetch(url, { method: 'POST', keepalive: true, mode: 'no-cors' }).catch(() => {});
-      }
-    } catch {
-      /* never let instrumentation break checkout */
-    }
-  }).current;
-
   useEffect(() => {
     if (startedRef.current) return;      // StrictMode double-invoke would mount two widgets
     startedRef.current = true;
 
     let cancelled = false;
-    report('reached');
-
-    // Same payload arrives two ways depending on whether the widget ends up framed:
-    // a CustomEvent on our window, or a postMessage from theirs. Listen for both and
-    // let the per-order cap on the server absorb any duplicate.
-    const onWidgetEvent = (payload) => {
-      const name = payload && payload.name;
-      if (!name) return;
-      const d = payload.data || {};
-      const detail = [d.message, d.code, d.reason, d.method].filter(Boolean).join(' · ');
-      report(name, detail);
-    };
-    const onCustom = (e) => onWidgetEvent(e.detail);
-    const onMessage = (e) => {
-      if (typeof e.origin === 'string' && !e.origin.endsWith('sellabroad.com')) return;
-      if (e.data && e.data.type === 'sellabroadPaymentEvent') onWidgetEvent(e.data);
-    };
-    window.addEventListener('sellabroad:paymentEvent', onCustom);
-    window.addEventListener('message', onMessage);
 
     (async () => {
       try {
@@ -95,7 +39,6 @@ export default function PeptidesPayContainer({ orderId, orderKey, onUnavailable 
         if (!res.ok) {
           setError(cfg.error || 'Card payment is unavailable right now.');
           setState('error');
-          report('config_error', cfg.error || `HTTP ${res.status}`);
           if (onUnavailable) onUnavailable(cfg.error || '');
           return;
         }
@@ -128,7 +71,6 @@ export default function PeptidesPayContainer({ orderId, orderKey, onUnavailable 
           s.onerror = () => {
             setError('The card form could not load. Please use Zelle, Venmo or Cash App, or email support@ironwithin.io.');
             setState('error');
-            report('script_error', 'widget script failed to load');
           };
           document.body.appendChild(s);
         }
@@ -140,12 +82,8 @@ export default function PeptidesPayContainer({ orderId, orderKey, onUnavailable 
       }
     })();
 
-    return () => {
-      cancelled = true;
-      window.removeEventListener('sellabroad:paymentEvent', onCustom);
-      window.removeEventListener('message', onMessage);
-    };
-  }, [orderId, orderKey, onUnavailable, report]);
+    return () => { cancelled = true; };
+  }, [orderId, orderKey, onUnavailable]);
 
   return (
     <div style={{ textAlign: 'left', marginBottom: '24px' }}>

@@ -32,11 +32,6 @@ const PUBLIC_PREFIXES = [
   '/disclaimer',
   '/refund',
   '/shipping',
-  // The sweepstakes page MUST be readable without an account. The Official Rules and the free
-  // mail-in address live on it, so gating it would mean the only way to learn how to enter
-  // without buying is to first create an account — which undermines the whole
-  // no-purchase-necessary structure the sweepstakes depends on to be lawful.
-  '/giveaway',
 ];
 
 export default function SiteGate() {

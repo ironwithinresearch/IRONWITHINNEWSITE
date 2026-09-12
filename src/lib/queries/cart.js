@@ -36,8 +36,8 @@ export const GET_CART = gql`
               name
               slug
               image { sourceUrl altText }
-              ... on SimpleProduct { price regularPrice stockStatus }
-              ... on VariableProduct { price regularPrice }
+              ... on SimpleProduct { price stockStatus }
+              ... on VariableProduct { price }
             }
           }
           variation {
@@ -45,7 +45,6 @@ export const GET_CART = gql`
               id
               name
               price
-              regularPrice
               stockStatus
               attributes { nodes { name value } }
             }
@@ -88,8 +87,8 @@ export const ADD_TO_CART = gql`
                 name
                 slug
                 image { sourceUrl }
-                ... on SimpleProduct { price regularPrice }
-                ... on VariableProduct { price regularPrice }
+                ... on SimpleProduct { price }
+                ... on VariableProduct { price }
               }
             }
             variation {
@@ -97,7 +96,6 @@ export const ADD_TO_CART = gql`
                 id
                 name
                 price
-                regularPrice
                 attributes { nodes { name value } }
               }
             }

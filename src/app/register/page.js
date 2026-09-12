@@ -28,7 +28,7 @@ export default function RegisterPage() {
   }, []);
 
   const [form, setForm] = useState({
-    firstName: '', lastName: '', email: '', password: '',
+    firstName: '', lastName: '', email: '', password: '', confirmPassword: '',
   });
   const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState('');
@@ -73,6 +73,10 @@ export default function RegisterPage() {
     e.preventDefault();
     setError('');
 
+    if (form.password !== form.confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
     if (form.password.length < 8) {
       setError('Password must be at least 8 characters.');
       return;
@@ -181,7 +185,7 @@ export default function RegisterPage() {
               <div>
                 <label style={labelStyle}>First Name</label>
                 <input type="text" value={form.firstName} onChange={set('firstName')}
-                  placeholder="John" autoComplete="given-name" required style={inputStyle}
+                  placeholder="John" required style={inputStyle}
                   onFocus={e => e.target.style.borderColor = 'var(--primary-blue)'}
                   onBlur={e => e.target.style.borderColor = 'var(--glass-border)'}
                 />
@@ -189,7 +193,7 @@ export default function RegisterPage() {
               <div>
                 <label style={labelStyle}>Last Name</label>
                 <input type="text" value={form.lastName} onChange={set('lastName')}
-                  placeholder="Doe" autoComplete="family-name" required style={inputStyle}
+                  placeholder="Doe" required style={inputStyle}
                   onFocus={e => e.target.style.borderColor = 'var(--primary-blue)'}
                   onBlur={e => e.target.style.borderColor = 'var(--glass-border)'}
                 />
@@ -200,21 +204,20 @@ export default function RegisterPage() {
             <div style={{ marginBottom: '16px' }}>
               <label style={labelStyle}>Email</label>
               <input type="email" value={form.email} onChange={set('email')}
-                placeholder="you@example.com" autoComplete="email" inputMode="email" required style={inputStyle}
+                placeholder="you@example.com" required style={inputStyle}
                 onFocus={e => e.target.style.borderColor = 'var(--primary-blue)'}
                 onBlur={e => e.target.style.borderColor = 'var(--glass-border)'}
               />
             </div>
 
-            {/* Password. Last field before the 21+ confirmation, so it carries the
-                spacing the removed confirm field used to. */}
-            <div style={{ marginBottom: '24px' }}>
+            {/* Password */}
+            <div style={{ marginBottom: '16px' }}>
               <label style={labelStyle}>Password</label>
               <div style={{ position: 'relative' }}>
                 <input
                   type={showPass ? 'text' : 'password'}
                   value={form.password} onChange={set('password')}
-                  placeholder="Min 8 characters" autoComplete="new-password" required
+                  placeholder="Min 8 characters" required
                   style={{ ...inputStyle, paddingRight: '42px' }}
                   onFocus={e => e.target.style.borderColor = 'var(--primary-blue)'}
                   onBlur={e => e.target.style.borderColor = 'var(--glass-border)'}
@@ -228,6 +231,17 @@ export default function RegisterPage() {
                   {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
+            </div>
+
+            {/* Confirm password */}
+            <div style={{ marginBottom: '24px' }}>
+              <label style={labelStyle}>Confirm Password</label>
+              <input
+                type="password" value={form.confirmPassword} onChange={set('confirmPassword')}
+                placeholder="••••••••" required style={inputStyle}
+                onFocus={e => e.target.style.borderColor = 'var(--primary-blue)'}
+                onBlur={e => e.target.style.borderColor = 'var(--glass-border)'}
+              />
             </div>
 
             {/* 21+ confirmation */}

@@ -115,18 +115,6 @@ export const LADDER_RUNGS = [
 
 export const ladderActive = (now = Date.now()) => now >= LADDER_FROM && now <= LADDER_TO;
 
-/* Labor Day B1G1 window — lockstep with IW_LD_START/END in mu-plugin iw-labor-day.php. */
-export const LD_FROM = Date.parse('2026-08-24T13:00:00Z');
-export const LD_TO = Date.parse('2026-09-08T04:00:00Z');
-
-/* Is any shopper-facing offer live? LiveOffersPopup shows only when this is true, and
-   LeadCapture stands down when it is — otherwise a signed-in visitor gets two popups in one
-   visit, which is worse than either alone. Both read THIS, never their own date maths. */
-export const liveOffersActive = (now = Date.now()) =>
-  (now >= LD_FROM && now < LD_TO)
-  || (now >= LADDER_FROM && now < LADDER_TO)
-  || (now >= GIFT_FROM && now < GIFT_TO);
-
 /** Items after coupons, minus negative cart fees. Matches the server exactly. */
 export const ladderQualifying = (cart) => {
   const num = (v) => {
