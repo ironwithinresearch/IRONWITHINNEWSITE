@@ -74,7 +74,17 @@ const faqs = [
     // Card is off at checkout (CARD_PAUSED in app/checkout/page.js, CARDS_ENABLED in
     // PaymentMethods.jsx). Keep this answer in step with those two flags — an FAQ that
     // promises card while checkout refuses it is a support ticket per reader.
-    a: 'We take credit and debit cards, plus Zelle, Venmo, and Cash App. Card payments are entered on a secure encrypted form at checkout and we never store your card details. Paying by app takes a discount off your total.',
+    a: 'We take credit and debit cards, plus Zelle, Venmo, and Cash App. Card payments are entered on a secure encrypted form at checkout and we never store your card details.',
+  },
+  {
+    category: 'ordering',
+    q: 'Why didn\u2019t my store credit apply?',
+    a: 'Store credit applies to regular-priced orders. If a sale or a promotional offer is already on your order, your credit stays on your account for next time \u2014 it never expires and nothing is lost. It applies automatically, with no code, on your next eligible order.',
+  },
+  {
+    category: 'ordering',
+    q: 'Can I use store credit with a discount code?',
+    a: 'Yes, on regular-priced orders. Your code comes off first and your store credit comes off after it, like cash. You can see your balance anytime on your account page.',
   },
   {
     category: 'ordering',
