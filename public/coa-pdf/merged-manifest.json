@@ -1,15 +1,28 @@
 {
+  "5-amino-1mq-50mg": [
+    "5-amino-1mq-50mg-2026-09-13.pdf",
+    "5-amino-1mq-50mg.pdf"
+  ],
+  "adamax-10mg": [
+    "adamax-10mg-2026-09-13.pdf",
+    "adamax-10mg.pdf"
+  ],
   "bpc-157": [
     "bpc-157-7317226.pdf",
     "bpc-157.pdf"
   ],
   "bpc-157-tb500-10mg": [
+    "bpc-157-tb500-10mg-2026-09-13.pdf",
     "bpc-157-tb500-10mg-8833606.pdf",
     "bpc-157-tb500-10mg.pdf"
   ],
   "cagrillintide": [
     "cagrillintide-2026-08-13.pdf",
     "cagrillintide.pdf"
+  ],
+  "ghk-cu": [
+    "ghk-cu-2026-09-13-50mg.pdf",
+    "ghk-cu.pdf"
   ],
   "glow-bundle": [
     "glow-bundle-6055127.pdf",
@@ -26,10 +39,14 @@
     "kisspeptin.pdf"
   ],
   "klow": [
+    "klow-2026-09-13.pdf",
     "klow-7626298.pdf",
     "klow.pdf"
   ],
   "kpv": [
+    "kpv-2026-09-13-20mg.pdf",
+    "kpv-2026-09-13-10mg-b.pdf",
+    "kpv-2026-09-13-10mg-a.pdf",
     "kpv-2026-08-13.pdf",
     "kpv-4451178.pdf",
     "kpv.pdf"
@@ -37,6 +54,10 @@
   "l-glutathione": [
     "l-glutathione-1500mg-2026-08-13.pdf",
     "l-glutathione-2768697.pdf"
+  ],
+  "mots-c": [
+    "mots-c-2026-09-13.pdf",
+    "mots-c.pdf"
   ],
   "nad": [
     "nad-1000mg-2026-08-13.pdf",
@@ -49,6 +70,8 @@
     "pinealon.pdf"
   ],
   "rt-3": [
+    "rt-3-2026-09-13-60mg.pdf",
+    "rt-3-2026-09-13-20mg.pdf",
     "rt-3-2026-08-28-30mg.pdf",
     "rt-3-2026-08-28-20mg.pdf",
     "rt-3-batch0063.pdf",
@@ -58,6 +81,7 @@
     "rt-3.pdf"
   ],
   "ss-31": [
+    "ss-31-2026-09-13.pdf",
     "ss-31-2026-08-28.pdf",
     "ss-31-2026-08-13.pdf",
     "ss-31.pdf",
@@ -72,6 +96,8 @@
     "thymosin-alpha-1.pdf"
   ],
   "trz-2": [
+    "trz-2-2026-09-13-60mg.pdf",
+    "trz-2-2026-09-13-30mg.pdf",
     "trz-2-2026-08-13.pdf",
     "trz-2-9109868.pdf",
     "trz-2-6878731.pdf",
