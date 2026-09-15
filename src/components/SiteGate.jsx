@@ -32,6 +32,7 @@ const PUBLIC_PREFIXES = [
   '/disclaimer',
   '/refund',
   '/shipping',
+  '/giveaway',
 ];
 
 export default function SiteGate() {
