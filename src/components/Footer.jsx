@@ -15,6 +15,7 @@ const footerLinks = {
     { label: 'Contact', href: '/contact' },
     { label: 'Research App', href: 'https://peptideparadigm.app' },
     { label: 'Refer & Earn $25', href: '/refer' },
+    { label: 'Win a Cruise', href: '/giveaway' },
     { label: 'Rewards', href: '/rewards' },
     { label: 'Partners', href: '/affiliate' },
     { label: 'Teacher / Military / First Responder', href: '/heroes' },

@@ -19,7 +19,7 @@ export default function ReferPage() {
 
   const copy = () => { if (data?.link) { navigator.clipboard?.writeText(data.link); setCopied(true); setTimeout(() => setCopied(false), 1800); } };
   const share = async () => {
-    if (navigator.share && data?.link) { try { await navigator.share({ title: 'Iron Within Research', text: 'Get $25 off your first order at Iron Within Research:', url: data.link }); } catch {} }
+    if (navigator.share && data?.link) { try { await navigator.share({ title: 'Iron Within Research', text: 'Research-grade peptides, independently lab-tested — Iron Within Research:', url: data.link }); } catch {} }
     else copy();
   };
 

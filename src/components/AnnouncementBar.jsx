@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { p2pPaused, p2pEventLive, p2pPct, GIFT_MIN, GIFT_FROM, GIFT_TO } from '@/lib/p2p';
 import { ffLive, ffCurrent, ffCountdownTo, ffFormat, FF_HEADLINE, FF_FLAT, FF_WINDOWS } from '@/lib/freakyFridays';
+import { GIVEAWAY, giveawayOpen } from '@/lib/giveaway';
 
 /* Scrolling announcement ticker, fixed above the navbar (height 36px).
    The navbar (top: 36) and main padding are offset to match. */
@@ -112,6 +113,12 @@ const B2G1_MESSAGE = '🎁  BUY 2 GET 1 FREE on RT-3 30mg & TRZ-2 30mg — add 3
 // requirement: stacked on B1G1 plus a 15% code it takes six SKUs below landed cost.
 // The bar drops the pay-by-app line automatically while p2pPaused() is true, so this
 // message must not imply any additional app discount.
+// Cruise sweepstakes. Derived from src/lib/giveaway.js, which is also what the
+// Official Rules on /giveaway render from — so the ticker cannot advertise a
+// deadline or an entry rate the rules contradict. It self-gates on the entry
+// window via giveawayOpen(), so it disappears when the sweepstakes closes.
+const CG_MESSAGE = `\u{1F6A2}  WIN A CARNIVAL CRUISE FOR TWO \u00b7 one entry for every $${GIVEAWAY.dollarsPerEntry} spent, applied automatically \u00b7 no purchase necessary, free entry by mail \u00b7 ends ${GIVEAWAY.closesLabel.split(' at ')[0]}`;
+
 const LD_START = Date.parse('2026-08-24T13:00:00Z');
 const LD_END = Date.parse('2026-09-08T04:00:00Z');
 const LD_MESSAGE = '🇺🇸  LABOR DAY — BUY 1 GET 1 FREE SITEWIDE · mix & match ANY 2 items and the cheaper one is free, automatically · no code needed · stack your affiliate code on top · bundles & gift cards keep their own pricing · ends Mon Sep 7 at midnight';
@@ -197,6 +204,7 @@ export default function AnnouncementBar() {
     // two sitewide percentages in one ticker is what makes shoppers distrust both.
     // The 30% is still mentioned, inside FTF_MESSAGE, as the sub-threshold fallback.
     if (!ftfOn && !qbOn && !flashOn && now >= SUMMER_START && now < SUMMER_END) { promos.push(SUMMER_MESSAGE); setSummerActive(true); }
+    if (giveawayOpen(now)) promos.push(CG_MESSAGE);
     if (now < SALE_ENDS) promos.push(SALE_MESSAGE);
     // Drop the pay-by-app line while the discount is paused, so the bar and checkout
     // agree; otherwise rewrite it at the rate actually in force.
