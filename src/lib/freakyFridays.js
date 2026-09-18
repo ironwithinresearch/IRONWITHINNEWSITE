@@ -51,11 +51,12 @@ export const FF_SEASON_END = Date.parse(FF_WINDOWS[FF_WINDOWS.length - 1].end);
    derives its own headline from the percent so it cannot drift internally — but this constant
    can still drift from the backend, so change both in one commit. The store has shipped that
    exact bug before: a window closed server-side while the storefront kept advertising it. */
-export const FF_HEADLINE = 50;
-export const FF_FLAT = true;   // false => copy should read "up to {FF_HEADLINE}%"
+export const FF_HEADLINE = 61;
+export const FF_FLAT = false;  // false => copy should read "up to {FF_HEADLINE}%"
 
 /* Products deliberately NOT in the sale, for copy that needs to say so. */
-export const FF_EXCLUDED_NOTE = 'Aminos, gift cards, merch and bundles are not in the sale.';
+export const FF_EXCLUDED_NOTE =
+  'Selected products. Aminos, gift cards, merch and bundles are not in the sale.';
 
 export const FF_NAME = 'FREAKY FRIDAYS';
 
