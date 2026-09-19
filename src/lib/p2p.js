@@ -90,9 +90,12 @@ export const p2pPct = (now = Date.now()) => String(Math.round(p2pRate(now) * 100
  * hand a $225.00 cart free shipping and no vial while the copy promises both.
  * ------------------------------------------------------------------------- */
 
-export const GIFT_MIN = 225;
-export const GIFT_FROM = Date.parse('2026-08-29T12:00:00Z'); // 8:00am ET (EDT = UTC-4)
-export const GIFT_TO = Date.parse('2026-09-08T23:00:00Z');   // ENDED — no prizes on anything
+// $125 and NOT the $225 free-shipping minimum, for this window only. The checkout line that
+// read "free shipping too" was changed in the same commit — below $225 the vial is free and
+// the shipping is not. Move the number and that copy together, always.
+export const GIFT_MIN = 125;
+export const GIFT_FROM = Date.parse('2026-09-19T01:30:00Z'); // Fri 18 Sep, 8:30pm CT
+export const GIFT_TO = Date.parse('2026-09-19T02:00:00Z');   // Fri 18 Sep, 9:00pm CT
 
 export const GIFT_OPTIONS = [
   { key: 'trz2', label: 'TRZ-2 10mg' },

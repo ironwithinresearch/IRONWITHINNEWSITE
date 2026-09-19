@@ -25,7 +25,7 @@ import {
 } from 'lucide-react';
 import { useState, useMemo, useEffect, useRef } from 'react';
 
-// Free vial picker. ONE tier, mirroring mu-plugin iw-p2p-gift.php: IW_GIFT_MIN = $225
+// Free vial picker. ONE tier, mirroring mu-plugin iw-p2p-gift.php: IW_GIFT_MIN = $125
 // and iw_gift_options() = TRZ-2 10mg (1033) / RT-3 10mg (520).
 //
 // This carried the retired Queen's Birthday Bash ladder until 4 Sep 2026 — $200 for a
@@ -512,7 +512,7 @@ export default function CartPage() {
           <div onClick={e => e.stopPropagation()} style={{ maxWidth: 440, width: '100%', background: 'var(--card-dark, #0e1a30)', border: '1px solid var(--glass-border)', borderRadius: '20px', padding: '30px 26px', boxShadow: '0 30px 80px -20px rgba(0,0,0,0.85)', textAlign: 'center' }}>
             <div style={{ fontSize: '2.2rem', marginBottom: '8px' }}>🎁</div>
             <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '1.35rem', marginBottom: '6px', color: 'var(--text-light)' }}>You&apos;ve unlocked a FREE vial!</h3>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '22px' }}>Orders ${GIFT_MIN}+ include a free vial — pick your RETA or TIRZ {giftDose}. Added free at checkout. 🎁</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '22px' }}>Orders ${GIFT_MIN}+ after discounts include a free vial — pick your RETA or TIRZ {giftDose}. Added free at checkout. 🎁</p>
             <div style={{ display: 'flex', gap: '12px', marginBottom: '18px' }}>
               {giftOpts.map(opt => {
                 const active = currentGiftSlug === opt.slug;
