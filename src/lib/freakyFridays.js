@@ -19,8 +19,9 @@ export const FF_WINDOWS = [
   { week: 1, start: '2026-09-12T01:30:00Z', end: '2026-09-15T01:30:00Z' },
   // Weeks 2-8 are a single 12-hour Friday, 8am -> 8pm CT. Shorter on purpose: the launch buys
   // the habit, the rest stay events rather than a standing discount.
-  // Week 2 EXTENDED to 9pm CT (operator, 18 Sep). Mirrors IW_FF_FRIDAYS in the mu-plugin.
-  { week: 2, start: '2026-09-18T13:00:00Z', end: '2026-09-19T02:00:00Z' },
+  // Week 2 EXTENDED through Sunday midnight CT (operator, 18 Sep) — 64 hours, the same
+  // shape as the week-1 launch weekend. Mirrors IW_FF_FRIDAYS in the mu-plugin.
+  { week: 2, start: '2026-09-18T13:00:00Z', end: '2026-09-21T05:00:00Z' },
   { week: 3, start: '2026-09-25T13:00:00Z', end: '2026-09-26T01:00:00Z' },
   { week: 4, start: '2026-10-02T13:00:00Z', end: '2026-10-03T01:00:00Z' },
   { week: 5, start: '2026-10-09T13:00:00Z', end: '2026-10-10T01:00:00Z' },
