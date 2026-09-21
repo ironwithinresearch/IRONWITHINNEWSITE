@@ -31,19 +31,23 @@ import {
 const steps = ['Shipping', 'Review'];
 const SUPPORT_EMAIL = 'support@ironwithin.io';
 
-// Payment methods. iwr_card is the ROUTER (mu-plugin iw-card-router.php): one card option
-// for the buyer, and the backend decides which acquirer actually takes it, rotating volume
-// between them and failing a declined order over to the other one. It answers with a
-// `redirect` when it picks KeyBilling (the isolated pay app at pay.ironwithin.io) and with
-// an empty redirect when it picks PeptidesPayment, whose card form mounts on the order
-// screen. Either way no card data touches this app.
+// Payment methods. Cards go STRAIGHT to KeyBilling (operator, 20 Sep) — it is the only
+// acquirer left, so the iwr_card router had one rail to choose between and was pure
+// indirection. iwr_keybilling redirects to the isolated pay app at pay.ironwithin.io and
+// enforces its own $750 ceiling, refusing a larger order with a message pointing the buyer
+// at Zelle/Venmo/Cash App, so nothing is lost by addressing it directly.
 //
-// Do NOT point this back at a single acquirer. It was `iwr_snappay` until 2026-08-25, long
-// after that rail stopped settling — every card buyer was being sent to a processor that
-// had not paid out in a month.
+// ⚠ THE OLD WARNING STILL APPLIES: whatever this points at must be an acquirer that is
+// actually SETTLING. It read `iwr_snappay` until 2026-08-25, a month after that rail stopped
+// paying out, and every card buyer was sent to it. If KeyBilling is ever paused, change this
+// in the same breath — a stale constant here silently routes real money at a dead processor.
+//
+// iw-card-router.php stays on the backend even though its gateway is off: it registers
+// /iw/v1/card-failover, which the pay app calls when an acquirer declines.
+//
 // The rest are manual P2P gateways (iw-p2p-pay.php) — the order is placed on-hold and
 // the buyer is shown send-to instructions.
-const CARD_METHOD = 'iwr_card';
+const CARD_METHOD = 'iwr_keybilling';
 
 // PayPal. iwr_paypal is a WRAPPER around the paypal-proxy-phantom gateway, not that gateway
 // itself — see mu-plugin iw-paypal-headless.php. The plugin picks its proxy in a wp_head
@@ -112,7 +116,7 @@ const P2P_DISCOUNT_METHODS = P2P_METHODS;
 
 // Any method whose backend gateway answers with an off-site `redirect` rather than
 // completing the order in-place.
-const REDIRECT_METHODS = new Set(['iwr_rail', 'iwr_chargx', CARD_METHOD, PAYPAL_METHOD]);
+const REDIRECT_METHODS = new Set(['iwr_rail', CARD_METHOD, PAYPAL_METHOD]);
 
 // Card kill switch. Set to true to pull the card option from checkout instantly — keep it
 // in step with CARDS_ENABLED in PaymentMethods.jsx.
