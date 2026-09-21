@@ -109,6 +109,12 @@ export default function CartPage() {
   const subscribedCount = (cartItems || []).filter((i) => subCadenceOf(i) > 0).length;
 
 
+  // NOTE: this line was lost on 20 Sep when the pre-checkout upsell block was removed by a
+  // regex that swallowed it, leaving goCheckout() calling router.push() on an undefined
+  // variable. It compiles — a ReferenceError only fires on click — so the build passed and
+  // "Proceed to Checkout" silently did nothing for every shopper.
+  const router = useRouter();
+
   const goCheckout = () => router.push('/checkout');
   // Checkout goes straight to checkout. It used to open a rotating upsell first and only
   // continue once the shopper answered it — an interstitial between "Proceed to Checkout"
