@@ -7,10 +7,6 @@ import AffiliateTracker from "../components/AffiliateTracker";
 import ReferralCapture from "../components/ReferralCapture";
 import LeadCapture from "../components/LeadCapture";
 import GiftPromoPopup from "../components/GiftPromoPopup";
-import B2SGiftPopup from "../components/B2SGiftPopup";
-import BirthdayBashPopup from "../components/BirthdayBashPopup";
-import ChristmasJulyPopup from "../components/ChristmasJulyPopup";
-import QueenBirthdayPopup from "../components/QueenBirthdayPopup";
 import QueenTheme from "../components/QueenTheme";
 import FreakyFridaysTheme from "../components/FreakyFridaysTheme";
 import ShippingPauseNotice from "../components/ShippingPauseNotice";
@@ -74,12 +70,8 @@ export default function RootLayout({ children }) {
             {children}
           </main>
           <Footer />
-          <B2SGiftPopup />
           <LeadCapture />
           <GiftPromoPopup />
-          <BirthdayBashPopup />
-          <ChristmasJulyPopup />
-          <QueenBirthdayPopup />
           <ShippingPauseNotice />
         </ApolloWrapper>
         <Analytics />
