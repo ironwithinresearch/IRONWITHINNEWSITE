@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation';
 import { useMutation, useQuery } from '@apollo/client';
 import { CHECKOUT, buildCheckoutInput } from '../../lib/queries/checkout';
 import { useCart } from '../../context/CartContext';
-import OrderBump from '@/components/OrderBump';
 import { getReferCookie } from '@/lib/referral';
 import PayPalFrame from '@/components/PayPalFrame';
 import { P2P_METHODS, p2pPaused, p2pRate, p2pPct, GIFT_OPTIONS, GIFT_MIN, giftQualifies, giftQualifying } from '@/lib/p2p';
@@ -881,7 +880,6 @@ export default function CheckoutPage() {
                   </div>
                   )}
                 </ReviewBlock>
-                <OrderBump cartItems={cartItems} onAdd={addToCart} onRemove={removeItem} />
 
                 {/* Backorder acknowledgment — required when the cart has a backordered item */}
                 {hasBackorder && (

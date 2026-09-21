@@ -7,9 +7,6 @@ import { useQuery } from '@apollo/client';
 import B2SUnlockNudge from '@/components/B2SUnlockNudge';
 import { useCart } from '@/context/CartContext';
 import { decodePriceHtml } from '@/lib/utils';
-import { GET_PRODUCT } from '@/lib/queries/products';
-import { pickUpsellSlug } from '@/lib/upsell';
-import PreCheckoutUpsell from '@/components/PreCheckoutUpsell';
 import FreeShippingBar from '@/components/FreeShippingBar';
 import CartRewards from '@/components/CartRewards';
 import { getRewardsRedeemPts, setRewardsRedeemPts } from '@/lib/rewards';
@@ -111,27 +108,12 @@ export default function CartPage() {
   };
   const subscribedCount = (cartItems || []).filter((i) => subCadenceOf(i) > 0).length;
 
-  // ── Pre-checkout upsell (rotating, cart-aware, 5% off, coupon-free) ──
-  const router = useRouter();
-  const cartSlugs = (cartItems || []).map((i) => i.product?.node?.slug).filter(Boolean);
-  const cartKey = cartSlugs.slice().sort().join(',');
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const upsellSlug = useMemo(() => pickUpsellSlug(cartSlugs), [cartKey]);
-  const { data: upsellData } = useQuery(GET_PRODUCT, { variables: { slug: upsellSlug }, skip: !upsellSlug });
-  const upsellProduct = upsellData?.product || null;
-  const [upsellOpen, setUpsellOpen] = useState(false);
-  const [upsellShown, setUpsellShown] = useState(false);
 
   const goCheckout = () => router.push('/checkout');
-  const handleCheckoutClick = () => {
-    if (upsellProduct && !upsellShown) { setUpsellShown(true); setUpsellOpen(true); }
-    else goCheckout();
-  };
-  const addUpsell = async (product, variation) => {
-    await addToCart(product.databaseId, 1, variation.databaseId, { iw_upsell: '1' });
-    setUpsellOpen(false);
-    goCheckout();
-  };
+  // Checkout goes straight to checkout. It used to open a rotating upsell first and only
+  // continue once the shopper answered it — an interstitial between "Proceed to Checkout"
+  // and checkout, on a store that already has a card-abandonment problem.
+  const handleCheckoutClick = () => goCheckout();
 
   // 12 Days — Day 1 free gift: let the customer pick RT-3 or TRZ-2 (server honors iw_gift_pick).
   const chooseXjGift = async (opt) => {
@@ -480,14 +462,6 @@ export default function CartPage() {
               <button onClick={handleCheckoutClick} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '13px', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', fontFamily: 'var(--font-body)', boxShadow: 'var(--glow-blue)', marginBottom: '14px' }}>
                 Proceed to Checkout <ArrowRight size={16} />
               </button>
-
-              {upsellOpen && (
-                <PreCheckoutUpsell
-                  product={upsellProduct}
-                  onAdd={addUpsell}
-                  onSkip={() => { setUpsellOpen(false); goCheckout(); }}
-                />
-              )}
 
               {[
                 { Icon: ShieldCheck, label: 'Secure checkout' },
