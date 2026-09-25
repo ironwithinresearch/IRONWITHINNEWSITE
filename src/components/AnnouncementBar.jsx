@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { p2pPaused, p2pEventLive, p2pPct, GIFT_MIN, GIFT_FROM, GIFT_TO } from '@/lib/p2p';
-import { ffLive, ffCurrent, ffCountdownTo, ffFormat, FF_HEADLINE, FF_FLAT, FF_WINDOWS } from '@/lib/freakyFridays';
+import { p2pPaused, p2pEventLive, p2pPct, GIFT_MIN, GIFT_FROM, GIFT_TO, GIFT_BIG_MIN } from '@/lib/p2p';
+import { ffLive, ffCurrent, ffCountdownTo, ffFormat, FF_HEADLINE, FF_FLAT, FF_WINDOWS, FF_GIFT } from '@/lib/freakyFridays';
 import { GIVEAWAY, giveawayOpen } from '@/lib/giveaway';
 
 /* Scrolling announcement ticker, fixed above the navbar (height 36px).
@@ -130,7 +130,8 @@ const LD_MESSAGE = '🇺🇸  LABOR DAY — BUY 1 GET 1 FREE SITEWIDE · mix & m
 // how the Labor Day copy ended up describing a rule the backend had stopped applying.
 //
 // $225 is also the free-shipping minimum, which is why the two are sold as one line.
-const GIFT_MESSAGE = `🎁  SPEND $${GIFT_MIN}+ AND PICK A FREE VIAL — RT-3 10mg or TRZ-2 10mg, on us · free US shipping at $${GIFT_MIN} too · any payment method · choose yours at checkout`;
+// Free shipping is $225 and the vial is $200 this window, so this line must NOT promise free shipping.
+const GIFT_MESSAGE = `🎁  SPEND $${GIFT_MIN}+ AND PICK A FREE VIAL — RT-3 or TRZ-2 10mg, on us · spend $${GIFT_BIG_MIN}+ and it's the 30mg · any payment method · choose yours at checkout`;
 
 // The pay-by-app 10% STAYS RUNNING this event (operator call 2026-08-14) — the buy-3
 // gate is doing the margin work instead, so the bar keeps promising it. If it is ever
@@ -229,7 +230,7 @@ export default function AnnouncementBar() {
       const left = ffFormat(ffCountdownTo(now).ms);
       setFfActive(true);
       promos.unshift(
-        `\uD83C\uDF83  FREAKY FRIDAYS \u2014 week ${w.week} of ${FF_WINDOWS.length} is LIVE \u00B7 ${FF_FLAT ? '' : 'up to '}${FF_HEADLINE}% OFF SELECT PRODUCTS, no code needed \u00B7 stack your creator code for even more${left ? ` \u00B7 ends in ${left}` : ''}`,
+        `\uD83C\uDF83  FREAKY FRIDAYS \u2014 week ${w.week} of ${FF_WINDOWS.length} is LIVE \u00B7 ${FF_GIFT[w.week] ? `${FF_GIFT[w.week]} \u00B7 ` : ''}${FF_FLAT ? '' : 'up to '}${FF_HEADLINE}% OFF SELECT PRODUCTS, no code needed \u00B7 stack your creator code for even more${left ? ` \u00B7 ends in ${left}` : ''}`,
       );
     }
     setMessages([...promos, ...base]);

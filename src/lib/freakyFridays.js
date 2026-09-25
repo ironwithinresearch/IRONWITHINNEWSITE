@@ -53,8 +53,14 @@ export const FF_SEASON_END = Date.parse(FF_WINDOWS[FF_WINDOWS.length - 1].end);
    derives its own headline from the percent so it cannot drift internally — but this constant
    can still drift from the backend, so change both in one commit. The store has shipped that
    exact bug before: a window closed server-side while the storefront kept advertising it. */
-export const FF_HEADLINE = 55;
-export const FF_FLAT = true;   // false => copy should read "up to {FF_HEADLINE}%"
+export const FF_HEADLINE = 15;   // week 3 (25 Sep): flat 15% — mirrors iw_ff_percent(3)
+export const FF_FLAT = true;
+
+/* Per-week free-vial line, shown AHEAD of the discount because it is the headline that week.
+   Mirrors mu-plugin iw-p2p-gift.php (IW_GIFT_MIN / IW_GIFT_MIN_BIG and its window). */
+export const FF_GIFT = {
+  3: 'FREE RT-3 or TRZ-2 10mg on $200+ \u00b7 FREE 30mg on $350+',
+};   // false => copy should read "up to {FF_HEADLINE}%"
 
 /* Products deliberately NOT in the sale, for copy that needs to say so. */
 export const FF_EXCLUDED_NOTE =

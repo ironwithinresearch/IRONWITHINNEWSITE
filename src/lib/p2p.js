@@ -93,14 +93,20 @@ export const p2pPct = (now = Date.now()) => String(Math.round(p2pRate(now) * 100
 // $125 and NOT the $225 free-shipping minimum, for this window only. The checkout line that
 // read "free shipping too" was changed in the same commit — below $225 the vial is free and
 // the shipping is not. Move the number and that copy together, always.
-export const GIFT_MIN = 125;
-export const GIFT_FROM = Date.parse('2026-09-19T01:30:00Z'); // Fri 18 Sep, 8:30pm CT
-export const GIFT_TO = Date.parse('2026-09-19T02:00:00Z');   // Fri 18 Sep, 9:00pm CT
+// Freaky Friday week 3 (25 Sep): $200 earns a 10mg, $350 upgrades it to the 30mg. Free shipping
+// stays at $225, so no copy may pair the vial with free shipping. Mirrors IW_GIFT_MIN / IW_GIFT_MIN_BIG.
+export const GIFT_MIN = 200;
+export const GIFT_BIG_MIN = 350;
+export const GIFT_FROM = Date.parse('2026-09-25T13:00:00Z'); // Fri 25 Sep, 8:00am CT
+export const GIFT_TO = Date.parse('2026-09-26T01:00:00Z');   // Fri 25 Sep, 8:00pm CT
 
 export const GIFT_OPTIONS = [
-  { key: 'trz2', label: 'TRZ-2 10mg' },
-  { key: 'rt3', label: 'RT-3 10mg' },
+  { key: 'trz2', label: 'TRZ-2' },
+  { key: 'rt3', label: 'RT-3' },
 ];
+
+/** Which size the qualifying amount earns — the same compound choice, the size follows the spend. */
+export const giftDoseFor = (base) => (Number(base) >= GIFT_BIG_MIN ? '30mg' : '10mg');
 
 export const giftActive = (now = Date.now()) => now >= GIFT_FROM && now <= GIFT_TO;
 

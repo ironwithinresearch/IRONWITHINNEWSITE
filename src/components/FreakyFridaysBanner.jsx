@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   ffCurrent, ffNext, ffCountdownTo, ffFormat, ffSeason, ffWindowLabel,
-  FF_HEADLINE, FF_FLAT, FF_WINDOWS,
+  FF_HEADLINE, FF_FLAT, FF_WINDOWS, FF_GIFT,
 } from '@/lib/freakyFridays';
 
 /* Freaky Fridays homepage banner. Shows all season, and changes state at 8:30:
@@ -115,6 +115,7 @@ export default function FreakyFridaysBanner() {
           <p style={{ margin: '0 0 16px', color: '#E9DCCD', fontSize: 'clamp(0.95rem,1.6vw,1.08rem)', maxWidth: '46ch' }}>
             {live ? (
               <>
+                {s.week && FF_GIFT[s.week] ? <><strong style={{ color: '#FFB020' }}>{FF_GIFT[s.week]}</strong>, plus </> : null}
                 {FF_FLAT ? (
                   <><strong style={{ color: '#FFB020' }}>{FF_HEADLINE}% off sitewide</strong> — no
                   code needed, and your creator code still stacks on top.</>

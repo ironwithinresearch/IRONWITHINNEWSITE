@@ -12,7 +12,7 @@ import CartRewards from '@/components/CartRewards';
 import { getRewardsRedeemPts, setRewardsRedeemPts } from '@/lib/rewards';
 import CartStoreCredit from '@/components/CartStoreCredit';
 import SpendLadder from '@/components/SpendLadder';
-import { GIFT_MIN } from '@/lib/p2p';
+import { GIFT_MIN, GIFT_BIG_MIN } from '@/lib/p2p';
 import SaleCountdown from '@/components/SaleCountdown';
 import PaymentMethods from '@/components/PaymentMethods';
 import {
@@ -32,7 +32,12 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 //   * the 30mg tier gave away the two highest-contribution SKUs in the catalogue
 //     (~$70 each) and the backend has never had a 30mg option to honour it with.
 // Keep this table equal to iw_gift_options(); if they drift, the cart lies.
+// Ordered HIGHEST first: find() takes the first tier the cart clears.
 const XJ_GIFT_TIERS = [
+  { min: GIFT_BIG_MIN, dose: '30mg', opts: [
+    { vid: 523, pid: 310, label: 'RETA 30mg', slug: 'rt-3' },
+    { vid: 524, pid: 319, label: 'TIRZ 30mg', slug: 'trz-2' },
+  ] },
   { min: GIFT_MIN, dose: '10mg', opts: [
     { vid: 520, pid: 310, label: 'RETA 10mg', slug: 'rt-3' },
     { vid: 1033, pid: 319, label: 'TIRZ 10mg', slug: 'trz-2' },
@@ -492,7 +497,7 @@ export default function CartPage() {
           <div onClick={e => e.stopPropagation()} style={{ maxWidth: 440, width: '100%', background: 'var(--card-dark, #0e1a30)', border: '1px solid var(--glass-border)', borderRadius: '20px', padding: '30px 26px', boxShadow: '0 30px 80px -20px rgba(0,0,0,0.85)', textAlign: 'center' }}>
             <div style={{ fontSize: '2.2rem', marginBottom: '8px' }}>🎁</div>
             <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '1.35rem', marginBottom: '6px', color: 'var(--text-light)' }}>You&apos;ve unlocked a FREE vial!</h3>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '22px' }}>Orders ${GIFT_MIN}+ after discounts include a free vial — pick your RETA or TIRZ {giftDose}. Added free at checkout. 🎁</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '22px' }}>Orders ${GIFT_MIN}+ after discounts include a free 10mg, ${GIFT_BIG_MIN}+ a free 30mg — pick your RETA or TIRZ {giftDose}. Added free at checkout. 🎁</p>
             <div style={{ display: 'flex', gap: '12px', marginBottom: '18px' }}>
               {giftOpts.map(opt => {
                 const active = currentGiftSlug === opt.slug;
