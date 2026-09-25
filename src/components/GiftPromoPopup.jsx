@@ -14,11 +14,13 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { GIFT_MIN, GIFT_OPTIONS, GIFT_FROM, GIFT_TO,
+import { GIFT_MIN, GIFT_BIG_MIN, GIFT_OPTIONS, GIFT_FROM, GIFT_TO,
          GA_MIN, GA_PRIZE_EACH, GA_WINNERS, giveawayActive } from '@/lib/p2p';
+import { ffCurrent, FF_HEADLINE, FF_FLAT, FF_SITEWIDE_WEEKS } from '@/lib/freakyFridays';
 import { isLoggedIn } from '@/lib/auth';
 
-const KEY = 'iw_gift_promo_v1';
+// v2 (25 Sep 2026): content changed, so shoppers who dismissed the old Labor Day version see it once.
+const KEY = 'iw_gift_promo_v2';
 const SNOOZE_MS = 3 * 24 * 60 * 60 * 1000;
 
 export default function GiftPromoPopup() {
@@ -47,11 +49,18 @@ export default function GiftPromoPopup() {
 
   if (!open) return null;
 
+  // The sale panel is DERIVED from the live Freaky Friday window — it used to be hardcoded
+  // Labor Day copy ("Buy 1 get 1 free · ends Mon Sep 7") and resurfaced weeks later when the
+  // gift window reopened. No live sale, no sale panel.
+  const ff = ffCurrent();
+  const ffEnds = ff ? new Date(Date.parse(ff.end)).toLocaleTimeString('en-US', { timeZone: 'America/Chicago', hour: 'numeric', minute: '2-digit' }) : '';
+  const ffSitewide = ff && FF_SITEWIDE_WEEKS.includes(ff.week);
+
   return (
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={`Buy one get one free, and a free vial when you spend $${GIFT_MIN}`}
+      aria-label={`${ff ? `${FF_HEADLINE}% off, and ` : ''}a free vial when you spend $${GIFT_MIN}`}
       onClick={() => close(false)}
       style={{
         position: 'fixed', inset: 0, zIndex: 9000,
@@ -97,8 +106,7 @@ export default function GiftPromoPopup() {
             Iron Within Research
           </div>
 
-          {/* Two offers, both live. The BOGO is the headline — it applies to every cart,
-              where the free vial only lands at $225 — so it leads. */}
+          {ff && (
           <div style={{
             border: '1px solid rgba(0,168,214,0.42)', background: 'rgba(0,168,214,0.09)',
             borderRadius: 12, padding: '16px 16px 14px', marginBottom: 12,
@@ -107,15 +115,16 @@ export default function GiftPromoPopup() {
               fontSize: '0.66rem', letterSpacing: '.12em', textTransform: 'uppercase',
               color: 'var(--primary-blue, #00A8D6)', fontWeight: 800, marginBottom: 6,
             }}>
-              Sitewide · ends Mon Sep 7
+              Freaky Friday · ends {ffEnds} CT today
             </div>
             <div style={{ color: '#fff', fontSize: '1.45rem', fontWeight: 900, lineHeight: 1.1 }}>
-              Buy 1 get 1 free
+              {FF_FLAT ? '' : 'Up to '}{FF_HEADLINE}% off {ffSitewide ? 'sitewide' : 'select products'}
             </div>
             <div style={{ color: 'rgba(255,255,255,0.68)', fontSize: '0.86rem', marginTop: 6, lineHeight: 1.5 }}>
-              Mix &amp; match any 2 items — the cheaper one is free, automatically.
+              No code needed — and your creator code still stacks on top.
             </div>
           </div>
+          )}
 
           <div style={{
             border: '1px solid rgba(52,211,153,0.48)', background: 'rgba(52,211,153,0.09)',
@@ -125,7 +134,7 @@ export default function GiftPromoPopup() {
               fontSize: '0.66rem', letterSpacing: '.12em', textTransform: 'uppercase',
               color: '#34d399', fontWeight: 800, marginBottom: 6,
             }}>
-              Every order
+              {ff ? 'Today only' : 'Every order'}
             </div>
             <div style={{ color: '#fff', fontSize: '1.45rem', fontWeight: 900, lineHeight: 1.1 }}>
               Spend ${GIFT_MIN}, pick a free vial
@@ -140,12 +149,12 @@ export default function GiftPromoPopup() {
                   background: 'rgba(52,211,153,0.12)',
                   color: '#6ee7b7', fontWeight: 700, fontSize: '0.84rem',
                 }}>
-                  {g.label}
+                  {g.label} 10mg
                 </span>
               ))}
             </div>
             <div style={{ color: 'rgba(255,255,255,0.68)', fontSize: '0.86rem', lineHeight: 1.5 }}>
-              + free US shipping on the same order
+              Spend ${GIFT_BIG_MIN}+ and it&rsquo;s the <strong style={{ color: '#6ee7b7' }}>30mg</strong>.
             </div>
           </div>
 
@@ -197,8 +206,8 @@ export default function GiftPromoPopup() {
           <p style={{
             margin: '14px 0 0', color: 'rgba(255,255,255,0.38)', fontSize: '0.72rem', lineHeight: 1.5,
           }}>
-            Both applied automatically. Choose your vial at checkout. Bundles &amp; gift
-            cards keep their own pricing.
+            Applied automatically — choose your vial at checkout. Spend is measured after
+            discounts. Merch, bundles &amp; gift cards keep their own pricing.
           </p>
         </div>
       </div>

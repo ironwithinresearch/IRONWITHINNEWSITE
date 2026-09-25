@@ -7,11 +7,12 @@ import Link from 'next/link';
 import { Copy, Check, Sparkles, ShieldAlert, ShieldCheck, ArrowRight, Download, Film, BookOpen } from 'lucide-react';
 
 const CAPTIONS = [
-  "Three things at Iron Within this weekend: BUY 1 GET 1 FREE sitewide — any 2 items, cheaper one free. At $225+ you also pick a FREE vial (RT-3 10mg or TRZ-2 10mg) with free US shipping. And every order over $250 is entered to win — 5 people get $100 store credit each, $500 total, drawn Monday. All automatic. [YOURCODE] stacks on top.",
-  "$500 GIVEAWAY at Iron Within — 5 winners, $100 store credit each. Every order over $250 between now and Sunday night is entered automatically, no entry form. That is on top of buy-1-get-1-free sitewide and a free vial at $225+. Use [YOURCODE].",
-  "BOGO on everything at Iron Within through Sep 7 — any 2 items, cheaper one free. Get to $225 and you also choose a free RT-3 10mg or TRZ-2 10mg plus free shipping. Over $250 this weekend and you are in the $500 giveaway too. [YOURCODE] comes off the total.",
-  "LABOR DAY: buy one get one free on everything at Iron Within — mix & match ANY 2 items and the cheaper one is free automatically, no code needed. My code [YOURCODE] stacks on top. Ends Mon Sep 7 at midnight.",
-  "BOGO on every peptide at Iron Within through Labor Day. Any 2 items — the cheaper one is free, applied at checkout. 99%+ purity, COA on every order. Use [YOURCODE] and it stacks.",
+  // Replaced 25 Sep 2026: the five captions here advertised the Labor Day BOGO / giveaway, which
+  // ended Sep 7. Keep dated promo captions OUT of this list once their promo ends — affiliates
+  // copy these straight into posts.
+  "Iron Within just cut prices 15% on every peptide — permanently, not a sale. RT-3 30mg is now $147.95. Use [YOURCODE] and it still stacks on top. ironwithin.io",
+  "FREAKY FRIDAYS at Iron Within — a new drop every Friday, 8am–8pm CT, through Oct 30. Different deal each week, no code needed, and [YOURCODE] stacks on top. Set a reminder.",
+  "This Friday's drop at Iron Within (8am–8pm CT only): 15% off sitewide on top of the new lower prices, plus a free RT-3 or TRZ-2 10mg on orders $200+ — or the 30mg at $350+. [YOURCODE] stacks.",
   "Doing peptide research? Iron Within Research is the only source I trust — 99%+ purity with a Certificate of Analysis on every single vial. Use code [YOURCODE] → ironwithin.io",
   "If you care about clean inputs, your source matters. Iron Within third-party lab-tests every batch to 99%+ purity and includes the COA. Code [YOURCODE] for a discount. 🔬",
   "Restocked my research supplies from @ironwithinresearch again. Fast, discreet shipping and a COA in every order. [YOURCODE] saves you on your first one.",
@@ -29,12 +30,8 @@ const HOOKS = [
 const DISCLOSURE = "#ad #affiliate — I earn a commission on purchases made with my code. For research use only. Not for human consumption.";
 
 const GRAPHICS = [
-  // Labor Day B1G1, 24 Aug – 7 Sep. Leads the grid while it runs; pull these two when
-  // it ends or affiliates keep posting an offer the cart no longer honours.
-  { src: '/affiliate-assets/promo-combo-post.png', label: 'BOGO + free vial — Post' },
-  { src: '/affiliate-assets/promo-combo-story.png', label: 'BOGO + free vial — Story' },
-  { src: '/affiliate-assets/labor-day-story.jpg', label: 'Labor Day — Story (BOGO)' },
-  { src: '/affiliate-assets/labor-day-landscape.jpg', label: 'Labor Day — Post (BOGO)' },
+  // Labor Day BOGO graphics (24 Aug – 7 Sep) pulled 25 Sep 2026 — they were still leading the grid
+  // weeks after the offer ended. Dated promo graphics come out the day their promo does.
   { src: '/affiliate-assets/g1.png', label: 'Story — Trust' },
   { src: '/affiliate-assets/g2.png', label: 'Story — COA' },
   { src: '/affiliate-assets/g8.png', label: 'Story — Why us' },
