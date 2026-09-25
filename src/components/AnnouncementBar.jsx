@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { p2pPaused, p2pEventLive, p2pPct, GIFT_MIN, GIFT_FROM, GIFT_TO, GIFT_BIG_MIN } from '@/lib/p2p';
-import { ffLive, ffCurrent, ffCountdownTo, ffFormat, FF_HEADLINE, FF_FLAT, FF_WINDOWS, FF_GIFT } from '@/lib/freakyFridays';
+import { ffLive, ffCurrent, ffCountdownTo, ffFormat, FF_HEADLINE, FF_FLAT, FF_WINDOWS, FF_GIFT, FF_SITEWIDE_WEEKS } from '@/lib/freakyFridays';
 import { GIVEAWAY, giveawayOpen } from '@/lib/giveaway';
 
 /* Scrolling announcement ticker, fixed above the navbar (height 36px).
@@ -230,7 +230,7 @@ export default function AnnouncementBar() {
       const left = ffFormat(ffCountdownTo(now).ms);
       setFfActive(true);
       promos.unshift(
-        `\uD83C\uDF83  FREAKY FRIDAYS \u2014 week ${w.week} of ${FF_WINDOWS.length} is LIVE \u00B7 ${FF_GIFT[w.week] ? `${FF_GIFT[w.week]} \u00B7 ` : ''}${FF_FLAT ? '' : 'up to '}${FF_HEADLINE}% OFF SELECT PRODUCTS, no code needed \u00B7 stack your creator code for even more${left ? ` \u00B7 ends in ${left}` : ''}`,
+        `\uD83C\uDF83  FREAKY FRIDAYS \u2014 week ${w.week} of ${FF_WINDOWS.length} is LIVE \u00B7 ${FF_GIFT[w.week] ? `${FF_GIFT[w.week]} \u00B7 ` : ''}${FF_FLAT ? '' : 'up to '}${FF_HEADLINE}% OFF ${FF_SITEWIDE_WEEKS.includes(w.week) ? 'SITEWIDE' : 'SELECT PRODUCTS'}, no code needed \u00B7 stack your creator code for even more${left ? ` \u00B7 ends in ${left}` : ''}`,
       );
     }
     setMessages([...promos, ...base]);

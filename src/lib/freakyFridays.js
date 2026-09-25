@@ -66,6 +66,11 @@ export const FF_GIFT = {
 export const FF_EXCLUDED_NOTE =
   'Selected products. Aminos, gift cards, merch and bundles are not in the sale.';
 
+/* Weeks where the discount is literally sitewide (mirrors IW_FF_SITEWIDE_WEEKS in the mu-plugin):
+   only gift cards, merch and bundles keep their own pricing. */
+export const FF_SITEWIDE_WEEKS = [3];
+export const FF_SITEWIDE_NOTE = 'Sitewide. Gift cards, merch and bundles keep their own pricing.';
+
 export const FF_NAME = 'FREAKY FRIDAYS';
 
 /** The window live at `now`, or null. */
