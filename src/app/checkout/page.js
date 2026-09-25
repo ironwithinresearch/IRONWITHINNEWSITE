@@ -31,23 +31,25 @@ import {
 const steps = ['Shipping', 'Review'];
 const SUPPORT_EMAIL = 'support@ironwithin.io';
 
-// Payment methods. Cards go STRAIGHT to KeyBilling (operator, 20 Sep) — it is the only
-// acquirer left, so the iwr_card router had one rail to choose between and was pure
-// indirection. iwr_keybilling redirects to the isolated pay app at pay.ironwithin.io and
-// enforces its own $750 ceiling, refusing a larger order with a message pointing the buyer
-// at Zelle/Venmo/Cash App, so nothing is lost by addressing it directly.
+// Payment methods. iwr_card is the ROUTER (mu-plugin iw-card-router.php): one card option for
+// the buyer, and the backend decides which acquirer takes it. Since 2026-09-24 (operator) that
+// is a MerchantCore trial: MerchantCore leads, KeyBilling keeps the first card order of each
+// Central day, a soft decline fails over to the other rail, and orders over KeyBilling's $750
+// ceiling go to MerchantCore instead of being refused. Both rails redirect to the isolated pay
+// app at pay.ironwithin.io; no card data touches this app.
 //
-// ⚠ THE OLD WARNING STILL APPLIES: whatever this points at must be an acquirer that is
-// actually SETTLING. It read `iwr_snappay` until 2026-08-25, a month after that rail stopped
-// paying out, and every card buyer was sent to it. If KeyBilling is ever paused, change this
-// in the same breath — a stale constant here silently routes real money at a dead processor.
+// History: this pointed straight at iwr_keybilling from 20 Sep (one rail, router was pure
+// indirection) — which silently meant the MerchantCore rotation added on 23 Sep never ran.
+// If this is ever pointed at a single acquirer again, the router's rotation stops applying.
 //
-// iw-card-router.php stays on the backend even though its gateway is off: it registers
-// /iw/v1/card-failover, which the pay app calls when an acquirer declines.
+// ⚠ Whatever this points at must be settling real money. It read `iwr_snappay` until
+// 2026-08-25, a month after that rail stopped paying out, and every card buyer was sent to it.
+// The iwr_card gateway must be ENABLED in WooCommerce before this is deployed, or card
+// checkout breaks.
 //
 // The rest are manual P2P gateways (iw-p2p-pay.php) — the order is placed on-hold and
 // the buyer is shown send-to instructions.
-const CARD_METHOD = 'iwr_keybilling';
+const CARD_METHOD = 'iwr_card';
 
 // PayPal. iwr_paypal is a WRAPPER around the paypal-proxy-phantom gateway, not that gateway
 // itself — see mu-plugin iw-paypal-headless.php. The plugin picks its proxy in a wp_head
