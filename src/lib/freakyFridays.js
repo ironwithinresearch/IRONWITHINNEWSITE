@@ -23,6 +23,10 @@ export const FF_WINDOWS = [
   // shape as the week-1 launch weekend. Mirrors IW_FF_FRIDAYS in the mu-plugin.
   { week: 2, start: '2026-09-18T13:00:00Z', end: '2026-09-21T05:00:00Z' },
   { week: 3, start: '2026-09-25T13:00:00Z', end: '2026-09-26T01:00:00Z' },
+  // Slot 9 is NOT a Friday: the GRAND SLAM WEEKEND, Sat 26 Sep 12:00am -> Mon 28 Sep 12:00am CT.
+  // Listed here in time order (ffNext/ffCurrent scan in array order); mirrors slot 9 of
+  // IW_FF_FRIDAYS in the mu-plugin. `name` replaces the "week N of 8" wording in copy.
+  { week: 9, name: 'GRAND SLAM WEEKEND', start: '2026-09-26T05:00:00Z', end: '2026-09-28T05:00:00Z' },
   { week: 4, start: '2026-10-02T13:00:00Z', end: '2026-10-03T01:00:00Z' },
   { week: 5, start: '2026-10-09T13:00:00Z', end: '2026-10-10T01:00:00Z' },
   { week: 6, start: '2026-10-16T13:00:00Z', end: '2026-10-17T01:00:00Z' },
@@ -53,13 +57,14 @@ export const FF_SEASON_END = Date.parse(FF_WINDOWS[FF_WINDOWS.length - 1].end);
    derives its own headline from the percent so it cannot drift internally — but this constant
    can still drift from the backend, so change both in one commit. The store has shipped that
    exact bug before: a window closed server-side while the storefront kept advertising it. */
-export const FF_HEADLINE = 15;   // week 3 (25 Sep): flat 15% — mirrors iw_ff_percent(3)
+export const FF_HEADLINE = 30;   // Grand Slam Weekend (26-27 Sep): flat 30% — mirrors iw_ff_percent(9)
 export const FF_FLAT = true;
 
 /* Per-week free-vial line, shown AHEAD of the discount because it is the headline that week.
    Mirrors mu-plugin iw-p2p-gift.php (IW_GIFT_MIN / IW_GIFT_MIN_BIG and its window). */
 export const FF_GIFT = {
   3: 'FREE RT-3 or TRZ-2 10mg on $200+ \u00b7 FREE 30mg on $350+',
+  9: 'FREE RT-3 or TRZ-2 10mg on $150+ \u00b7 FREE 30mg on $350+ \u00b7 3\u00d7 POINTS \u00b7 $50 STORE CREDIT when you spend $250+',
 };   // false => copy should read "up to {FF_HEADLINE}%"
 
 /* Products deliberately NOT in the sale, for copy that needs to say so. */
@@ -68,10 +73,19 @@ export const FF_EXCLUDED_NOTE =
 
 /* Weeks where the discount is literally sitewide (mirrors IW_FF_SITEWIDE_WEEKS in the mu-plugin):
    only gift cards, merch and bundles keep their own pricing. */
-export const FF_SITEWIDE_WEEKS = [3];
+export const FF_SITEWIDE_WEEKS = [3, 9];
 export const FF_SITEWIDE_NOTE = 'Sitewide. Gift cards, merch and bundles keep their own pricing.';
 
 export const FF_NAME = 'FREAKY FRIDAYS';
+
+/* The eight Fridays of the series; FF_WINDOWS.length also counts special slots like week 9. */
+export const FF_FRIDAY_COUNT = 8;
+
+/** "GRAND SLAM WEEKEND" for a named slot, else "week 3 of 8". */
+export function ffTitle(w) {
+  if (!w) return '';
+  return w.name || `week ${w.week} of ${FF_FRIDAY_COUNT}`;
+}
 
 /** The window live at `now`, or null. */
 export function ffCurrent(now = Date.now()) {
@@ -122,7 +136,8 @@ export function ffWindowLabel(w) {
   if (!w) return '';
   const opt = { timeZone: 'America/Chicago' };
   const d = new Date(Date.parse(w.start));
-  const e = new Date(Date.parse(w.end));
+  // A named weekend ends at Mon 12:00am; say "Sunday 11:59pm" rather than "Monday 12am".
+  const e = new Date(Date.parse(w.end) - (w.name ? 60000 : 0));
   const day = (x) => x.toLocaleDateString('en-US', { ...opt, weekday: 'long' });
   const time = (x) =>
     x.toLocaleTimeString('en-US', { ...opt, hour: 'numeric', minute: '2-digit' })

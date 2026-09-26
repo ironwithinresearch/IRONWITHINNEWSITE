@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   ffCurrent, ffNext, ffCountdownTo, ffFormat, ffSeason, ffWindowLabel,
-  FF_HEADLINE, FF_FLAT, FF_WINDOWS, FF_GIFT,
+  FF_HEADLINE, FF_FLAT, FF_WINDOWS, FF_GIFT, FF_FRIDAY_COUNT,
 } from '@/lib/freakyFridays';
 
 /* Freaky Fridays homepage banner. Shows all season, and changes state at 8:30:
@@ -30,6 +30,7 @@ export default function FreakyFridaysBanner() {
       setS({
         live: !!cur,
         week: (win || {}).week ?? null,
+        name: (win || {}).name || null,
         label: ffFormat(cd.ms),
         kind: cd.kind,
         // Derived from the schedule, never hardcoded: week 1 is a weekend and the rest are a
@@ -93,7 +94,7 @@ export default function FreakyFridaysBanner() {
             }}
           >
             <span aria-hidden>🎃</span>
-            {live ? `Week ${s.week} of ${FF_WINDOWS.length} — live now` : `Week ${s.week} of ${FF_WINDOWS.length}`}
+            {s.name ? (live ? 'This weekend only — live now' : 'This weekend only') : live ? `Week ${s.week} of ${FF_FRIDAY_COUNT} — live now` : `Week ${s.week} of ${FF_FRIDAY_COUNT}`}
           </div>
 
           <h2
@@ -109,7 +110,7 @@ export default function FreakyFridaysBanner() {
               color: 'transparent',
             }}
           >
-            FREAKY FRIDAYS
+            {s.name || 'FREAKY FRIDAYS'}
           </h2>
 
           <p style={{ margin: '0 0 16px', color: '#E9DCCD', fontSize: 'clamp(0.95rem,1.6vw,1.08rem)', maxWidth: '46ch' }}>

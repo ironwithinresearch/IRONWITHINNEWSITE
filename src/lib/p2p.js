@@ -95,10 +95,10 @@ export const p2pPct = (now = Date.now()) => String(Math.round(p2pRate(now) * 100
 // the shipping is not. Move the number and that copy together, always.
 // Freaky Friday week 3 (25 Sep): $200 earns a 10mg, $350 upgrades it to the 30mg. Free shipping
 // stays at $225, so no copy may pair the vial with free shipping. Mirrors IW_GIFT_MIN / IW_GIFT_MIN_BIG.
-export const GIFT_MIN = 200;
+export const GIFT_MIN = 150;
 export const GIFT_BIG_MIN = 350;
-export const GIFT_FROM = Date.parse('2026-09-25T13:00:00Z'); // Fri 25 Sep, 8:00am CT
-export const GIFT_TO = Date.parse('2026-09-26T01:00:00Z');   // Fri 25 Sep, 8:00pm CT
+export const GIFT_FROM = Date.parse('2026-09-26T05:00:00Z'); // Sat 26 Sep, 12:00am CT (Grand Slam Weekend)
+export const GIFT_TO = Date.parse('2026-09-28T05:00:00Z');   // Mon 28 Sep, 12:00am CT
 
 export const GIFT_OPTIONS = [
   { key: 'trz2', label: 'TRZ-2' },

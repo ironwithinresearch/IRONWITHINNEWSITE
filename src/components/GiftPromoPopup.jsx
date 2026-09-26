@@ -55,6 +55,7 @@ export default function GiftPromoPopup() {
   const ff = ffCurrent();
   const ffEnds = ff ? new Date(Date.parse(ff.end)).toLocaleTimeString('en-US', { timeZone: 'America/Chicago', hour: 'numeric', minute: '2-digit' }) : '';
   const ffSitewide = ff && FF_SITEWIDE_WEEKS.includes(ff.week);
+  const ffEndsDay = ff ? new Date(Date.parse(ff.end) - 1000).toLocaleDateString('en-US', { timeZone: 'America/Chicago', weekday: 'long' }) : '';
 
   return (
     <div
@@ -115,13 +116,14 @@ export default function GiftPromoPopup() {
               fontSize: '0.66rem', letterSpacing: '.12em', textTransform: 'uppercase',
               color: 'var(--primary-blue, #00A8D6)', fontWeight: 800, marginBottom: 6,
             }}>
-              Freaky Friday · ends {ffEnds} CT today
+              {ff && ff.name ? `${ff.name} · ends ${ffEndsDay} 11:59pm CT` : `Freaky Friday · ends ${ffEnds} CT today`}
             </div>
             <div style={{ color: '#fff', fontSize: '1.45rem', fontWeight: 900, lineHeight: 1.1 }}>
               {FF_FLAT ? '' : 'Up to '}{FF_HEADLINE}% off {ffSitewide ? 'sitewide' : 'select products'}
             </div>
             <div style={{ color: 'rgba(255,255,255,0.68)', fontSize: '0.86rem', marginTop: 6, lineHeight: 1.5 }}>
               No code needed — and your creator code still stacks on top.
+              {ff && ff.name ? ' Plus 3× reward points, and $50 store credit when you spend $250+.' : ''}
             </div>
           </div>
           )}

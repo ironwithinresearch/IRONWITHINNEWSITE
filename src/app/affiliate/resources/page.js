@@ -12,7 +12,8 @@ const CAPTIONS = [
   // copy these straight into posts.
   "Iron Within just cut prices 15% on every peptide — permanently, not a sale. RT-3 30mg is now $147.95. Use [YOURCODE] and it still stacks on top. ironwithin.io",
   "FREAKY FRIDAYS at Iron Within — a new drop every Friday, 8am–8pm CT, through Oct 30. Different deal each week, no code needed, and [YOURCODE] stacks on top. Set a reminder.",
-  "This Friday's drop at Iron Within (8am–8pm CT only): 15% off sitewide on top of the new lower prices, plus a free RT-3 or TRZ-2 10mg on orders $200+ — or the 30mg at $350+. [YOURCODE] stacks.",
+  // Grand Slam Weekend caption (Sat 26 – Sun 27 Sep). Pull it Monday.
+  "GRAND SLAM WEEKEND at Iron Within — Sat + Sun only: 30% off sitewide, a FREE RT-3 or TRZ-2 10mg on $150+ (30mg on $350+), 3× reward points, and $50 store credit when you spend $250+. No code needed for the 30% — [YOURCODE] stacks on top. ironwithin.io",
   "Doing peptide research? Iron Within Research is the only source I trust — 99%+ purity with a Certificate of Analysis on every single vial. Use code [YOURCODE] → ironwithin.io",
   "If you care about clean inputs, your source matters. Iron Within third-party lab-tests every batch to 99%+ purity and includes the COA. Code [YOURCODE] for a discount. 🔬",
   "Restocked my research supplies from @ironwithinresearch again. Fast, discreet shipping and a COA in every order. [YOURCODE] saves you on your first one.",
@@ -32,6 +33,9 @@ const DISCLOSURE = "#ad #affiliate — I earn a commission on purchases made wit
 const GRAPHICS = [
   // Labor Day BOGO graphics (24 Aug – 7 Sep) pulled 25 Sep 2026 — they were still leading the grid
   // weeks after the offer ended. Dated promo graphics come out the day their promo does.
+  // Grand Slam Weekend (26–27 Sep) — dated: pull these two Monday.
+  { src: '/affiliate-assets/grand-slam-weekend-post.png', label: 'Post — Grand Slam Weekend' },
+  { src: '/affiliate-assets/grand-slam-weekend-story.png', label: 'Story — Grand Slam Weekend' },
   { src: '/affiliate-assets/g1.png', label: 'Story — Trust' },
   { src: '/affiliate-assets/g2.png', label: 'Story — COA' },
   { src: '/affiliate-assets/g8.png', label: 'Story — Why us' },
