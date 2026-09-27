@@ -75,7 +75,9 @@ export function creditEligibility(cart) {
   if (freeUnit) {
     return { eligible: false, reason: 'Store credit can’t be combined with a free-unit offer.', pct, freeUnit: true };
   }
-  if (pct > MAX_DISCOUNT_PCT) {
+  // Half-point tolerance, mirrors iw-store-credit-limits.php: cent rounding makes a flat 30% sale
+  // measure 30.01% on some carts, which was blocking credit for shoppers with no code.
+  if (pct > MAX_DISCOUNT_PCT + 0.5) {
     return { eligible: false, reason: `Store credit can’t be combined with a discount over ${MAX_DISCOUNT_PCT}%.`, pct, freeUnit: false };
   }
   return { eligible: true, reason: '', pct, freeUnit: false };
