@@ -363,7 +363,14 @@ export default function CheckoutPage() {
   // what card payers pay; sending via an app takes 10% back off. Applied server-side as a
   // negative fee at order creation (iw-p2p-discount.php, priority 24) — mirrored here so
   // the buyer sees it BEFORE they place the order, and before credit/rewards are figured.
-  const p2pEligible = P2P_DISCOUNT_METHODS.has(payMethod) && !p2pPaused();
+  // If store credit alone covers the whole order, it goes through the no-rail store-credit
+  // gateway — and the backend gives NO pay-by-app discount to that method. Counting the P2P
+  // discount here anyway made the checkout think credit covered an order the backend then
+  // found short, so the store-credit gateway refused it (27 Sep, during the 20% app deal).
+  const creditCoversAll = creditBalance > 0 && computedTotalNum > 0
+    && creditEligibility(cart).eligible
+    && creditBalance >= round2(computedTotalNum + routeFee) - 0.005;
+  const p2pEligible = !creditCoversAll && P2P_DISCOUNT_METHODS.has(payMethod) && !p2pPaused();
   const p2pItemsBase = Math.max(0, money(cartSubtotal) || (computedTotalNum - shipCostNum));
   const p2pDiscount = p2pEligible ? round2(p2pItemsBase * p2pRate()) : 0;
   // Free vial: ANY payment method at $225+ chooses a TRZ-2 10mg or RT-3 10mg.
@@ -410,8 +417,10 @@ export default function CheckoutPage() {
   // SnapPay alone — otherwise turning the second rail on leaves a banner apologising for
   // the absence of a method that is right there in the list.
   const cardAvailable = !isCardPaused() || PP_ENABLED;
-  const methodChosen = !!payMethod || isZeroDue;
   const fullyCovered = computedTotalNum > 0 && dueAfterAll <= 0.005;
+  // A fully-covered order hides the method picker ("Paid in full"), so it must count as chosen —
+  // otherwise Place Order stays disabled with no way to enable it (27 Sep: customers stuck).
+  const methodChosen = !!payMethod || isZeroDue || fullyCovered;
   const noRailDue = isZeroDue || fullyCovered;
   const effectiveMethod = isZeroDue ? 'iw_giftcard' : (fullyCovered ? 'iw_storecredit' : chosenMethod);
   // Amount actually charged via the selected method (after store credit + rewards).
