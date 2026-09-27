@@ -43,6 +43,8 @@ const round2 = (n) => Math.round(n * 100) / 100;
 export function creditEligibility(cart) {
   const nodes = cart?.contents?.nodes || [];
   if (!nodes.length) return { eligible: true, reason: '', pct: 0, freeUnit: false };
+  // Operator, Sun 27 Sep: any credit works today, no limit — mirrors iw_sc_limits_off().
+  if (Date.now() < GSW_LIMIT_UNTIL) return { eligible: true, reason: '', pct: 0, freeUnit: false };
 
   let regular = 0;
   let paid = 0;
