@@ -15,6 +15,11 @@
 
 export const MAX_DISCOUNT_PCT = 30;
 
+/* Grand Slam Weekend (26 Sep): 41% until Mon 28 Sep 12:00am CT so credit works with the 30% sale
+   + a 15% affiliate code. Mirrors iw_sc_max_discount_pct() in iw-store-credit-limits.php. */
+const GSW_LIMIT_UNTIL = Date.parse('2026-09-28T05:00:00Z');
+export const maxDiscountPct = (now = Date.now()) => (now < GSW_LIMIT_UNTIL ? 41 : MAX_DISCOUNT_PCT);
+
 // Fee labels meaning a unit was given away. Kept in step with
 // iw_sc_free_unit_patterns() on the server.
 const FREE_UNIT = [/\bbuy\b.{0,12}\bget\b.{0,12}\bfree\b/i, /\bb\dg\d\b/i, /\bbogo\b/i];
@@ -77,8 +82,9 @@ export function creditEligibility(cart) {
   }
   // Half-point tolerance, mirrors iw-store-credit-limits.php: cent rounding makes a flat 30% sale
   // measure 30.01% on some carts, which was blocking credit for shoppers with no code.
-  if (pct > MAX_DISCOUNT_PCT + 0.5) {
-    return { eligible: false, reason: `Store credit can’t be combined with a discount over ${MAX_DISCOUNT_PCT}%.`, pct, freeUnit: false };
+  const limit = maxDiscountPct();
+  if (pct > limit + 0.5) {
+    return { eligible: false, reason: `Store credit can’t be combined with a discount over ${limit}%.`, pct, freeUnit: false };
   }
   return { eligible: true, reason: '', pct, freeUnit: false };
 }
