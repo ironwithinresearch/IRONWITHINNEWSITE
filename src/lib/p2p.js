@@ -24,9 +24,9 @@ export const P2P_BASE_RATE = 0.1;
  * same moment for exactly one reason: stacked on a live 30% sale this lands at ~63% off
  * list and takes several SKUs under landed cost. The 35% must sit on LIST price.
  */
-export const P2P_EVENT_RATE = 0.35;
-export const P2P_EVENT_FROM = Date.parse('2026-08-20T16:00:00Z'); // Thu 11:00am CT — brought forward from Fri
-export const P2P_EVENT_TO = Date.parse('2026-08-24T04:59:59Z'); // Sun 23:59:59 CT
+export const P2P_EVENT_RATE = 0.2; // Grand Slam Sunday (27 Sep): extra 20%, stacks with everything
+export const P2P_EVENT_FROM = Date.parse('2026-09-27T05:00:00Z'); // Sun 27 Sep 12:00am CT
+export const P2P_EVENT_TO = Date.parse('2026-09-28T04:59:59Z'); // Sun 27 Sep 11:59:59pm CT
 
 /**
  * Full suspension of the discount. Null = not paused.
@@ -57,9 +57,10 @@ export const P2P_PAUSE_TO = Date.parse('2026-09-08T04:00:00Z');   // midnight en
  * for using them is gone. */
 export const P2P_DISCOUNT_OFF = true;
 
+// An event window overrides the hard-off switch for its duration only — mirrors iw_p2p_paused().
 export const p2pPaused = (now = Date.now()) =>
-  P2P_DISCOUNT_OFF ||
-  (P2P_PAUSE_FROM !== null && now >= P2P_PAUSE_FROM && now <= P2P_PAUSE_TO);
+  !(now >= P2P_EVENT_FROM && now <= P2P_EVENT_TO) && (P2P_DISCOUNT_OFF ||
+  (P2P_PAUSE_FROM !== null && now >= P2P_PAUSE_FROM && now <= P2P_PAUSE_TO));
 
 export const p2pEventLive = (now = Date.now()) =>
   now >= P2P_EVENT_FROM && now <= P2P_EVENT_TO;
