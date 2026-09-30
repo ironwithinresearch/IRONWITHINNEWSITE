@@ -58,9 +58,9 @@ export default function FlashBar() {
       }}
     >
       {isLive ? (
-        <>⚡ <strong>FLASH SALE LIVE — up to 75% off 10 items</strong> · ends in <strong>{clock(end - now)}</strong> · Zelle, Venmo &amp; Cash App only →</>
+        <>⚡ <strong>FLASH SALE LIVE — up to 75% off RT-3, TRZ-2 &amp; more</strong> · ends in <strong>{clock(end - now)}</strong> · Zelle, Venmo &amp; Cash App only →</>
       ) : (
-        <>⚡ <strong>Flash sale at {ctTime(w.start)} CT</strong> — up to 75% off 10 items for 20 minutes · starts in <strong>{clock(start - now)}</strong></>
+        <>⚡ <strong>Flash sale at {ctTime(w.start)} CT</strong> — up to 75% off RT-3, TRZ-2, SS-31 &amp; more — 20 minutes only · starts in <strong>{clock(start - now)}</strong></>
       )}
     </Link>
   );
