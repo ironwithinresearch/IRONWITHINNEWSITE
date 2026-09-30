@@ -232,7 +232,32 @@ export default function CheckoutPage() {
   const payMethodRef = useRef('');
   // SnapPay is the card option (ChargeX retired 2026-07-24). If CARD_PAUSED is ever
   // flipped back on, the card row is filtered out entirely and Zelle becomes default.
+  // Flash sale (mu-plugin iw-flash.php): while a window is live, a cart holding a flash item is
+  // P2P only. The backend refuses a card order on its own; this just removes the option so the
+  // buyer never picks it. Re-polled each minute because a window can open or close mid-checkout.
+  const [flashVids, setFlashVids] = useState([]);
+  useEffect(() => {
+    let live = true;
+    const load = () => fetch('/api/flash', { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (live) setFlashVids(d && d.active ? (d.variations || []).map(Number) : []); })
+      .catch(() => {});
+    load();
+    const t = setInterval(load, 60000);
+    return () => { live = false; clearInterval(t); };
+  }, []);
+  const vidOf = (i) => {
+    const gid = i?.variation?.node?.id;
+    if (!gid) return i?.product?.node?.databaseId || 0;
+    try { return Number(String(atob(gid)).split(':').pop()) || 0; } catch { return 0; }
+  };
+  const flashInCart = flashVids.length > 0 && (cartItems || []).some((i) => flashVids.includes(vidOf(i)));
+  useEffect(() => {
+    if (flashInCart && payMethod === CARD_METHOD) setPayMethod('');
+  }, [flashInCart, payMethod]);
+
   const payMethodOptions = PAY_METHODS
+    .filter((m) => !(flashInCart && m.id === CARD_METHOD))
     .filter((m) => !(isCardPaused() && m.id === CARD_METHOD))
     .filter((m) => PAYPAL_ENABLED || m.id !== PAYPAL_METHOD)
     .filter((m) => PP_ENABLED || m.id !== PP_METHOD);
@@ -843,7 +868,12 @@ export default function CheckoutPage() {
                     </div>
                   ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {!cardAvailable && (
+                    {flashInCart && (
+                      <div style={{ padding: '11px 13px', borderRadius: '10px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.45)', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                        ⚡ <strong style={{ color: '#f87171' }}>Flash sale items are Zelle, Venmo or Cash App only.</strong> Pick one below to lock in the flash price.
+                      </div>
+                    )}
+                    {!cardAvailable && !flashInCart && (
                       <div style={{ padding: '11px 13px', borderRadius: '10px', background: 'rgba(245,158,11,0.09)', border: '1px solid rgba(245,158,11,0.4)', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
                         💳 <strong style={{ color: '#fbbf24' }}>We&rsquo;re not taking card right now.</strong> Check out with <strong>Zelle, Venmo, or Cash App</strong> below — it takes a minute{p2pPaused() ? '' : `, ${p2pPct()}% comes off your total`}{giftEarned ? ', and your free vial is included' : ''}, and we ship as soon as your payment lands.
                       </div>

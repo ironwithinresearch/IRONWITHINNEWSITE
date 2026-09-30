@@ -1,5 +1,6 @@
 import "./globals.css";
 import AnnouncementBar from "../components/AnnouncementBar";
+import FlashBar from "../components/FlashBar";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import SiteGate from "../components/SiteGate";
@@ -64,6 +65,7 @@ export default function RootLayout({ children }) {
               is retired — age is confirmed on the register form's 21+ checkbox. */}
           <SiteGate />
           <FreakyFridaysTheme />
+          <FlashBar />
           <AnnouncementBar />
           <Navbar />
           <main style={{ minHeight: '100vh', paddingTop: 'calc(var(--navbar-height, 68px) + 36px)' }}>
