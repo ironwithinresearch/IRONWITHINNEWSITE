@@ -41,15 +41,15 @@ const CSS_SEASON = `
     --glow-blue: 0 0 22px rgba(255,122,24,0.45);
     --glow-sm:   0 0 10px rgba(255,122,24,0.28);
   }
-  /* Surfaces go sooty black for the season — in BOTH themes.
+  /* Surfaces follow the visitor's day/night toggle (operator, 1 Oct 2026: "the day and night
+     toggle isn't working" — the costume used to force sooty black in BOTH themes, so the
+     toggle did nothing all season).
 
-     This deliberately overrides a light-mode preference. The site lands in light by default
-     (see the inline theme script in layout.js), so gating the costume to dark would leave most
-     visitors on a pale blue page with orange buttons, which reads as a broken palette rather
-     than a Halloween theme. A season costume that only works if you already chose dark is not
-     a site-wide theme. Text tokens are re-stated below so light-mode type stays legible on the
-     dark ground rather than inheriting near-black on near-black. */
-  html:root, html:root[data-theme="light"], html:root[data-theme="dark"] {
+     NIGHT (data-theme="dark"): sooty black, the full costume.
+     DAY   (data-theme="light", the default): warm parchment instead of the stock cool blue-white,
+     so the orange accents read as Halloween rather than a broken palette. Text tokens are
+     dark-on-light here. */
+  html:root[data-theme="dark"] {
     --bg-dark:       #0A0603;
     --bg-deeper:     #050302;
     --overlay:       rgba(6,3,1,0.86);
@@ -62,14 +62,35 @@ const CSS_SEASON = `
     --glass-bg:      rgba(20,12,6,0.72);
     --glass-border:  rgba(255,176,32,0.16);
   }
+  html:root[data-theme="light"] {
+    --bg-dark:       #FBF4EC;
+    --bg-deeper:     #FFFFFF;
+    --overlay:       rgba(251,244,236,0.92);
+    --bg-elevated:   #FFFFFF;
+    --card-dark:     #FFFFFF;
+    --card-elevated: #FFF7EE;
+    --text-light:     #1E120A;
+    --text-secondary: #5C4636;
+    --text-muted:     #8E7764;
+    --glass-bg:      rgba(255,250,244,0.82);
+    --glass-border:  rgba(194,65,12,0.16);
+    --gradient-dark: linear-gradient(180deg, #FFFFFF 0%, #FBF4EC 100%);
+    --gradient-card: linear-gradient(145deg, #FFFFFF 0%, #FFF7EE 100%);
+    --gradient-hero: radial-gradient(60% 55% at 78% 0%, rgba(255,61,0,0.10), transparent 60%),
+                     radial-gradient(55% 60% at 12% 8%, rgba(255,176,32,0.14), transparent 62%),
+                     linear-gradient(180deg, #FFFFFF, #FBF4EC);
+    --glow-blue: 0 8px 26px -10px rgba(255,122,24,0.42);
+    --glow-sm:   0 2px 10px rgba(120,60,20,0.12);
+  }
   /* Navbar injects its own [data-theme="light"] header rule with !important and mounts after
      us, so it has to be beaten explicitly rather than by token substitution alone. */
-  html:root[data-theme="light"] body   { background: #0A0603; color: #F6EDE2; }
-  html:root[data-theme="light"] header { background: rgba(10,6,3,0.92) !important; }
+  html:root[data-theme="light"] body   { background: #FBF4EC; color: #1E120A; }
+  html:root[data-theme="light"] header { background: rgba(251,244,236,0.92) !important; }
+  html:root[data-theme="dark"]  body   { background: #0A0603; color: #F6EDE2; }
 `;
 
 const CSS_LIVE = `
-  html:root, html:root[data-theme="light"], html:root[data-theme="dark"] {
+  html:root, html:root[data-theme="dark"] {
     --gradient-primary: linear-gradient(135deg,#FFB020 0%,#FF6A00 45%,#B4121B 100%);
     --glow-blue: 0 0 28px rgba(255,106,0,0.6);
     --glow-sm:   0 0 12px rgba(255,106,0,0.38);
