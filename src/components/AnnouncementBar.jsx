@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { annPromoLive } from '@/lib/anniversary';
 import { p2pPaused, p2pEventLive, p2pPct, GIFT_MIN, GIFT_FROM, GIFT_TO, GIFT_BIG_MIN } from '@/lib/p2p';
 import { ffLive, ffCurrent, ffCountdownTo, ffFormat, FF_HEADLINE, FF_FLAT, FF_WINDOWS, FF_GIFT, FF_SITEWIDE_WEEKS, ffTitle, ffPct } from '@/lib/freakyFridays';
 import { GIVEAWAY, giveawayOpen } from '@/lib/giveaway';
@@ -180,6 +182,7 @@ export default function AnnouncementBar() {
   const [p2pEventActive, setP2pEventActive] = useState(false);
   const [ldActive, setLdActive] = useState(false);
   const [ffActive, setFfActive] = useState(false);
+  const [annActive, setAnnActive] = useState(false);
   useEffect(() => {
     const now = Date.now();
     const promos = [];
@@ -233,6 +236,12 @@ export default function AnnouncementBar() {
         `${w.name ? `\uD83C\uDF89  ${w.name}` : `\uD83C\uDF83  FREAKY FRIDAYS \u2014 ${ffTitle(w)}`} is LIVE \u00B7 ${FF_GIFT[w.week] ? `${FF_GIFT[w.week]} \u00B7 ` : ''}${FF_FLAT ? '' : 'up to '}${ffPct(w)}% OFF ${FF_SITEWIDE_WEEKS.includes(w.week) ? 'SITEWIDE' : (w.blurb ? w.blurb.toUpperCase() : 'SELECT PRODUCTS')}, no code needed \u00B7 stack your creator code for even more${left ? ` \u00B7 ends in ${left}` : ''}`,
       );
     }
+    // Anniversary Month: the whole bar links to /anniversary all October, and a line says so
+    // right behind today's deal.
+    if (annPromoLive(now)) {
+      setAnnActive(true);
+      promos.splice(ffLive(now) ? 1 : 0, 0, '\uD83C\uDF82  IRON WITHIN TURNS ONE \u2014 31 days of deals, October 1\u201331 \u00B7 tap for the full calendar');
+    }
     setMessages([...promos, ...base]);
   }, []);
 
@@ -252,6 +261,7 @@ export default function AnnouncementBar() {
         fontFamily: 'var(--font-body)',
       }}
     >
+      <TickerLink on={annActive}>
       <div
         className="iw-ticker"
         style={{ display: 'flex', flexShrink: 0, whiteSpace: 'nowrap', willChange: 'transform' }}
@@ -265,6 +275,7 @@ export default function AnnouncementBar() {
           </span>
         ))}
       </div>
+      </TickerLink>
       <style>{`
         @keyframes iw-ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
         .iw-ticker { animation: iw-ticker-scroll 90s linear infinite; }
@@ -272,5 +283,19 @@ export default function AnnouncementBar() {
         @media (prefers-reduced-motion: reduce) { .iw-ticker { animation: none; } }
       `}</style>
     </div>
+  );
+}
+
+/* During Anniversary Month the ticker is one big link to the calendar page. */
+function TickerLink({ on, children }) {
+  if (!on) return children;
+  return (
+    <Link
+      href="/anniversary"
+      aria-label="Anniversary Month: see all 31 days of deals"
+      style={{ display: 'flex', alignItems: 'center', height: '100%', color: 'inherit', textDecoration: 'none' }}
+    >
+      {children}
+    </Link>
   );
 }
