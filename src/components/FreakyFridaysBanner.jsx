@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   ffCurrent, ffNext, ffCountdownTo, ffFormat, ffSeason, ffWindowLabel,
-  FF_HEADLINE, FF_FLAT, FF_WINDOWS, FF_GIFT, FF_FRIDAY_COUNT,
+  FF_HEADLINE, FF_FLAT, FF_WINDOWS, FF_GIFT, FF_FRIDAY_COUNT, ffPct, FF_SITEWIDE_WEEKS,
 } from '@/lib/freakyFridays';
 
 /* Freaky Fridays homepage banner. Shows all season, and changes state at 8:30:
@@ -31,6 +31,7 @@ export default function FreakyFridaysBanner() {
         live: !!cur,
         week: (win || {}).week ?? null,
         name: (win || {}).name || null,
+        pct: ffPct(win), sitewide: FF_SITEWIDE_WEEKS.includes((win || {}).week), blurb: (win || {}).blurb || '',
         label: ffFormat(cd.ms),
         kind: cd.kind,
         // Derived from the schedule, never hardcoded: week 1 is a weekend and the rest are a
@@ -94,7 +95,7 @@ export default function FreakyFridaysBanner() {
             }}
           >
             <span aria-hidden>🎃</span>
-            {s.name ? (live ? 'This weekend only — live now' : 'This weekend only') : live ? `Week ${s.week} of ${FF_FRIDAY_COUNT} — live now` : `Week ${s.week} of ${FF_FRIDAY_COUNT}`}
+            {s.name ? (live ? 'Today only — live now' : 'Coming up next') : live ? `Week ${s.week} of ${FF_FRIDAY_COUNT} — live now` : `Week ${s.week} of ${FF_FRIDAY_COUNT}`}
           </div>
 
           <h2
@@ -118,10 +119,10 @@ export default function FreakyFridaysBanner() {
               <>
                 {s.week && FF_GIFT[s.week] ? <><strong style={{ color: '#FFB020' }}>{FF_GIFT[s.week]}</strong>, plus </> : null}
                 {FF_FLAT ? (
-                  <><strong style={{ color: '#FFB020' }}>{FF_HEADLINE}% off sitewide</strong> — no
+                  <><strong style={{ color: '#FFB020' }}>{s.pct}% off {s.sitewide ? 'sitewide' : (s.blurb || 'select products')}</strong> — no
                   code needed, and your creator code still stacks on top.</>
                 ) : (
-                  <>Up to <strong style={{ color: '#FFB020' }}>{FF_HEADLINE}% off</strong> — no code
+                  <>Up to <strong style={{ color: '#FFB020' }}>{s.pct}% off</strong> — no code
                   needed, and your creator code still stacks on top.</>
                 )} {s.when ? <>Runs {s.when}.</> : null}
               </>

@@ -16,7 +16,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { GIFT_MIN, GIFT_BIG_MIN, GIFT_OPTIONS, GIFT_FROM, GIFT_TO,
          GA_MIN, GA_PRIZE_EACH, GA_WINNERS, giveawayActive } from '@/lib/p2p';
-import { ffCurrent, FF_HEADLINE, FF_FLAT, FF_SITEWIDE_WEEKS } from '@/lib/freakyFridays';
+import { ffCurrent, FF_HEADLINE, FF_FLAT, FF_SITEWIDE_WEEKS, ffPct } from '@/lib/freakyFridays';
 import { isLoggedIn } from '@/lib/auth';
 
 // v2 (25 Sep 2026): content changed, so shoppers who dismissed the old Labor Day version see it once.
@@ -61,7 +61,7 @@ export default function GiftPromoPopup() {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={`${ff ? `${FF_HEADLINE}% off, and ` : ''}a free vial when you spend $${GIFT_MIN}`}
+      aria-label={`${ff ? `${ffPct(ff)}% off, and ` : ''}a free vial when you spend $${GIFT_MIN}`}
       onClick={() => close(false)}
       style={{
         position: 'fixed', inset: 0, zIndex: 9000,
@@ -119,7 +119,7 @@ export default function GiftPromoPopup() {
               {ff && ff.name ? `${ff.name} · ends ${ffEndsDay} 11:59pm CT` : `Freaky Friday · ends ${ffEnds} CT today`}
             </div>
             <div style={{ color: '#fff', fontSize: '1.45rem', fontWeight: 900, lineHeight: 1.1 }}>
-              {FF_FLAT ? '' : 'Up to '}{FF_HEADLINE}% off {ffSitewide ? 'sitewide' : 'select products'}
+              {FF_FLAT ? '' : 'Up to '}{ffPct(ff)}% off {ffSitewide ? 'sitewide' : (ff.blurb || 'select products')}
             </div>
             <div style={{ color: 'rgba(255,255,255,0.68)', fontSize: '0.86rem', marginTop: 6, lineHeight: 1.5 }}>
               No code needed — and your creator code still stacks on top.

@@ -17,7 +17,7 @@ export const MAX_DISCOUNT_PCT = 30;
 
 /* Grand Slam Weekend (26 Sep): 41% until Mon 28 Sep 12:00am CT so credit works with the 30% sale
    + a 15% affiliate code. Mirrors iw_sc_max_discount_pct() in iw-store-credit-limits.php. */
-const GSW_LIMIT_UNTIL = Date.parse('2026-09-28T05:00:00Z');
+const GSW_LIMIT_UNTIL = Date.parse('2026-11-01T05:00:00Z'); // Anniversary Month: credit works on every order through Oct 31 CT
 export const maxDiscountPct = (now = Date.now()) => (now < GSW_LIMIT_UNTIL ? 41 : MAX_DISCOUNT_PCT);
 
 // Fee labels meaning a unit was given away. Kept in step with

@@ -27,12 +27,28 @@ export const FF_WINDOWS = [
   // Listed here in time order (ffNext/ffCurrent scan in array order); mirrors slot 9 of
   // IW_FF_FRIDAYS in the mu-plugin. `name` replaces the "week N of 8" wording in copy.
   { week: 9, name: 'GRAND SLAM WEEKEND', start: '2026-09-26T05:00:00Z', end: '2026-09-28T05:00:00Z' },
-  { week: 4, start: '2026-10-02T13:00:00Z', end: '2026-10-03T01:00:00Z' },
-  { week: 5, start: '2026-10-09T13:00:00Z', end: '2026-10-10T01:00:00Z' },
-  { week: 6, start: '2026-10-16T13:00:00Z', end: '2026-10-17T01:00:00Z' },
-  { week: 7, start: '2026-10-23T13:00:00Z', end: '2026-10-24T01:00:00Z' },
-  // Closes Fri 30 Oct 8pm CT — the night before Halloween.
-  { week: 8, start: '2026-10-30T13:00:00Z', end: '2026-10-31T01:00:00Z' },
+  // ---- Anniversary Month (Oct 1–31): full days, midnight to midnight CT. Mirrors IW_FF_FRIDAYS slots
+  // 4–8 and 10–24 in iw-freaky-fridays.php. `pct` is the day's depth, `sitewide` false = category day.
+  { week: 10, name: "ANNIVERSARY KICKOFF", pct: 25, sitewide: true, blurb: "", start: '2026-10-01T05:00:00Z', end: '2026-10-02T05:00:00Z' },
+  { week: 4, name: "ANNIVERSARY \u00b7 FREAKY FRIDAY", pct: 25, sitewide: true, blurb: "", start: '2026-10-02T05:00:00Z', end: '2026-10-03T05:00:00Z' },
+  { week: 11, name: "ANNIVERSARY \u00b7 RETA DAY", pct: 40, sitewide: false, blurb: "every RT-3 size", start: '2026-10-05T05:00:00Z', end: '2026-10-06T05:00:00Z' },
+  { week: 12, name: "ANNIVERSARY \u00b7 RECOVERY DAY", pct: 40, sitewide: false, blurb: "BPC-157, TB-500, KPV, GHK-Cu", start: '2026-10-06T05:00:00Z', end: '2026-10-07T05:00:00Z' },
+  { week: 13, name: "ANNIVERSARY \u00b7 LONGEVITY DAY", pct: 40, sitewide: false, blurb: "NAD+, Epitalon, SS-31, FoxO4, Glutathione", start: '2026-10-07T05:00:00Z', end: '2026-10-08T05:00:00Z' },
+  { week: 14, name: "ANNIVERSARY \u00b7 NOOTROPIC THURSDAY", pct: 45, sitewide: false, blurb: "Semax, Selank, DSIP, Cerebrolysin, Adamax", start: '2026-10-08T05:00:00Z', end: '2026-10-09T05:00:00Z' },
+  { week: 5, name: "ANNIVERSARY \u00b7 FREAKY FRIDAY", pct: 25, sitewide: true, blurb: "", start: '2026-10-09T05:00:00Z', end: '2026-10-10T05:00:00Z' },
+  { week: 15, name: "ANNIVERSARY \u00b7 METABOLIC MONDAY", pct: 40, sitewide: false, blurb: "Cagrilintide, AOD 9604, 5-Amino-1MQ, Lipo-C", start: '2026-10-12T05:00:00Z', end: '2026-10-13T05:00:00Z' },
+  { week: 16, name: "ANNIVERSARY \u00b7 GLOW-UP TUESDAY", pct: 40, sitewide: false, blurb: "GLOW, KLOW, GHK-Cu/KPV, MT-2", start: '2026-10-13T05:00:00Z', end: '2026-10-14T05:00:00Z' },
+  { week: 17, name: "ANNIVERSARY \u00b7 GROWTH THURSDAY", pct: 40, sitewide: false, blurb: "IGF-1 LR3, CJC/IPA, Ipamorelin", start: '2026-10-15T05:00:00Z', end: '2026-10-16T05:00:00Z' },
+  { week: 6, name: "ANNIVERSARY \u00b7 FREAKY FRIDAY", pct: 25, sitewide: true, blurb: "", start: '2026-10-16T05:00:00Z', end: '2026-10-17T05:00:00Z' },
+  { week: 18, name: "ANNIVERSARY \u00b7 RETA DAY II", pct: 50, sitewide: false, blurb: "every RT-3 size", start: '2026-10-19T05:00:00Z', end: '2026-10-20T05:00:00Z' },
+  { week: 19, name: "ANNIVERSARY \u00b7 RECOVERY DAY II", pct: 50, sitewide: false, blurb: "BPC-157, TB-500, KPV, GHK-Cu", start: '2026-10-20T05:00:00Z', end: '2026-10-21T05:00:00Z' },
+  { week: 20, name: "ANNIVERSARY \u00b7 LONGEVITY DAY II", pct: 50, sitewide: false, blurb: "NAD+, Epitalon, SS-31, FoxO4, Glutathione", start: '2026-10-21T05:00:00Z', end: '2026-10-22T05:00:00Z' },
+  { week: 21, name: "ANNIVERSARY \u00b7 NOOTROPIC THURSDAY II", pct: 50, sitewide: false, blurb: "Semax, Selank, DSIP, Cerebrolysin, Adamax", start: '2026-10-22T05:00:00Z', end: '2026-10-23T05:00:00Z' },
+  { week: 7, name: "ANNIVERSARY \u00b7 FREAKY FRIDAY", pct: 35, sitewide: true, blurb: "", start: '2026-10-23T05:00:00Z', end: '2026-10-24T05:00:00Z' },
+  { week: 22, name: "ANNIVERSARY \u00b7 CUSTOMER'S CHOICE", pct: 45, sitewide: false, blurb: "our 10 best sellers", start: '2026-10-26T05:00:00Z', end: '2026-10-27T05:00:00Z' },
+  { week: 23, name: "ANNIVERSARY \u00b7 GLOW + METABOLIC II", pct: 50, sitewide: false, blurb: "", start: '2026-10-28T05:00:00Z', end: '2026-10-29T05:00:00Z' },
+  { week: 8, name: "ANNIVERSARY \u00b7 GRAND SLAM \u00b7 FREAKY FRIDAY FINALE", pct: 55, sitewide: true, blurb: "", start: '2026-10-30T05:00:00Z', end: '2026-10-31T05:00:00Z' },
+  { week: 24, name: "ANNIVERSARY \u00b7 GRAND SLAM \u00b7 HALLOWEEN", pct: 55, sitewide: true, blurb: "", start: '2026-10-31T05:00:00Z', end: '2026-11-01T05:00:00Z' },
 ];
 
 /* The SEASON is deliberately wider than the sale windows.
@@ -44,7 +60,7 @@ export const FF_WINDOWS = [
    and when the next drop is. Dressing the site only during windows would hide the series from
    everyone who visits between them, which is most visitors. */
 export const FF_SEASON_START = Date.parse('2026-09-11T20:00:00Z');
-export const FF_SEASON_END = Date.parse(FF_WINDOWS[FF_WINDOWS.length - 1].end);
+export const FF_SEASON_END = Math.max(...FF_WINDOWS.map((w) => Date.parse(w.end)));
 
 /* Headline depth, and whether it is FLAT or a ceiling.
 
@@ -73,7 +89,7 @@ export const FF_EXCLUDED_NOTE =
 
 /* Weeks where the discount is literally sitewide (mirrors IW_FF_SITEWIDE_WEEKS in the mu-plugin):
    only gift cards, merch and bundles keep their own pricing. */
-export const FF_SITEWIDE_WEEKS = [3, 9];
+export const FF_SITEWIDE_WEEKS = [3, 9, ...FF_WINDOWS.filter((w) => w.sitewide).map((w) => w.week)];
 export const FF_SITEWIDE_NOTE = 'Sitewide. Gift cards, merch and bundles keep their own pricing.';
 
 export const FF_NAME = 'FREAKY FRIDAYS';
@@ -148,4 +164,9 @@ export function ffWindowLabel(w) {
   return sameDay
     ? `${day(d)} ${time(d)}–${time(e)} CT`
     : `${day(d)} ${time(d)} – ${day(e)} ${time(e)} CT`;
+}
+
+/** Depth for a window: its own `pct` (Anniversary Month), else the series headline. */
+export function ffPct(w) {
+  return (w && w.pct) || FF_HEADLINE;
 }
