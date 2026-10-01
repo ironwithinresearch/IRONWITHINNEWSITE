@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useQuery } from '@apollo/client';
 import { useAuth } from '@/context/AuthContext';
 import { GET_ORDERS } from '@/lib/queries/orders';
+import { useOrderHoldInfo, holdAwareStatus } from '@/lib/holdShip';
 import { decodePriceHtml } from '@/lib/utils';
 import {
   Package, ChevronRight, Search, Truck,
@@ -17,6 +18,7 @@ import {
 const statusConfig = {
   PROCESSING: { label: 'Processing', color: '#fbbf24',             bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.3)', Icon: Clock },
   SHIPPED:    { label: 'Shipped',    color: 'var(--primary-blue, #00CFFF)',             bg: 'rgba(0,207,255,0.12)',  border: 'rgba(0,207,255,0.3)',  Icon: Truck },
+  IW_HELD:    { label: 'Held — ships together', color: 'var(--primary-blue, #00CFFF)', bg: 'rgba(0,207,255,0.12)', border: 'rgba(0,207,255,0.3)', Icon: Package },
   COMPLETED:  { label: 'Delivered',  color: '#34d399',             bg: 'rgba(52,211,153,0.12)',  border: 'rgba(52,211,153,0.3)',  Icon: CheckCircle2 },
   BACKORDER:  { label: 'Backorder',  color: '#f59e0b',             bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.35)', Icon: Clock },
   ON_HOLD:    { label: 'On Hold',    color: '#fbbf24',             bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.3)', Icon: Clock },
@@ -44,11 +46,13 @@ export default function OrdersPage() {
     skip: !isLoggedIn,
     fetchPolicy: 'network-only',
   });
+  // Held orders that already shipped inside another order's box (Hold & Ship Together).
+  const holdMap = useOrderHoldInfo(isLoggedIn);
 
   const orders = data?.customer?.orders?.nodes || [];
 
   const filtered = orders.filter(o => {
-    const sc = statusConfig[o.status] || {};
+    const sc = holdAwareStatus(o, holdMap, statusConfig, {});
     const statusLabel = sc.label || o.status;
     const matchFilter = filter === 'All' || statusLabel === filter;
     const matchSearch = o.orderNumber?.toString().includes(search) ||
@@ -146,7 +150,7 @@ export default function OrdersPage() {
         {!loading && filtered.length > 0 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             {filtered.map(order => {
-              const sc = statusConfig[order.status] || statusConfig.PROCESSING;
+              const sc = holdAwareStatus(order, holdMap, statusConfig, statusConfig.PROCESSING);
               const isOpen = expandedId === order.id;
               const lineItems = order.lineItems?.nodes || [];
 

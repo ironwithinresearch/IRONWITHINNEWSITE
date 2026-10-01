@@ -140,3 +140,22 @@ export const GET_CUSTOMER = gql`
     }
   }
 `;
+
+// Hold & Ship Together (Anniversary Month). Kept OUT of GET_ORDERS on purpose: these fields
+// come from mu-plugin iw-hold-ship.php, and if they are ever missing an unknown field fails
+// the WHOLE query — which would blank every customer's order history. Run separately with
+// errorPolicy 'all' (see useOrderHoldInfo in src/lib/holdShip.js) so the worst case is the
+// plain status label.
+export const GET_ORDER_HOLD_INFO = gql`
+  query GetOrderHoldInfo {
+    customer {
+      orders(first: 100) {
+        nodes {
+          databaseId
+          holdRole
+          holdMergedInto
+        }
+      }
+    }
+  }
+`;

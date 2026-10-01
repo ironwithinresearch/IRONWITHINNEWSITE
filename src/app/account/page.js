@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import Link from 'next/link';
 import { GET_CUSTOMER, GET_ORDERS } from '@/lib/queries/orders';
+import { useOrderHoldInfo, holdAwareStatus } from '@/lib/holdShip';
 import { UPDATE_CUSTOMER } from '@/lib/queries/auth';
 import { useAuth } from '@/context/AuthContext';
 import { decodePriceHtml } from '@/lib/utils';
@@ -22,6 +23,7 @@ const statusConfig = {
   COMPLETED:  { label: 'Delivered',  color: '#34d399',           bg: 'rgba(52,211,153,0.12)',  border: 'rgba(52,211,153,0.3)',  Icon: CheckCircle2 },
   PROCESSING: { label: 'Processing', color: '#fbbf24',           bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.3)', Icon: Clock },
   SHIPPED:    { label: 'Shipped',    color: 'var(--primary-blue, #00CFFF)',           bg: 'rgba(0,207,255,0.12)',  border: 'rgba(0,207,255,0.3)',  Icon: Truck },
+  IW_HELD:    { label: 'Held — ships together', color: 'var(--primary-blue, #00CFFF)', bg: 'rgba(0,207,255,0.12)', border: 'rgba(0,207,255,0.3)', Icon: Package },
   BACKORDER:  { label: 'Backorder',  color: '#f59e0b',           bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.35)', Icon: Clock },
   ON_HOLD:    { label: 'On Hold',    color: '#fbbf24',           bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.3)', Icon: Clock },
   PENDING:    { label: 'Pending',    color: 'var(--primary-blue)', bg: 'rgba(0,207,255,0.12)', border: 'rgba(0,207,255,0.3)', Icon: Truck },
@@ -102,10 +104,12 @@ function OrdersPanel() {
     skip: !isLoggedIn,
     fetchPolicy: 'network-only',
   });
+  // Held orders that already shipped inside another order's box (Hold & Ship Together).
+  const holdMap = useOrderHoldInfo(isLoggedIn);
 
   const orders   = data?.customer?.orders?.nodes || [];
   const filtered = orders.filter(o => {
-    const sc          = statusConfig[o.status] || {};
+    const sc          = holdAwareStatus(o, holdMap, statusConfig, {});
     const statusLabel = sc.label || o.status;
     const matchFilter = filter === 'All' || statusLabel === filter;
     const matchSearch =
@@ -171,7 +175,7 @@ function OrdersPanel() {
           {filtered.map(order => {
             // Never fall back to PROCESSING -- an unmapped status (a new custom
             // Woo status) would otherwise be shown to the customer as "Processing".
-            const sc      = statusConfig[order.status] || fallbackStatus(order.status);
+            const sc      = holdAwareStatus(order, holdMap, statusConfig, fallbackStatus(order.status));
             const isOpen  = expandedId === order.id;
             const lineItems = order.lineItems?.nodes || [];
             return (
