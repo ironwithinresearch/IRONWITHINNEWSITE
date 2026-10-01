@@ -13,6 +13,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { GET_CATEGORIES } from '@/lib/queries/products';
+import { annPromoLive } from '@/lib/anniversary';
 
 const navLinks = [
    { href: '/',      label: 'Home'       },
@@ -55,6 +56,14 @@ export default function Navbar() {
   const { isLoggedIn, user, logout }                   = useAuth();
   const { itemCount }                                   = useCart();
   const { wishlistCount }                               = useWishlist();
+
+  // Anniversary Month link — October only. Decided in an effect (not at render) so the
+  // statically generated HTML never disagrees with the client about the date.
+  const [annLive, setAnnLive] = useState(false);
+  useEffect(() => { setAnnLive(annPromoLive()); }, []);
+  const links = annLive
+    ? [...navLinks.slice(0, 2), { href: '/anniversary', label: 'Anniversary' }, ...navLinks.slice(2)]
+    : navLinks;
 
   // ── theme ──
   useEffect(() => {
@@ -128,7 +137,7 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <nav style={{ display: 'flex', alignItems: 'center', gap: '4px' }} className="desktop-nav">
-            {navLinks.map(({ href, label }) => {
+            {links.map(({ href, label }) => {
               const isActive = pathname === href || pathname.startsWith(href + '/');
               const baseStyle = { padding: '7px 14px', borderRadius: 'var(--radius-md)', fontSize: '0.875rem', fontWeight: isActive ? 600 : 400, color: isActive ? 'var(--primary-blue)' : 'var(--text-secondary)', background: isActive ? 'rgba(0,207,255,0.08)' : 'transparent', textDecoration: 'none', transition: 'all 0.15s ease', whiteSpace: 'nowrap' };
 
@@ -291,7 +300,7 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {menuOpen && (
         <div style={{ position: 'fixed', top: 'var(--navbar-height, 68px)', left: 0, right: 0, bottom: 0, zIndex: 99, background: 'rgba(5,7,18,0.97)', backdropFilter: 'blur(24px)', padding: '28px 24px', display: 'flex', flexDirection: 'column', gap: '6px', overflowY: 'auto' }}>
-          {navLinks.map(({ href, label }) => (
+          {links.map(({ href, label }) => (
             <div key={href}>
               <Link href={href} style={{ display: 'block', padding: '14px 18px', borderRadius: 'var(--radius-md)', color: pathname === href ? 'var(--primary-blue)' : 'var(--text-light)', background: pathname === href ? 'rgba(0,207,255,0.08)' : 'transparent', fontWeight: pathname === href ? 600 : 400, fontSize: '1rem', textDecoration: 'none', borderLeft: `3px solid ${pathname === href ? 'var(--primary-blue)' : 'transparent'}` }}>
                 {label}

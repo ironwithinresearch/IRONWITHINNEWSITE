@@ -5,6 +5,7 @@ import {
   ffCurrent, ffNext, ffCountdownTo, ffFormat, ffSeason, ffWindowLabel,
   FF_HEADLINE, FF_FLAT, FF_WINDOWS, FF_GIFT, FF_FRIDAY_COUNT, ffPct, FF_SITEWIDE_WEEKS,
 } from '@/lib/freakyFridays';
+import { annPromoLive } from '@/lib/anniversary';
 
 /* Freaky Fridays homepage banner. Shows all season, and changes state at 8:30:
 
@@ -38,6 +39,7 @@ export default function FreakyFridaysBanner() {
         // single 12-hour Friday, so a fixed "Monday 8:30pm" would be wrong seven times out of
         // eight.
         when: ffWindowLabel(win),
+        ann: annPromoLive(now),
       });
     };
     tick();
@@ -128,8 +130,10 @@ export default function FreakyFridaysBanner() {
               </>
             ) : (
               <>
-                A new drop every Friday, running through Halloween — different products and a
-                different depth each week. {s.when ? <>Next: <strong style={{ color: '#FFB020' }}>{s.when}</strong>.</> : null}
+                {s.ann
+                  ? <>Anniversary Month — a new deal every day through Halloween, including Flash Saturdays and Loyalty Sundays.</>
+                  : <>A new drop every Friday, running through Halloween — different products and a
+                different depth each week.</>} {s.when ? <>Next: <strong style={{ color: '#FFB020' }}>{s.when}</strong>.</> : null}
               </>
             )}
           </p>
@@ -150,6 +154,19 @@ export default function FreakyFridaysBanner() {
               {live ? 'Shop the drop' : 'Browse the shop'}
               <span aria-hidden>→</span>
             </Link>
+
+            {s.ann ? (
+              <Link
+                href="/anniversary"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 8, minHeight: 44,
+                  padding: '11px 20px', borderRadius: 999, fontWeight: 800, fontSize: '0.95rem',
+                  textDecoration: 'none', color: '#FFD9A8', border: '1px solid rgba(255,122,24,0.5)',
+                }}
+              >
+                See all 31 days <span aria-hidden>→</span>
+              </Link>
+            ) : null}
 
             {s.label ? (
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
