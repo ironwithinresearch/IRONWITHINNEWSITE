@@ -41,7 +41,7 @@ export const FF_WINDOWS = [
   { week: 17, name: "ANNIVERSARY \u00b7 IGF & CJC THURSDAY", pct: 40, sitewide: false, blurb: "TB-500, IGF-1 LR3, Ipa, CJC / IPA", start: '2026-10-15T05:00:00Z', end: '2026-10-16T05:00:00Z' },
   { week: 6, name: "ANNIVERSARY \u00b7 FREAKY FRIDAY", pct: 25, sitewide: true, blurb: "", start: '2026-10-16T05:00:00Z', end: '2026-10-17T05:00:00Z' },
   { week: 18, name: "ANNIVERSARY \u00b7 RT-3 DAY II", pct: 50, sitewide: false, blurb: "RT-3", start: '2026-10-19T05:00:00Z', end: '2026-10-20T05:00:00Z' },
-  { week: 19, name: "ANNIVERSARY \u00b7 BPC + GHK DAY II", pct: 50, sitewide: false, blurb: "ARA-290, TB-500, KPV, BPC-157", start: '2026-10-20T05:00:00Z', end: '2026-10-21T05:00:00Z' },
+  { week: 19, name: "ANNIVERSARY \u00b7 BPC & TB-500 DAY", pct: 50, sitewide: false, blurb: "ARA-290, TB-500, KPV, BPC-157", start: '2026-10-20T05:00:00Z', end: '2026-10-21T05:00:00Z' },
   { week: 20, name: "ANNIVERSARY \u00b7 NAD+ & EPITALON DAY II", pct: 50, sitewide: false, blurb: "FoxO4, Glutathione, SS-31, NAD+, Epitalon", start: '2026-10-21T05:00:00Z', end: '2026-10-22T05:00:00Z' },
   { week: 21, name: "ANNIVERSARY \u00b7 SEMAX & SELANK THURSDAY II", pct: 50, sitewide: false, blurb: "Oxytocin, PT-141, Selank, Semax, Kisspeptin and more", start: '2026-10-22T05:00:00Z', end: '2026-10-23T05:00:00Z' },
   { week: 7, name: "ANNIVERSARY \u00b7 FREAKY FRIDAY", pct: 35, sitewide: true, blurb: "", start: '2026-10-23T05:00:00Z', end: '2026-10-24T05:00:00Z' },

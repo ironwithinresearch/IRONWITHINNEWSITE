@@ -104,7 +104,7 @@ function titleCase(s) {
     .replace(/(^|[\s+\-/])([a-z])/g, (m, p, c) => p + c.toUpperCase())
     .replace(/\bIi\b/g, 'II')
     // Compound names keep their real capitals (RT-3, BPC, GHK, NAD+, GLOW, KLOW, IGF, CJC, AOD).
-    .replace(/\b(Rt|Bpc|Ghk|Nad|Glow|Klow|Igf|Cjc|Aod)\b/g, (m) => m.toUpperCase());
+    .replace(/\b(Rt|Bpc|Ghk|Nad|Glow|Klow|Igf|Cjc|Aod|Tb)\b/g, (m) => m.toUpperCase());
 }
 
 function fromWindow(w, d) {
