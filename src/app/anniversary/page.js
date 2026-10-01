@@ -4,7 +4,7 @@ import AnniversaryClient from './AnniversaryClient';
 // Passport progress) resolves on the client so nothing time-sensitive is baked into the HTML.
 
 export const metadata = {
-  title: 'Anniversary Month — 31 Days of Deals | Iron Within Research',
+  title: 'Anniversary Month — 31 Days of Deals',
   description:
     'Iron Within turns one. A new deal every day, October 1–31: daily sales, Flash Saturdays, ' +
     'Loyalty Sundays, the Anniversary Passport and a Grand Slam finale.',

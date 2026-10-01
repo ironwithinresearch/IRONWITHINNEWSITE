@@ -477,6 +477,7 @@ const CSS = `
 .ann-day-head{font-size:.8rem;line-height:1.3;color:${C.ember};font-weight:700;}
 .ann-day-lock{font-size:.76rem;color:${C.dim};line-height:1.35;margin-top:auto;}
 .ann-day-locked{background:repeating-linear-gradient(135deg,#100A05 0 10px,#0D0804 10px 20px);}
+@media(max-width:899px){.ann-day-locked{min-height:84px;}}
 .ann-day-past{opacity:.55;}
 .ann-day-past .ann-day-head{color:${C.muted};}
 .ann-day-today{border:2px solid ${C.ember};background:linear-gradient(160deg,#3A1A06,#170B04);box-shadow:0 0 24px rgba(255,106,0,0.35);}

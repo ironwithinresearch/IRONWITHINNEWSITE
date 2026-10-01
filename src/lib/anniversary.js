@@ -108,8 +108,7 @@ function titleCase(s) {
 function fromWindow(w, d) {
   const raw = (w.name || '').replace(/^ANNIVERSARY\s*·\s*/u, '');
   const name = d >= 30 ? 'Grand Slam Finale' : titleCase(raw || 'Anniversary Day');
-  const what = w.sitewide ? 'sitewide' : `on ${w.blurb || BLURB_FALLBACK[w.week] || 'select products'}`;
-  let detail = `${w.pct}% off ${what}. No code needed, and your affiliate code stacks on top.`;
+  let detail = 'No code needed — prices drop automatically at midnight CT, and your affiliate code stacks on top.';
   if (d >= 30) detail = `${w.pct}% off sitewide — the biggest days of the month. ${FINALE_CAPS}`;
   return {
     kind: d >= 30 ? 'finale' : w.sitewide ? 'sitewide' : 'category',
