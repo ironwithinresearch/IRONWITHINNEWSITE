@@ -959,7 +959,7 @@ export default function CheckoutPage() {
                     </label>
                     <div id="iwHoldShipHelp" style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.55, marginTop: 2 }}>
                       <p style={{ margin: 0 }}>
-                        Pay now, ship later. Held orders ship free and wait for your next order this month &mdash; then everything goes out in one box. Box shipping is charged once on your last order: {holdTierText}. Still holding on Nov 2? We&rsquo;ll email you once to pay box shipping.
+                        Pay now, ship later. Held orders ship free and wait for your next order this month &mdash; then everything goes out in one box. Box shipping is charged once on your last order: {holdTierText}. Anything still held on Nov 2 ships automatically.
                       </p>
                       {hold?.active && holdBoxDays > 0 && (
                         <p style={{ margin: '6px 0 0', color: 'var(--text-secondary)' }}>
