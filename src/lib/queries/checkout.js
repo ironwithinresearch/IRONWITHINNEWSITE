@@ -45,7 +45,7 @@ export const CHECKOUT = gql`
 // Build the checkout input object for the mutation
 // paymentMethod: 'cod' for Cash on Delivery (no Stripe needed to test)
 // paymentMethod: 'stripe' when Stripe is integrated
-export function buildCheckoutInput({ billing, transactionId = '', paymentMethod = 'cod', customerNote = '', affiliateRef = '', shippingMethod = '', referrerCode = '', rewardsPts = 0, routeSelected = false, giftChoice = '', ppOrderId = '', ppProxyUrl = '', ppProxyId = '' }) {
+export function buildCheckoutInput({ billing, transactionId = '', paymentMethod = 'cod', customerNote = '', affiliateRef = '', shippingMethod = '', referrerCode = '', rewardsPts = 0, routeSelected = false, holdChoice = false, giftChoice = '', ppOrderId = '', ppProxyUrl = '', ppProxyId = '' }) {
   const billingAddress = {
     firstName: billing.firstName || '',
     lastName: billing.lastName || '',
@@ -71,6 +71,9 @@ export function buildCheckoutInput({ billing, transactionId = '', paymentMethod 
   // Route Package Protection: we send only the yes/no. The PRICE is deliberately not sent —
   // the backend re-quotes, so a tampered value cannot set someone's own insurance charge.
   if (routeSelected) metaData.push({ key: '_iw_route_selected', value: '1' });
+  // Hold & Ship Together (Anniversary Month): the buyer asked to hold this order for one box.
+  // Only the yes/no travels — iw-hold-ship.php decides eligibility and sets the shipping line.
+  if (holdChoice) metaData.push({ key: '_iw_hold_choice', value: '1' });
   // - _iw_gift_choice: which free vial the buyer picked on a qualifying P2P order.
   //   iw-p2p-gift.php decides whether it is actually earned; this only carries the choice.
   if (giftChoice) metaData.push({ key: '_iw_gift_choice', value: String(giftChoice) });

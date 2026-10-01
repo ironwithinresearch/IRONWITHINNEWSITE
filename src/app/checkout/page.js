@@ -15,6 +15,8 @@ import { GET_CUSTOMER } from '../../lib/queries/auth';
 import { decodePriceHtml } from '../../lib/utils';
 import { getAffiliateRef } from '../../lib/affiliate';
 import { fetchStoreCredit } from '../../lib/storeCredit';
+import { fetchHoldShip } from '../../lib/holdShip';
+import { GET_PRODUCTS } from '../../lib/queries/products';
 import { creditEligibility } from '../../lib/creditEligibility';
 import { ladderQualifying } from '../../lib/p2p';
 import SpendLadder from '../../components/SpendLadder';
@@ -197,6 +199,8 @@ export default function CheckoutPage() {
   const [payOpenFailed, setPayOpenFailed] = useState(false); // order exists, card form didn't
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
+  // What the placed order asked for, so the success screen can say it (Hold & Ship Together).
+  const [placedHold, setPlacedHold] = useState(''); // '' | 'held' | 'release'
   // NO DEFAULT — the buyer must choose. A pre-selected method silently decides things
   // that change the price: the pay-by-app discount only exists for Zelle/Venmo/Cash App,
   // so defaulting to one quoted a discount the buyer never asked for, and defaulting to
@@ -366,13 +370,74 @@ export default function CheckoutPage() {
   const money = (s) => parseFloat(String(s || '').replace(/&nbsp;/g, '').replace(/[^0-9.]/g, '') || '0');
   const fmt = (n) => `$${n.toFixed(2)}`;
 
+  /* Hold & Ship Together (Anniversary Month, Oct 1-31 2026 CT).
+     A held order is paid now, ships $0 and waits. The next order placed WITHOUT the box
+     "releases" it: everything ships together and that order pays one box price, tiered by
+     how many distinct days are in the box. iw-hold-ship.php is the authority — it decides
+     eligibility and rewrites the shipping line (priority 22, after iw-shipping-enforce @20
+     and freeship-verify @21). This only mirrors its number so the quote matches the charge.
+     ⚠ Every total below flows from shipCostNum. Change the shipping number THERE, never in
+     a downstream line, or the checkout drifts from what the backend charges. */
+  const [hold, setHold] = useState(null);       // GET /iw/v1/hold-ship `hold`, null = off
+  const [holdOn, setHoldOn] = useState(false);  // the buyer ticked "Hold my order"
+  useEffect(() => {
+    let on = true;
+    fetchHoldShip().then((d) => { if (on) setHold(d); });
+    return () => { on = false; };
+  }, []);
+  // Merch (print-on-demand, ships from Printful) cannot sit in the box, so a merch-only cart
+  // is not offered the hold. Same query the /merch tab uses; until it loads, nothing is
+  // treated as merch — the backend still refuses anything it should.
+  const { data: merchData } = useQuery(GET_PRODUCTS, {
+    variables: { first: 100, category: 'merch' },
+    fetchPolicy: 'cache-first',
+  });
+  const merchSlugs = new Set((merchData?.products?.nodes || []).map((p) => p?.slug).filter(Boolean));
+  const holdUS = shipping.country === 'US';
+  const hasHoldable = (cartItems || []).some((i) => {
+    const slug = i.product?.node?.slug;
+    return !!slug && !merchSlugs.has(slug) && slug !== 'gift-card';
+  });
+  const canHold = !!hold?.can_hold && holdUS && hasHoldable;
+  // Untick automatically when the address leaves the US or the window closes mid-checkout.
+  useEffect(() => {
+    if (holdOn && (!hold?.can_hold || !holdUS)) setHoldOn(false);
+  }, [holdOn, hold, holdUS]);
+  const holding = holdOn && canHold;
+  const releasePrice = Number(hold?.release_price);
+  const releaseDays = parseInt(hold?.release_days, 10) || 0;
+  // Releasing beats free shipping and the selector: the backend charges the tier regardless.
+  const releasing = !holding && !!hold?.active && holdUS && Number.isFinite(releasePrice) && releasePrice > 0;
+  // "$12.95 (up to 4 order days), $16.95 (5-9), ..." built from the backend's own tier table
+  // so the copy cannot drift from what is charged.
+  const holdTiers = Array.isArray(hold?.tiers) && hold.tiers.length ? hold.tiers : [
+    { min: 1, max: 4, price: 12.95 }, { min: 5, max: 9, price: 16.95 },
+    { min: 10, max: 14, price: 24.95 }, { min: 15, max: null, price: 34.95 },
+  ];
+  const holdTierText = holdTiers.map((t, i) => {
+    const price = fmt(Number(t.price) || 0);
+    if (i === 0 && t.max) return `${price} (up to ${t.max} order days)`;
+    return t.max ? `${price} (${t.min}-${t.max})` : `${price} (${t.min}+)`;
+  }).join(', ');
+  const holdBoxDays = parseInt(hold?.days, 10) || 0;
+  const holdBoxOrders = Array.isArray(hold?.orders) ? hold.orders : [];
+  const holdUnpaid = Array.isArray(hold?.unpaid_orders) ? hold.unpaid_orders : [];
+
   const subtotalNum = money(cartSubtotal);
   const selectedRate = availableShippingRates.find(r => r.id === shipRate) || null;
   // Shipping stays $0.00 until the customer reaches the review/order step (where
   // they pick a method); only then does it count toward the displayed total.
   const showShipping = currentStep >= 1;
-  const shipCostNum = showShipping ? (selectedRate ? money(selectedRate.cost) : money(shippingTotal)) : 0;
-  const shipDisplay = showShipping ? (selectedRate ? selectedRate.cost : (shippingTotal || '$0.00')) : '$0.00';
+  const rateCostNum = showShipping ? (selectedRate ? money(selectedRate.cost) : money(shippingTotal)) : 0;
+  // THE one shipping number. Held = $0; releasing the box = the tier price; else the rate.
+  const shipCostNum = !showShipping ? 0 : holding ? 0 : releasing ? releasePrice : rateCostNum;
+  const shipDisplay = !showShipping ? '$0.00'
+    : holding ? '$0.00'
+    : releasing ? fmt(releasePrice)
+    : (selectedRate ? selectedRate.cost : (shippingTotal || '$0.00'));
+  const shipLabel = showShipping && holding ? 'Shipping — held'
+    : showShipping && releasing ? `Ship Together box (${releaseDays} day${releaseDays === 1 ? '' : 's'})`
+    : 'Shipping';
   // Total = cart total minus whatever shipping the cart auto-applied, plus the
   // rate the customer actually selected — so the display always matches the charge.
   const computedTotalNum = Math.max(0, money(cartTotal) - money(shippingTotal) + shipCostNum);
@@ -590,6 +655,7 @@ export default function CheckoutPage() {
       shippingMethod: shipRate,
       rewardsPts: rewardsAppliedPts,
       routeSelected: routeFee > 0,
+      holdChoice: holding,
       giftChoice: giftEarned ? giftChoice : '',
       ppOrderId: ppApproved?.ppOrderId || '',
       ppProxyUrl: ppApproved?.proxyUrl || '',
@@ -597,6 +663,7 @@ export default function CheckoutPage() {
     });
     try {
       const { data, errors } = await checkoutMutation({ variables: input });
+      setPlacedHold(holding ? 'held' : releasing ? 'release' : '');
       finishCheckout(data, errors);
     } catch (err) {
       // Network / unexpected errors only — GraphQL errors arrive via errorPolicy:'all'.
@@ -632,7 +699,11 @@ export default function CheckoutPage() {
                 : ppOrder
                 ? 'Enter your card below to complete payment. Your order is saved — nothing has been charged yet.'
                 : p2pInfo
-                ? 'One more step — send your payment below. Your order ships as soon as payment is received.'
+                ? (placedHold === 'held'
+                  ? 'One more step — send your payment below. Once it lands, your order joins your Ship Together box.'
+                  : 'One more step — send your payment below. Your order ships as soon as payment is received.')
+                : placedHold === 'held'
+                ? 'Thank you for your order.'
                 : 'Thank you for your order. Your research peptides are being prepared for shipment.'}
             </p>
             {orderNumber && (
@@ -641,6 +712,16 @@ export default function CheckoutPage() {
               </p>
             )}
 
+            {orderNumber && placedHold === 'held' && !payOpenFailed && (
+              <div role="status" style={{ textAlign: 'left', padding: '12px 14px', borderRadius: '12px', marginBottom: '20px', background: 'rgba(0,207,255,0.07)', border: '1px solid rgba(0,207,255,0.35)', fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+                <strong style={{ color: 'var(--text-light)' }}>Order #{orderNumber} is held</strong> — it ships with your next order. We&rsquo;ve emailed you.
+              </div>
+            )}
+            {orderNumber && placedHold === 'release' && !payOpenFailed && (
+              <div role="status" style={{ textAlign: 'left', padding: '12px 14px', borderRadius: '12px', marginBottom: '20px', background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.35)', fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+                <strong style={{ color: 'var(--text-light)' }}>Your held orders ship with this one</strong> — everything goes out in one box.
+              </div>
+            )}
             {ppOrder && (
               <PeptidesPayContainer orderId={ppOrder.id} orderKey={ppOrder.key} />
             )}
@@ -826,7 +907,16 @@ export default function CheckoutPage() {
                     {shipping.email}
                   </p>
                 </ReviewBlock>
-                {availableShippingRates.length > 0 && (
+                {(holding || releasing) && (
+                  <ReviewBlock title="Shipping Method">
+                    <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
+                      {holding
+                        ? <>Held &mdash; <strong style={{ color: 'var(--text-light)' }}>$0.00</strong> today. This order waits for your next one.</>
+                        : <>Ship Together box &mdash; <strong style={{ color: 'var(--text-light)' }}>{fmt(releasePrice)}</strong>. Your held orders ship with this one.</>}
+                    </p>
+                  </ReviewBlock>
+                )}
+                {availableShippingRates.length > 0 && !holding && !releasing && (
                   <ReviewBlock title="Shipping Method">
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                       {availableShippingRates.map((r) => {
@@ -854,6 +944,40 @@ export default function CheckoutPage() {
                       })}
                     </div>
                   </ReviewBlock>
+                )}
+                {canHold && (
+                  <div style={{ padding: '12px 14px', marginBottom: '14px', background: 'rgba(0,207,255,0.05)', border: `1px solid ${holdOn ? 'var(--primary-blue)' : 'rgba(0,207,255,0.22)'}`, borderRadius: '12px' }}>
+                    <style dangerouslySetInnerHTML={{ __html: '.iw-hold-cb:focus-visible{outline:2px solid var(--primary-blue);outline-offset:3px}' }} />
+                    <label htmlFor="iwHoldShip" style={{ display: 'flex', alignItems: 'center', gap: '11px', minHeight: 44, cursor: 'pointer' }}>
+                      <input id="iwHoldShip" className="iw-hold-cb" type="checkbox" checked={holdOn}
+                        onChange={(e) => setHoldOn(e.target.checked)}
+                        aria-describedby="iwHoldShipHelp"
+                        style={{ width: 20, height: 20, accentColor: 'var(--primary-blue)', flex: 'none', cursor: 'pointer' }} />
+                      <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-light)', lineHeight: 1.4 }}>
+                        Hold my order &mdash; I&rsquo;m ordering again this month
+                      </span>
+                    </label>
+                    <div id="iwHoldShipHelp" style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.55, marginTop: 2 }}>
+                      <p style={{ margin: 0 }}>
+                        Pay now, ship later. Held orders ship free and wait for your next order this month &mdash; then everything goes out in one box. Box shipping is charged once on your last order: {holdTierText}. Anything still held on Nov 2 ships automatically.
+                      </p>
+                      {hold?.active && holdBoxDays > 0 && (
+                        <p style={{ margin: '6px 0 0', color: 'var(--text-secondary)' }}>
+                          Your box: {holdBoxDays} day{holdBoxDays === 1 ? '' : 's'} held{holdBoxOrders.length ? ` (${holdBoxOrders.map((n) => `#${n}`).join(', ')})` : ''}.
+                        </p>
+                      )}
+                      {holdUnpaid.length > 0 && (
+                        <p style={{ margin: '6px 0 0', color: 'var(--text-secondary)' }}>
+                          {holdUnpaid.map((n) => `#${n}`).join(', ')} {holdUnpaid.length === 1 ? 'joins' : 'join'} your box once paid.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
+                {!canHold && releasing && holdUnpaid.length > 0 && (
+                  <div style={{ padding: '10px 12px', marginBottom: '14px', borderRadius: '10px', background: 'rgba(0,207,255,0.05)', border: '1px solid rgba(0,207,255,0.22)', fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                    {holdUnpaid.map((n) => `#${n}`).join(', ')} {holdUnpaid.length === 1 ? 'is' : 'are'} still awaiting payment and {holdUnpaid.length === 1 ? 'joins' : 'join'} your box once paid.
+                  </div>
                 )}
                 <ReviewBlock title="Payment Method">
                   {isZeroDue ? (
@@ -1076,7 +1200,7 @@ export default function CheckoutPage() {
                 );
               })}
               {/* Shipping — $0.00 until the review step, then the selected rate */}
-              <SummaryRow label="Shipping" htmlValue={shipDisplay} value={undefined} />
+              <SummaryRow label={shipLabel} htmlValue={shipDisplay} value={undefined} />
               {/* Pay-by-app discount — shown before credit/rewards, matching the backend order */}
               {/* Route Package Protection — pre-checked (opt-out). Rendered natively rather
                   than via Route's CDN widget, which the site CSP would block. */}
