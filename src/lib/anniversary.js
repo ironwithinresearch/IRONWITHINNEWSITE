@@ -89,20 +89,22 @@ const EXTRA = {
   29: {
     kind: 'passport',
     name: 'Passport Early Access',
-    headline: '50% off sitewide — Passport holders',
-    detail: 'A day early for the finale: 50% off sitewide, only for customers holding a Passport (5 or more stamps).',
+    headline: 'Up to 50% off — Passport holders',
+    detail: 'A day early for the finale: up to 50% off most of the store, only for customers holding a Passport (5 or more stamps).',
     tag: 'members',
   },
 };
 
 /* Category days whose window carries no product list. */
-const BLURB_FALLBACK = { 23: 'Glow-Up and Metabolic products' };
+const BLURB_FALLBACK = { 23: 'GLOW, KLOW and AOD products' };
 
 function titleCase(s) {
   return s
     .toLowerCase()
     .replace(/(^|[\s+\-/])([a-z])/g, (m, p, c) => p + c.toUpperCase())
-    .replace(/\bIi\b/g, 'II');
+    .replace(/\bIi\b/g, 'II')
+    // Compound names keep their real capitals (RT-3, BPC, GHK, NAD+, GLOW, KLOW, IGF, CJC, AOD).
+    .replace(/\b(Rt|Bpc|Ghk|Nad|Glow|Klow|Igf|Cjc|Aod)\b/g, (m) => m.toUpperCase());
 }
 
 function fromWindow(w, d) {
