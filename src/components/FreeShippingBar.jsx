@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Truck, Check } from 'lucide-react';
 
 /* Free-shipping progress bar. Gamifies the $225 free-US-shipping threshold:
@@ -13,9 +14,21 @@ import { Truck, Check } from 'lucide-react';
    subtotal makes this bar announce free shipping that checkout then declines. */
 
 const THRESHOLD = 225;
+// Operator, 30 Sep 2026: no free shipping during Anniversary Month. Mirrors the backend
+// iw-no-freeship-oct.php window (Oct 1 00:00 CT → Nov 1 00:00 CT). Delete after November.
+const NO_FREESHIP_FROM = Date.parse('2026-10-01T05:00:00Z');
+const NO_FREESHIP_UNTIL = Date.parse('2026-11-01T05:00:00Z');
 const money = (n) => `$${(Math.round(n * 100) / 100).toFixed(2)}`;
 
 export default function FreeShippingBar({ subtotal = 0, alreadyFree = false }) {
+  // Clock read after mount so server and client markup match.
+  const [paused, setPaused] = useState(true);
+  useEffect(() => {
+    const now = Date.now();
+    setPaused(now >= NO_FREESHIP_FROM && now < NO_FREESHIP_UNTIL);
+  }, []);
+  if (paused) return null;
+
   const s = Number(subtotal) || 0;
   const unlocked = alreadyFree || s >= THRESHOLD;
   const remaining = Math.max(0, THRESHOLD - s);
