@@ -33,6 +33,37 @@ import {
 const steps = ['Shipping', 'Review'];
 const SUPPORT_EMAIL = 'support@ironwithin.io';
 
+// Unpaid Zelle / Venmo / Cash App orders are cancelled after this many minutes
+// (mu-plugin iw-p2p-expire.php — keep the two in step).
+const P2P_PAY_MINUTES = 20;
+
+/* Live "time left to pay" box on the order-placed screen. Clock runs in an effect, so the
+   server render and the first client render agree (no hydration mismatch). */
+function P2PDeadline({ deadline }) {
+  const [now, setNow] = useState(null);
+  useEffect(() => {
+    setNow(Date.now());
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  if (!deadline) return null;
+  const left = now === null ? P2P_PAY_MINUTES * 60 : Math.max(0, Math.round((deadline - now) / 1000));
+  const mm = Math.floor(left / 60), ss = String(left % 60).padStart(2, '0');
+  const by = new Date(deadline).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' });
+  const late = left === 0;
+  return (
+    <div role="timer" style={{ textAlign: 'left', padding: '14px 16px', borderRadius: '12px', marginBottom: '18px', background: late ? 'rgba(248,113,113,0.10)' : 'rgba(251,191,36,0.10)', border: `1px solid ${late ? 'rgba(248,113,113,0.45)' : 'rgba(251,191,36,0.45)'}`, color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.55 }}>
+      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
+        <strong style={{ color: 'var(--text-light)' }}>{late ? 'Payment window has ended' : 'Send your payment within 20 minutes'}</strong>
+        {!late && <span style={{ fontFamily: 'var(--font-mono, monospace)', fontSize: '1.25rem', fontWeight: 800, color: '#fbbf24', fontVariantNumeric: 'tabular-nums' }}>{mm}:{ss}</span>}
+      </div>
+      {late
+        ? <>If you already sent it, your order re-opens automatically when the payment arrives &mdash; or reply to your order email with a screenshot.</>
+        : <>Pay by <strong style={{ color: 'var(--text-light)' }}>{by} Central</strong>. Unpaid orders are cancelled automatically after 20 minutes and the items are released.</>}
+    </div>
+  );
+}
+
 // Payment methods. iwr_card is the ROUTER (mu-plugin iw-card-router.php): one card option for
 // the buyer, and the backend decides which acquirer takes it. Since 2026-09-24 (operator) that
 // is a MerchantCore trial: MerchantCore leads, KeyBilling keeps the first card order of each
@@ -610,6 +641,9 @@ export default function CheckoutPage() {
         // The deep links need a bare decimal — "1,234.56" is rejected by both apps.
         amount: String(priceToNumber(result?.order?.total || cartTotal) || ''),
         orderNumber: num,
+        // 20-minute payment window (operator, 3 Oct 2026). The backend (iw-p2p-expire.php)
+        // cancels unpaid P2P orders 20 minutes after they are placed; this is the buyer's clock.
+        deadline: Date.now() + P2P_PAY_MINUTES * 60 * 1000,
       });
     }
     setRewardsRedeemPts(0); // order created — points already reserved on it
@@ -701,7 +735,7 @@ export default function CheckoutPage() {
                 : p2pInfo
                 ? (placedHold === 'held'
                   ? 'One more step — send your payment below. Once it lands, your order joins your Ship Together box.'
-                  : 'One more step — send your payment below. Your order ships as soon as payment is received.')
+                  : 'One more step — send your payment below within 20 minutes. Your order ships as soon as payment is received.')
                 : placedHold === 'held'
                 ? 'Thank you for your order.'
                 : 'Thank you for your order. Your research peptides are being prepared for shipment.'}
@@ -711,6 +745,8 @@ export default function CheckoutPage() {
                 Order #{orderNumber}{ppOrder ? '' : ` · Confirmation sent to ${shipping.email}`}
               </p>
             )}
+
+            {p2pInfo?.deadline && !payOpenFailed && <P2PDeadline deadline={p2pInfo.deadline} />}
 
             {orderNumber && placedHold === 'held' && !payOpenFailed && (
               <div role="status" style={{ textAlign: 'left', padding: '12px 14px', borderRadius: '12px', marginBottom: '20px', background: 'rgba(0,207,255,0.07)', border: '1px solid rgba(0,207,255,0.35)', fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
@@ -1039,7 +1075,7 @@ export default function CheckoutPage() {
                             </span>
                             <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                               {m.handle
-                                ? `Send your payment to ${m.handle} after placing the order, then reply to our email with a screenshot${p2pPaused() ? '' : ` — ${p2pPct()}% comes off your total`}`
+                                ? `Send your payment to ${m.handle} within ${P2P_PAY_MINUTES} minutes of placing the order — unpaid orders cancel automatically${p2pPaused() ? '' : `. ${p2pPct()}% comes off your total`}`
                                 : m.desc}
                             </span>
                           </span>
