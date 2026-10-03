@@ -141,7 +141,8 @@ const PAY_METHODS = [
   { id: CARD_METHOD,   label: 'Credit / Debit Card', desc: 'Pay securely by card. Visa, Mastercard, American Express & Discover.' },
   { id: 'iwr_zelle',   label: 'Zelle',    handle: '8508980623' },
   { id: 'iwr_venmo',   label: 'Venmo',    handle: '@iwnpay' },
-  { id: 'iwr_cashapp', label: 'Cash App', handle: '$ironwithinresearch' },
+  // backup: shown as "if that fails, use …" — operator, 3 Oct 2026 (the main Cash App was failing for some buyers).
+  { id: 'iwr_cashapp', label: 'Cash App', handle: '$ironwithinresearch', backup: '$AmberKrisell' },
 ];
 
 // Paying by app takes a discount off (see mu-plugin iw-p2p-discount.php). Card payers
@@ -637,6 +638,7 @@ export default function CheckoutPage() {
         method,                                   // needed to build the one-tap app link
         label: m?.label || 'P2P',
         handle: m?.handle || '',
+        backup: m?.backup || '',
         total: plainPrice(result?.order?.total || cartTotal),
         // The deep links need a bare decimal — "1,234.56" is rejected by both apps.
         amount: String(priceToNumber(result?.order?.total || cartTotal) || ''),
@@ -803,6 +805,15 @@ export default function CheckoutPage() {
                 <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', fontWeight: 900, color: 'var(--primary-blue)', background: 'rgba(0,207,255,0.08)', borderRadius: '10px', padding: '12px 14px', textAlign: 'center', marginBottom: '12px', wordBreak: 'break-all' }}>
                   {p2pInfo.handle}
                 </div>
+                {p2pInfo.backup && (
+                  <div style={{ fontSize: '0.86rem', color: 'var(--text-secondary)', lineHeight: 1.55, background: 'rgba(0,213,75,0.08)', border: '1px solid rgba(0,213,75,0.35)', borderRadius: '10px', padding: '10px 12px', textAlign: 'center', marginBottom: '12px' }}>
+                    If that payment fails, send it to <strong style={{ color: 'var(--text-light)', wordBreak: 'break-all' }}>{p2pInfo.backup}</strong> instead
+                    {p2pInfo.amount ? (
+                      <> &mdash; <a href={`https://cash.app/${p2pInfo.backup}/${p2pInfo.amount}`} target="_blank" rel="noopener noreferrer" style={{ color: '#00D54B', fontWeight: 800 }}>open Cash App ({p2pInfo.backup})</a></>
+                    ) : null}
+                    . Same amount, same order number in the note.
+                  </div>
+                )}
                 <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '10px' }}>
                   Include <strong style={{ color: 'var(--text-secondary)' }}>order #{p2pInfo.orderNumber}</strong> in the payment note so we can match your payment.
                 </p>
@@ -1075,7 +1086,7 @@ export default function CheckoutPage() {
                             </span>
                             <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                               {m.handle
-                                ? `Send your payment to ${m.handle} within ${P2P_PAY_MINUTES} minutes of placing the order — unpaid orders cancel automatically${p2pPaused() ? '' : `. ${p2pPct()}% comes off your total`}`
+                                ? `Send your payment to ${m.handle}${m.backup ? ` (if that fails, use ${m.backup})` : ''} within ${P2P_PAY_MINUTES} minutes of placing the order — unpaid orders cancel automatically${p2pPaused() ? '' : `. ${p2pPct()}% comes off your total`}`
                                 : m.desc}
                             </span>
                           </span>

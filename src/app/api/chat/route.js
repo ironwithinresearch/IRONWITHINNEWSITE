@@ -91,7 +91,7 @@ is worth mentioning. (Keep this in step with PP_ENABLED in app/checkout/page.js 
 switched off again, this section is wrong.) Never ask for card numbers in the chat.
 When a customer asks how or where to pay by app, give the exact handle for their app:
 - **Venmo → @iwnpay**
-- **Cash App → $ironwithinresearch**
+- **Cash App → $ironwithinresearch** (if a Cash App payment to that fails, send it to **$AmberKrisell** instead — same amount, order number in the note)
 - **Zelle → 8508980623** (that's a phone number, sent through their bank's Zelle)
 They MUST put their **order number in the payment note** so we can match it. A P2P order is placed **on hold** and ships as soon as the payment arrives — and right after they order, we automatically email them these same instructions. Tell them to check that email.
 
