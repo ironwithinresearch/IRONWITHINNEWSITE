@@ -18,6 +18,7 @@ import { annPromoLive } from '@/lib/anniversary';
 const navLinks = [
    { href: '/',      label: 'Home'       },
   { href: '/shop',      label: 'Shop'       },
+  { href: '/merch',     label: 'Merch'      },
   { href: '/rewards',   label: 'Rewards'    },
   { href: '/lab-reports',label: 'Lab Reports' },
   { href: '/contact',   label: 'Contact'    },
@@ -32,6 +33,7 @@ const SHOP_MENU = [
   { slug: 'nasal-sprays',          name: 'Nasal Sprays' },
   { slug: 'aminos',                name: 'Aminos' },
   { slug: 'lab-supplies',          name: 'Lab Supplies' },
+  { slug: 'merch',                 name: 'Merch',       href: '/merch' },
   { slug: 'gift-cards',            name: 'Gift Cards',  href: '/gift-cards' },
 ];
 export default function Navbar() {

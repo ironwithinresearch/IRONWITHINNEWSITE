@@ -34,6 +34,10 @@ export default function ProductPage() {
 
   const [qty, setQty] = useState(1);
   const [selectedDose, setSelectedDose] = useState(null);
+  // Merch picks by named attribute (colour, size) rather than by dose. Kept separate from
+  // selectedDose because the dose model resolves by PRICE RANK, which is meaningless when
+  // every size of a shirt costs the same.
+  const [merchPick, setMerchPick] = useState({});
   const [addingToCart, setAddingToCart] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
   const [wishlisted, setWishlisted] = useState(false);
@@ -167,7 +171,45 @@ export default function ProductPage() {
     const idx = Math.min(Math.max(qty, 1) - 1, ps.length - 1);
     return ps[idx];
   }
-  const resolvedVariation = pickVariation(effectiveDose);
+  /* ---- Merch: a generic attribute picker -------------------------------------
+     The dose model above finds values matching /\d\s*mg/ and /unit/. A t-shirt's
+     "Solid Black Triblend" / "L" match neither, so without this branch a merch product
+     rendered NO selector at all and could not be bought. Everything here is driven by
+     whatever attributes the variations actually carry, so it needs no per-product code. */
+  const attrPairs = (v) => (v.attributes?.nodes || []).map(a => [a.name, a.value]).filter(([n, x]) => n && x);
+  const isMerch = isVariable && !hasDoses && variations.some(v => attrPairs(v).length > 0);
+  const merchAttrs = {};
+  if (isMerch) {
+    for (const v of variations) {
+      for (const [name, value] of attrPairs(v)) {
+        if (!merchAttrs[name]) merchAttrs[name] = [];
+        if (!merchAttrs[name].includes(value)) merchAttrs[name].push(value);
+      }
+    }
+    for (const k of Object.keys(merchAttrs)) {
+      if (k === 'size') {
+        const order = ['XS','S','M','L','XL','2XL','3XL','4XL','5XL'];
+        merchAttrs[k].sort((a, b) => {
+          const ia = order.indexOf(a), ib = order.indexOf(b);
+          return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib) || a.localeCompare(b);
+        });
+      } else {
+        merchAttrs[k].sort((a, b) => a.localeCompare(b));
+      }
+    }
+  }
+  const merchNames = Object.keys(merchAttrs);
+  // Default to the first value of each attribute so a price and image show immediately.
+  const merchChosen = {};
+  for (const n of merchNames) merchChosen[n] = merchPick[n] || merchAttrs[n][0];
+  const merchVariation = isMerch
+    ? variations.find(v => {
+        const pairs = Object.fromEntries(attrPairs(v));
+        return merchNames.every(n => pairs[n] === merchChosen[n]);
+      }) || null
+    : null;
+
+  const resolvedVariation = isMerch ? merchVariation : pickVariation(effectiveDose);
   const doseTiers = isVariable ? pricedSorted(effectiveDose) : [];
   // Two structures supported during migration:
   //  • dose-only (1 variation/dose): volume discount applied by quantity here +
@@ -182,7 +224,8 @@ export default function ProductPage() {
   const activeImage =
     variationImage || images[Math.min(imgIndex, Math.max(images.length - 1, 0))] || images[0];
 
-  const volPct = qty >= 3 ? 0.05 : qty >= 2 ? 0.025 : 0;
+  // Merch is never discounted, so no volume tier applies to it.
+  const volPct = isMerch ? 0 : (qty >= 3 ? 0.05 : qty >= 2 ? 0.025 : 0);
   const isDoseOnly = isVariable && doseTiers.length <= 1;
 
   let unitPrice, basePrice;
@@ -451,6 +494,47 @@ export default function ProductPage() {
               <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.7 }}
                 dangerouslySetInnerHTML={{ __html: product.shortDescription }} />
             )}
+
+            {/* Merch selector — one row per attribute (colour, size, ...).
+                Values that no in-stock variation can satisfy alongside the other picks are
+                shown struck through rather than hidden, so a shopper can see the size exists
+                and is simply unavailable in that colour. */}
+            {isMerch && merchNames.map(name => (
+              <div key={name}>
+                <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                  {name === 'color' ? 'Colour' : name}
+                </label>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  {merchAttrs[name].map(value => {
+                    const active = merchChosen[name] === value;
+                    // Can this value be had, given the other attributes as currently chosen?
+                    const possible = variations.some(v => {
+                      const pairs = Object.fromEntries(attrPairs(v));
+                      return pairs[name] === value
+                        && merchNames.every(n => n === name || pairs[n] === merchChosen[n])
+                        && (v.stockStatus === 'IN_STOCK' || v.stockStatus === 'ON_BACKORDER');
+                    });
+                    return (
+                      <button
+                        key={value}
+                        onClick={() => setMerchPick(prev => ({ ...prev, [name]: value }))}
+                        disabled={!possible}
+                        style={{
+                          padding: '9px 16px', borderRadius: '10px', cursor: possible ? 'pointer' : 'not-allowed',
+                          fontFamily: 'var(--font-body)', fontSize: '0.85rem', fontWeight: 600,
+                          background: active ? 'var(--gradient-primary)' : 'var(--card-dark)',
+                          color: active ? '#fff' : possible ? 'var(--text-light)' : 'var(--text-muted)',
+                          border: active ? 'none' : '1px solid var(--glass-border)',
+                          textDecoration: possible ? 'none' : 'line-through',
+                          opacity: possible ? 1 : 0.55,
+                        }}>
+                        {value}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
 
             {/* Dose selector */}
             {isVariable && hasDoses && (
