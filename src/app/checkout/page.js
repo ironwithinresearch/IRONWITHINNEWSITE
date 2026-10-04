@@ -35,7 +35,7 @@ const SUPPORT_EMAIL = 'support@ironwithin.io';
 
 // Unpaid Zelle / Venmo / Cash App orders are cancelled after this many minutes
 // (mu-plugin iw-p2p-expire.php — keep the two in step).
-const P2P_PAY_MINUTES = 20;
+const P2P_PAY_MINUTES = 35; // operator 3 Oct: P2P orders held 35 min (was 20) — keep in step with IW_P2P_EXPIRE_MIN
 
 /* Live "time left to pay" box on the order-placed screen. Clock runs in an effect, so the
    server render and the first client render agree (no hydration mismatch). */
@@ -54,12 +54,12 @@ function P2PDeadline({ deadline }) {
   return (
     <div role="timer" style={{ textAlign: 'left', padding: '14px 16px', borderRadius: '12px', marginBottom: '18px', background: late ? 'rgba(248,113,113,0.10)' : 'rgba(251,191,36,0.10)', border: `1px solid ${late ? 'rgba(248,113,113,0.45)' : 'rgba(251,191,36,0.45)'}`, color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.55 }}>
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
-        <strong style={{ color: 'var(--text-light)' }}>{late ? 'Payment window has ended' : 'Send your payment within 20 minutes'}</strong>
+        <strong style={{ color: 'var(--text-light)' }}>{late ? 'Payment window has ended' : `Send your payment within ${P2P_PAY_MINUTES} minutes`}</strong>
         {!late && <span style={{ fontFamily: 'var(--font-mono, monospace)', fontSize: '1.25rem', fontWeight: 800, color: '#fbbf24', fontVariantNumeric: 'tabular-nums' }}>{mm}:{ss}</span>}
       </div>
       {late
         ? <>If you already sent it, your order re-opens automatically when the payment arrives &mdash; or reply to your order email with a screenshot.</>
-        : <>Pay by <strong style={{ color: 'var(--text-light)' }}>{by} Central</strong>. Unpaid orders are cancelled automatically after 20 minutes and the items are released.</>}
+        : <>Pay by <strong style={{ color: 'var(--text-light)' }}>{by} Central</strong>. Unpaid orders are cancelled automatically after {P2P_PAY_MINUTES} minutes and the items are released.</>}
     </div>
   );
 }
@@ -643,8 +643,8 @@ export default function CheckoutPage() {
         // The deep links need a bare decimal — "1,234.56" is rejected by both apps.
         amount: String(priceToNumber(result?.order?.total || cartTotal) || ''),
         orderNumber: num,
-        // 20-minute payment window (operator, 3 Oct 2026). The backend (iw-p2p-expire.php)
-        // cancels unpaid P2P orders 20 minutes after they are placed; this is the buyer's clock.
+        // P2P payment window (operator, 3 Oct 2026; 35 min since ~7:40pm). The backend (iw-p2p-expire.php)
+        // cancels unpaid P2P orders P2P_PAY_MINUTES after they are placed; this is the buyer's clock.
         deadline: Date.now() + P2P_PAY_MINUTES * 60 * 1000,
       });
     }
@@ -737,7 +737,7 @@ export default function CheckoutPage() {
                 : p2pInfo
                 ? (placedHold === 'held'
                   ? 'One more step — send your payment below. Once it lands, your order joins your Ship Together box.'
-                  : 'One more step — send your payment below within 20 minutes. Your order ships as soon as payment is received.')
+                  : `One more step — send your payment below within ${P2P_PAY_MINUTES} minutes. Your order ships as soon as payment is received.`)
                 : placedHold === 'held'
                 ? 'Thank you for your order.'
                 : 'Thank you for your order. Your research peptides are being prepared for shipment.'}
