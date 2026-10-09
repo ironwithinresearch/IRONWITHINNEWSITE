@@ -159,7 +159,7 @@ const P2P_EVENT_MESSAGE = '💸  TODAY ONLY: EXTRA 20% OFF when you pay with Ven
 // is a support ticket per order).
 const HF_START = Date.parse('2026-10-09T14:30:00Z');
 const HF_END = Date.parse('2026-10-12T05:00:00Z');
-const HF_MESSAGE = '\u{1F300}  HURRICANE FLASH SALE \u2014 40% OFF ARA-290 \u00B7 RT-3 20mg & 60mg \u00B7 Cagrilintide \u00B7 TRZ-2 60mg \u00B7 NAD+ 1000mg \u00B7 IGF-1 LR3 \u00B7 Semax \u00B7 no code needed, stack your creator code \u00B7 ships as soon as the storm passes \u00B7 ends Sunday midnight CT';
+const HF_MESSAGE = '\u{1F300}  HURRICANE FLASH SALE \u2014 50% OFF ARA-290 \u00B7 RT-3 20mg & 60mg \u00B7 Cagrilintide \u00B7 TRZ-2 60mg \u00B7 NAD+ 1000mg \u00B7 IGF-1 LR3 \u00B7 Semax \u00B7 no code needed, stack your creator code \u00B7 ships as soon as the storm passes \u00B7 ends Sunday midnight CT';
 
 const BASE_MESSAGES = [
   // P2P_MESSAGE removed from the rotation 2026-08-24 (operator call). The pay-by-app
