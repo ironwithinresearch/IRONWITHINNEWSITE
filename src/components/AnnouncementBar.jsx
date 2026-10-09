@@ -153,13 +153,16 @@ const P2P_MESSAGE = '💸  SAVE 10% — pay with Zelle, Venmo, or Cash App and 1
 // only discount on the site (summer sale_prices expire the moment it opens).
 const P2P_EVENT_MESSAGE = '💸  TODAY ONLY: EXTRA 20% OFF when you pay with Venmo, Cash App or Zelle — on top of the 30% sale and your affiliate code · comes off automatically at checkout · ends tonight 11:59pm CT';
 
-// Hurricane Flash Sale — Fri 9 Oct 9:30am CT -> Sun 11 Oct midnight CT. Keep these identical to
-// IW_HF_START / IW_HF_END in mu-plugin iw-hurricane-flash.php, which is what moves the prices,
-// and keep the item list identical to IW_HF_RATES there (a named item the cart doesn't discount
+// Hurricane Flash — Fri 9 Oct 11:30-11:40am CT, P2P only. Keep identical to the 2026-10-09 16:30
+// window in mu-plugin iw-flash.php, which is what moves the prices,
+// and keep the item list identical to that window's map (a named item the cart doesn't discount
 // is a support ticket per order).
-const HF_START = Date.parse('2026-10-09T14:30:00Z');
-const HF_END = Date.parse('2026-10-12T05:00:00Z');
-const HF_MESSAGE = '\u{1F300}  HURRICANE FLASH SALE \u2014 50% OFF ARA-290 \u00B7 RT-3 20mg & 60mg \u00B7 Cagrilintide \u00B7 TRZ-2 60mg \u00B7 NAD+ 1000mg \u00B7 IGF-1 LR3 \u00B7 Semax \u00B7 no code needed, stack your creator code \u00B7 ships as soon as the storm passes \u00B7 ends Sunday midnight CT';
+const HF_TEASE_FROM = Date.parse('2026-10-09T15:30:00Z');
+const HF_START = Date.parse('2026-10-09T16:30:00Z');
+const HF_END = Date.parse('2026-10-09T16:40:00Z');
+const HF_ITEMS = 'ARA-290 \u00B7 RT-3 20mg & 60mg \u00B7 Cagrilintide \u00B7 TRZ-2 60mg \u00B7 NAD+ 1000mg \u00B7 IGF-1 LR3 \u00B7 Semax';
+const HF_TEASE = `\u{1F300}  HURRICANE FLASH \u2014 TODAY 11:30\u201311:40am CT ONLY \u00B7 50% OFF ${HF_ITEMS} \u00B7 Venmo, Cash App & Zelle only \u00B7 stack your creator code`;
+const HF_LIVE = `\u{1F300}  HURRICANE FLASH IS LIVE \u2014 50% OFF ${HF_ITEMS} \u00B7 Venmo, Cash App & Zelle only \u00B7 stack your creator code \u00B7 ends 11:40am CT`;
 
 const BASE_MESSAGES = [
   // P2P_MESSAGE removed from the rotation 2026-08-24 (operator call). The pay-by-app
@@ -245,12 +248,12 @@ export default function AnnouncementBar() {
       );
     }
     // The hurricane sale leads, ahead of today's Freaky Friday line: it is the deeper, newer offer.
-    if (now >= HF_START && now < HF_END) promos.unshift(HF_MESSAGE);
+    if (now >= HF_TEASE_FROM && now < HF_END) promos.unshift(now >= HF_START ? HF_LIVE : HF_TEASE);
     // Anniversary Month: the whole bar links to /anniversary all October, and a line says so
     // right behind today's deal.
     if (annPromoLive(now)) {
       setAnnActive(true);
-      promos.splice((ffLive(now) ? 1 : 0) + (now >= HF_START && now < HF_END ? 1 : 0), 0, '\uD83C\uDF82  IRON WITHIN TURNS ONE \u2014 31 days of deals, October 1\u201331 \u00B7 tap for the full calendar');
+      promos.splice((ffLive(now) ? 1 : 0) + (now >= HF_TEASE_FROM && now < HF_END ? 1 : 0), 0, '\uD83C\uDF82  IRON WITHIN TURNS ONE \u2014 31 days of deals, October 1\u201331 \u00B7 tap for the full calendar');
     }
     setMessages([...promos, ...base]);
   }, []);
