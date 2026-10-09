@@ -153,6 +153,14 @@ const P2P_MESSAGE = '💸  SAVE 10% — pay with Zelle, Venmo, or Cash App and 1
 // only discount on the site (summer sale_prices expire the moment it opens).
 const P2P_EVENT_MESSAGE = '💸  TODAY ONLY: EXTRA 20% OFF when you pay with Venmo, Cash App or Zelle — on top of the 30% sale and your affiliate code · comes off automatically at checkout · ends tonight 11:59pm CT';
 
+// Hurricane Flash Sale — Fri 9 Oct 9:30am CT -> Sun 11 Oct midnight CT. Keep these identical to
+// IW_HF_START / IW_HF_END in mu-plugin iw-hurricane-flash.php, which is what moves the prices,
+// and keep the item list identical to IW_HF_RATES there (a named item the cart doesn't discount
+// is a support ticket per order).
+const HF_START = Date.parse('2026-10-09T14:30:00Z');
+const HF_END = Date.parse('2026-10-12T05:00:00Z');
+const HF_MESSAGE = '\u{1F300}  HURRICANE FLASH SALE \u2014 40% OFF ARA-290 \u00B7 RT-3 20mg & 60mg \u00B7 Cagrilintide \u00B7 TRZ-2 60mg \u00B7 NAD+ 1000mg \u00B7 IGF-1 LR3 \u00B7 Semax \u00B7 no code needed, stack your creator code \u00B7 ships as soon as the storm passes \u00B7 ends Sunday midnight CT';
+
 const BASE_MESSAGES = [
   // P2P_MESSAGE removed from the rotation 2026-08-24 (operator call). The pay-by-app
   // discount is paused for the Labor Day B1G1 anyway, and the bar should not carry a
@@ -236,11 +244,13 @@ export default function AnnouncementBar() {
         `${w.name ? `\uD83C\uDF89  ${w.name}` : `\uD83C\uDF83  FREAKY FRIDAYS \u2014 ${ffTitle(w)}`} is LIVE \u00B7 ${FF_GIFT[w.week] ? `${FF_GIFT[w.week]} \u00B7 ` : ''}${FF_FLAT ? '' : 'up to '}${ffPct(w)}% OFF ${FF_SITEWIDE_WEEKS.includes(w.week) ? 'SITEWIDE' : (w.blurb ? w.blurb.toUpperCase() : 'SELECT PRODUCTS')}, no code needed \u00B7 stack your creator code for even more${left ? ` \u00B7 ends in ${left}` : ''}`,
       );
     }
+    // The hurricane sale leads, ahead of today's Freaky Friday line: it is the deeper, newer offer.
+    if (now >= HF_START && now < HF_END) promos.unshift(HF_MESSAGE);
     // Anniversary Month: the whole bar links to /anniversary all October, and a line says so
     // right behind today's deal.
     if (annPromoLive(now)) {
       setAnnActive(true);
-      promos.splice(ffLive(now) ? 1 : 0, 0, '\uD83C\uDF82  IRON WITHIN TURNS ONE \u2014 31 days of deals, October 1\u201331 \u00B7 tap for the full calendar');
+      promos.splice((ffLive(now) ? 1 : 0) + (now >= HF_START && now < HF_END ? 1 : 0), 0, '\uD83C\uDF82  IRON WITHIN TURNS ONE \u2014 31 days of deals, October 1\u201331 \u00B7 tap for the full calendar');
     }
     setMessages([...promos, ...base]);
   }, []);
