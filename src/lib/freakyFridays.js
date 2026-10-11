@@ -36,6 +36,7 @@ export const FF_WINDOWS = [
   { week: 13, name: "ANNIVERSARY \u00b7 NAD+ & EPITALON DAY", pct: 40, sitewide: false, blurb: "FoxO4, Glutathione, SS-31, NAD+, Epitalon", start: '2026-10-07T05:00:00Z', end: '2026-10-08T05:00:00Z' },
   { week: 14, name: "ANNIVERSARY \u00b7 SEMAX & SELANK THURSDAY", pct: 45, sitewide: false, blurb: "Oxytocin, PT-141, Selank, Semax, Kisspeptin and more", start: '2026-10-08T05:00:00Z', end: '2026-10-09T05:00:00Z' },
   { week: 5, name: "ANNIVERSARY \u00b7 FREAKY FRIDAY", pct: 25, sitewide: true, blurb: "", start: '2026-10-09T05:00:00Z', end: '2026-10-10T05:00:00Z' },
+  { week: 25, name: "SUNDAY NIGHT SPECIAL", pct: 15, sitewide: true, blurb: "", start: '2026-10-11T21:30:00Z', end: '2026-10-12T03:00:00Z' },
   { week: 15, name: "ANNIVERSARY \u00b7 AOD & 5-AMINO MONDAY", pct: 40, sitewide: false, blurb: "S-5, Lipo-C, 5-Amino-1MQ, AOD 9604", start: '2026-10-12T05:00:00Z', end: '2026-10-13T05:00:00Z' },
   { week: 16, name: "ANNIVERSARY \u00b7 GLOW & KLOW TUESDAY", pct: 40, sitewide: false, blurb: "GHK-Cu / KPV, KLOW, MT-2, GLOW", start: '2026-10-13T05:00:00Z', end: '2026-10-14T05:00:00Z' },
   { week: 17, name: "ANNIVERSARY \u00b7 IGF & CJC THURSDAY", pct: 40, sitewide: false, blurb: "TB-500, IGF-1 LR3, Ipa, CJC / IPA", start: '2026-10-15T05:00:00Z', end: '2026-10-16T05:00:00Z' },
@@ -80,6 +81,7 @@ export const FF_FLAT = true;
    Mirrors mu-plugin iw-p2p-gift.php (IW_GIFT_MIN / IW_GIFT_MIN_BIG and its window). */
 export const FF_GIFT = {
   3: 'FREE RT-3 or TRZ-2 10mg on $200+ \u00b7 FREE 30mg on $350+',
+  25: 'CREATOR CODES 25% OFF tonight \u00b7 FREE RT-3 or TRZ-2 10mg on $175+ \u00b7 FREE 30mg on $275+',
   9: 'FREE RT-3 or TRZ-2 10mg on $150+ \u00b7 FREE 30mg on $350+ \u00b7 3\u00d7 POINTS \u00b7 $50 STORE CREDIT when you spend $250+',
 };   // false => copy should read "up to {FF_HEADLINE}%"
 
