@@ -10,10 +10,11 @@
 
 export const coaBySlug = {
   '5-amino-1mq-50mg': {
-    coaFile: '/coa-pdf/5-amino-1mq-50mg-2026-09-13.pdf',
-    batchDate: '9/13/2026 · Lot IWR-0909265AM',
+    coaFile: '/coa-pdf/5-amino-1mq-50mg-2026-10-09.pdf',
+    batchDate: '10/9/2026 · Lot IWR-1010-5AM',
     productName: '5-Amino-1MQ',
     batches: [
+      { coaFile: '/coa-pdf/5-amino-1mq-50mg-2026-10-09.pdf', batchDate: '10/9/2026 · Lot IWR-1010-5AM' },
       { coaFile: '/coa-pdf/5-amino-1mq-50mg-2026-09-13.pdf', batchDate: '9/13/2026 · Lot IWR-0909265AM' },
       { coaFile: '/coa-pdf/5-amino-1mq-50mg.pdf', batchDate: '8/2/2026 · Lot IWR-2607-5AMINO50' },
     ],
@@ -52,10 +53,11 @@ export const coaBySlug = {
     ],
   },
   'bpc-157-tb500-10mg': {
-    coaFile: '/coa-pdf/bpc-157-tb500-10mg-2026-09-13.pdf',
-    batchDate: '9/13/2026 · Lot IWR-090926BPTB',
+    coaFile: '/coa-pdf/bpc-157-tb500-10mg-2026-10-09.pdf',
+    batchDate: '10/9/2026 · Lot IWR-1010-BPTB2',
     productName: 'BPC-157 / TB500',
     batches: [
+      { coaFile: '/coa-pdf/bpc-157-tb500-10mg-2026-10-09.pdf', batchDate: '10/9/2026 · Lot IWR-1010-BPTB2' },
       { coaFile: '/coa-pdf/bpc-157-tb500-10mg-2026-09-13.pdf', batchDate: '9/13/2026 · Lot IWR-090926BPTB' },
       { coaFile: '/coa-pdf/bpc-157-tb500-10mg-8833606.pdf', batchDate: '8/2/2026' },
       { coaFile: '/coa-pdf/bpc-157-tb500-10mg.pdf', batchDate: '02/22/2026' },
@@ -89,6 +91,11 @@ export const coaBySlug = {
     coaFile: '/coa-pdf/dsip-10mg-4349569.pdf',
     batchDate: '8/2/2026 · Lot IWR-2607-DSIP10L',
     productName: 'DSIP',
+  },
+  'eloralintide': {
+    coaFile: '/coa-pdf/eloralintide-2026-10-09.pdf',
+    batchDate: '10/9/2026 · Lot IWR-1010-ELOR',
+    productName: 'Eloralintide',
   },
   'epitalon-10mg': {
     coaFile: '/coa-pdf/epitalon-10mg.pdf',
@@ -139,6 +146,11 @@ export const coaBySlug = {
       { coaFile: '/coa-pdf/ipa.pdf', batchDate: '2/22/2026' },
     ],
   },
+  'iron-regen': {
+    coaFile: '/coa-pdf/iron-regen-2026-10-09.pdf',
+    batchDate: '10/9/2026 · Lot IWR-1010-BBC',
+    productName: 'Iron Regen',
+  },
   'iwr-h2o': {
     coaFile: '/coa-pdf/iwr-h2o.pdf',
     batchDate: '8/2/2026 · Lot IWR-2607-H2OL',
@@ -164,10 +176,13 @@ export const coaBySlug = {
     ],
   },
   'kpv': {
-    coaFile: '/coa-pdf/kpv-2026-09-13-20mg.pdf',
-    batchDate: '9/13/2026 · 20mg · Lot IWR-090926KPV3',
+    coaFile: '/coa-pdf/kpv-2026-10-09-30mg.pdf',
+    batchDate: '10/9/2026 · 30mg · Lot IWR-1010-KPV3',
     productName: 'KPV',
     batches: [
+      { coaFile: '/coa-pdf/kpv-2026-10-09-30mg.pdf', batchDate: '10/9/2026 · 30mg · Lot IWR-1010-KPV3' },
+      { coaFile: '/coa-pdf/kpv-2026-10-09-20mg.pdf', batchDate: '10/9/2026 · 20mg · Lot IWR-1010-KPV2' },
+      { coaFile: '/coa-pdf/kpv-2026-10-09-10mg.pdf', batchDate: '10/9/2026 · 10mg · Lot IWR-1010-KPV1' },
       { coaFile: '/coa-pdf/kpv-2026-09-13-20mg.pdf', batchDate: '9/13/2026 · 20mg · Lot IWR-090926KPV3' },
       { coaFile: '/coa-pdf/kpv-2026-09-13-10mg-b.pdf', batchDate: '9/13/2026 · 10mg · Lot IWR-090926KPV2' },
       { coaFile: '/coa-pdf/kpv-2026-09-13-10mg-a.pdf', batchDate: '9/13/2026 · 10mg · Lot IWR-090926KPV1' },
@@ -250,15 +265,20 @@ export const coaBySlug = {
     productName: 'Pink Glutathione',
   },
   'pt-141': {
-    coaFile: '/coa-pdf/pt-141.pdf',
-    batchDate: '8/2/2026 · Lot IWR-2607-PT14110L',
+    coaFile: '/coa-pdf/pt-141-2026-10-09.pdf',
+    batchDate: '10/9/2026 · Lot IWR-1010-PT141',
     productName: 'PT-141',
+    batches: [
+      { coaFile: '/coa-pdf/pt-141-2026-10-09.pdf', batchDate: '10/9/2026 · Lot IWR-1010-PT141' },
+      { coaFile: '/coa-pdf/pt-141.pdf', batchDate: '8/2/2026 · Lot IWR-2607-PT14110L' },
+    ],
   },
   'rt-3': {
-    coaFile: '/coa-pdf/rt-3-2026-09-13-60mg.pdf',
-    batchDate: '9/13/2026 · 60mg · Lot IWR-090926RT2',
+    coaFile: '/coa-pdf/rt-3-2026-10-09-30mg.pdf',
+    batchDate: '10/9/2026 · 30mg · Lot IWR-1010-RT33',
     productName: 'RT-3',
     batches: [
+      { coaFile: '/coa-pdf/rt-3-2026-10-09-30mg.pdf', batchDate: '10/9/2026 · 30mg · Lot IWR-1010-RT33' },
       { coaFile: '/coa-pdf/rt-3-2026-09-13-60mg.pdf', batchDate: '9/13/2026 · 60mg · Lot IWR-090926RT2' },
       { coaFile: '/coa-pdf/rt-3-2026-09-13-20mg.pdf', batchDate: '9/13/2026 · 20mg · Lot IWR-090926RT1' },
       { coaFile: '/coa-pdf/rt-3-2026-08-28-30mg.pdf', batchDate: '8/28/2026 · 30mg · Lot IWR-082526RT30' },
@@ -296,10 +316,11 @@ export const coaBySlug = {
     productName: 'SNAP-8',
   },
   'ss-31': {
-    coaFile: '/coa-pdf/ss-31-2026-09-13.pdf',
-    batchDate: '9/13/2026 · Lot IWR-090926SS',
+    coaFile: '/coa-pdf/ss-31-2026-10-09.pdf',
+    batchDate: '10/9/2026 · Lot IWR-1010-SS31',
     productName: 'SS-31',
     batches: [
+      { coaFile: '/coa-pdf/ss-31-2026-10-09.pdf', batchDate: '10/9/2026 · Lot IWR-1010-SS31' },
       { coaFile: '/coa-pdf/ss-31-2026-09-13.pdf', batchDate: '9/13/2026 · Lot IWR-090926SS' },
       { coaFile: '/coa-pdf/ss-31-2026-08-28.pdf', batchDate: '8/28/2026 · Lot IWR-082526SS' },
       { coaFile: '/coa-pdf/ss-31-2026-08-13.pdf', batchDate: '8/13/2026 · Lot IWR-081026SS' },
@@ -317,9 +338,13 @@ export const coaBySlug = {
     ],
   },
   'tesamorelin': {
-    coaFile: '/coa-pdf/tesamorelin.pdf',
-    batchDate: '8/2/2026 · Lot IWR-2607-TSM10L',
+    coaFile: '/coa-pdf/tesamorelin-2026-10-09.pdf',
+    batchDate: '10/9/2026 · Lot IWR-1010-TSM',
     productName: 'Tesamorelin',
+    batches: [
+      { coaFile: '/coa-pdf/tesamorelin-2026-10-09.pdf', batchDate: '10/9/2026 · Lot IWR-1010-TSM' },
+      { coaFile: '/coa-pdf/tesamorelin.pdf', batchDate: '8/2/2026 · Lot IWR-2607-TSM10L' },
+    ],
   },
   'tesamorelin-ipamorelin-5-5': {
     coaFile: '/coa-pdf/tesamorelin-ipamorelin-5-5.pdf',
@@ -337,10 +362,11 @@ export const coaBySlug = {
     productName: 'Thymalin',
   },
   'thymosin-alpha-1': {
-    coaFile: '/coa-pdf/thymosin-alpha-1-batch0063.pdf',
-    batchDate: '7/24/2026 · BATCH-0063',
+    coaFile: '/coa-pdf/thymosin-alpha-1-2026-10-09.pdf',
+    batchDate: '10/9/2026 · Lot IWR-1010-TA1',
     productName: 'Thymosin Alpha 1',
     batches: [
+      { coaFile: '/coa-pdf/thymosin-alpha-1-2026-10-09.pdf', batchDate: '10/9/2026 · Lot IWR-1010-TA1' },
       { coaFile: '/coa-pdf/thymosin-alpha-1-batch0063.pdf', batchDate: '7/24/2026 · BATCH-0063' },
       { coaFile: '/coa-pdf/thymosin-alpha-1.pdf', batchDate: '5/6/2026' },
     ],
@@ -351,10 +377,12 @@ export const coaBySlug = {
     productName: 'Thymosin Alpha-1 10mg',
   },
   'trz-2': {
-    coaFile: '/coa-pdf/trz-2-2026-09-13-60mg.pdf',
-    batchDate: '9/13/2026 · 60mg · Lot IWR-090926TRZ2',
+    coaFile: '/coa-pdf/trz-2-2026-10-09-30mg.pdf',
+    batchDate: '10/9/2026 · 30mg · Lot IWR-1010-TRZ3',
     productName: 'TRZ-2',
     batches: [
+      { coaFile: '/coa-pdf/trz-2-2026-10-09-30mg.pdf', batchDate: '10/9/2026 · 30mg · Lot IWR-1010-TRZ3' },
+      { coaFile: '/coa-pdf/trz-2-2026-10-09-10mg.pdf', batchDate: '10/9/2026 · 10mg · Lot IWR-1010-TRZ1' },
       { coaFile: '/coa-pdf/trz-2-2026-09-13-60mg.pdf', batchDate: '9/13/2026 · 60mg · Lot IWR-090926TRZ2' },
       { coaFile: '/coa-pdf/trz-2-2026-09-13-30mg.pdf', batchDate: '9/13/2026 · 30mg · Lot IWR-090926TRZ1' },
       { coaFile: '/coa-pdf/trz-2-2026-08-13.pdf', batchDate: '8/13/2026 · Lot IWR-081026TRZ' },
