@@ -80,7 +80,8 @@ const securityHeaders = [
 
 const nextConfig = {
   images: {
-    domains: ["bhidasowgm.onrocket.site"],
+    // Backend moved off Rocket to api.ironwithin.io (Vultr) — product image URLs now use it.
+    domains: ["api.ironwithin.io", "bhidasowgm.onrocket.site"],
   },
   async headers() {
     return [
