@@ -9,6 +9,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useQuery } from '@apollo/client';
 import { GET_PRODUCT } from '@/lib/queries/products';
 import { getCoa } from '@/data/coas';
+import { getSpin } from '@/data/spins';
 import { useCart } from '@/context/CartContext';
 import GuaranteeBadge from '@/components/GuaranteeBadge';
 import SaleCountdown from '@/components/SaleCountdown';
@@ -16,7 +17,7 @@ import {
   FlaskConical, ShoppingCart, Heart, ChevronRight,
   BadgeCheck, Minus, Plus,
   Loader2, CheckCircle2, AlertCircle, Info, Package,
-  FileText, Download, BookOpen, ArrowRight, ChevronLeft,
+  FileText, Download, BookOpen, ArrowRight, ChevronLeft, RotateCw, Image as ImageIcon,
 } from 'lucide-react';
 
 const galleryArrow = {
@@ -44,6 +45,7 @@ export default function ProductPage() {
   const [activeTab, setActiveTab] = useState('description');
   const [showAllBatches, setShowAllBatches] = useState(false);
   const [imgIndex, setImgIndex] = useState(0);
+  const [showSpin, setShowSpin] = useState(false);   // 360° turntable video in place of the photo
   const [cartError, setCartError] = useState('');
   // Restock waitlist, shown only when the picked dose is sold out AND cannot be
   // backordered — if it can be backordered the customer should buy, not wait.
@@ -223,6 +225,9 @@ export default function ProductPage() {
   const variationImage = resolvedVariation?.image?.sourceUrl || null;
   const activeImage =
     variationImage || images[Math.min(imgIndex, Math.max(images.length - 1, 0))] || images[0];
+  // 360° spin of the selected dose's vial (src/data/spins.js); null hides the toggle.
+  const spinSrc = isMerch ? null : getSpin(slug, hasDoses ? effectiveDose : null);
+  const spinOn = showSpin && !!spinSrc;
 
   // Merch is never discounted, so no volume tier applies to it.
   const volPct = isMerch ? 0 : (qty >= 3 ? 0.05 : qty >= 2 ? 0.025 : 0);
@@ -366,28 +371,57 @@ export default function ProductPage() {
                   {/* Click the image itself to advance. The old thumbnail strip had a
                       pointer cursor but NO click handler at all, and the main image was
                       hardcoded to images[0] — it promised interaction and did nothing. */}
-                  <img
-                    src={activeImage}
-                    alt={product.image?.altText || product.name}
-                    onClick={() => images.length > 1 && setImgIndex((i) => (i + 1) % images.length)}
-                    style={{
-                      maxHeight: '280px', objectFit: 'contain', position: 'relative', zIndex: 1,
-                      padding: '16px', cursor: images.length > 1 ? 'pointer' : 'default',
-                    }}
-                  />
+                  {spinOn ? (
+                    /* The spin is rendered on white, so it sits in its own white panel rather
+                       than pretending to be transparent on the dark card. */
+                    <video
+                      key={spinSrc} src={spinSrc} autoPlay muted loop playsInline
+                      aria-label={`${product.name} rotating 360 degrees`}
+                      style={{
+                        height: '280px', width: 'auto', margin: '16px', position: 'relative', zIndex: 1,
+                        borderRadius: '14px', background: '#fff', objectFit: 'contain',
+                      }}
+                    />
+                  ) : (
+                    <img
+                      src={activeImage}
+                      alt={product.image?.altText || product.name}
+                      onClick={() => images.length > 1 && setImgIndex((i) => (i + 1) % images.length)}
+                      style={{
+                        maxHeight: '280px', objectFit: 'contain', position: 'relative', zIndex: 1,
+                        padding: '16px', cursor: images.length > 1 ? 'pointer' : 'default',
+                      }}
+                    />
+                  )}
+
+                  {spinSrc && (
+                    <button
+                      type="button" onClick={() => setShowSpin((v) => !v)}
+                      aria-pressed={spinOn}
+                      style={{
+                        position: 'absolute', right: 12, bottom: 12, zIndex: 2,
+                        display: 'flex', alignItems: 'center', gap: 6, padding: '6px 11px',
+                        borderRadius: 999, cursor: 'pointer', fontSize: '0.78rem', fontWeight: 600,
+                        background: 'rgba(10,17,25,0.72)', border: '1px solid var(--glass-border)',
+                        color: 'var(--text-light)', backdropFilter: 'blur(6px)',
+                      }}
+                    >
+                      {spinOn ? <><ImageIcon size={14} /> Photo</> : <><RotateCw size={14} /> 360° view</>}
+                    </button>
+                  )}
 
                   {images.length > 1 && (
                     <>
                       <button
                         type="button" aria-label="Previous image"
-                        onClick={() => setImgIndex((i) => (i - 1 + images.length) % images.length)}
+                        onClick={() => { setShowSpin(false); setImgIndex((i) => (i - 1 + images.length) % images.length); }}
                         style={{ ...galleryArrow, left: 10 }}
                       >
                         <ChevronLeft size={18} />
                       </button>
                       <button
                         type="button" aria-label="Next image"
-                        onClick={() => setImgIndex((i) => (i + 1) % images.length)}
+                        onClick={() => { setShowSpin(false); setImgIndex((i) => (i + 1) % images.length); }}
                         style={{ ...galleryArrow, right: 10 }}
                       >
                         <ChevronRight size={18} />
@@ -407,7 +441,7 @@ export default function ProductPage() {
                 {images.map((_, i) => (
                   <button
                     key={i} type="button" aria-label={`Image ${i + 1}`}
-                    onClick={() => setImgIndex(i)}
+                    onClick={() => { setShowSpin(false); setImgIndex(i); }}
                     style={{
                       width: images[i] === activeImage ? 22 : 7, height: 7, borderRadius: 999,
                       border: 'none', padding: 0, cursor: 'pointer', transition: 'all .2s ease',
