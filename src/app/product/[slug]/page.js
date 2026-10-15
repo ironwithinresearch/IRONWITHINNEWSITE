@@ -226,7 +226,9 @@ export default function ProductPage() {
   const activeImage =
     variationImage || images[Math.min(imgIndex, Math.max(images.length - 1, 0))] || images[0];
   // 360° spin of the selected dose's vial (src/data/spins.js); null hides the toggle.
-  const spinSrc = isMerch ? null : getSpin(slug, hasDoses ? effectiveDose : null);
+  // Liquids (10ml / 30ml) take the attribute-picker path, so read their size off the variation.
+  const spinDose = hasDoses ? effectiveDose : (resolvedVariation?.attributes?.nodes?.[0]?.value ?? null);
+  const spinSrc = getSpin(slug, spinDose);
   const spinOn = showSpin && !!spinSrc;
 
   // Merch is never discounted, so no volume tier applies to it.
@@ -358,28 +360,29 @@ export default function ProductPage() {
           {/* ── Left: Images ── */}
           <div>
             <div style={{
-              background: 'linear-gradient(135deg, var(--bg-elevated), var(--card-elevated))',
+              /* The spin videos are rendered on white, so the whole box turns white while one
+                 plays and the video edge disappears instead of sitting in a panel. */
+              background: spinOn ? '#fff' : 'linear-gradient(135deg, var(--bg-elevated), var(--card-elevated))',
+              transition: 'background .25s ease',
               border: '1px solid var(--glass-border)',
               borderRadius: '20px',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               minHeight: '320px', marginBottom: '12px', overflow: 'hidden',
               position: 'relative',
             }}>
-              <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(0,207,255,0.06) 0%, transparent 65%)', pointerEvents: 'none' }} />
+              {!spinOn && <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(0,207,255,0.06) 0%, transparent 65%)', pointerEvents: 'none' }} />}
               {images.length ? (
                 <>
                   {/* Click the image itself to advance. The old thumbnail strip had a
                       pointer cursor but NO click handler at all, and the main image was
                       hardcoded to images[0] — it promised interaction and did nothing. */}
                   {spinOn ? (
-                    /* The spin is rendered on white, so it sits in its own white panel rather
-                       than pretending to be transparent on the dark card. */
                     <video
                       key={spinSrc} src={spinSrc} autoPlay muted loop playsInline
                       aria-label={`${product.name} rotating 360 degrees`}
                       style={{
                         height: '280px', width: 'auto', margin: '16px', position: 'relative', zIndex: 1,
-                        borderRadius: '14px', background: '#fff', objectFit: 'contain',
+                        background: '#fff', objectFit: 'contain',
                       }}
                     />
                   ) : (

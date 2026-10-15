@@ -219,6 +219,7 @@ export function getSpin(slug, dose) {
   // Dose values can arrive as the term name ("5mg + 5mg") or its slug ("5mg-5mg").
   const key = (d) => String(d ?? '').toLowerCase().replace(/[^a-z0-9.]/g, '');
   const hit = Object.keys(p).find((d) => key(d) === key(dose));
-  const label = hit !== undefined ? p[hit] : p[''] ?? (Object.keys(p).length === 1 ? Object.values(p)[0] : null);
+  // No dose (simple product) -> its single entry; a dose we have no render for -> no spin.
+  const label = hit !== undefined ? p[hit] : dose == null ? p[''] ?? Object.values(p)[0] : null;
   return label ? `/spins/${label}.mp4` : null;
 }
