@@ -112,6 +112,9 @@ const SPINS = {
   "kpv-nasal": {
     "": "kpv-nasal-10mg"
   },
+  "l-glutathione": {
+    "1500mg": "l-glutathione-1500mg"
+  },
   "lemon-bottle": {
     "10ml": "lemon-bottle-10ml"
   },
