@@ -24,6 +24,7 @@ import { getRewardsRedeemPts, setRewardsRedeemPts, fetchRewards } from '../../li
 import PaymentMethods from '../../components/PaymentMethods';
 import PeptidesPayContainer from '../../components/PeptidesPayContainer';
 import DispatchNotice from '../../components/DispatchNotice';
+import { isPoBox, PO_BOX_MESSAGE } from '../../lib/poBox';
 import {
   ShieldCheck, CreditCard, Truck, ChevronRight,
   Lock, CheckCircle2, Package, ArrowRight,
@@ -680,6 +681,10 @@ export default function CheckoutPage() {
     if (!methodChosen) return;                 // nothing is pre-selected; the buyer must pick
     payMethodRef.current = effectiveMethod;
     const billingInfo = billing.sameAsShipping ? shipping : billing;
+    if (isPoBox(shipping.address, billingInfo.address)) {
+      setCheckoutError({ title: 'PO Boxes can’t be shipped to', body: PO_BOX_MESSAGE });
+      return;
+    }
     // Subscribe & Save items are tagged on the cart lines (extraData iw_subscribe),
     // which flow to the order line items automatically — nothing to pass here.
     const input = buildCheckoutInput({
@@ -927,6 +932,9 @@ export default function CheckoutPage() {
                   <Field label="Phone" autoComplete="tel" inputMode="tel" value={shipping.phone} onChange={v => setShipping(s => ({ ...s, phone: v }))} placeholder="+1 (555) 000-0000" />
                   <div style={{ height: 14 }} />
                   <Field label="Street Address *" autoComplete="address-line1" value={shipping.address} onChange={v => setShipping(s => ({ ...s, address: v }))} placeholder="123 Research Blvd" required />
+                  {isPoBox(shipping.address) && (
+                    <div role="alert" style={{ marginTop: 6, fontSize: '0.8rem', color: '#f87171' }}>{PO_BOX_MESSAGE}</div>
+                  )}
                   <div style={{ height: 14 }} />
                   <SelectField label="Country *" autoComplete="country" value={shipping.country} onChange={v => setShipping(s => ({ ...s, country: v }))} options={COUNTRIES} required />
                   <div style={{ height: 14 }} />
