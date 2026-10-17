@@ -123,7 +123,7 @@ export default function GiftPromoPopup() {
             </div>
             <div style={{ color: 'rgba(255,255,255,0.68)', fontSize: '0.86rem', marginTop: 6, lineHeight: 1.5 }}>
               No code needed — and your creator code still stacks on top.
-              {ff && ff.name ? ' Plus 3× reward points, and $50 store credit when you spend $250+.' : ''}
+              {ff && ff.name ? ' Plus $50 store credit when you spend $250+.' : ''}
             </div>
           </div>
           )}

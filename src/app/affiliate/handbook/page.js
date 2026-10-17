@@ -133,9 +133,9 @@ export default function AffiliateHandbookPage() {
         <p>Iron Within is a fast, modern store carrying a full catalog of research peptides and related compounds. Worth knowing so you can speak to them:</p>
         <Bullets items={[
           <><B>Tested &amp; transparent</B> — every order ships with a Certificate of Analysis. Always lead here.</>,
-          <><B>Account required (21+)</B> — a quick account unlocks rewards, credits, and reorders.</>,
+          <><B>Account required (21+)</B> — a quick account unlocks store credit and easy reorders.</>,
           <><B>Fast, tracked shipping</B> — US, Canada &amp; international, with real tracking on every order.</>,
-          <><B>Built-in loyalty</B> — points, store credit &amp; referrals keep customers coming back (see §07).</>,
+          <><B>Built-in loyalty</B> — store credit &amp; referrals keep customers coming back (see §07).</>,
         ]} />
         <p>Know a handful of hero products well — their COAs, research category, and price — rather than pitching the whole catalog. Depth converts better than breadth.</p>
       </Section>
@@ -189,7 +189,7 @@ export default function AffiliateHandbookPage() {
         <p style={{ color: C.ink, fontWeight: 700, marginTop: 18 }}>Make it easy to buy</p>
         <Bullets items={[
           <><B>Every post has your code.</B> Cut the friction between interested and checkout.</>,
-          <><B>Stack the offers</B> (see §07) — the referral credit, rewards, store credit. More reasons to buy.</>,
+          <><B>Stack the offers</B> (see §07) — the referral credit and store credit. More reasons to buy.</>,
           <><B>Pin and repeat.</B> New followers should hit your offer within seconds.</>,
         ]} />
         <Callout tone="info" label="The math">
@@ -234,24 +234,15 @@ Thanks!`}
         </Callout>
       </Section>
 
-      <Section n="07" icon={Gift} kicker="Loyalty engine" title="The Rewards program">
-        <p>Iron Within has a full loyalty stack, and every piece is a reason for a customer to buy through <em>you</em> and come back. Know these cold — they&apos;re your closing arguments.</p>
-        <p style={{ color: C.ink, fontWeight: 700, marginTop: 14 }}>IWR Rewards — points on every order</p>
-        <Bullets items={[
-          <>Customers earn <B>1 point per $1</B> spent.</>,
-          <><B>250 bonus points</B> just for creating an account.</>,
-          <><B>500 points = $5 off</B>, redeemed right in the cart.</>,
-          <>Managed at <C2>ironwithin.io/rewards</C2>.</>,
-        ]} />
-        <p style={{ color: C.ink, fontWeight: 700, marginTop: 14 }}>VIP tiers — the more they spend, the faster they earn</p>
-        <p style={{ margin: '6px 0' }}>As customers climb, their multiplier grows (up to 2× earning): <B>Iron → Steel → Titanium → Black Label</B>.</p>
+      <Section n="07" icon={Gift} kicker="Loyalty engine" title="Reasons to come back">
+        <p>Every piece of this is a reason for a customer to buy through <em>you</em> and come back. Know these cold — they&apos;re your closing arguments.</p>
         <p style={{ color: C.ink, fontWeight: 700, marginTop: 14 }}>More offers to stack</p>
         <Bullets items={[
-
+          <><B>Refer a friend</B> — the friend gets $25 off their first order, the customer who referred them gets $25 in store credit.</>,
           <><B>Store credit &amp; gift cards</B> — spend like cash and auto-apply at checkout.</>,
         ]} />
         <Callout tone="tip" label="Why this matters to you">
-          Every one of these makes a customer <B>buy more and buy again</B> — and repeat orders keep counting toward your monthly volume and commission tier. Point customers at rewards early and often.
+          Every one of these makes a customer <B>buy more and buy again</B> — and repeat orders keep counting toward your monthly volume and commission tier. Point customers at these early and often.
         </Callout>
       </Section>
 

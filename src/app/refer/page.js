@@ -34,7 +34,7 @@ export default function ReferPage() {
           <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(2rem,5vw,3rem)', fontWeight: 900, color: '#fff', margin: '0 0 12px' }}>Earn $25 Per Referral</h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', maxWidth: 540, margin: '0 auto' }}>
             Share your link. When a fellow researcher orders for the first time, you earn{' '}
-            <strong style={{ color: '#fff' }}>2,500 reward points ($25)</strong>.
+            <strong style={{ color: '#fff' }}>$25 in store credit</strong>.
           </p>
         </div>
 
@@ -60,7 +60,7 @@ export default function ReferPage() {
             </div>
             <div style={{ display: 'flex', gap: 24, marginTop: 22, flexWrap: 'wrap' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}><Users size={18} color="var(--primary-blue)" /><span style={{ color: 'var(--text-secondary)' }}><strong style={{ color: '#fff', fontSize: '1.1rem' }}>{data.referrals || 0}</strong> friends referred</span></div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}><Gift size={18} color="#34d399" /><span style={{ color: 'var(--text-secondary)' }}><strong style={{ color: '#34d399', fontSize: '1.1rem' }}>{(data.points_earned || 0).toLocaleString()}</strong> points earned</span></div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}><Gift size={18} color="#34d399" /><span style={{ color: 'var(--text-secondary)' }}><strong style={{ color: '#34d399', fontSize: '1.1rem' }}>${(data.credit_earned ?? (data.points_earned || 0) / 100).toLocaleString()}</strong> credit earned</span></div>
             </div>
           </div>
         ) : (
@@ -72,7 +72,7 @@ export default function ReferPage() {
           {[
             { n: '1', t: 'Share your link', d: 'Send your unique link to fellow researchers.' },
             { n: '2', t: 'They place an order', d: 'Your link tags their first order to you automatically.' },
-            { n: '3', t: 'You earn $25', d: 'You get 2,500 reward points ($25) once they order.' },
+            { n: '3', t: 'You earn $25', d: 'You get $25 in store credit once they order.' },
           ].map((s) => (
             <div key={s.n} style={card}>
               <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--gradient-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, marginBottom: 12 }}>{s.n}</div>

@@ -8,8 +8,6 @@ import B2SUnlockNudge from '@/components/B2SUnlockNudge';
 import { useCart } from '@/context/CartContext';
 import { decodePriceHtml } from '@/lib/utils';
 import FreeShippingBar from '@/components/FreeShippingBar';
-import CartRewards from '@/components/CartRewards';
-import { getRewardsRedeemPts, setRewardsRedeemPts } from '@/lib/rewards';
 import CartStoreCredit from '@/components/CartStoreCredit';
 import SpendLadder from '@/components/SpendLadder';
 import { GIFT_MIN, GIFT_BIG_MIN } from '@/lib/p2p';
@@ -56,12 +54,8 @@ export default function CartPage() {
   const [couponCode, setCouponCode] = useState('');
   const [couponError, setCouponError] = useState('');
 
-  // Reward points the customer chooses to spend on this order (500 pts = $5).
-  // Persisted so the choice carries to checkout, where it's applied to the total.
-  const [rewardsPts, setRewardsPts] = useState(0);
-  useEffect(() => { setRewardsPts(getRewardsRedeemPts()); }, []);
-  const handleRewardsChange = (pts) => { setRewardsPts(pts); setRewardsRedeemPts(pts); };
-  const rewardsDollars = (rewardsPts || 0) / 100; // $0.01 / pt
+  const rewardsPts = 0; // IWR Rewards retired 2026-10-17
+  const rewardsDollars = 0;
 
   const subtotalNum = parseFloat(cartSubtotal?.replace(/[^0-9.]/g, '') || '0');
 
@@ -103,7 +97,7 @@ export default function CartPage() {
   // REFER25 auto-apply REMOVED (12 Sep 2026). The friend-side $25 coupon is retired and the
   // WooCommerce coupon is deleted, so this effect would have fired applyCoupon() at a code the
   // server can no longer resolve on every cart render — a silent failed request per referred
-  // visitor. The referrer-side reward is unaffected: iw-referral.php credits 2,500 points on a
+  // visitor. The referrer-side reward is unaffected: iw-referral.php credits $25 store credit on a
   // referred friend's first paid order and does not depend on this coupon.
 
   // Subscribe & Save: read the cadence tag straight off each cart item's extraData.
@@ -392,7 +386,6 @@ export default function CartPage() {
               {/* Same discount-net figure as the shipping bar — the ladder is judged
                   on exactly what iw_ladder_qualifying_total() measures server-side. */}
               <SpendLadder subtotal={freeShipQualifyingNum} />
-              <CartRewards subtotal={subtotalNum} value={rewardsPts} onChange={handleRewardsChange} />
               <CartStoreCredit cart={cart} />
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>

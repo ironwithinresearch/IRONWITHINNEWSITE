@@ -99,7 +99,7 @@ export default function AffiliateResourcesPage() {
             <div style={{ display: 'inline-block', fontSize: '0.66rem', fontWeight: 800, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#a78bfa', background: 'rgba(124,58,237,0.14)', padding: '3px 9px', borderRadius: 999, marginBottom: 8 }}>Start here</div>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', fontWeight: 800, color: '#fff', margin: '0 0 6px' }}>The Affiliate Handbook</h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.55, margin: 0 }}>
-              The rules, commission tiers, how to handle a customer problem, the rewards program, and how to grow your %. <strong style={{ color: 'var(--text-light)' }}>Read it first</strong> — printable / save-as-PDF inside.
+              The rules, commission tiers, how to handle a customer problem, the loyalty offers, and how to grow your %. <strong style={{ color: 'var(--text-light)' }}>Read it first</strong> — printable / save-as-PDF inside.
             </p>
           </div>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 26px', background: 'var(--gradient-secondary, linear-gradient(135deg,var(--purple, #7C3AED),var(--pink, #EC4899)))', borderRadius: 11, color: '#fff', fontWeight: 800, fontSize: '0.95rem', whiteSpace: 'nowrap', boxShadow: '0 0 20px rgba(124,58,237,0.35)' }}>

@@ -101,7 +101,7 @@ export default function SiteGate() {
         }}>
           Our catalogue, pricing, and Certificates of Analysis are available to registered
           researchers. It takes about 30 seconds — and your account unlocks order tracking,
-          rewards points, and member pricing.
+          store credit, and member pricing.
         </p>
 
         {/* Age verification lives here now (and on the register form's 21+ checkbox) —

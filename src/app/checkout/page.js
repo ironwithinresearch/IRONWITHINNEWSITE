@@ -20,7 +20,6 @@ import { GET_PRODUCTS } from '../../lib/queries/products';
 import { creditEligibility } from '../../lib/creditEligibility';
 import { ladderQualifying } from '../../lib/p2p';
 import SpendLadder from '../../components/SpendLadder';
-import { getRewardsRedeemPts, setRewardsRedeemPts, fetchRewards } from '../../lib/rewards';
 import PaymentMethods from '../../components/PaymentMethods';
 import PeptidesPayContainer from '../../components/PeptidesPayContainer';
 import DispatchNotice from '../../components/DispatchNotice';
@@ -327,16 +326,7 @@ export default function CheckoutPage() {
     return () => { on = false; };
   }, []);
 
-  // Reward points the customer chose to spend (set on the cart). Capped at checkout
-  // against their live balance + the amount actually due, then applied server-side.
-  const [rewardsBalPts, setRewardsBalPts] = useState(0);
-  const [rewardsChosenPts, setRewardsChosenPts] = useState(0);
-  useEffect(() => {
-    setRewardsChosenPts(getRewardsRedeemPts());
-    let on = true;
-    fetchRewards().then((d) => { if (on && d) setRewardsBalPts(parseInt(d.points, 10) || 0); });
-    return () => { on = false; };
-  }, []);
+  // (IWR Rewards retired 2026-10-17 — nothing to spend.)
 
   // Read once on mount, not during render — this is localStorage, and reading it on the
   // server pass is what has caused hydration mismatches on this page before.
@@ -524,8 +514,8 @@ export default function CheckoutPage() {
 
   // Rewards: spend chosen points (500 pts = $5) off whatever is still due after store
   // credit, in $5 increments, capped at the live balance. Applied server-side as a fee.
-  const rewardsAppliedPts = Math.max(0, Math.min(rewardsChosenPts, rewardsBalPts, Math.floor(dueAfterCredit / 5) * 500));
-  const rewardsApplied = round2(rewardsAppliedPts / 100);
+  const rewardsAppliedPts = 0; // rewards retired 2026-10-17
+  const rewardsApplied = 0;
   const dueAfterAll = Math.max(0, round2(dueAfterCredit - rewardsApplied));
 
   // When a gift card / store credit / rewards fully cover the order, nothing is due —
@@ -576,7 +566,6 @@ export default function CheckoutPage() {
 
     if (REDIRECT_METHODS.has(method) && !routedToContainer) {
       if (result?.redirect) {
-        setRewardsRedeemPts(0); // order created — points already reserved on it
         window.location.href = result.redirect;
         return;
       }
@@ -627,7 +616,6 @@ export default function CheckoutPage() {
         // prepared — for an order nobody had paid for. The success screen now handles it.
         setPayOpenFailed(true);
       }
-      setRewardsRedeemPts(0);
       setOrderPlaced(true);
       refetchCart();
       return;
@@ -649,7 +637,6 @@ export default function CheckoutPage() {
         deadline: Date.now() + P2P_PAY_MINUTES * 60 * 1000,
       });
     }
-    setRewardsRedeemPts(0); // order created — points already reserved on it
     setOrderPlaced(true);
     refetchCart();
   };
@@ -830,11 +817,10 @@ export default function CheckoutPage() {
             <div style={{ textAlign: 'left', background: 'var(--bg-dark)', border: '1px solid rgba(0,207,255,0.25)', borderRadius: '14px', padding: '18px 20px', marginBottom: '26px' }}>
               <div style={{ fontWeight: 800, color: '#fff', fontSize: '1rem', marginBottom: '6px' }}>🎁 Earn $25 per referral</div>
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.87rem', lineHeight: 1.55, margin: '0 0 12px' }}>
-                You just earned <strong style={{ color: 'var(--text-light)' }}>IWR Rewards points</strong> on this order. Want more? Share your referral link — you earn <strong style={{ color: 'var(--text-light)' }}>2,500 points ($25)</strong> when a fellow researcher places their first order.
+                Share your referral link — you get <strong style={{ color: 'var(--text-light)' }}>$25 in store credit</strong> when a fellow researcher places their first order.
               </p>
               <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                 <Link href="/refer" style={{ padding: '9px 18px', background: 'var(--gradient-primary)', borderRadius: '9px', color: '#fff', fontWeight: 700, fontSize: '0.85rem', textDecoration: 'none' }}>Get your referral link</Link>
-                <Link href="/rewards" style={{ padding: '9px 18px', border: '1px solid var(--glass-border)', borderRadius: '9px', color: 'var(--text-light)', fontWeight: 600, fontSize: '0.85rem', textDecoration: 'none' }}>View your rewards</Link>
               </div>
             </div>
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -1043,7 +1029,7 @@ export default function CheckoutPage() {
                   ) : fullyCovered ? (
                     <div style={{ padding: '14px', borderRadius: '10px', background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.5)', fontFamily: 'var(--font-body)' }}>
                       <span style={{ display: 'block', fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-light)' }}>Paid in full 🎉</span>
-                      <span style={{ display: 'block', fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: 2 }}>Your {creditApplied > 0 ? 'store credit' : 'rewards'}{creditApplied > 0 && rewardsApplied > 0 ? ' + rewards' : ''} cover this order — nothing due. No card needed.</span>
+                      <span style={{ display: 'block', fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: 2 }}>Your store credit covers this order — nothing due. No card needed.</span>
                     </div>
                   ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>

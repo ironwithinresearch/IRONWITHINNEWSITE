@@ -68,8 +68,8 @@ const EXTRA = {
   sunday: {
     kind: 'loyalty',
     name: 'Loyalty Sunday',
-    headline: '3× points + $50 credit',
-    detail: 'Triple rewards points on every order, and spend $250 or more to get $50 in store credit for your next order.',
+    headline: 'Spend $250, get $50 credit',
+    detail: 'Spend $250 or more and get $50 in store credit for your next order.',
     tag: '3× pts',
   },
   14: {

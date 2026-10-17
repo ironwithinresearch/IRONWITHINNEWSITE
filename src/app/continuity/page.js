@@ -67,7 +67,6 @@ export default function ContinuityPage() {
     { Icon: Truck, t: 'Free U.S. shipping', d: 'Every shipment, the whole plan.' },
     { Icon: Lock, t: 'Locked-in price', d: 'Your price never changes for the term.' },
     { Icon: PackageCheck, t: 'Fresh every month', d: 'We ship one vial at a time — never stockpiled.' },
-    { Icon: Sparkles, t: 'Up to 600 bonus points', d: 'Stacked IWR Rewards on top of your plan.' },
     { Icon: ShieldCheck, t: 'One charge, no card stored', d: 'Prepaid — no recurring billing, ever.' },
   ];
 
@@ -83,7 +82,7 @@ export default function ContinuityPage() {
         </h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '1.02rem', lineHeight: 1.6, maxWidth: 620, margin: '0 auto' }}>
           Prepay 3 or 6 months, pay once, and we ship a fresh vial every month. Get a month free,
-          free shipping, and bonus points — <strong style={{ color: 'var(--text-light)' }}>no recurring charges and no card kept on file.</strong>
+          and free shipping — <strong style={{ color: 'var(--text-light)' }}>no recurring charges and no card kept on file.</strong>
         </p>
       </div>
 

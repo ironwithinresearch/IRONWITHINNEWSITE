@@ -55,11 +55,10 @@ function ThankYouContent() {
           <div style={{ textAlign: 'left', background: 'var(--bg-dark)', border: '1px solid rgba(0,207,255,0.25)', borderRadius: '14px', padding: '18px 20px', marginBottom: '26px' }}>
             <div style={{ fontWeight: 800, color: '#fff', fontSize: '1rem', marginBottom: '6px' }}>🎁 Earn $25 per referral</div>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.87rem', lineHeight: 1.55, margin: '0 0 12px' }}>
-              You just earned <strong style={{ color: 'var(--text-light)' }}>IWR Rewards points</strong> on this order. Want more? Share your referral link — you earn <strong style={{ color: 'var(--text-light)' }}>2,500 points ($25)</strong> when a fellow researcher places their first order.
+              Share your referral link — you get <strong style={{ color: 'var(--text-light)' }}>$25 in store credit</strong> when a fellow researcher places their first order.
             </p>
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
               <Link href="/refer" style={{ padding: '9px 18px', background: 'var(--gradient-primary)', borderRadius: '9px', color: '#fff', fontWeight: 700, fontSize: '0.85rem', textDecoration: 'none' }}>Get your referral link</Link>
-              <Link href="/rewards" style={{ padding: '9px 18px', border: '1px solid var(--glass-border)', borderRadius: '9px', color: 'var(--text-light)', fontWeight: 600, fontSize: '0.85rem', textDecoration: 'none' }}>View your rewards</Link>
             </div>
           </div>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>

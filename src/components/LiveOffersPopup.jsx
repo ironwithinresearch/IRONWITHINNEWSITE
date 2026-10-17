@@ -153,10 +153,6 @@ export default function LiveOffersPopup() {
             </Card>
           )}
 
-          <Card eyebrow="Always on" title="IWR Rewards">
-            Earn a point on every $1 and turn 500 points into $5 off. It applies itself.
-          </Card>
-
           <Link
             href="/shop"
             onClick={() => close(true)}
