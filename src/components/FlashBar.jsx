@@ -40,7 +40,7 @@ export default function FlashBar() {
   }, []);
 
   if (!data || !now || !Array.isArray(data.windows)) return null;
-  const w = data.windows.find((x) => new Date(x.end).getTime() > now);
+  const w = data.windows.find((x) => new Date(x.end).getTime() > now && x.percent !== 0);
   if (!w) return null;
   const start = new Date(w.start).getTime();
   const end = new Date(w.end).getTime();
@@ -49,9 +49,9 @@ export default function FlashBar() {
   // Wording comes from the backend's per-window fields (iw-flash.php /flash), so it follows the schedule.
   const mins = Math.round((end - start) / 60000);
   const stack = w.codes_stack ? ' + your code stacks' : '';
-  const offer = w.storewide
-    ? `WHOLE STORE ${w.storewide}% off${stack}`
-    : w.percent ? `${w.percent}% off ${w.items || ''} select items${stack}`.replace('  ', ' ') : `flash prices${stack}`;
+  // Windows with no picks (the store-wide ones) are not announced on the site at all (operator, 17 Oct).
+  if (!w.percent) return null;
+  const offer = `${w.percent}% off ${w.items || ''} select items${stack}`.replace('  ', ' ');
 
   return (
     <Link
