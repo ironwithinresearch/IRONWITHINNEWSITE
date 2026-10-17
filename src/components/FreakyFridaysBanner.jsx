@@ -59,12 +59,12 @@ export default function FreakyFridaysBanner() {
         margin: '0 0 28px',
         borderRadius: 18,
         overflow: 'hidden',
-        border: `1px solid ${live ? 'rgba(255,122,24,0.55)' : 'rgba(255,122,24,0.22)'}`,
+        border: `1px solid ${live ? 'rgba(0,207,255,0.55)' : 'rgba(0,207,255,0.22)'}`,
         background:
-          'radial-gradient(120% 140% at 12% 0%, #2A1405 0%, #140A04 45%, #0A0603 100%)',
+          'radial-gradient(120% 140% at 12% 0%, #0B1530 0%, #0A0F1F 45%, #060912 100%)',
         boxShadow: live
-          ? '0 0 40px rgba(255,106,0,0.22), inset 0 1px 0 rgba(255,176,32,0.18)'
-          : 'inset 0 1px 0 rgba(255,176,32,0.10)',
+          ? '0 0 40px rgba(124,58,237,0.22), inset 0 1px 0 rgba(0,207,255,0.18)'
+          : 'inset 0 1px 0 rgba(0,207,255,0.10)',
       }}
     >
       {/* Sooty vignette + a faint moon glow, pure CSS so there is no image to ship. */}
@@ -73,8 +73,8 @@ export default function FreakyFridaysBanner() {
         style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
           background:
-            'radial-gradient(60% 90% at 88% 10%, rgba(255,176,32,0.16), transparent 60%),' +
-            'radial-gradient(80% 60% at 50% 120%, rgba(180,18,27,0.22), transparent 70%)',
+            'radial-gradient(60% 90% at 88% 10%, rgba(0,207,255,0.16), transparent 60%),' +
+            'radial-gradient(80% 60% at 50% 120%, rgba(236,72,153,0.22), transparent 70%)',
         }}
       />
 
@@ -93,10 +93,9 @@ export default function FreakyFridaysBanner() {
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
               fontSize: '0.72rem', letterSpacing: '0.18em', textTransform: 'uppercase',
-              fontWeight: 800, color: '#FFB020', marginBottom: 10,
+              fontWeight: 800, color: '#00CFFF', marginBottom: 10,
             }}
           >
-            <span aria-hidden>🎃</span>
             {s.name ? (live ? 'Today only — live now' : 'Coming up next') : live ? `Week ${s.week} of ${FF_FRIDAY_COUNT} — live now` : `Week ${s.week} of ${FF_FRIDAY_COUNT}`}
           </div>
 
@@ -107,7 +106,7 @@ export default function FreakyFridaysBanner() {
               lineHeight: 1.02,
               letterSpacing: '-0.02em',
               fontWeight: 900,
-              background: 'linear-gradient(135deg,#FFD27A 0%,#FF7A18 48%,#B4121B 100%)',
+              background: 'linear-gradient(135deg,#67E8F9 0%,#7C3AED 48%,#EC4899 100%)',
               WebkitBackgroundClip: 'text',
               backgroundClip: 'text',
               color: 'transparent',
@@ -116,15 +115,15 @@ export default function FreakyFridaysBanner() {
             {s.name || 'FREAKY FRIDAYS'}
           </h2>
 
-          <p style={{ margin: '0 0 16px', color: '#E9DCCD', fontSize: 'clamp(0.95rem,1.6vw,1.08rem)', maxWidth: '46ch' }}>
+          <p style={{ margin: '0 0 16px', color: '#DCE6F5', fontSize: 'clamp(0.95rem,1.6vw,1.08rem)', maxWidth: '46ch' }}>
             {live ? (
               <>
-                {s.week && FF_GIFT[s.week] ? <><strong style={{ color: '#FFB020' }}>{FF_GIFT[s.week]}</strong>, plus </> : null}
+                {s.week && FF_GIFT[s.week] ? <><strong style={{ color: '#00CFFF' }}>{FF_GIFT[s.week]}</strong>, plus </> : null}
                 {FF_FLAT ? (
-                  <><strong style={{ color: '#FFB020' }}>{s.pct}% off {s.sitewide ? 'sitewide' : (s.blurb || 'select products')}</strong> — no
+                  <><strong style={{ color: '#00CFFF' }}>{s.pct}% off {s.sitewide ? 'sitewide' : (s.blurb || 'select products')}</strong> — no
                   code needed, and your creator code still stacks on top.</>
                 ) : (
-                  <>Up to <strong style={{ color: '#FFB020' }}>{s.pct}% off</strong> — no code
+                  <>Up to <strong style={{ color: '#00CFFF' }}>{s.pct}% off</strong> — no code
                   needed, and your creator code still stacks on top.</>
                 )} {s.when ? <>Runs {s.when}.</> : null}
               </>
@@ -133,7 +132,7 @@ export default function FreakyFridaysBanner() {
                 {s.ann
                   ? <>Anniversary Month — a new deal every day through Halloween, including Flash Saturdays and Loyalty Sundays.</>
                   : <>A new drop every Friday, running through Halloween — different products and a
-                different depth each week.</>} {s.when ? <>Next: <strong style={{ color: '#FFB020' }}>{s.when}</strong>.</> : null}
+                different depth each week.</>} {s.when ? <>Next: <strong style={{ color: '#00CFFF' }}>{s.when}</strong>.</> : null}
               </>
             )}
           </p>
@@ -145,10 +144,10 @@ export default function FreakyFridaysBanner() {
                 display: 'inline-flex', alignItems: 'center', gap: 8,
                 padding: '13px 26px', borderRadius: 999,
                 fontWeight: 800, fontSize: '0.98rem', textDecoration: 'none',
-                color: live ? '#170A02' : '#FFD9A8',
-                background: live ? 'linear-gradient(135deg,#FFB020,#FF6A00)' : 'transparent',
-                border: live ? 'none' : '1px solid rgba(255,122,24,0.5)',
-                boxShadow: live ? '0 8px 26px rgba(255,106,0,0.36)' : 'none',
+                color: live ? '#001018' : '#CDEFFF',
+                background: live ? 'linear-gradient(135deg,#00CFFF,#0EA5E9)' : 'transparent',
+                border: live ? 'none' : '1px solid rgba(0,207,255,0.5)',
+                boxShadow: live ? '0 8px 26px rgba(124,58,237,0.36)' : 'none',
               }}
             >
               {live ? 'Shop the drop' : 'Browse the shop'}
@@ -161,7 +160,7 @@ export default function FreakyFridaysBanner() {
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: 8, minHeight: 44,
                   padding: '11px 20px', borderRadius: 999, fontWeight: 800, fontSize: '0.95rem',
-                  textDecoration: 'none', color: '#FFD9A8', border: '1px solid rgba(255,122,24,0.5)',
+                  textDecoration: 'none', color: '#CDEFFF', border: '1px solid rgba(0,207,255,0.5)',
                 }}
               >
                 See all 31 days <span aria-hidden>→</span>
@@ -170,14 +169,14 @@ export default function FreakyFridaysBanner() {
 
             {s.label ? (
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                <span style={{ fontSize: '0.72rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#9C8A78' }}>
+                <span style={{ fontSize: '0.72rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8595AD' }}>
                   {s.kind === 'ends' ? 'Closes in' : 'Opens in'}
                 </span>
                 <span
                   style={{
                     fontVariantNumeric: 'tabular-nums', fontWeight: 800,
                     fontSize: 'clamp(1.05rem,2.4vw,1.4rem)',
-                    color: live ? '#FF7A18' : '#FFB020',
+                    color: live ? '#7C3AED' : '#00CFFF',
                   }}
                 >
                   {s.label}
@@ -187,18 +186,6 @@ export default function FreakyFridaysBanner() {
           </div>
         </div>
 
-        <div
-          aria-hidden
-          style={{
-            flex: '0 0 auto', fontSize: 'clamp(64px, 13vw, 132px)', lineHeight: 1,
-            filter: live
-              ? 'drop-shadow(0 0 26px rgba(255,106,0,0.55))'
-              : 'drop-shadow(0 0 14px rgba(255,106,0,0.22)) grayscale(0.25)',
-            opacity: live ? 1 : 0.85,
-          }}
-        >
-          🎃
-        </div>
       </div>
     </section>
   );

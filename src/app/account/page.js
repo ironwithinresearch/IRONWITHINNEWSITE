@@ -680,7 +680,7 @@ function SecurityPanel({ customer, forced, onChanged }) {
         <button onClick={handleChangePassword} disabled={saving} style={{
           display: 'inline-flex', alignItems: 'center', gap: '8px',
           padding: '12px 28px',
-          background: saving ? 'var(--glass-border)' : 'linear-gradient(135deg, #fbbf24, #f59e0b)',
+          background: saving ? 'var(--glass-border)' : 'var(--gradient-primary)',
           border: 'none', borderRadius: 'var(--radius-md)',
           color: '#fff', fontWeight: 700, fontSize: '0.88rem',
           cursor: saving ? 'not-allowed' : 'pointer',

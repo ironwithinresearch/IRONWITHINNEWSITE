@@ -15,9 +15,9 @@ function Deal({ eyebrow, title, body, href, cta, highlight }) {
     <Link href={href} style={{
       display: 'flex', flexDirection: 'column', gap: 8, padding: '22px 22px 20px', textDecoration: 'none',
       background: 'var(--card-dark)', borderRadius: 'var(--radius-lg)',
-      border: `1px solid ${highlight ? 'rgba(234,88,12,0.45)' : 'var(--glass-border)'}`,
+      border: `1px solid ${highlight ? 'rgba(124,58,237,0.45)' : 'var(--glass-border)'}`,
     }}>
-      <span style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: highlight ? '#ea580c' : 'var(--text-muted)' }}>{eyebrow}</span>
+      <span style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: highlight ? '#7c3aed' : 'var(--text-muted)' }}>{eyebrow}</span>
       <span style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-light)', fontFamily: 'var(--font-body)' }}>{title}</span>
       <span style={{ fontSize: '0.92rem', lineHeight: 1.55, color: 'var(--text-secondary)', flex: 1 }}>{body}</span>
       <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 6, fontSize: '0.88rem', fontWeight: 600, color: 'var(--text-light)' }}>{cta} <ArrowRight size={15} /></span>
