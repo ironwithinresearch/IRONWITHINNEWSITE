@@ -1,8 +1,8 @@
 export const metadata = {
   title: "Contact Us",
-  description: "Questions about our research peptides? Contact the Iron Within team and we will respond within 24 hours.",
+  description: "Questions about our research peptides? Contact the Iron Within team by email.",
   alternates: { canonical: "/contact" },
-  openGraph: { title: "Contact Us | Iron Within Research", description: "Questions about our research peptides? Contact the Iron Within team and we will respond within 24 hours.", url: "https://www.ironwithin.io/contact" },
+  openGraph: { title: "Contact Us | Iron Within Research", description: "Questions about our research peptides? Contact the Iron Within team by email.", url: "https://www.ironwithin.io/contact" },
 };
 
 export default function Layout({ children }) {

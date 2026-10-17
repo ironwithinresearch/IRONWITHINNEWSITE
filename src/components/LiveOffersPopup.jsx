@@ -17,6 +17,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { claimPopup } from '@/lib/popupBudget';
 import Link from 'next/link';
 import {
   GIFT_MIN, GIFT_FROM, GIFT_TO,
@@ -46,7 +47,7 @@ export default function LiveOffersPopup() {
     if (saved === 'done') return;
     if (saved && t0 - Number(saved) < SNOOZE_MS) return;
 
-    const t = setTimeout(() => setOpen(true), 6000);
+    const t = setTimeout(() => { if (claimPopup('offers')) setOpen(true); }, 6000);
     return () => clearTimeout(t);
   }, []);
 

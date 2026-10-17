@@ -1,4 +1,5 @@
 'use client';
+import ShipDaysNote from '@/components/ShipDaysNote';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -154,6 +155,7 @@ export default function FaqPage() {
               backgroundClip: 'text',
             }}>Questions</span>
           </h1>
+          <ShipDaysNote style={{ marginTop: 18 }} />
           <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', marginBottom: '28px' }}>
             Find answers to common questions about our products, shipping, and policies.
           </p>

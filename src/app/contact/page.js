@@ -96,7 +96,7 @@ export default function ContactPage() {
           backgroundClip: 'text',
         }}>Contact Us</h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginBottom: '48px', lineHeight: 1.8 }}>
-          Have questions about our peptides? We're here to help. Reach out to us and we'll respond within 24 hours.
+          Have questions about our peptides? We're here to help. Send us a message and a member of our team will reply by email.
         </p>
 
         {status === 'sent' ? (
@@ -109,7 +109,7 @@ export default function ContactPage() {
           }}>
             <p style={{ fontWeight: 700, marginBottom: '6px', color: '#34d399' }}>Message sent — thank you!</p>
             <p style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-              We've received your message and will respond within 24 hours.
+              We've received your message and will reply by email.
             </p>
             <button onClick={() => { setStatus('idle'); loadChallenge(); }} style={{
               marginTop: '16px',

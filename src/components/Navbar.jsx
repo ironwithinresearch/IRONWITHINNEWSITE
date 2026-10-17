@@ -13,15 +13,14 @@ import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { GET_CATEGORIES } from '@/lib/queries/products';
-import { annPromoLive } from '@/lib/anniversary';
 
+// Kept short on purpose (operator, 17 Oct 2026). Promotions — flash sales, the
+// anniversary calendar, referrals — all live on /deals rather than in the menu.
 const navLinks = [
-   { href: '/',      label: 'Home'       },
-  { href: '/shop',      label: 'Shop'       },
-  { href: '/flash',     label: '⚡ Flash'   },
-  { href: '/merch',     label: 'Merch'      },
-  { href: '/lab-reports',label: 'Lab Reports' },
-  { href: '/contact',   label: 'Contact'    },
+  { href: '/shop',        label: 'Shop'        },
+  { href: '/deals',       label: 'Deals'       },
+  { href: '/lab-reports', label: 'Lab Reports' },
+  { href: '/contact',     label: 'Contact'     },
 ];
 
 // Curated Shop-by-category menu (order matters). Names fall back to these but are
@@ -61,11 +60,7 @@ export default function Navbar() {
 
   // Anniversary Month link — October only. Decided in an effect (not at render) so the
   // statically generated HTML never disagrees with the client about the date.
-  const [annLive, setAnnLive] = useState(false);
-  useEffect(() => { setAnnLive(annPromoLive()); }, []);
-  const links = annLive
-    ? [...navLinks.slice(0, 2), { href: '/anniversary', label: 'Anniversary' }, ...navLinks.slice(2)]
-    : navLinks;
+  const links = navLinks;
 
   // ── theme ──
   useEffect(() => {

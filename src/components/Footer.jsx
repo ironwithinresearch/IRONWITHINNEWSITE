@@ -8,16 +8,13 @@ const footerLinks = {
   Shop: [
     { label: 'All Products', href: '/shop' },
     { label: 'Categories', href: '/categories' },
-    { label: 'New Arrivals', href: '/shop' },
-    { label: 'Best Sellers', href: '/shop' },
+    { label: 'Deals', href: '/deals' },
   ],
   Company: [
     { label: 'Contact', href: '/contact' },
     { label: 'Research App', href: 'https://peptideparadigm.app' },
-    { label: 'Refer & Earn $25', href: '/refer' },
-    { label: 'Win a Cruise', href: '/giveaway' },
+    { label: 'Refer a Friend', href: '/refer' },
     { label: 'Partners', href: '/affiliate' },
-    { label: 'Teacher / Military / First Responder', href: '/heroes' },
   ],
   Support: [
     { label: 'Lab Reports & COAs', href: '/lab-reports' },

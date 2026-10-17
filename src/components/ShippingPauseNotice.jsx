@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { Truck, CreditCard } from 'lucide-react';
 import { shipDaysLive, SHIPDAYS_LABEL, SHIPDAYS_UNTIL } from '@/lib/shipDays';
+import { claimPopup } from '@/lib/popupBudget';
 
 // Checkout pop-up. Two notices share one modal:
 //  1) Shipping pause: Thu Jul 16 (2 PM CT) → Sunday Jul 19 — auto-hides once shipping resumes.
@@ -40,7 +41,7 @@ export default function ShippingPauseNotice() {
     try { if (sessionStorage.getItem(SEEN_KEY)) return; } catch {}
     setShipActive(shipping);
     setAfterCutoff(now >= SHIP_CUTOFF);
-    const t = setTimeout(() => setShow(true), 450);
+    const t = setTimeout(() => { if (claimPopup('shipping')) setShow(true); }, 450);
     return () => clearTimeout(t);
   }, [pathname]);
 

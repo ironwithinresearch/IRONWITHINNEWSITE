@@ -1,317 +1,58 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { shipDaysLive, SHIPDAYS_LABEL, SHIPDAYS_UNTIL } from '@/lib/shipDays';
 import { annPromoLive } from '@/lib/anniversary';
-import { p2pPaused, p2pEventLive, p2pPct, GIFT_MIN, GIFT_FROM, GIFT_TO, GIFT_BIG_MIN } from '@/lib/p2p';
-import { ffLive, ffCurrent, ffCountdownTo, ffFormat, FF_HEADLINE, FF_FLAT, FF_WINDOWS, FF_GIFT, FF_SITEWIDE_WEEKS, ffTitle, ffPct } from '@/lib/freakyFridays';
-import { GIVEAWAY, giveawayOpen } from '@/lib/giveaway';
-import { shipDaysLive, SHIPDAYS_MESSAGE } from '@/lib/shipDays';
 
-/* Scrolling announcement ticker, fixed above the navbar (height 36px).
-   The navbar (top: 36) and main padding are offset to match. */
+/* One calm, static announcement line, fixed above the navbar (height 36px — the navbar
+   sits at top: 36 and main is padded to match).
 
-// Father's Day sale ends 11:59pm Central, Sun 6/21/2026 == 04:59:59 UTC Mon 6/22.
-// The sale message auto-disappears after this; product prices revert via the
-// WooCommerce sale schedule (date_on_sale_to) at the same moment.
-const SALE_ENDS = Date.parse('2026-06-22T04:59:59Z');
-const SALE_MESSAGE = "⏰  FINAL HOURS — Father's Day Sale ends at midnight tonight · 15% off everything, no code needed · stack your affiliate code for even more";
+   Operator, 17 Oct 2026: the old scrolling ticker (emoji, all caps, five promos at once)
+   made the store look like a deal site. Now exactly ONE line shows, in priority order:
+     1. anything that changes what every buyer gets (the reduced shipping schedule)
+     2. the current promotion — pointing at /deals, where every offer lives
+     3. the default trust line
+   The pre-17-Oct ticker (every past promo) is in git history if it's ever needed. */
 
-// Lacey's Birthday Bash — Fri Jun 26 7PM CT → Sun Jun 28 7PM CT (CDT = UTC-5,
-// so 7PM CDT = 00:00 UTC next day). 15% off sitewide, no code, stacks with codes.
-const BB_START = Date.parse('2026-06-27T00:00:00Z');
-const BB_END = Date.parse('2026-06-29T00:00:00Z');
-const BB_MESSAGE = "🎂  LACEY'S BIRTHDAY BASH — 15% OFF SITEWIDE, no code needed · stack your affiliate code for even more · 🎁 every $100+ order = a shot at a $250 gift card · ends Sunday 7PM";
+const DEFAULT_LINE = {
+  text: 'Every lot is third-party tested, with a Certificate of Analysis for each batch.',
+  cta: 'Look up a lot',
+  href: '/lab-reports',
+};
 
-// USA 250th / 4th of July Sale — 25% OFF SITEWIDE + free MOTS-C 10mg on $250+.
-// Live now (launched early) → Sat Jul 5 midnight ET (== 04:00 UTC Jul 6).
-const J4_START = Date.parse('2026-06-30T00:00:00Z');
-const J4_END = Date.parse('2026-07-06T04:00:00Z');
-const J4_MESSAGE = '🇺🇸  4TH OF JULY SALE — 25% OFF SITEWIDE, no code needed · stack your creator code for even more · 🎁  FREE MOTS-C 10mg on orders $250+ · ends Sat Jul 5, midnight ET';
-
-// 12 Days of Christmas in July — Jul 11–22 CT, launched 1hr early so each day flips at
-// 11 PM CT (= midnight ET). Boundary = 04:00 UTC; day math uses a 4hr (not 5hr) CT-ish offset.
-const XJ_START = Date.parse('2026-07-11T04:00:00Z');
-const XJ_END = Date.parse('2026-07-24T04:00:00Z');
-function xjDayNum() {
-  const ctToday = new Date(Date.now() - 4 * 3600000);
-  ctToday.setUTCHours(0, 0, 0, 0);
-  const d = Math.round((ctToday.getTime() - Date.parse('2026-07-11T00:00:00Z')) / 86400000) + 1;
-  return Math.min(13, Math.max(1, d));
+function currentLine(now) {
+  if (shipDaysLive(now)) {
+    return { text: `Shipping update: through ${SHIPDAYS_UNTIL}, orders ship ${SHIPDAYS_LABEL} only.`, cta: 'Details', href: '/shipping' };
+  }
+  if (annPromoLive(now)) {
+    return { text: 'Anniversary Month: a new offer every day through October 31.', cta: 'See current deals', href: '/deals' };
+  }
+  return DEFAULT_LINE;
 }
-const XJ_MESSAGE = (n) => n >= 13
-  ? `💰  GRAND SLAM — Day 13 BONUS: 50% OFF EVERYTHING + free vial on $150+ · 3× points · spend $250 get $50 · our biggest day, to make up for the downtime!`
-  : `🎄  12 DAYS OF CHRISTMAS IN JULY — Day ${n} of 13 is LIVE · scratch today's card to reveal the deal 🎟️ · a bonus 13th "Grand Slam" day was added — shop all 13 days → win 1 of 5 $1,000 credits`;
-
-// Summer Sale — 30% off everything. Live now → end of Aug 20 CT (== 04:59:59 UTC Aug 21),
-// matching the WooCommerce sale schedule (_sale_price_dates_to). Auto-disappears after.
-// FLASH SALE — 45% off everything tonight only, ends midnight CT (05:00 UTC Jul 28).
-// Self-gates: the message + red bar disappear automatically after the window.
-// QUEEN'S BIRTHDAY BASH — Tue Jul 28 6:30 PM CT → Sun Aug 2 midnight CT. Self-gates.
-const QB_START = Date.parse('2026-07-28T23:30:00Z');
-const QB_END = Date.parse('2026-08-03T05:00:00Z');
-const QB_MESSAGE = '🐉  LONG LIVE THE QUEEN — 48% OFF EVERYTHING · no code needed · spend $200 pick a FREE RETA or TIRZ 10mg, or $300 for a full 30mg · every $300+ order gets a chance at a 1-of-1 challenge coin or 1 of 3 $300 giveaways · ends Sun Aug 2';
-
-const FLASH_START = Date.parse('2026-07-27T00:00:00Z');
-const FLASH_END = Date.parse('2026-07-28T05:00:00Z');
-const FLASH_MESSAGE = '🔥  TONIGHT ONLY — 45% OFF EVERYTHING · no code needed · plus a FREE RT-3 or TRZ-2 10mg (your pick) on orders $175+ · ends at midnight';
-
-const SUMMER_START = Date.parse('2026-07-01T00:00:00Z');
-// Ended early on 20 Aug 16:00 UTC, when the sale_prices were cleared to make room for
-// the 35% pay-by-app event. This timestamp is independent of the prices, so leaving it
-// would keep promising 30% off everything after it had stopped existing.
-const SUMMER_END = Date.parse('2026-08-20T16:00:00Z');
-const SUMMER_MESSAGE = '☀️  SUMMER SALE — 30% OFF EVERYTHING, no code needed · stack your affiliate code for even more · 99%+ purity, COA on every order · ends Aug 20';
-
-// Shipping pause — a short break Thu Jul 16 (2 PM CT) → Sunday Jul 19. Orders placed after
-// the cutoff ship Sunday. Cutoff 2 PM CDT = 19:00 UTC; notice auto-hides when shipping
-// resumes at the start of Sun Jul 19 CT (== 05:00 UTC).
-const SHIP_CUTOFF = Date.parse('2026-07-16T19:00:00Z');
-const SHIP_END = Date.parse('2026-07-19T05:00:00Z');
-const SHIP_BEFORE = '🚚  SHIPPING NOTICE — order by 2 PM CT this Thursday (Jul 16) to ship right away · orders after that ship Sunday, Jul 19';
-const SHIP_DURING = '🚚  SHIPPING PAUSED until Sunday — any order placed now ships Sun, Jul 19 · thanks for your patience!';
-
-// Fill the Freezer — Fri Aug 14 7:00am CT → Sun Aug 16 11:59:59pm CT (CDT = UTC-5).
-// BUY 3+ ITEMS, GET 45% OFF. Keep these timestamps identical to IW_B2S_START /
-// IW_B2S_END in mu-plugin iw-fill-the-freezer.php, which is the thing that actually
-// moves prices. No free vial and no BOGO this event — 45% at 3+ is the whole offer.
-const FTF_START = Date.parse('2026-08-14T12:00:00Z');
-const FTF_END = Date.parse('2026-08-17T04:59:59Z');
-// The 45% is EARNED at 3+ items, so the headline has to lead with the condition —
-// a bare "45% OFF SITEWIDE" shown to a one-item cart reads as a broken sale.
-//
-// Unlike the last event, an unqualified cart is NOT left at list price: the summer
-// sale_price (~30%, expires Aug 21) still applies below the threshold, so the real
-// ladder is 30% off → add a 3rd item → 45% off. Say both numbers; the gap between
-// them is the reason to add the third vial.
-const FTF_MESSAGE = '🧊  FILL THE FREEZER — BUY 3+ ITEMS, GET 45% OFF SITEWIDE · no code needed · stack your affiliate code for even more · fewer than 3? the 30% summer sale still applies · ends Sunday at midnight';
-
-// RT-3 30mg buy-2-get-1, bolted onto the tail of the sale. Keep these timestamps
-// identical to IW_B2G1_START / IW_B2G1_END in mu-plugin iw-b2g1-rt3.php — the plugin
-// is what actually zeroes the third vial, and a bar that promises it outside that
-// window sends shoppers to a cart that does not honour it.
-//
-// Scoped to the two 30mg SKUs on purpose (margin: only they carry a third discount on
-// top of 45% + volume + code + pay-by-app; both 10mg SKUs go negative), so the copy
-// must NAME the doses. "Buy 2 get 1 free" without them reads as sitewide and every
-// other product then looks broken.
-//
-// It is also counted PER PRODUCT — three of the SAME vial. Two of each earns nothing,
-// so the copy says "of either", never "any 3".
-const B2G1_START = Date.parse('2026-08-15T17:00:00Z');
-const B2G1_END = Date.parse('2026-08-17T04:59:59Z');
-const B2G1_MESSAGE = '🎁  BUY 2 GET 1 FREE on RT-3 30mg & TRZ-2 30mg — add 3 of either and the third is free, automatically · stacks on top of the 45% · this weekend only';
-
-// Labor Day — Mon 24 Aug 9:00am ET through midnight ending Mon 7 Sep ET.
-// BUY 1 GET 1 FREE SITEWIDE. Keep these identical to IW_LD_START / IW_LD_END in
-// mu-plugin iw-labor-day.php, which is what actually zeroes the second vial.
-//
-// MIX AND MATCH since 2026-08-26: every eligible unit in the cart is sorted by price and
-// every second one is free, so ANY two items qualify and the shopper pays for the dearer
-// of each pair. The copy must say "any 2 items" — it previously said "2 of the same" and
-// "any 2"; that distinction is the whole difference between a working sale and a
-// support ticket.
-//
-// The pay-by-app discount is PAUSED for this window (see p2p.js). That is a margin
-// requirement: stacked on B1G1 plus a 15% code it takes six SKUs below landed cost.
-// The bar drops the pay-by-app line automatically while p2pPaused() is true, so this
-// message must not imply any additional app discount.
-// Cruise sweepstakes. Derived from src/lib/giveaway.js, which is also what the
-// Official Rules on /giveaway render from — so the ticker cannot advertise a
-// deadline or an entry rate the rules contradict. It self-gates on the entry
-// window via giveawayOpen(), so it disappears when the sweepstakes closes.
-const CG_MESSAGE = `\u{1F6A2}  WIN A CARNIVAL CRUISE FOR TWO \u00b7 one entry for every $${GIVEAWAY.dollarsPerEntry} spent, applied automatically \u00b7 no purchase necessary, free entry by mail \u00b7 ends ${GIVEAWAY.closesLabel.split(' at ')[0]}`;
-
-const LD_START = Date.parse('2026-08-24T13:00:00Z');
-const LD_END = Date.parse('2026-09-08T04:00:00Z');
-const LD_MESSAGE = '🇺🇸  LABOR DAY — BUY 1 GET 1 FREE SITEWIDE · mix & match ANY 2 items and the cheaper one is free, automatically · no code needed · stack your affiliate code on top · bundles & gift cards keep their own pricing · ends Mon Sep 7 at midnight';
-
-// Free vial at $225+, from 8:00am ET Sat 29 Aug. Window and threshold are IMPORTED from
-// p2p.js rather than restated here, because that file is the same source the checkout
-// chooser and mu-plugin iw-p2p-gift.php mirror. A bar advertising a threshold the cart
-// does not honour is a support ticket per order, and hardcoding the number here is exactly
-// how the Labor Day copy ended up describing a rule the backend had stopped applying.
-//
-// $225 is also the free-shipping minimum, which is why the two are sold as one line.
-// Free shipping is $225 and the vial is $200 this window, so this line must NOT promise free shipping.
-const GIFT_MESSAGE = `🎁  SPEND $${GIFT_MIN}+ AND PICK A FREE VIAL — RT-3 or TRZ-2 10mg, on us · spend $${GIFT_BIG_MIN}+ and it's the 30mg · any payment method · choose yours at checkout`;
-
-// The pay-by-app 10% STAYS RUNNING this event (operator call 2026-08-14) — the buy-3
-// gate is doing the margin work instead, so the bar keeps promising it. If it is ever
-// paused again in iw-p2p-discount.php, set this window to match IN LOCKSTEP:
-// advertising a discount that no longer lands at checkout is a support ticket per order.
-// Pause state and the live rate both come from src/lib/p2p.js, which mirrors the
-// mu-plugin. Never hardcode the percentage in this file again — advertising a rate the
-// backend is not applying is a support ticket per order.
-
-// Pay-by-app discount — permanent, not a dated promo, so it lives in the base rotation.
-// Steers volume off cards (card payers pay list; app payers get the discount back off).
-// This static string is only the SERVER render; the effect below swaps in the live rate.
-const P2P_MESSAGE = '💸  SAVE 10% — pay with Zelle, Venmo, or Cash App and 10% comes off your total automatically at checkout';
-
-// While the 35% weekend runs, the pay-by-app line IS the headline offer — it leads the
-// ticker instead of sitting in the base rotation, because for those three days it is the
-// only discount on the site (summer sale_prices expire the moment it opens).
-const P2P_EVENT_MESSAGE = '💸  TODAY ONLY: EXTRA 20% OFF when you pay with Venmo, Cash App or Zelle — on top of the 30% sale and your affiliate code · comes off automatically at checkout · ends tonight 11:59pm CT';
-
-// Hurricane Flash — Fri 9 Oct 11:30-11:40am CT, P2P only. Keep identical to the 2026-10-09 16:30
-// window in mu-plugin iw-flash.php, which is what moves the prices,
-// and keep the item list identical to that window's map (a named item the cart doesn't discount
-// is a support ticket per order).
-const HF_TEASE_FROM = Date.parse('2026-10-09T15:30:00Z');
-const HF_START = Date.parse('2026-10-09T16:30:00Z');
-const HF_END = Date.parse('2026-10-09T16:40:00Z');
-const HF_ITEMS = 'ARA-290 \u00B7 RT-3 20mg & 60mg \u00B7 Cagrilintide \u00B7 TRZ-2 60mg \u00B7 NAD+ 1000mg \u00B7 IGF-1 LR3 \u00B7 Semax';
-const HF_TEASE = `\u{1F300}  HURRICANE FLASH \u2014 TODAY 11:30\u201311:40am CT ONLY \u00B7 50% OFF ${HF_ITEMS} \u00B7 Venmo, Cash App & Zelle only \u00B7 stack your creator code`;
-const HF_LIVE = `\u{1F300}  HURRICANE FLASH IS LIVE \u2014 50% OFF ${HF_ITEMS} \u00B7 Venmo, Cash App & Zelle only \u00B7 stack your creator code \u00B7 ends 11:40am CT`;
-
-const BASE_MESSAGES = [
-  // P2P_MESSAGE removed from the rotation 2026-08-24 (operator call). The pay-by-app
-  // discount is paused for the Labor Day B1G1 anyway, and the bar should not carry a
-  // "SAVE 10%" line while the headline offer is buy-one-get-one — two competing savings
-  // claims in one ticker is what makes shoppers distrust both.
-  //
-  // The constant and the rate-rewriting logic below are deliberately left intact: if the
-  // 10% is ever advertised again, put P2P_MESSAGE back in this array and it resumes
-  // reading the live rate from p2p.js rather than a hardcoded number.
-
-  '🔬  Certificate of Analysis available for every product',
-  '🧪  Research-grade peptides, independently lab-tested',
-  '📱  New — the free Peptide Paradigm reference guide. Look up any compound.',
-];
 
 export default function AnnouncementBar() {
-  // Start with base messages (no promo) so the server render is safe, then
-  // recompute promos on the client by date — no hydration mismatch.
-  const [messages, setMessages] = useState(BASE_MESSAGES);
-  const [bbActive, setBbActive] = useState(false);
-  const [j4Active, setJ4Active] = useState(false);
-  const [xjActive, setXjActive] = useState(false);
-  const [summerActive, setSummerActive] = useState(false);
-  const [flashActive, setFlashActive] = useState(false);
-  const [qbActive, setQbActive] = useState(false);
-  const [ftfActive, setFtfActive] = useState(false);
-  const [p2pEventActive, setP2pEventActive] = useState(false);
-  const [ldActive, setLdActive] = useState(false);
-  const [ffActive, setFfActive] = useState(false);
-  const [annActive, setAnnActive] = useState(false);
-  useEffect(() => {
-    const now = Date.now();
-    const promos = [];
-    if (now < SHIP_END) promos.push(now < SHIP_CUTOFF ? SHIP_BEFORE : SHIP_DURING);
-    if (now >= XJ_START && now < XJ_END) { promos.push(XJ_MESSAGE(xjDayNum())); setXjActive(true); }
-    if (now >= J4_START && now <= J4_END) { promos.push(J4_MESSAGE); setJ4Active(true); }
-    if (now >= BB_START && now < BB_END) { promos.push(BB_MESSAGE); setBbActive(true); }
-    const flashOn = now >= FLASH_START && now < FLASH_END;
-    const qbOn = now >= QB_START && now < QB_END;
-    const ftfOn = now >= FTF_START && now < FTF_END;
-    if (ftfOn) { promos.unshift(FTF_MESSAGE); setFtfActive(true); }
-    // B2G1 leads the ticker while it runs — it is the sharper offer, and it is the
-    // one with a deadline inside the sale rather than at the end of it.
-    if (now >= B2G1_START && now < B2G1_END) promos.unshift(B2G1_MESSAGE);
-    const ldOn = now >= LD_START && now < LD_END;
-    if (ldOn) { promos.unshift(LD_MESSAGE); setLdActive(true); }
-    // Sits behind the sitewide BOGO rather than ahead of it — the free vial is a
-    // threshold reward, and a shopper needs the headline discount first.
-    if (now >= GIFT_FROM && now < GIFT_TO) promos.push(GIFT_MESSAGE);
-    if (qbOn) { promos.unshift(QB_MESSAGE); setQbActive(true); }
-    if (!qbOn && flashOn) { promos.unshift(FLASH_MESSAGE); setFlashActive(true); }
-    // Summer's "30% OFF EVERYTHING" line is suppressed while Fill the Freezer runs —
-    // two sitewide percentages in one ticker is what makes shoppers distrust both.
-    // The 30% is still mentioned, inside FTF_MESSAGE, as the sub-threshold fallback.
-    if (!ftfOn && !qbOn && !flashOn && now >= SUMMER_START && now < SUMMER_END) { promos.push(SUMMER_MESSAGE); setSummerActive(true); }
-    if (giveawayOpen(now)) promos.push(CG_MESSAGE);
-    if (now < SALE_ENDS) promos.push(SALE_MESSAGE);
-    // Drop the pay-by-app line while the discount is paused, so the bar and checkout
-    // agree; otherwise rewrite it at the rate actually in force.
-    let base;
-    if (p2pPaused(now)) {
-      base = BASE_MESSAGES.filter((m) => m !== P2P_MESSAGE);
-    } else if (p2pEventLive(now)) {
-      base = BASE_MESSAGES.filter((m) => m !== P2P_MESSAGE);
-      promos.unshift(P2P_EVENT_MESSAGE);
-      setP2pEventActive(true);
-    } else {
-      base = BASE_MESSAGES.map((m) =>
-        m === P2P_MESSAGE
-          ? `💸  SAVE ${p2pPct(now)}% — pay with Zelle, Venmo, or Cash App and ${p2pPct(now)}% comes off your total automatically at checkout`
-          : m,
-      );
-    }
-    // Freaky Fridays leads the ticker while a window is open. Everything above it in this
-    // effect is a past event kept for reference; this is the only live promo.
-    if (ffLive(now)) {
-      const w = ffCurrent(now);
-      const left = ffFormat(ffCountdownTo(now).ms);
-      setFfActive(true);
-      promos.unshift(
-        `${w.name ? `\uD83C\uDF89  ${w.name}` : `\uD83C\uDF83  FREAKY FRIDAYS \u2014 ${ffTitle(w)}`} is LIVE \u00B7 ${FF_GIFT[w.week] ? `${FF_GIFT[w.week]} \u00B7 ` : ''}${FF_FLAT ? '' : 'up to '}${ffPct(w)}% OFF ${FF_SITEWIDE_WEEKS.includes(w.week) ? 'SITEWIDE' : (w.blurb ? w.blurb.toUpperCase() : 'SELECT PRODUCTS')}, no code needed \u00B7 stack your creator code for even more${left ? ` \u00B7 ends in ${left}` : ''}`,
-      );
-    }
-    // The hurricane sale leads, ahead of today's Freaky Friday line: it is the deeper, newer offer.
-    if (now >= HF_TEASE_FROM && now < HF_END) promos.unshift(now >= HF_START ? HF_LIVE : HF_TEASE);
-    // Anniversary Month: the whole bar links to /anniversary all October, and a line says so
-    // right behind today's deal.
-    if (annPromoLive(now)) {
-      setAnnActive(true);
-      promos.splice((ffLive(now) ? 1 : 0) + (now >= HF_TEASE_FROM && now < HF_END ? 1 : 0), 0, '\uD83C\uDF82  IRON WITHIN TURNS ONE \u2014 31 days of deals, October 1\u201331 \u00B7 tap for the full calendar');
-    }
-    // Reduced shipping days lead the bar while they last — it changes what every buyer gets.
-    if (shipDaysLive(now)) promos.unshift(SHIPDAYS_MESSAGE);
-    setMessages([...promos, ...base]);
-  }, []);
-
-  // Repeat the message set so the track is wide enough, then render it twice
-  // for a seamless -50% loop.
-  const base = [...messages, ...messages, ...messages];
-  const track = [...base, ...base];
+  // Server render uses the default line; the client swaps in the date-based one after
+  // mount, so the two renders never disagree (no hydration mismatch).
+  const [line, setLine] = useState(DEFAULT_LINE);
+  useEffect(() => { setLine(currentLine(Date.now())); }, []);
 
   return (
     <div
       role="region"
-      aria-label="Store announcements"
+      aria-label="Store announcement"
       style={{
         position: 'fixed', top: 0, left: 0, right: 0, height: 36, zIndex: 101,
-        background: ffActive ? 'linear-gradient(90deg,#0A0603,#FF6A00,#FFB020,#FF6A00,#0A0603)' : ldActive ? 'linear-gradient(90deg,#b22234,#a3243a,#1d4ed8,#a3243a,#b22234)' : ftfActive ? 'linear-gradient(90deg,#062a45,#0d6f9e,#22d3ee,#0d6f9e,#062a45)' : qbActive ? 'linear-gradient(90deg,#0a0612,var(--purple, #7c3aed),#22c55e,var(--purple, #7c3aed),#0a0612)' : flashActive ? 'linear-gradient(90deg,#dc2626,#f59e0b,#dc2626)' : xjActive ? 'linear-gradient(90deg,#c8102e,#0f5132,#f5c542,#0f5132,#c8102e)' : j4Active ? 'linear-gradient(90deg,#b22234,#7a1228,#13294b,#7a1228,#b22234)' : bbActive ? 'linear-gradient(90deg,var(--pink, #ec4899),#f5d272)' : summerActive ? 'linear-gradient(90deg,#ffb14a,#ff7a59,#37c8ff)' : 'var(--gradient-primary, linear-gradient(90deg,var(--primary-blue, #00CFFF),var(--purple, #7c3aed)))',
-        color: (ffActive || ldActive || j4Active || xjActive || flashActive || qbActive) ? '#fff' : '#001018', overflow: 'hidden', display: 'flex', alignItems: 'center',
-        fontFamily: 'var(--font-body)',
+        background: '#1c1917', color: '#f5f5f4', borderBottom: '1px solid rgba(255,255,255,0.06)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 16px',
+        fontFamily: 'var(--font-body)', fontSize: '0.82rem', fontWeight: 500, letterSpacing: '0.01em',
       }}
     >
-      <TickerLink on={annActive}>
-      <div
-        className="iw-ticker"
-        style={{ display: 'flex', flexShrink: 0, whiteSpace: 'nowrap', willChange: 'transform' }}
-      >
-        {track.map((msg, i) => (
-          <span
-            key={i}
-            style={{ display: 'inline-flex', alignItems: 'center', padding: '0 34px', fontSize: '0.92rem', fontWeight: 700, letterSpacing: '0.01em' }}
-          >
-            {msg}
-          </span>
-        ))}
-      </div>
-      </TickerLink>
-      <style>{`
-        @keyframes iw-ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-        .iw-ticker { animation: iw-ticker-scroll 90s linear infinite; }
-        .iw-ticker:hover { animation-play-state: paused; }
-        @media (prefers-reduced-motion: reduce) { .iw-ticker { animation: none; } }
-      `}</style>
+      <Link href={line.href} style={{ color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+        <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{line.text}</span>
+        <span className="iw-ann-cta" style={{ whiteSpace: 'nowrap', textDecoration: 'underline', textUnderlineOffset: 3, opacity: 0.85 }}>{line.cta}</span>
+      </Link>
+      <style>{`@media (max-width: 560px) { .iw-ann-cta { display: none; } }`}</style>
     </div>
-  );
-}
-
-/* During Anniversary Month the ticker is one big link to the calendar page. */
-function TickerLink({ on, children }) {
-  if (!on) return children;
-  return (
-    <Link
-      href="/anniversary"
-      aria-label="Anniversary Month: see all 31 days of deals"
-      style={{ display: 'flex', alignItems: 'center', height: '100%', color: 'inherit', textDecoration: 'none' }}
-    >
-      {children}
-    </Link>
   );
 }

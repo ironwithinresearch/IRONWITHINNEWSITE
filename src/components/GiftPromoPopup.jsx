@@ -13,6 +13,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { claimPopup } from '@/lib/popupBudget';
 import Link from 'next/link';
 import { GIFT_MIN, GIFT_BIG_MIN, GIFT_OPTIONS, GIFT_FROM, GIFT_TO,
          GA_MIN, GA_PRIZE_EACH, GA_WINNERS, giveawayActive } from '@/lib/p2p';
@@ -38,7 +39,7 @@ export default function GiftPromoPopup() {
 
     // Long enough that it does not collide with the page settling, short enough that it is
     // still the same visit. Cleared on unmount so a fast navigation cannot fire it twice.
-    const t = setTimeout(() => setOpen(true), 6000);
+    const t = setTimeout(() => { if (claimPopup('gift')) setOpen(true); }, 6000);
     return () => clearTimeout(t);
   }, []);
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { claimPopup } from '@/lib/popupBudget';
 import { GIFT_FROM, GIFT_TO } from '@/lib/p2p';
 import { isLoggedIn } from '@/lib/auth';
 
@@ -36,7 +37,7 @@ export default function LeadCapture() {
     if (saved && Date.now() - Number(saved) < 14 * 864e5) return; // dismissed < 14d ago
 
     let shown = false;
-    const show = () => { if (!shown) { shown = true; setOpen(true); cleanup(); } };
+    const show = () => { if (!shown) { shown = true; if (claimPopup('lead')) setOpen(true); cleanup(); } };
     const onLeave = (e) => { if (e.clientY <= 0) show(); };
     const timer = setTimeout(show, 14000);
     document.addEventListener('mouseleave', onLeave);

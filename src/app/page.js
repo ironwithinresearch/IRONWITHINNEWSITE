@@ -31,15 +31,15 @@ import AppPromo from '@/components/AppPromo';
 const stats = [
   { value: '40+', label: 'Research Products' },
   { value: '99%+', label: 'Purity Guaranteed' },
-  { value: '1,800+', label: 'Researchers Served' },
-  { value: '24/7', label: 'Email Support' },
+  { value: '1,500+', label: 'Researchers Served' },
+  { value: 'Every lot', label: 'Published COA' },
 ];
 
 const whyUs = [
-  { Icon: Trophy, color: '#fbbf24', title: 'Third-Party Tested', desc: 'Every batch independently verified for purity, potency, and safety by accredited laboratories.' },
-  { Icon: Rocket, color: 'var(--primary-blue)', title: 'Fast Shipping', desc: 'Discreet packaging with express delivery options available at checkout.' },
-  { Icon: ShieldCheck, color: '#34d399', title: 'Secure Checkout', desc: 'Bank-level SSL encryption on every transaction. Your data is always protected.' },
-  { Icon: Mail, color: 'var(--purple)', title: 'Email Support', desc: 'Reach our research specialists any time at support@ironwithin.io — we reply promptly.' },
+  { Icon: Trophy, color: '#fbbf24', title: 'Third-Party Tested', desc: 'Every batch independently verified for purity, potency, and safety by an independent third-party laboratory.' },
+  { Icon: Rocket, color: 'var(--primary-blue)', title: 'Fast Shipping', desc: 'Plain, unmarked packaging with tracking on every order.' },
+  { Icon: ShieldCheck, color: '#34d399', title: 'Secure Checkout', desc: 'Encrypted checkout on every order. Card payments are handled by our payment processor, never stored by us.' },
+  { Icon: Mail, color: 'var(--purple)', title: 'Email Support', desc: 'Real people at support@ironwithin.io. Questions about an order, a lot or a COA all go to the same inbox.' },
 ];
 
 const trustBadges = [
@@ -187,14 +187,14 @@ export default function Home() {
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '820px', margin: '0 auto' }}>
           {/* proof pill */}
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', padding: '7px 18px', background: 'rgba(0,207,255,0.08)', border: '1px solid rgba(0,207,255,0.25)', borderRadius: '999px', marginBottom: '26px', fontSize: '0.82rem', color: 'var(--text-light)', fontWeight: 600 }}>
-            Trusted by 1,800+ researchers
+            Trusted by 1,500+ researchers
           </div>
           <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(2.4rem, 6.5vw, 4.6rem)', fontWeight: 900, lineHeight: 1.08, marginBottom: '20px', letterSpacing: '-0.03em' }}>
             Research Peptides You Can{' '}
             <span style={{ background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Actually Trust</span>
           </h1>
           <p style={{ fontSize: 'clamp(1.05rem, 2.4vw, 1.25rem)', color: 'var(--text-secondary)', maxWidth: '630px', margin: '0 auto 32px', lineHeight: 1.6 }}>
-            99%+ purity, independently third-party lab-tested, with a Certificate of Analysis on every vial — shipped in 24 hours.
+            99%+ purity, independently third-party lab-tested, with a Certificate of Analysis for every lot and tracking on every order.
           </p>
           <div><SaleCountdown /></div>
           <FillTheFreezerBanner />
@@ -286,7 +286,7 @@ export default function Home() {
       <section style={{ padding: '60px 24px', background: 'var(--card-dark)', borderTop: '1px solid var(--glass-border)', borderBottom: '1px solid var(--glass-border)' }}>
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '32px', textAlign: 'center' }}>
-            {[{ value: '40+', label: 'Products' }, { value: '99%+', label: 'Purity' }, { value: '1,800+', label: 'Researchers' }].map((item, i, arr) => (
+            {[{ value: '40+', label: 'Products' }, { value: '99%+', label: 'Purity' }, { value: '1,500+', label: 'Researchers' }].map((item, i, arr) => (
               <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
                 <div>
                   <div style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 900, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', lineHeight: 1, marginBottom: '6px' }}>{item.value}</div>
