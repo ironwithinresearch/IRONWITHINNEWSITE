@@ -18,6 +18,7 @@ import { annPromoLive } from '@/lib/anniversary';
 const navLinks = [
    { href: '/',      label: 'Home'       },
   { href: '/shop',      label: 'Shop'       },
+  { href: '/flash',     label: '⚡ Flash'   },
   { href: '/merch',     label: 'Merch'      },
   { href: '/rewards',   label: 'Rewards'    },
   { href: '/lab-reports',label: 'Lab Reports' },

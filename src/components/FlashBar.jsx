@@ -55,7 +55,7 @@ export default function FlashBar() {
 
   return (
     <Link
-      href="/shop"
+      href="/flash"
       style={{
         display: 'block', textAlign: 'center', padding: '9px 14px', textDecoration: 'none',
         background: isLive ? 'linear-gradient(90deg,#b91c1c,#ef4444,#b91c1c)' : 'linear-gradient(90deg,#111827,#1f2937,#111827)',
