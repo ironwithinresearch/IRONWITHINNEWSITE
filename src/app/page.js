@@ -180,7 +180,7 @@ export default function Home() {
     <>
 
       {/* ══ HERO ══ */}
-      <section style={{ position: 'relative', minHeight: '68vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', overflow: 'hidden', padding: '60px 24px' }}>
+      <section style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', overflow: 'hidden', padding: '72px 24px 40px' }}>
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: `radial-gradient(ellipse at 20% 50%, rgba(124,58,237,0.15) 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, rgba(0,207,255,0.12) 0%, transparent 50%), radial-gradient(ellipse at 50% 90%, rgba(236,72,153,0.10) 0%, transparent 50%)` }} />
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.03, backgroundImage: `linear-gradient(rgba(0,207,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,207,255,1) 1px, transparent 1px)`, backgroundSize: '60px 60px' }} />
 
