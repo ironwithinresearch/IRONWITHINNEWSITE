@@ -10,6 +10,7 @@ import LeadCapture from "../components/LeadCapture";
 import GiftPromoPopup from "../components/GiftPromoPopup";
 import QueenTheme from "../components/QueenTheme";
 import ShippingPauseNotice from "../components/ShippingPauseNotice";
+import SiteChat from "../components/SiteChat";
 import ApolloWrapper from "../lib/ApolloWrapper";
 // Vercel Web Analytics. Added 2026-08-26 — the store had NO analytics at all, so traffic
 // had to be estimated by counting unique IPs in the Apache log. Serves its script and
@@ -73,6 +74,7 @@ export default function RootLayout({ children }) {
           <LeadCapture />
           <GiftPromoPopup />
           <ShippingPauseNotice />
+          <SiteChat />
         </ApolloWrapper>
         <Analytics />
       </body>

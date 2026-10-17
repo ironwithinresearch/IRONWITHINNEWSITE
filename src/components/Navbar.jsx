@@ -296,7 +296,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div style={{ position: 'fixed', top: 'var(--navbar-height, 68px)', left: 0, right: 0, bottom: 0, zIndex: 99, background: 'rgba(5,7,18,0.97)', backdropFilter: 'blur(24px)', padding: '28px 24px', display: 'flex', flexDirection: 'column', gap: '6px', overflowY: 'auto' }}>
+        <div style={{ position: 'fixed', top: 'var(--navbar-height, 68px)', left: 0, right: 0, bottom: 0, zIndex: 99, background: 'var(--bg-dark)', borderTop: '1px solid var(--glass-border)', padding: '28px 24px', display: 'flex', flexDirection: 'column', gap: '6px', overflowY: 'auto' }}>
           {links.map(({ href, label }) => (
             <div key={href}>
               <Link href={href} style={{ display: 'block', padding: '14px 18px', borderRadius: 'var(--radius-md)', color: pathname === href ? 'var(--primary-blue)' : 'var(--text-light)', background: pathname === href ? 'rgba(0,207,255,0.08)' : 'transparent', fontWeight: pathname === href ? 600 : 400, fontSize: '1rem', textDecoration: 'none', borderLeft: `3px solid ${pathname === href ? 'var(--primary-blue)' : 'transparent'}` }}>

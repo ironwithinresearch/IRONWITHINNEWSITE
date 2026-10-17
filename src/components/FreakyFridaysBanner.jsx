@@ -47,7 +47,8 @@ export default function FreakyFridaysBanner() {
     return () => clearInterval(id);
   }, []);
 
-  if (!s || s.week === null) return null;
+  // During Anniversary Month the home page shows today's deal card instead (AnniversaryToday).
+  if (!s || s.week === null || s.ann) return null;
 
   const live = s.live;
 

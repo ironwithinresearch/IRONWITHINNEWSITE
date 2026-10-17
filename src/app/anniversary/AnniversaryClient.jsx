@@ -16,16 +16,16 @@ import {
    page renders a neutral shell — every day locked except the always-shown finale. */
 
 const C = {
-  ink: '#F6EDE2', muted: '#CDBCA8', dim: '#8595AD',
+  ink: '#EEF4FF', muted: '#B8C4D9', dim: '#8595AD',
   ember: '#7C3AED', gold: '#00CFFF', blood: '#EC4899', green: '#4ADE80',
-  card: '#140C06', card2: '#1B1410', line: 'rgba(0,207,255,0.22)', lineHot: 'rgba(0,207,255,0.6)',
+  card: '#0B1225', card2: '#111A33', line: 'rgba(0,207,255,0.22)', lineHot: 'rgba(0,207,255,0.6)',
 };
 const HEAD = { fontFamily: 'var(--font-heading, Orbitron, sans-serif)' };
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 const ICON = {
   sitewide: '🎉', category: '🧪', flash: '⚡', loyalty: '⭐', credit: '💳',
-  stack: '📦', passport: '🎟️', finale: '🏆', none: '🎃',
+  stack: '📦', passport: '🎟️', finale: '🏆', none: '📅',
 };
 
 function stampSet(me) {
@@ -187,7 +187,38 @@ export default function AnniversaryClient() {
 
 /* ---------------------------------------------------------------- today */
 
-function TodayCard({ now, days, flash }) {
+/* Home-page version of today's deal (teammate feedback, 17 Oct: "have the sale on the main
+   page so they know what is going on, then still have browse the shop & see all 31 days").
+   Same card, same data as /anniversary — one source, so the two can't disagree. */
+export function AnniversaryToday() {
+  const days = useMemo(() => annCalendar(), []);
+  const [now, setNow] = useState(0);
+  const [flash, setFlash] = useState(null);
+  useEffect(() => {
+    setNow(Date.now());
+    const tick = setInterval(() => setNow(Date.now()), 1000);
+    let live = true;
+    const loadFlash = () => fetch('/api/flash', { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (live && d && Array.isArray(d.windows)) setFlash(d); })
+      .catch(() => {});
+    loadFlash();
+    const poll = setInterval(loadFlash, 60000);
+    return () => { live = false; clearInterval(tick); clearInterval(poll); };
+  }, []);
+  if (now && (now < ANN_START || now >= ANN_END)) return null;
+  return (
+    <section className="ann-embed" aria-label="Today's deal" style={{ padding: '8px 0 40px', color: C.ink }}>
+      <style dangerouslySetInnerHTML={{ __html: CSS }} />
+      <div className="ann-wrap">
+        <h2 className="ann-label" style={{ color: '#7C3AED', marginTop: 8 }}>Today&apos;s deal</h2>
+        <TodayCard now={now} days={days} flash={flash} embed />
+      </div>
+    </section>
+  );
+}
+
+function TodayCard({ now, days, flash, embed = false }) {
   if (!now) return <div className="ann-today ann-skel" aria-hidden />;
 
   if (now < ANN_START) {
@@ -234,7 +265,14 @@ function TodayCard({ now, days, flash }) {
       {today.kind === 'flash' ? <FlashWindows now={now} today={today} flash={flash} /> : null}
 
       <div className="ann-today-row">
-        <Link href="/shop" className="ann-cta">Shop today&apos;s deal <span aria-hidden>→</span></Link>
+        {embed ? (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+            <Link href="/shop" className="ann-cta">Browse the shop <span aria-hidden>→</span></Link>
+            <Link href="/anniversary" className="ann-cta ann-cta-ghost">See all 31 days <span aria-hidden>→</span></Link>
+          </div>
+        ) : (
+          <Link href="/shop" className="ann-cta">Shop today&apos;s deal <span aria-hidden>→</span></Link>
+        )}
         <div>
           <div className="ann-clock-l">Today&apos;s deal ends in</div>
           <Clock ms={today.end - now} />
@@ -459,6 +497,7 @@ const CSS = `
 .ann-fw-done{opacity:.5;}
 .ann-cta{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:12px 24px;border-radius:999px;font-weight:800;text-decoration:none;
   color:#001018;background:linear-gradient(135deg,${C.gold},#0EA5E9);box-shadow:0 8px 26px rgba(124,58,237,0.32);}
+.ann-cta-ghost{background:transparent;color:${C.ink};border:1px solid ${C.lineHot};box-shadow:none;}
 .ann-cta:focus-visible,.ann-link:focus-visible{outline:3px solid ${C.gold};outline-offset:3px;}
 .ann-cal{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
 .ann-wd,.ann-blank{display:none;}

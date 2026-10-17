@@ -4,6 +4,7 @@
 
 import Link from 'next/link';
 import FreakyFridaysBanner from "../components/FreakyFridaysBanner";
+import { AnniversaryToday } from "./anniversary/AnniversaryClient";
 import Image from 'next/image';
 import { useQuery } from '@apollo/client';
 import { GET_PRODUCTS } from '@/lib/queries/products';
@@ -38,7 +39,7 @@ const whyUs = [
   { Icon: Trophy, color: '#fbbf24', title: 'Third-Party Tested', desc: 'Every batch independently verified for purity, potency, and safety by an independent third-party laboratory.' },
   { Icon: Rocket, color: 'var(--primary-blue)', title: 'Fast Shipping', desc: 'Plain, unmarked packaging with tracking on every order.' },
   { Icon: ShieldCheck, color: '#34d399', title: 'Secure Checkout', desc: 'Encrypted checkout on every order. Card payments are handled by our payment processor, never stored by us.' },
-  { Icon: Mail, color: 'var(--purple)', title: 'Email Support', desc: 'Real people at support@ironwithin.io. Questions about an order, a lot or a COA all go to the same inbox.' },
+  { Icon: Mail, color: 'var(--purple)', title: 'Chat or Email', desc: 'Tap the chat bubble for order status, tracking and quick answers, or email support@ironwithin.io and a person will pick it up.' },
 ];
 
 const trustBadges = [
@@ -226,6 +227,10 @@ export default function Home() {
       <div style={{ padding: '0 24px', maxWidth: 1200, margin: '0 auto' }}>
         <FreakyFridaysBanner />
       </div>
+
+      {/* Anniversary Month: today's live deal (flash windows, countdown), then Browse the shop /
+          See all 31 days. Same card as /anniversary; hides itself outside October. */}
+      <AnniversaryToday />
 
       {/* ══ STATS BAR ══ */}
       <section style={{ background: 'var(--card-dark)', borderTop: '1px solid var(--glass-border)', borderBottom: '1px solid var(--glass-border)', padding: '36px 24px' }}>
