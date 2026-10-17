@@ -61,8 +61,8 @@ const EXTRA = {
   saturday: {
     kind: 'flash',
     name: 'Flash Saturday',
-    headline: 'Up to 75% off',
-    detail: 'Four 20-minute flash windows: 8:00am, 11:00am, 4:30pm and 8:30pm CT. Zelle, Venmo and Cash App only, max 5 of each item.',
+    headline: '45% off + your code',
+    detail: 'Four 20-minute flash windows: 8:00am, 11:00am, 4:30pm and 8:30pm CT, 45% off with your affiliate code stacking on top. Sat 17 Oct at 8:30pm the WHOLE STORE is 50% off plus your code. Zelle, Venmo and Cash App only, max 5 of each item.',
     tag: '4 windows',
   },
   sunday: {

@@ -46,6 +46,12 @@ export default function FlashBar() {
   const end = new Date(w.end).getTime();
   const isLive = now >= start;
   if (!isLive && start - now > LEAD_MS) return null;
+  // Wording comes from the backend's per-window fields (iw-flash.php /flash), so it follows the schedule.
+  const mins = Math.round((end - start) / 60000);
+  const stack = w.codes_stack ? ' + your code stacks' : '';
+  const offer = w.storewide
+    ? `WHOLE STORE ${w.storewide}% off${stack}`
+    : w.percent ? `${w.percent}% off ${w.items || ''} select items${stack}`.replace('  ', ' ') : `flash prices${stack}`;
 
   return (
     <Link
@@ -58,9 +64,9 @@ export default function FlashBar() {
       }}
     >
       {isLive ? (
-        <>⚡ <strong>FLASH SALE LIVE — up to 75% off RT-3 &amp; more</strong> · ends in <strong>{clock(end - now)}</strong> · Zelle, Venmo &amp; Cash App only →</>
+        <>⚡ <strong>FLASH SALE LIVE — {offer}</strong> · ends in <strong>{clock(end - now)}</strong> · Zelle, Venmo &amp; Cash App only →</>
       ) : (
-        <>⚡ <strong>Flash sale at {ctTime(w.start)} CT</strong> — up to 75% off RT-3 &amp; more — 20 minutes only · starts in <strong>{clock(start - now)}</strong></>
+        <>⚡ <strong>Flash sale at {ctTime(w.start)} CT</strong> — {offer} — {mins} minutes only · starts in <strong>{clock(start - now)}</strong></>
       )}
     </Link>
   );

@@ -170,8 +170,7 @@ export default function AnniversaryClient() {
         <div className="ann-stack">
           <span aria-hidden style={{ fontSize: '1.4rem' }}>🔗</span>
           <p style={{ margin: 0 }}>
-            <strong>Your affiliate code stacks on every day</strong> except Flash Saturday windows — flash items
-            take no code.
+            <strong>Your affiliate code stacks on every day</strong>, Flash Saturday windows included.
           </p>
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: 26 }}>

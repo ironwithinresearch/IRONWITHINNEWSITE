@@ -9,7 +9,7 @@ import { NextResponse } from 'next/server';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const BACKEND = 'https://bhidasowgm.onrocket.site';
+const BACKEND = 'https://api.ironwithin.io';
 
 export async function GET() {
   try {
