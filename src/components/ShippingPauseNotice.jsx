@@ -51,11 +51,11 @@ export default function ShippingPauseNotice() {
   const accent = shipActive ? '251,191,36' : '0,207,255'; // amber for shipping, cyan for payment-only
 
   return (
-    <div onClick={close} style={{ position: 'fixed', inset: 0, zIndex: 3000, background: 'rgba(0,0,0,0.72)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+    <div onClick={close} style={{ position: 'fixed', inset: 0, zIndex: 3000, background: 'rgba(15,12,10,0.45)', backdropFilter: 'blur(3px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
       <div onClick={(e) => e.stopPropagation()} style={{ position: 'relative', maxWidth: 440, width: '100%', borderRadius: 20, padding: '32px 26px 24px', textAlign: 'center',
-        background: `radial-gradient(ellipse at 50% 0%, rgba(${accent},0.20), transparent 62%), #0e1420`,
-        border: `1px solid rgba(${accent},0.45)`, boxShadow: '0 30px 80px rgba(0,0,0,0.6)' }}>
-        <button onClick={close} aria-label="Close" style={{ position: 'absolute', top: 12, right: 14, background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', fontSize: 22, cursor: 'pointer' }}>×</button>
+        background: 'var(--card-dark, #fff)',
+        border: '1px solid var(--glass-border)', boxShadow: '0 24px 60px rgba(0,0,0,0.18)' }}>
+        <button onClick={close} aria-label="Close" style={{ position: 'absolute', top: 12, right: 14, background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: 22, cursor: 'pointer' }}>×</button>
 
         <div style={{ width: 56, height: 56, borderRadius: 16, margin: '0 auto 12px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: `rgba(${accent},0.14)`, border: `1px solid rgba(${accent},0.35)` }}>
           {shipActive ? <Truck size={26} color={`rgb(${accent})`} /> : <CreditCard size={26} color={`rgb(${accent})`} />}
@@ -64,13 +64,13 @@ export default function ShippingPauseNotice() {
         {/* Shipping section — only while the pause window is active */}
         {shipActive && (
           <>
-            <div style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#fbbf24' }}>Shipping notice</div>
-            <h2 style={{ fontFamily: 'var(--font-heading, inherit)', fontSize: '1.5rem', fontWeight: 900, color: '#fff', margin: '6px 0 10px' }}>
+            <div style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#b45309' }}>Shipping notice</div>
+            <h2 style={{ fontFamily: 'var(--font-heading, inherit)', fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-light)', margin: '6px 0 10px' }}>
               {shipDays ? `We ship ${SHIPDAYS_LABEL}` : 'Orders ship Sunday, July 19'}
             </h2>
-            <p style={{ color: 'rgba(255,255,255,0.82)', fontSize: '0.95rem', lineHeight: 1.55, margin: '0 0 18px' }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.55, margin: '0 0 18px' }}>
               {shipDays
-                ? `For the next two weeks (through ${SHIPDAYS_UNTIL}), orders ship on Mondays, Wednesdays and Thursdays only. Order any time — your order goes out on the next ship day. Thanks for your patience! 💙`
+                ? `For the next two weeks (through ${SHIPDAYS_UNTIL}), orders ship on Mondays, Wednesdays and Thursdays only. Order any time and it goes out on the next ship day. Thank you for your patience.`
                 : afterCutoff
                 ? 'Our shipping is paused for a short break until Sunday. Any order you place now is safe — it will ship Sunday, July 19. Thanks for your patience! 💙'
                 : 'Heads up — shipping pauses Thursday, July 16 at 2 PM CT for a short break. Order before then to ship right away; orders placed after 2 PM Thursday will ship Sunday, July 19.'}
@@ -97,7 +97,7 @@ export default function ShippingPauseNotice() {
           </div>
         )}
 
-        <button onClick={close} style={{ display: 'block', width: '100%', marginTop: 20, padding: '13px', borderRadius: 12, background: `linear-gradient(90deg, rgb(${accent}), ${shipActive ? '#f59e0b' : '#0a93c4'})`, color: shipActive ? '#1a1205' : '#04121a', fontWeight: 800, fontSize: '1rem', border: 'none', cursor: 'pointer' }}>
+        <button onClick={close} style={{ display: 'block', width: '100%', marginTop: 20, padding: '13px', borderRadius: 12, background: '#1c1917', color: '#fafaf9', fontWeight: 800, fontSize: '1rem', border: 'none', cursor: 'pointer' }}>
           {shipDays && !(pathname || '').startsWith('/checkout') ? 'Got it — keep shopping' : 'I understand — continue to checkout'}
         </button>
       </div>
