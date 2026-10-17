@@ -35,7 +35,7 @@ function Card({ it, live, max, onAdd, adding }) {
           <div style={{ fontWeight: 700, fontSize: '1.05rem' }}>{it.name} <span style={{ color: 'var(--primary-blue)', fontSize: '0.85rem', fontWeight: 600 }}>{it.size}</span></div>
         </Link>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
-          <span style={{ fontSize: '1.5rem', fontWeight: 800, color: '#fff' }}>{money(it.price)}</span>
+          <span style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-light)' }}>{money(it.price)}</span>
           <s style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>{money(it.regular)}</s>
         </div>
         <div style={{ marginTop: 'auto', display: 'flex', gap: 8, alignItems: 'center' }}>
@@ -108,13 +108,13 @@ export default function FlashPage() {
         ) : live ? (
           <>
             <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(1.8rem,5vw,2.8rem)', margin: '8px 0 6px' }}>Live now</h1>
-            <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Ends in <strong style={{ color: '#fff', fontVariantNumeric: 'tabular-nums' }}>{clock(liveEnd - now)}</strong></p>
+            <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Ends in <strong style={{ color: 'var(--text-light)', fontVariantNumeric: 'tabular-nums' }}>{clock(liveEnd - now)}</strong></p>
           </>
         ) : items.length ? (
           <>
             <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(1.8rem,5vw,2.8rem)', margin: '8px 0 6px' }}>Next flash: {ctTime(data.next_items_start)} CT</h1>
             <p style={{ color: 'var(--text-secondary)', margin: 0 }}>
-              {ctDay(data.next_items_start)} · opens in <strong style={{ color: '#fff', fontVariantNumeric: 'tabular-nums' }}>{clock(nextStart - now)}</strong>
+              {ctDay(data.next_items_start)} · opens in <strong style={{ color: 'var(--text-light)', fontVariantNumeric: 'tabular-nums' }}>{clock(nextStart - now)}</strong>
             </p>
           </>
         ) : (
