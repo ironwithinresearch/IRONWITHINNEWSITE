@@ -23,10 +23,10 @@ const DEFAULT_LINE = {
 
 function currentLine(now) {
   if (shipDaysLive(now)) {
-    return { text: `Shipping update: through ${SHIPDAYS_UNTIL}, orders ship ${SHIPDAYS_LABEL} only.`, cta: 'Details', href: '/shipping' };
+    return { text: `Shipping update: through ${SHIPDAYS_UNTIL}, orders ship ${SHIPDAYS_LABEL} only.`, short: `Through ${SHIPDAYS_UNTIL} we ship Mon, Wed & Thu`, cta: 'Details', href: '/shipping' };
   }
   if (annPromoLive(now)) {
-    return { text: 'Anniversary Month: a new offer every day through October 31.', cta: 'See current deals', href: '/deals' };
+    return { text: 'Anniversary Month: a new offer every day through October 31.', short: 'Anniversary Month: a deal every day', cta: 'See current deals', href: '/deals' };
   }
   return DEFAULT_LINE;
 }
@@ -49,10 +49,11 @@ export default function AnnouncementBar() {
       }}
     >
       <Link href={line.href} style={{ color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
-        <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{line.text}</span>
+        <span className="iw-ann-long" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{line.text}</span>
+        <span className="iw-ann-short" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{line.short || line.text}</span>
         <span className="iw-ann-cta" style={{ whiteSpace: 'nowrap', textDecoration: 'underline', textUnderlineOffset: 3, opacity: 0.85 }}>{line.cta}</span>
       </Link>
-      <style>{`@media (max-width: 560px) { .iw-ann-cta { display: none; } }`}</style>
+      <style>{`@media (max-width: 560px) { .iw-ann-cta, .iw-ann-long { display: none; } } @media (min-width: 561px) { .iw-ann-short { display: none; } }`}</style>
     </div>
   );
 }
