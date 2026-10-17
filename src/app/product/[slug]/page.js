@@ -367,7 +367,7 @@ export default function ProductPage() {
               border: '1px solid var(--glass-border)',
               borderRadius: '20px',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              minHeight: '320px', marginBottom: '12px', overflow: 'hidden',
+              minHeight: '440px', marginBottom: '12px', overflow: 'hidden',
               position: 'relative',
             }}>
               {!spinOn && <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(0,207,255,0.06) 0%, transparent 65%)', pointerEvents: 'none' }} />}
@@ -381,7 +381,7 @@ export default function ProductPage() {
                       key={spinSrc} src={spinSrc} autoPlay muted loop playsInline
                       aria-label={`${product.name} rotating 360 degrees`}
                       style={{
-                        height: '280px', width: 'auto', margin: '16px', position: 'relative', zIndex: 1,
+                        height: '400px', maxWidth: '100%', width: 'auto', margin: '16px', position: 'relative', zIndex: 1,
                         background: '#fff', objectFit: 'contain',
                       }}
                     />
@@ -391,7 +391,7 @@ export default function ProductPage() {
                       alt={product.image?.altText || product.name}
                       onClick={() => images.length > 1 && setImgIndex((i) => (i + 1) % images.length)}
                       style={{
-                        maxHeight: '280px', objectFit: 'contain', position: 'relative', zIndex: 1,
+                        maxHeight: '400px', maxWidth: '100%', objectFit: 'contain', position: 'relative', zIndex: 1,
                         padding: '16px', cursor: images.length > 1 ? 'pointer' : 'default',
                       }}
                     />
@@ -460,13 +460,6 @@ export default function ProductPage() {
                 16px above it — the same reassurance stated twice reads as filler. */}
             <GuaranteeBadge style={{ marginTop: '16px' }} />
 
-            <a href="https://peptideparadigm.app" target="_blank" rel="noopener noreferrer"
-              style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '12px', padding: '12px 14px', background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.3)', borderRadius: '12px', color: 'var(--text-light)', textDecoration: 'none' }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/pp-app-mark.png" alt="Peptide Paradigm" width={42} height={42} style={{ width: 42, height: 42, borderRadius: 9, flexShrink: 0 }} />
-              <span style={{ flex: 1, fontSize: '0.85rem', lineHeight: 1.4 }}>Look up <strong>{product.name}</strong> in our free reference guide — the Peptide Paradigm app</span>
-              <ArrowRight size={15} color="#a78bfa" style={{ flexShrink: 0 }} />
-            </a>
           </div>
 
           {/* ── Right: Info ── */}

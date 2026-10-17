@@ -55,7 +55,10 @@
   --transition-slow: 400ms ease;
 
   /* ── Typography ─────────────────────────────────────────── */
-  --font-heading: 'Orbitron', 'Inter', sans-serif;
+  /* Headings: Manrope — calm and professional (operator, 17 Oct 2026). Orbitron is kept
+     for the logo wordmark only, via --font-brand. */
+  --font-heading: 'Manrope', 'Inter', sans-serif;
+  --font-brand:   'Orbitron', 'Inter', sans-serif;
   --font-body:    'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 
   /* ── Shadows ────────────────────────────────────────────── */

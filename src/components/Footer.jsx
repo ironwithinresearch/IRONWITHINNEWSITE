@@ -67,7 +67,7 @@ export default function Footer() {
                 <FlaskConical size={18} color="#fff" />
               </div>
               <span style={{
-                fontFamily: 'var(--font-heading)',
+                fontFamily: 'var(--font-brand)',
                 fontWeight: 800, fontSize: '1rem',
                 letterSpacing: '-0.01em',
               }}>Iron Within Research</span>

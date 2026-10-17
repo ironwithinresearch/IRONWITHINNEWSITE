@@ -21,7 +21,6 @@ import SaleCountdown from '@/components/SaleCountdown';
 import FillTheFreezerBanner from '@/components/FillTheFreezerBanner';
 import BirthdayBashBanner from '@/components/BirthdayBashBanner';
 import QueenBirthdayBanner from '@/components/QueenBirthdayBanner';
-import AppPromo from '@/components/AppPromo';
 
 // (Removed 2026-07-27: an unused category grid whose labels were outcome claims —
 //  'Anti-Aging', 'Healing & Recovery' etc. It was never rendered, and the real
@@ -180,7 +179,7 @@ export default function Home() {
     <>
 
       {/* ══ HERO ══ */}
-      <section style={{ position: 'relative', minHeight: '92vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', overflow: 'hidden', padding: '60px 24px' }}>
+      <section style={{ position: 'relative', minHeight: '68vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', overflow: 'hidden', padding: '60px 24px' }}>
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: `radial-gradient(ellipse at 20% 50%, rgba(124,58,237,0.15) 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, rgba(0,207,255,0.12) 0%, transparent 50%), radial-gradient(ellipse at 50% 90%, rgba(236,72,153,0.10) 0%, transparent 50%)` }} />
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.03, backgroundImage: `linear-gradient(rgba(0,207,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,207,255,1) 1px, transparent 1px)`, backgroundSize: '60px 60px' }} />
 
@@ -272,30 +271,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══ RESEARCH APP ══ */}
-      <AppPromo />
-
       {/* ══ GUARANTEE ══ */}
       <section style={{ padding: '20px 24px 60px' }}>
         <div style={{ maxWidth: 760, margin: '0 auto' }}>
           <GuaranteeBadge />
-        </div>
-      </section>
-
-      {/* ══ MIDDLE BANNER ══ */}
-      <section style={{ padding: '60px 24px', background: 'var(--card-dark)', borderTop: '1px solid var(--glass-border)', borderBottom: '1px solid var(--glass-border)' }}>
-        <div className="container">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '32px', textAlign: 'center' }}>
-            {[{ value: '40+', label: 'Products' }, { value: '99%+', label: 'Purity' }, { value: '1,500+', label: 'Researchers' }].map((item, i, arr) => (
-              <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
-                <div>
-                  <div style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 900, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', lineHeight: 1, marginBottom: '6px' }}>{item.value}</div>
-                  <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 500 }}>{item.label}</div>
-                </div>
-                {i < arr.length - 1 && <div style={{ width: 1, height: 48, background: 'var(--glass-border)' }} />}
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -327,27 +306,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══ EMAIL SUPPORT CTA ══ */}
-      <section style={{ padding: '80px 24px' }}>
-        <div className="container">
-          <div style={{ position: 'relative', background: 'var(--card-dark)', border: '2px solid var(--glass-border)', borderRadius: 'var(--radius-xl)', padding: 'clamp(36px, 5vw, 64px)', textAlign: 'center', overflow: 'hidden' }}>
-            <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(0,207,255,0.06) 0%, transparent 65%)', pointerEvents: 'none' }} />
-            <div style={{ position: 'relative', zIndex: 1 }}>
-              <Mail size={36} color="var(--primary-blue)" style={{ margin: '0 auto 16px' }} />
-              <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', fontWeight: 900, marginBottom: '16px' }}>
-                Email{' '}
-                <span style={{ background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Support</span>
-              </h2>
-              <p style={{ color: 'var(--text-secondary)', fontSize: 'clamp(0.95rem, 2vw, 1.1rem)', maxWidth: '480px', margin: '0 auto 32px', lineHeight: 1.7 }}>
-                Have questions? Our research team is ready to help. Reach us directly at any time.
-              </p>
-              <a href="mailto:support@ironwithin.io" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 32px', background: 'var(--gradient-primary)', borderRadius: 'var(--radius-md)', color: '#fff', fontWeight: 700, fontSize: '1rem', textDecoration: 'none', fontFamily: 'var(--font-body)', boxShadow: 'var(--glow-blue)' }}>
-                support@ironwithin.io <ArrowRight size={16} />
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <style>{`@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
     </>
