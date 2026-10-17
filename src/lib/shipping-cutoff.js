@@ -10,6 +10,8 @@
 // evaluated in America/Chicago and the zone is ALWAYS shown to the customer — "order by
 // 2pm" with no zone is ambiguous to a buyer in California and to the packer alike.
 // If the operator meant Eastern, change ZONE and ZONE_LABEL together; nothing else.
+import { shipDaysLive, SHIPDAYS } from './shipDays';
+
 export const ZONE = 'America/Chicago';
 export const ZONE_LABEL = 'CT';
 export const CUTOFF_HOUR = 14; // 2:00pm
@@ -46,9 +48,10 @@ export function dispatchStatus(now = new Date()) {
   const { dow, hour, minute } = localParts(now);
   const mins = hour * 60 + minute;
   const cutoff = CUTOFF_HOUR * 60;
-  const isWeekday = dow >= 1 && dow <= 5;
+  // Normally Mon–Fri; during the reduced schedule (src/lib/shipDays.js) only those days.
+  const shipDays = shipDaysLive(now.getTime()) ? SHIPDAYS : [1, 2, 3, 4, 5];
 
-  if (isWeekday && mins < cutoff) {
+  if (shipDays.includes(dow) && mins < cutoff) {
     return {
       todayPickup: true,
       shipsLabel: 'today',
@@ -57,17 +60,11 @@ export function dispatchStatus(now = new Date()) {
     };
   }
 
-  // Missed today's collection (or it's the weekend) — find the next working day.
+  // Missed today's collection (or today is not a ship day) — find the next ship day.
   let next = (dow + 1) % 7;
-  if (isWeekday && mins >= cutoff) {
-    next = dow === 5 ? 1 : dow + 1; // Friday after cutoff rolls to Monday
-  } else if (dow === 6) {
-    next = 1; // Saturday
-  } else if (dow === 0) {
-    next = 1; // Sunday
-  }
+  while (!shipDays.includes(next)) next = (next + 1) % 7;
 
-  const label = next === 1 && (dow === 5 || dow === 6 || dow === 0) ? 'Monday' : DAY_NAME[next];
+  const label = DAY_NAME[next];
   return {
     todayPickup: false,
     shipsLabel: label,

@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { Truck, CreditCard } from 'lucide-react';
+import { shipDaysLive, SHIPDAYS_LABEL, SHIPDAYS_UNTIL } from '@/lib/shipDays';
 
 // Checkout pop-up. Two notices share one modal:
 //  1) Shipping pause: Thu Jul 16 (2 PM CT) → Sunday Jul 19 — auto-hides once shipping resumes.
@@ -17,18 +18,24 @@ const PAYMENT_NOTICE_ACTIVE = false;
 const ACCEPTED_METHODS = 'Zelle, Venmo, and Cash App';
 
 // Bump the suffix whenever the notice content changes so returning shoppers see it again.
-const SEEN_KEY = 'iw_checkout_notice_seen_2026_07_nocard';
+const SEEN_KEY = 'iw_checkout_notice_seen_2026_10_shipdays';
 
 export default function ShippingPauseNotice() {
   const pathname = usePathname();
   const [show, setShow] = useState(false);
   const [afterCutoff, setAfterCutoff] = useState(false);
   const [shipActive, setShipActive] = useState(false);
+  const [shipDays, setShipDays] = useState(false);
 
   useEffect(() => {
-    if (!pathname || !pathname.startsWith('/checkout')) return;
+    if (!pathname) return;
     const now = Date.now();
-    const shipping = now < SHIP_END;
+    // Reduced ship days (src/lib/shipDays.js) pop up on ANY page, once per visit.
+    // The old pause / payment notices stay checkout-only.
+    const days = shipDaysLive(now);
+    if (!days && !pathname.startsWith('/checkout')) return;
+    const shipping = now < SHIP_END || days;
+    setShipDays(days);
     if (!shipping && !PAYMENT_NOTICE_ACTIVE) return; // nothing to show
     try { if (sessionStorage.getItem(SEEN_KEY)) return; } catch {}
     setShipActive(shipping);
@@ -58,10 +65,12 @@ export default function ShippingPauseNotice() {
           <>
             <div style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#fbbf24' }}>Shipping notice</div>
             <h2 style={{ fontFamily: 'var(--font-heading, inherit)', fontSize: '1.5rem', fontWeight: 900, color: '#fff', margin: '6px 0 10px' }}>
-              Orders ship Sunday, July 19
+              {shipDays ? `We ship ${SHIPDAYS_LABEL}` : 'Orders ship Sunday, July 19'}
             </h2>
             <p style={{ color: 'rgba(255,255,255,0.82)', fontSize: '0.95rem', lineHeight: 1.55, margin: '0 0 18px' }}>
-              {afterCutoff
+              {shipDays
+                ? `For the next two weeks (through ${SHIPDAYS_UNTIL}), orders ship on Mondays, Wednesdays and Thursdays only. Order any time — your order goes out on the next ship day. Thanks for your patience! 💙`
+                : afterCutoff
                 ? 'Our shipping is paused for a short break until Sunday. Any order you place now is safe — it will ship Sunday, July 19. Thanks for your patience! 💙'
                 : 'Heads up — shipping pauses Thursday, July 16 at 2 PM CT for a short break. Order before then to ship right away; orders placed after 2 PM Thursday will ship Sunday, July 19.'}
             </p>
@@ -88,7 +97,7 @@ export default function ShippingPauseNotice() {
         )}
 
         <button onClick={close} style={{ display: 'block', width: '100%', marginTop: 20, padding: '13px', borderRadius: 12, background: `linear-gradient(90deg, rgb(${accent}), ${shipActive ? '#f59e0b' : '#0a93c4'})`, color: shipActive ? '#1a1205' : '#04121a', fontWeight: 800, fontSize: '1rem', border: 'none', cursor: 'pointer' }}>
-          I understand — continue to checkout
+          {shipDays && !(pathname || '').startsWith('/checkout') ? 'Got it — keep shopping' : 'I understand — continue to checkout'}
         </button>
       </div>
     </div>

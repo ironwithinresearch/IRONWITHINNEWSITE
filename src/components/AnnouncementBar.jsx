@@ -6,6 +6,7 @@ import { annPromoLive } from '@/lib/anniversary';
 import { p2pPaused, p2pEventLive, p2pPct, GIFT_MIN, GIFT_FROM, GIFT_TO, GIFT_BIG_MIN } from '@/lib/p2p';
 import { ffLive, ffCurrent, ffCountdownTo, ffFormat, FF_HEADLINE, FF_FLAT, FF_WINDOWS, FF_GIFT, FF_SITEWIDE_WEEKS, ffTitle, ffPct } from '@/lib/freakyFridays';
 import { GIVEAWAY, giveawayOpen } from '@/lib/giveaway';
+import { shipDaysLive, SHIPDAYS_MESSAGE } from '@/lib/shipDays';
 
 /* Scrolling announcement ticker, fixed above the navbar (height 36px).
    The navbar (top: 36) and main padding are offset to match. */
@@ -255,6 +256,8 @@ export default function AnnouncementBar() {
       setAnnActive(true);
       promos.splice((ffLive(now) ? 1 : 0) + (now >= HF_TEASE_FROM && now < HF_END ? 1 : 0), 0, '\uD83C\uDF82  IRON WITHIN TURNS ONE \u2014 31 days of deals, October 1\u201331 \u00B7 tap for the full calendar');
     }
+    // Reduced shipping days lead the bar while they last — it changes what every buyer gets.
+    if (shipDaysLive(now)) promos.unshift(SHIPDAYS_MESSAGE);
     setMessages([...promos, ...base]);
   }, []);
 
