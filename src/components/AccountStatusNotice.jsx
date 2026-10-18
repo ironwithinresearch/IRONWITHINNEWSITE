@@ -16,7 +16,9 @@ import { useAuth } from '../context/AuthContext';
 import { getToken } from '../lib/auth';
 
 const VERIFY_MESSAGES = {
-  '1': { tone: 'ok', title: 'Email confirmed', body: 'Thanks — your email is confirmed. Our team has been notified and will review your account; we will email you when it is approved.' },
+  // Confirming runs the automated screening: most accounts are approved on the spot, the
+  // rest are flagged for a person to review (the pending box below then explains).
+  '1': { tone: 'ok', title: 'Email confirmed', body: 'Thanks — your email is confirmed and your account has been reviewed. If it needs a closer look you will see a note below; otherwise you are ready to order.' },
   already: { tone: 'ok', title: 'Email already confirmed', body: 'Your email address was already confirmed.' },
   invalid: { tone: 'error', title: 'That confirmation link is not valid', body: 'It may have been replaced by a newer email. Use the button below to get a fresh link.' },
   expired: { tone: 'error', title: 'That confirmation link has expired', body: 'Links last 7 days. Use the button below to get a fresh one.' },
