@@ -24,6 +24,8 @@ import PaymentMethods from '../../components/PaymentMethods';
 import PeptidesPayContainer from '../../components/PeptidesPayContainer';
 import DispatchNotice from '../../components/DispatchNotice';
 import { isPoBox, PO_BOX_MESSAGE } from '../../lib/poBox';
+import { COUNTRIES } from '../../lib/countries';
+import AccountStatusNotice from '../../components/AccountStatusNotice';
 import {
   ShieldCheck, CreditCard, Truck, ChevronRight,
   Lock, CheckCircle2, Package, ArrowRight,
@@ -178,30 +180,7 @@ const PP_METHOD  = 'iwr_peptidespay';
 const PP_ENABLED = true;
 
 
-// Countries for the checkout address (ISO 3166-1 alpha-2 codes — WooCommerce format).
-// US/CA/GB/AU surfaced first, then the rest alphabetically.
-const COUNTRIES = [
-  { code: 'US', name: 'United States' }, { code: 'CA', name: 'Canada' },
-  { code: 'GB', name: 'United Kingdom' }, { code: 'AU', name: 'Australia' },
-  { code: 'AE', name: 'United Arab Emirates' }, { code: 'AR', name: 'Argentina' },
-  { code: 'AT', name: 'Austria' }, { code: 'BE', name: 'Belgium' }, { code: 'BR', name: 'Brazil' },
-  { code: 'BG', name: 'Bulgaria' }, { code: 'CL', name: 'Chile' }, { code: 'CN', name: 'China' },
-  { code: 'CO', name: 'Colombia' }, { code: 'HR', name: 'Croatia' }, { code: 'CZ', name: 'Czechia' },
-  { code: 'DK', name: 'Denmark' }, { code: 'EG', name: 'Egypt' }, { code: 'EE', name: 'Estonia' },
-  { code: 'FI', name: 'Finland' }, { code: 'FR', name: 'France' }, { code: 'DE', name: 'Germany' },
-  { code: 'GR', name: 'Greece' }, { code: 'HK', name: 'Hong Kong' }, { code: 'HU', name: 'Hungary' },
-  { code: 'IS', name: 'Iceland' }, { code: 'IN', name: 'India' }, { code: 'ID', name: 'Indonesia' },
-  { code: 'IE', name: 'Ireland' }, { code: 'IL', name: 'Israel' }, { code: 'IT', name: 'Italy' },
-  { code: 'JP', name: 'Japan' }, { code: 'KR', name: 'South Korea' }, { code: 'LV', name: 'Latvia' },
-  { code: 'LT', name: 'Lithuania' }, { code: 'LU', name: 'Luxembourg' }, { code: 'MY', name: 'Malaysia' },
-  { code: 'MX', name: 'Mexico' }, { code: 'NL', name: 'Netherlands' }, { code: 'NZ', name: 'New Zealand' },
-  { code: 'NO', name: 'Norway' }, { code: 'PH', name: 'Philippines' }, { code: 'PL', name: 'Poland' },
-  { code: 'PT', name: 'Portugal' }, { code: 'RO', name: 'Romania' }, { code: 'SA', name: 'Saudi Arabia' },
-  { code: 'SG', name: 'Singapore' }, { code: 'SK', name: 'Slovakia' }, { code: 'SI', name: 'Slovenia' },
-  { code: 'ZA', name: 'South Africa' }, { code: 'ES', name: 'Spain' }, { code: 'SE', name: 'Sweden' },
-  { code: 'CH', name: 'Switzerland' }, { code: 'TW', name: 'Taiwan' }, { code: 'TH', name: 'Thailand' },
-  { code: 'TR', name: 'Turkey' }, { code: 'UA', name: 'Ukraine' }, { code: 'VN', name: 'Vietnam' },
-];
+// Countries (ISO alpha-2, WooCommerce format) live in src/lib/countries.js — shared with /register.
 
 // Helper: strip all HTML from price for plain text use (e.g. button label)
 function plainPrice(price) {
@@ -220,7 +199,14 @@ export default function CheckoutPage() {
   const { cart, cartItems, cartTotal, cartSubtotal, refetchCart, addToCart, removeItem,
     setShippingAddress, setShippingMethod, availableShippingRates, chosenShippingMethods, shippingTotal,
     updatingAddress, updatingShipping } = useCart();
-  const { isLoggedIn, user, mounted: authMounted } = useAuth();
+  const { isLoggedIn, user, mounted: authMounted, accountStatus } = useAuth();
+  // Only approved researcher accounts can buy (backend iw-research-access.php refuses the
+  // order otherwise). null = status not loaded yet → don't block on the client.
+  const accountBlocked = !!accountStatus && accountStatus.canPurchase === false;
+  // The three research-use confirmations — unchecked, all required, recorded on the order
+  // (with this exact wording and a timestamp) by the backend.
+  const [ruoAcks, setRuoAcks] = useState({ age_21: false, research_org: false, not_human_use: false });
+  const ruoAcked = ruoAcks.age_21 && ruoAcks.research_org && ruoAcks.not_human_use;
 
   const [currentStep, setCurrentStep] = useState(0);
   /* Checkout failures used to be native alert()s. On a phone an alert is a dead end:
@@ -561,6 +547,17 @@ export default function CheckoutPage() {
     // PeptidesPayment mounts its own card form on the order screen rather than sending the
     // buyer off-site. That is a success, not a failure — so a missing redirect is only an
     // error when we also have no order to fall through to.
+    // Refused by the research-access check (account pending / confirmations missing):
+    // say exactly that — nothing was created, so no payment wording.
+    const refusal = errors?.[0]?.message || '';
+    if (!result?.order && /pending approval|research-use confirmations/i.test(refusal)) {
+      setCheckoutError({
+        title: /pending approval/i.test(refusal) ? 'Your account is pending approval' : 'Please confirm the research-use statements',
+        body: <>{refusal} No order was placed and nothing has been charged.</>,
+      });
+      return;
+    }
+
     const routedToContainer =
       method === CARD_METHOD && !result?.redirect && !!result?.order?.databaseId;
 
@@ -666,6 +663,11 @@ export default function CheckoutPage() {
     setCheckoutError(null);                    // a retry starts clean
     if (hasBackorder && !backorderAck) return; // require backorder acknowledgment
     if (!methodChosen) return;                 // nothing is pre-selected; the buyer must pick
+    if (accountBlocked) return;                // pending accounts can't buy (backend enforces too)
+    if (!ruoAcked) {
+      setCheckoutError({ title: 'Please confirm the research-use statements', body: 'Tick all three boxes above Place Order to continue.' });
+      return;
+    }
     payMethodRef.current = effectiveMethod;
     const billingInfo = billing.sameAsShipping ? shipping : billing;
     if (isPoBox(shipping.address, billingInfo.address)) {
@@ -688,6 +690,7 @@ export default function CheckoutPage() {
       ppOrderId: ppApproved?.ppOrderId || '',
       ppProxyUrl: ppApproved?.proxyUrl || '',
       ppProxyId: ppApproved?.proxyId || '',
+      ruoAcks,
     });
     try {
       const { data, errors } = await checkoutMutation({ variables: input });
@@ -894,6 +897,9 @@ export default function CheckoutPage() {
             </div>
           ))}
         </div>
+
+        {/* Pending accounts learn it here, before typing an address — not at Place Order. */}
+        {accountBlocked && <AccountStatusNotice style={{ maxWidth: 760, margin: '-24px auto 28px' }} />}
 
         <div className="checkout-grid">
 
@@ -1145,12 +1151,33 @@ export default function CheckoutPage() {
                   </div>
                 )}
 
+                {/* Research-use confirmations — all three required, none pre-ticked. */}
+                <fieldset style={{ border: '1px solid var(--glass-border)', borderRadius: '12px', padding: '12px 14px 4px', margin: '0 0 12px' }}>
+                  <legend style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-light)', padding: '0 6px' }}>Required before you order</legend>
+                  {[
+                    ['age_21', 'I am 21 years of age or older.'],
+                    ['research_org', 'I represent a legitimate research organization and will use these products for lawful laboratory research only.'],
+                    ['not_human_use', 'I understand these products are not for human or veterinary use, diagnosis, treatment or consumption.'],
+                  ].map(([k, text]) => (
+                    <label key={k} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '10px', cursor: 'pointer', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+                      <input type="checkbox" required checked={ruoAcks[k]}
+                        onChange={e => { const v = e.target.checked; setRuoAcks(a => ({ ...a, [k]: v })); setCheckoutError(null); }}
+                        style={{ width: 20, height: 20, marginTop: '1px', accentColor: 'var(--primary-blue)', cursor: 'pointer', flexShrink: 0 }} />
+                      <span>{text}</span>
+                    </label>
+                  ))}
+                </fieldset>
+
                 {checkoutError && <Notice title={checkoutError.title} body={checkoutError.body} />}
 
-                <button onClick={handlePlaceOrder} disabled={placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal}
-                  style={{ width: '100%', padding: '14px', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: (placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal) ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: 'var(--glow-blue)', opacity: (placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal) ? 0.6 : 1 }}>
+                <button onClick={handlePlaceOrder} disabled={placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal || accountBlocked || !ruoAcked}
+                  style={{ width: '100%', padding: '14px', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: (placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal || accountBlocked || !ruoAcked) ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: 'var(--glow-blue)', opacity: (placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal || accountBlocked || !ruoAcked) ? 0.6 : 1 }}>
                   {placingOrder ? (
                     <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Placing Order…</>
+                  ) : accountBlocked ? (
+                    <><Lock size={15} /> Account pending approval</>
+                  ) : !ruoAcked ? (
+                    <><Lock size={15} /> Tick the three boxes above</>
                   ) : !methodChosen ? (
                     <><Lock size={15} /> Choose a payment method</>
                   ) : awaitingPayPal ? (

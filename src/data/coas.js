@@ -337,17 +337,17 @@ export const coaBySlug = {
       { coaFile: '/coa-pdf/tb-500-5928420.pdf', batchDate: '8/2/2026 · Lot IWR-2607-TB50010L' },
     ],
   },
-  'tesamorelin': {
-    coaFile: '/coa-pdf/tesamorelin-2026-10-09.pdf',
+  'tsm-6': {
+    coaFile: '/coa-pdf/tsm-6-2026-10-09.pdf',
     batchDate: '10/9/2026 · Lot IWR-1010-TSM',
-    productName: 'Tesamorelin',
+    productName: 'TSM-6',
     batches: [
-      { coaFile: '/coa-pdf/tesamorelin-2026-10-09.pdf', batchDate: '10/9/2026 · Lot IWR-1010-TSM' },
-      { coaFile: '/coa-pdf/tesamorelin.pdf', batchDate: '8/2/2026 · Lot IWR-2607-TSM10L' },
+      { coaFile: '/coa-pdf/tsm-6-2026-10-09.pdf', batchDate: '10/9/2026 · Lot IWR-1010-TSM' },
+      { coaFile: '/coa-pdf/tsm-6.pdf', batchDate: '8/2/2026 · Lot IWR-2607-TSM10L' },
     ],
   },
-  'tesamorelin-ipamorelin-5-5': {
-    coaFile: '/coa-pdf/tesamorelin-ipamorelin-5-5.pdf',
+  'tsm-6-ipa': {
+    coaFile: '/coa-pdf/tsm-6-ipa.pdf',
     batchDate: '8/2/2026 · Lot IWR-2607-TSMIPA10',
     productName: 'TSM-6 / IPA',
   },
@@ -499,7 +499,9 @@ export const coaSlugByFile = (() => {
    a naming drift between the label sheet and this file has to be absorbed here
    rather than fixed at the printer. */
 const labelSlugAliases = {
-  'tsm-6': 'tesamorelin',   // store hides the Tesamorelin name; labels say TSM-6
+  'tsm-6-ipa-5mg-5mg': 'tsm-6-ipa',
+  // Labels printed before the 18 Oct 2026 rename carry the old slugs; those URLs are
+  // 301'd to the tsm-6 forms in next.config.js before they ever reach this lookup.
 };
 
 export function getCoaByFile(file) {

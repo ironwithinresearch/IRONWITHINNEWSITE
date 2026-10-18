@@ -102,10 +102,6 @@
     "tb-500-2026-08-13.pdf",
     "tb-500-5928420.pdf"
   ],
-  "tesamorelin": [
-    "tesamorelin-2026-10-09.pdf",
-    "tesamorelin.pdf"
-  ],
   "thymosin-alpha-1": [
     "thymosin-alpha-1-2026-10-09.pdf",
     "thymosin-alpha-1-batch0063.pdf",
@@ -120,5 +116,9 @@
     "trz-2-9109868.pdf",
     "trz-2-6878731.pdf",
     "trz-2.pdf"
+  ],
+  "tsm-6": [
+    "tsm-6-2026-10-09.pdf",
+    "tsm-6.pdf"
   ]
 }

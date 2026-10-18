@@ -45,7 +45,7 @@ export const CHECKOUT = gql`
 // Build the checkout input object for the mutation
 // paymentMethod: 'cod' for Cash on Delivery (no Stripe needed to test)
 // paymentMethod: 'stripe' when Stripe is integrated
-export function buildCheckoutInput({ billing, transactionId = '', paymentMethod = 'cod', customerNote = '', affiliateRef = '', shippingMethod = '', referrerCode = '', rewardsPts = 0, routeSelected = false, holdChoice = false, giftChoice = '', ppOrderId = '', ppProxyUrl = '', ppProxyId = '' }) {
+export function buildCheckoutInput({ billing, transactionId = '', paymentMethod = 'cod', customerNote = '', affiliateRef = '', shippingMethod = '', referrerCode = '', rewardsPts = 0, routeSelected = false, holdChoice = false, giftChoice = '', ppOrderId = '', ppProxyUrl = '', ppProxyId = '', ruoAcks = null }) {
   const billingAddress = {
     firstName: billing.firstName || '',
     lastName: billing.lastName || '',
@@ -64,6 +64,14 @@ export function buildCheckoutInput({ billing, transactionId = '', paymentMethod 
   // - _iw_ship_rate: the chosen shipping rate id; a backend plugin enforces the
   //   correct shipping line/cost from it (WooGraphQL's own chosen method is flaky).
   const metaData = [];
+  // Research-use confirmations ticked at checkout. Only the yes/no travels; the backend
+  // (iw-research-access.php) checks all three before the order is created and records its
+  // own copy of the exact wording with a server timestamp.
+  if (ruoAcks) {
+    for (const k of ['age_21', 'research_org', 'not_human_use']) {
+      if (ruoAcks[k]) metaData.push({ key: `_iw_ack_${k}`, value: '1' });
+    }
+  }
   if (affiliateRef) metaData.push({ key: 'goaffpro_ref', value: String(affiliateRef) });
   if (referrerCode) metaData.push({ key: '_iw_referrer_code', value: String(referrerCode) });
   if (shippingMethod) metaData.push({ key: '_iw_ship_rate', value: String(shippingMethod) });

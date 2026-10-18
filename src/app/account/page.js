@@ -8,6 +8,7 @@ import { GET_CUSTOMER, GET_ORDERS } from '@/lib/queries/orders';
 import { useOrderHoldInfo, holdAwareStatus } from '@/lib/holdShip';
 import { UPDATE_CUSTOMER } from '@/lib/queries/auth';
 import { useAuth } from '@/context/AuthContext';
+import AccountStatusNotice from '@/components/AccountStatusNotice';
 import { decodePriceHtml } from '@/lib/utils';
 import { fetchStoreCredit } from '@/lib/storeCredit';
 import {
@@ -852,6 +853,9 @@ export default function AccountPage() {
             <LogOut size={15} /> Sign Out
           </button>
         </div>
+
+        {/* ── Research-access status (pending email / pending approval) ── */}
+        <AccountStatusNotice showVerifyResult style={{ marginBottom: '12px' }} />
 
         {/* ── Menu grid ── */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>

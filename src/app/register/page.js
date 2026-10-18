@@ -1,321 +1,354 @@
 'use client';
 // src/app/register/page.js
+//
+// Researcher sign-up. Posts to /api/register → backend iw-research-access.php, which
+// re-validates every field, stores the profile + the three acknowledgements (exact wording,
+// timestamp, IP) as user meta, creates the account as PENDING and emails a confirmation
+// link. A new account can browse straight away but cannot order until the email is
+// confirmed AND our team approves it — the page says so plainly after sign-up.
+//
+// Required: legal name, work email, phone, address, research purpose, the three boxes.
+// Optional (Brian, 18 Oct 2026 — "don't make the Organization field mandatory"):
+// organization name, organization type, website, institution ID / EIN / credentials.
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useId } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import {
   FlaskConical, ArrowRight, Eye, EyeOff,
-  AlertCircle, CheckCircle2,
+  AlertCircle, CheckCircle2, MailCheck,
 } from 'lucide-react';
-import { useMutation } from '@apollo/client';
-import { REGISTER_CUSTOMER } from '../../lib/queries/auth';
 import { useAuth } from '../../context/AuthContext';
+import { setAgeCookie } from '../../lib/gate';
+import { COUNTRIES } from '../../lib/countries';
+
+// Exact wording — the backend stores its own copy of these strings with the timestamp.
+const ACKS = [
+  { key: 'age_21_terms', node: (
+    <>I confirm I am <strong style={{ color: 'var(--text-light)' }}>21 years of age or older</strong> and agree to the <Link href="/terms" style={{ color: 'var(--primary-blue)' }}>Terms</Link> and <Link href="/disclaimer" style={{ color: 'var(--primary-blue)' }}>Disclaimer</Link>. All products are for research use only — not for human consumption.</>
+  ) },
+  { key: 'research_org', node: <>I represent a legitimate research organization and will use these products for lawful laboratory research only.</> },
+  { key: 'not_human_use', node: <>I understand these products are not for human or veterinary use, diagnosis, treatment or consumption.</> },
+];
+
+const ORG_TYPES = [
+  '', 'University / academic lab', 'Private research laboratory', 'Biotech / pharmaceutical company',
+  'Contract research organization (CRO)', 'Independent researcher', 'Other',
+];
+
+const EMPTY = {
+  firstName: '', lastName: '', email: '', phone: '',
+  address1: '', address2: '', city: '', state: '', postcode: '', country: 'US',
+  researchPurpose: '', orgName: '', orgType: '', orgWebsite: '', orgCredentials: '',
+  password: '', confirmPassword: '', company_website_hp: '',
+};
 
 export default function RegisterPage() {
-  const router = useRouter();
   const { login } = useAuth();
-  // Where to go after signing up (e.g. back to /checkout). Read after mount to
-  // avoid a static-prerender/hydration mismatch; only allow same-site paths.
-  const [redirectTo, setRedirectTo] = useState('/account');
+  // Where to go after signing up. Read after mount to avoid a static-prerender/hydration
+  // mismatch; only same-site paths are honoured.
+  const [redirectTo, setRedirectTo] = useState('/shop');
   const [loginHref, setLoginHref] = useState('/login');
   useEffect(() => {
     const rd = new URLSearchParams(window.location.search).get('redirect') || '';
-    if (rd.startsWith('/')) {
+    if (rd.startsWith('/') && !rd.startsWith('//')) {
       setRedirectTo(rd);
       setLoginHref(`/login?redirect=${encodeURIComponent(rd)}`);
     }
   }, []);
 
-  const [form, setForm] = useState({
-    firstName: '', lastName: '', email: '', password: '', confirmPassword: '',
-  });
+  const [form, setForm] = useState(EMPTY);
+  const [acks, setAcks] = useState({ age_21_terms: false, research_org: false, not_human_use: false });
   const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
-  const [agree21, setAgree21] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(null); // { email, signedIn }
 
-  // ── FIX: No authToken/refreshToken in response — just customer fields.
-  // After registration succeeds, we call the JWT login endpoint directly.
-  const [registerCustomer, { loading }] = useMutation(REGISTER_CUSTOMER, {
-    onCompleted: async (data) => {
-      const customer = data?.registerCustomer?.customer;
-      if (customer) {
-        setSuccess(true);
-        // Auto-login via JWT after successful registration
-        try {
-          const result = await login(form.email, form.password);
-          if (result.success) {
-            setTimeout(() => router.push(redirectTo), 1000);
-          } else {
-            // Registration worked but auto-login failed — send to login page
-            setTimeout(() => router.push('/login'), 1500);
-          }
-        } catch {
-          setTimeout(() => router.push('/login'), 1500);
-        }
-      }
-    },
-    onError: (err) => {
-      // Parse common WooCommerce registration errors
-      const msg = err.message || '';
-      if (msg.includes('already registered') || msg.includes('email_exists')) {
-        setError('An account with this email already exists.');
-      } else if (msg.includes('username_exists')) {
-        setError('Username already taken. Please try again.');
-      } else {
-        setError(msg || 'Registration failed. Please try again.');
-      }
-    },
-  });
+  const set = (key) => (e) => { setForm((f) => ({ ...f, [key]: e.target.value })); setError(''); };
+  const allAcked = ACKS.every((a) => acks[a.key]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    if (form.password.length < 8) { setError('Password must be at least 8 characters.'); return; }
+    if (form.password !== form.confirmPassword) { setError('Passwords do not match.'); return; }
+    if (!allAcked) { setError('Please tick all three confirmations to create an account.'); return; }
 
-    if (form.password !== form.confirmPassword) {
-      setError('Passwords do not match.');
-      return;
+    setLoading(true);
+    try {
+      const { confirmPassword, ...payload } = form;
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...payload, acks }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.success) {
+        setError(data.error || 'Registration failed. Please try again.');
+        setLoading(false);
+        return;
+      }
+      // The visitor confirmed 21+ on this form — let the server-side age gate know.
+      setAgeCookie();
+      let signedIn = false;
+      try {
+        const r = await login(form.email, form.password);
+        signedIn = !!r?.success;
+      } catch {}
+      setDone({ email: form.email, signedIn });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch {
+      setError('We could not reach the server. Please check your connection and try again.');
     }
-    if (form.password.length < 8) {
-      setError('Password must be at least 8 characters.');
-      return;
-    }
-    if (!agree21) {
-      setError('You must confirm you are 21 or older to create an account.');
-      return;
-    }
-
-    // Generate unique username from email
-    const base = form.email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '');
-    const username = base + Math.floor(Math.random() * 9000 + 1000);
-
-    registerCustomer({
-      variables: {
-        username,
-        email: form.email,
-        password: form.password,
-        firstName: form.firstName,
-        lastName: form.lastName,
-      },
-    });
+    setLoading(false);
   };
 
-  const set = (key) => (e) => setForm(f => ({ ...f, [key]: e.target.value }));
+  if (done) {
+    return (
+      <Shell>
+        <div style={{ textAlign: 'center' }}>
+          <MailCheck size={40} color="var(--primary-blue)" style={{ marginBottom: 12 }} />
+          <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.5rem', fontWeight: 900, margin: '0 0 10px' }}>
+            Account created — confirm your email
+          </h1>
+          <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6, margin: '0 0 14px' }}>
+            We sent a confirmation link to <strong style={{ color: 'var(--text-light)' }}>{done.email}</strong>.
+            Click it to confirm your address.
+          </p>
+          <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6, margin: '0 0 22px', fontSize: '0.92rem' }}>
+            Your account is <strong style={{ color: 'var(--text-light)' }}>pending approval</strong>: our team
+            reviews every new researcher account before the first order, and we will email you as soon
+            as it is approved. You can browse the catalog in the meantime.
+          </p>
+          {done.signedIn ? (
+            <Link href={redirectTo} style={primaryBtn}>Continue <ArrowRight size={15} /></Link>
+          ) : (
+            <Link href={loginHref} style={primaryBtn}>Sign in <ArrowRight size={15} /></Link>
+          )}
+        </div>
+      </Shell>
+    );
+  }
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      padding: '40px 24px',
-    }}>
-      {/* Background glow */}
-      <div style={{
-        position: 'fixed', inset: 0, pointerEvents: 'none',
-        background: `
-          radial-gradient(ellipse at 25% 35%, rgba(124,58,237,0.08) 0%, transparent 55%),
-          radial-gradient(ellipse at 75% 65%, rgba(0,207,255,0.07) 0%, transparent 55%)
-        `,
-      }} />
-
-      <div style={{ width: '100%', maxWidth: 480, position: 'relative', zIndex: 1 }}>
-
-        {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <div style={{
-            width: 56, height: 56, borderRadius: '14px',
-            background: 'linear-gradient(135deg, var(--primary-blue, #00cfff), var(--pink, #ec4899))',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            margin: '0 auto 14px',
-            boxShadow: '0 0 24px rgba(0,207,255,0.4)',
-          }}>
-            <FlaskConical size={26} color="#fff" />
-          </div>
-          <h1 style={{
-            fontFamily: 'var(--font-heading)',
-            fontSize: '1.7rem', fontWeight: 900, marginBottom: '6px',
-          }}>
-            Create Account
-          </h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-            Join 1,500+ researchers
-          </p>
-        </div>
-
-        {/* Card */}
-        <div style={{
-          background: 'var(--card-dark)',
-          border: '1px solid var(--glass-border)',
-          borderRadius: '20px',
-          padding: '36px',
-        }}>
-
-          {/* Success state */}
-          {success && (
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: '8px',
-              padding: '14px', marginBottom: '20px',
-              background: 'rgba(52,211,153,0.1)',
-              border: '1px solid rgba(52,211,153,0.3)',
-              borderRadius: '10px', color: '#34d399', fontSize: '0.875rem',
-            }}>
-              <CheckCircle2 size={16} />
-              Account created! Signing you in…
-            </div>
-          )}
-
-          {/* Error state */}
-          {error && (
-            <div style={{
-              display: 'flex', alignItems: 'flex-start', gap: '8px',
-              padding: '12px 14px', marginBottom: '20px',
-              background: 'rgba(239,68,68,0.1)',
-              border: '1px solid rgba(239,68,68,0.3)',
-              borderRadius: '10px', color: '#f87171', fontSize: '0.875rem',
-            }}>
-              <AlertCircle size={15} style={{ flexShrink: 0, marginTop: 1 }} />
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit}>
-
-            {/* Name row */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '16px' }}>
-              <div>
-                <label style={labelStyle}>First Name</label>
-                <input type="text" value={form.firstName} onChange={set('firstName')}
-                  placeholder="John" required style={inputStyle}
-                  onFocus={e => e.target.style.borderColor = 'var(--primary-blue)'}
-                  onBlur={e => e.target.style.borderColor = 'var(--glass-border)'}
-                />
-              </div>
-              <div>
-                <label style={labelStyle}>Last Name</label>
-                <input type="text" value={form.lastName} onChange={set('lastName')}
-                  placeholder="Doe" required style={inputStyle}
-                  onFocus={e => e.target.style.borderColor = 'var(--primary-blue)'}
-                  onBlur={e => e.target.style.borderColor = 'var(--glass-border)'}
-                />
-              </div>
-            </div>
-
-            {/* Email */}
-            <div style={{ marginBottom: '16px' }}>
-              <label style={labelStyle}>Email</label>
-              <input type="email" value={form.email} onChange={set('email')}
-                placeholder="you@example.com" required style={inputStyle}
-                onFocus={e => e.target.style.borderColor = 'var(--primary-blue)'}
-                onBlur={e => e.target.style.borderColor = 'var(--glass-border)'}
-              />
-            </div>
-
-            {/* Password */}
-            <div style={{ marginBottom: '16px' }}>
-              <label style={labelStyle}>Password</label>
-              <div style={{ position: 'relative' }}>
-                <input
-                  type={showPass ? 'text' : 'password'}
-                  value={form.password} onChange={set('password')}
-                  placeholder="Min 8 characters" required
-                  style={{ ...inputStyle, paddingRight: '42px' }}
-                  onFocus={e => e.target.style.borderColor = 'var(--primary-blue)'}
-                  onBlur={e => e.target.style.borderColor = 'var(--glass-border)'}
-                />
-                <button type="button" onClick={() => setShowPass(v => !v)} style={{
-                  position: 'absolute', right: '12px', top: '50%',
-                  transform: 'translateY(-50%)',
-                  background: 'none', border: 'none',
-                  color: 'var(--text-muted)', cursor: 'pointer', display: 'flex',
-                }}>
-                  {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
-                </button>
-              </div>
-            </div>
-
-            {/* Confirm password */}
-            <div style={{ marginBottom: '24px' }}>
-              <label style={labelStyle}>Confirm Password</label>
-              <input
-                type="password" value={form.confirmPassword} onChange={set('confirmPassword')}
-                placeholder="••••••••" required style={inputStyle}
-                onFocus={e => e.target.style.borderColor = 'var(--primary-blue)'}
-                onBlur={e => e.target.style.borderColor = 'var(--glass-border)'}
-              />
-            </div>
-
-            {/* 21+ confirmation */}
-            <label style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '22px', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: '0.82rem', lineHeight: 1.55 }}>
-              <input
-                type="checkbox" checked={agree21} onChange={e => { setAgree21(e.target.checked); setError(''); }}
-                style={{ marginTop: '2px', width: 16, height: 16, accentColor: 'var(--primary-blue)', flexShrink: 0, cursor: 'pointer' }}
-              />
-              <span>I confirm I am <strong style={{ color: 'var(--text-light)' }}>21 years of age or older</strong> and agree to the <Link href="/terms" style={{ color: 'var(--primary-blue)' }}>Terms</Link> and <Link href="/disclaimer" style={{ color: 'var(--primary-blue)' }}>Disclaimer</Link>. All products are for research use only — not for human consumption.</span>
-            </label>
-
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={loading || success || !agree21}
-              style={{
-                width: '100%', padding: '13px',
-                background: 'linear-gradient(135deg, var(--primary-blue, #00cfff), var(--pink, #ec4899))',
-                border: 'none', borderRadius: '10px',
-                color: '#fff', fontWeight: 700, fontSize: '0.95rem',
-                cursor: loading || success ? 'not-allowed' : 'pointer',
-                fontFamily: 'var(--font-body)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                boxShadow: '0 0 20px rgba(0,207,255,0.35)',
-                opacity: loading || success ? 0.8 : 1,
-                transition: 'all 0.2s ease',
-              }}
-            >
-              {loading ? (
-                <>
-                  <div style={{
-                    width: 16, height: 16, borderRadius: '50%',
-                    border: '2px solid rgba(255,255,255,0.3)',
-                    borderTopColor: '#fff',
-                    animation: 'spin 0.8s linear infinite',
-                  }} />
-                  Creating Account…
-                </>
-              ) : success ? (
-                <><CheckCircle2 size={16} /> Done!</>
-              ) : (
-                <>Create Account <ArrowRight size={15} /></>
-              )}
-            </button>
-          </form>
-
-          <div style={{
-            textAlign: 'center', marginTop: '22px',
-            fontSize: '0.875rem', color: 'var(--text-muted)',
-          }}>
-            Already have an account?{' '}
-            <Link href={loginHref} style={{ color: 'var(--primary-blue)', fontWeight: 500 }}>
-              Sign in
-            </Link>
-          </div>
-        </div>
+    <Shell>
+      <div style={{ textAlign: 'center', marginBottom: 22 }}>
+        <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.6rem', fontWeight: 900, margin: '0 0 6px' }}>
+          Create a researcher account
+        </h1>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: 0, lineHeight: 1.55 }}>
+          For qualified researchers aged 21+. New accounts are reviewed before the first order.
+        </p>
       </div>
 
-      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+      {error && (
+        <div role="alert" style={{
+          display: 'flex', alignItems: 'flex-start', gap: 8, padding: '12px 14px', marginBottom: 18,
+          background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)',
+          borderRadius: 10, color: '#dc2626', fontSize: '0.875rem',
+        }}>
+          <AlertCircle size={15} style={{ flexShrink: 0, marginTop: 2 }} />
+          {error}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} noValidate={false}>
+        {/* Honeypot — invisible to people, filled by bots. */}
+        <div aria-hidden="true" style={{ position: 'absolute', left: '-10000px', width: 1, height: 1, overflow: 'hidden' }}>
+          <label>Company website<input tabIndex={-1} autoComplete="off" value={form.company_website_hp} onChange={set('company_website_hp')} /></label>
+        </div>
+
+        <Section title="Your details">
+          <Row>
+            <Input label="Legal first name" autoComplete="given-name" value={form.firstName} onChange={set('firstName')} required />
+            <Input label="Legal last name" autoComplete="family-name" value={form.lastName} onChange={set('lastName')} required />
+          </Row>
+          <Input label="Work email" type="email" inputMode="email" autoComplete="email" value={form.email} onChange={set('email')} required
+            hint="Use your institutional or business email where you have one." />
+          <Input label="Phone" type="tel" inputMode="tel" autoComplete="tel" value={form.phone} onChange={set('phone')} required />
+        </Section>
+
+        <Section title="Address">
+          <Input label="Street address" autoComplete="address-line1" value={form.address1} onChange={set('address1')} required />
+          <Input label="Apartment, suite, unit (optional)" autoComplete="address-line2" value={form.address2} onChange={set('address2')} />
+          <Row>
+            <Input label="City" autoComplete="address-level2" value={form.city} onChange={set('city')} required />
+            <Input label="State / province" autoComplete="address-level1" value={form.state} onChange={set('state')} required={form.country === 'US'} />
+          </Row>
+          <Row>
+            <Input label="ZIP / postal code" autoComplete="postal-code" value={form.postcode} onChange={set('postcode')} required />
+            <Select label="Country" autoComplete="country" value={form.country} onChange={set('country')} required
+              options={COUNTRIES.map((c) => ({ value: c.code, label: c.name }))} />
+          </Row>
+        </Section>
+
+        <Section title="Research">
+          <TextArea label="Research purpose" value={form.researchPurpose} onChange={set('researchPurpose')} required
+            hint="A sentence or two on the laboratory research these compounds are for." />
+          <Input label="Organization name (optional)" autoComplete="organization" value={form.orgName} onChange={set('orgName')} />
+          <Select label="Organization type (optional)" value={form.orgType} onChange={set('orgType')}
+            options={ORG_TYPES.map((t) => ({ value: t, label: t || 'Select…' }))} />
+          <Input label="Organization website (optional)" type="url" inputMode="url" autoComplete="url" value={form.orgWebsite} onChange={set('orgWebsite')} placeholder="https://" />
+          <Input label="Institution ID, EIN or credentials (optional)" value={form.orgCredentials} onChange={set('orgCredentials')} autoComplete="off" />
+        </Section>
+
+        <Section title="Password">
+          <PasswordInput label="Password" value={form.password} onChange={set('password')} show={showPass} onToggle={() => setShowPass((v) => !v)} />
+          <Input label="Confirm password" type={showPass ? 'text' : 'password'} autoComplete="new-password" value={form.confirmPassword} onChange={set('confirmPassword')} required minLength={8} />
+        </Section>
+
+        <fieldset style={{ border: 0, padding: 0, margin: '6px 0 20px' }}>
+          <legend style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-light)', marginBottom: 10 }}>
+            Required confirmations
+          </legend>
+          {ACKS.map((a) => (
+            <label key={a.key} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 12, cursor: 'pointer', color: 'var(--text-secondary)', fontSize: '0.84rem', lineHeight: 1.55 }}>
+              <input
+                type="checkbox" required checked={acks[a.key]}
+                onChange={(e) => { setAcks((s) => ({ ...s, [a.key]: e.target.checked })); setError(''); }}
+                style={{ marginTop: 2, width: 20, height: 20, accentColor: 'var(--primary-blue)', flexShrink: 0, cursor: 'pointer' }}
+              />
+              <span>{a.node}</span>
+            </label>
+          ))}
+        </fieldset>
+
+        <button type="submit" disabled={loading} style={{
+          width: '100%', minHeight: 48, padding: '13px', border: 'none', borderRadius: 10,
+          background: 'linear-gradient(135deg, var(--primary-blue, #00cfff), var(--pink, #ec4899))',
+          color: '#fff', fontWeight: 700, fontSize: '0.95rem', fontFamily: 'var(--font-body)',
+          cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.8 : 1,
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+        }}>
+          {loading ? 'Creating account…' : <>Create account <ArrowRight size={15} /></>}
+        </button>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem', lineHeight: 1.5, margin: '12px 0 0', textAlign: 'center' }}>
+          We store these details and confirmations with your account. See our <Link href="/privacy" style={{ color: 'var(--primary-blue)' }}>Privacy Policy</Link> and <Link href="/ruo-policy" style={{ color: 'var(--primary-blue)' }}>Research Use Only Policy</Link>.
+        </p>
+      </form>
+
+      <div style={{ textAlign: 'center', marginTop: 22, fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+        Already have an account?{' '}
+        <Link href={loginHref} style={{ color: 'var(--primary-blue)', fontWeight: 600 }}>Sign in</Link>
+      </div>
+    </Shell>
+  );
+}
+
+/* ── layout pieces ───────────────────────────────────────── */
+
+function Shell({ children }) {
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', justifyContent: 'center', padding: '32px 16px 48px' }}>
+      <div style={{ width: '100%', maxWidth: 560 }}>
+        <div style={{ textAlign: 'center', marginBottom: 18 }}>
+          <div style={{
+            width: 52, height: 52, borderRadius: 14, margin: '0 auto',
+            background: 'linear-gradient(135deg, var(--primary-blue, #00cfff), var(--pink, #ec4899))',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <FlaskConical size={24} color="#fff" />
+          </div>
+        </div>
+        <div style={{ background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: 20, padding: 'clamp(20px, 5vw, 36px)' }}>
+          {children}
+        </div>
+      </div>
     </div>
   );
 }
 
+function Section({ title, children }) {
+  return (
+    <section style={{ marginBottom: 18 }}>
+      <h2 style={{ fontSize: '0.78rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--primary-blue)', margin: '0 0 10px' }}>{title}</h2>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>{children}</div>
+    </section>
+  );
+}
+
+function Row({ children }) {
+  return <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14 }}>{children}</div>;
+}
+
+function Label({ id, label, required }) {
+  return (
+    <label htmlFor={id} style={labelStyle}>
+      {label}{required && <span aria-hidden="true" style={{ color: '#dc2626' }}> *</span>}
+    </label>
+  );
+}
+
+function Hint({ id, children }) {
+  return <p id={id} style={{ margin: '5px 0 0', fontSize: '0.76rem', color: 'var(--text-muted)', lineHeight: 1.45 }}>{children}</p>;
+}
+
+function Input({ label, hint, required, ...props }) {
+  const id = useId();
+  return (
+    <div>
+      <Label id={id} label={label} required={required} />
+      <input id={id} required={required} aria-describedby={hint ? `${id}-h` : undefined} {...props} type={props.type || 'text'} style={inputStyle} />
+      {hint && <Hint id={`${id}-h`}>{hint}</Hint>}
+    </div>
+  );
+}
+
+function TextArea({ label, hint, required, ...props }) {
+  const id = useId();
+  return (
+    <div>
+      <Label id={id} label={label} required={required} />
+      <textarea id={id} required={required} rows={3} minLength={10} maxLength={2000} aria-describedby={hint ? `${id}-h` : undefined} {...props} style={{ ...inputStyle, resize: 'vertical', minHeight: 88 }} />
+      {hint && <Hint id={`${id}-h`}>{hint}</Hint>}
+    </div>
+  );
+}
+
+function Select({ label, options, required, ...props }) {
+  const id = useId();
+  return (
+    <div>
+      <Label id={id} label={label} required={required} />
+      <select id={id} required={required} {...props} style={{ ...inputStyle, cursor: 'pointer' }}>
+        {options.map((o) => <option key={o.value || 'none'} value={o.value}>{o.label}</option>)}
+      </select>
+    </div>
+  );
+}
+
+function PasswordInput({ label, value, onChange, show, onToggle }) {
+  const id = useId();
+  return (
+    <div>
+      <Label id={id} label={label} required />
+      <div style={{ position: 'relative' }}>
+        <input id={id} type={show ? 'text' : 'password'} autoComplete="new-password" value={value} onChange={onChange}
+          required minLength={8} placeholder="At least 8 characters" style={{ ...inputStyle, paddingRight: 48 }} />
+        <button type="button" onClick={onToggle} aria-label={show ? 'Hide password' : 'Show password'} style={{
+          position: 'absolute', right: 2, top: '50%', transform: 'translateY(-50%)', width: 44, height: 44,
+          background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          {show ? <EyeOff size={16} /> : <Eye size={16} />}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+const primaryBtn = {
+  display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8, minHeight: 48,
+  padding: '12px 28px', borderRadius: 10, fontWeight: 700, color: '#fff', textDecoration: 'none',
+  background: 'linear-gradient(135deg, var(--primary-blue, #00cfff), var(--pink, #ec4899))',
+};
+
 const labelStyle = {
-  display: 'block', fontSize: '0.82rem', fontWeight: 500,
-  color: 'var(--text-secondary)', marginBottom: '6px',
+  display: 'block', fontSize: '0.82rem', fontWeight: 600,
+  color: 'var(--text-secondary)', marginBottom: 6,
 };
 
 const inputStyle = {
-  width: '100%', padding: '11px 14px',
-  background: 'var(--bg-dark)',
-  border: '1px solid var(--glass-border)',
-  borderRadius: '10px',
-  color: 'var(--text-light)',
-  fontFamily: 'var(--font-body)', fontSize: '0.9rem', outline: 'none',
-  transition: 'border-color 0.15s ease',
+  width: '100%', minHeight: 44, padding: '11px 14px', boxSizing: 'border-box',
+  background: 'var(--bg-dark)', border: '1px solid var(--glass-border)', borderRadius: 10,
+  color: 'var(--text-light)', fontFamily: 'var(--font-body)', fontSize: '1rem',
 };

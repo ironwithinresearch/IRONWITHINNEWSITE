@@ -306,7 +306,7 @@ export default function ProductPage() {
     setCartError('');
 
     if (isVariable && !resolvedVariation) {
-      setCartError('Please select a dose before adding to cart.');
+      setCartError('Please select a size before adding to cart.');
       return;
     }
 
@@ -566,11 +566,11 @@ export default function ProductPage() {
               </div>
             ))}
 
-            {/* Dose selector */}
+            {/* Size selector (vial size — labelled "Size", never "Dose") */}
             {isVariable && hasDoses && (
               <div>
                 <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                  Dose
+                  Size
                 </label>
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                   {doses.map(d => {

@@ -198,7 +198,7 @@ export default function ContinuityPage() {
       <div style={{ marginTop: 56, maxWidth: 720, marginLeft: 'auto', marginRight: 'auto' }}>
         {[
           { q: 'Is this a subscription?', a: 'No. You pay once for the whole plan — there are no recurring charges and we never store your card. It\'s a prepaid supply we ship out monthly.' },
-          { q: 'Can I change the dose?', a: 'Yes — just reply to your confirmation email and we\'ll adjust your monthly vial.' },
+          { q: 'Can I change the vial size?', a: 'Yes — just reply to your confirmation email and we\'ll adjust your monthly vial.' },
           { q: 'What if I want to stop?', a: 'There\'s nothing to cancel since it\'s prepaid. When your plan ends, you simply choose whether to renew.' },
           { q: 'Is shipping included?', a: 'Yes — every shipment in the plan ships free within the U.S.' },
         ].map((f) => (

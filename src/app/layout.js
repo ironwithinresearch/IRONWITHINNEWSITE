@@ -31,7 +31,9 @@ export const metadata = {
   applicationName: SITE_NAME,
   keywords: ["research peptides", "research compounds", "lab-tested peptides", "certificate of analysis", "peptides for research"],
   alternates: { canonical: "/" },
-  robots: { index: true, follow: true },
+  // The store sits behind a server-side 21+ gate, so its pages are kept out of search
+  // (middleware also sends X-Robots-Tag). Public policy pages opt back in via their layouts.
+  robots: { index: false, follow: false },
   openGraph: {
     type: "website",
     siteName: SITE_NAME,

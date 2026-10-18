@@ -5,9 +5,10 @@
 // to add to cart. Renders a full-screen overlay over any gated route until the visitor
 // signs in or registers, then hands them back to the page they wanted (?redirect=).
 //
-// Client-side by design (auth is a JWT in localStorage, so middleware can't see it).
-// A useful side effect: the server HTML is untouched, so crawlers and link previews
-// still see real page content and SEO/OG cards keep working.
+// The ACCOUNT check is client-side (auth is a JWT in localStorage, so middleware can't
+// see it). The 21+ AGE check in front of it is server-side — src/middleware.js serves an
+// age gate to any visitor without the iw_age21 cookie, so direct links and no-JS fetches
+// never see page content either.
 //
 // To turn the wall off entirely, set GATE_BROWSING = false — the add-to-cart gate in
 // CartContext is separate and stays as-is.
@@ -16,24 +17,12 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { UserPlus, LogIn, ShieldCheck, FlaskConical } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { isPublicPath } from '../lib/gate';
 
 const GATE_BROWSING = true;
 
-// Routes that must stay reachable logged-out or the wall traps people:
-// the auth flow itself, legal pages, and the affiliate password page.
-const PUBLIC_PREFIXES = [
-  '/login',
-  '/register',
-  '/forgot-password',
-  '/reset-password',
-  '/affiliate-access',
-  '/terms',
-  '/privacy',
-  '/disclaimer',
-  '/refund',
-  '/shipping',
-  '/giveaway',
-];
+// Routes that must stay reachable logged-out live in src/lib/gate.js, shared with the
+// server-side 21+ gate in src/middleware.js.
 
 export default function SiteGate() {
   const { isLoggedIn, mounted } = useAuth();
@@ -47,7 +36,7 @@ export default function SiteGate() {
   }, [pathname]);
 
   if (!GATE_BROWSING || !mounted || isLoggedIn) return null;
-  if (PUBLIC_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + '/'))) return null;
+  if (isPublicPath(pathname)) return null;
 
   const redirect = encodeURIComponent(pathname + search);
 

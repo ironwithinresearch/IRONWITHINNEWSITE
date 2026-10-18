@@ -27,6 +27,7 @@ const footerLinks = {
     { label: 'Terms of Service', href: '/terms' },
     { label: 'Privacy Policy', href: '/privacy' },
     { label: 'Disclaimer', href: '/disclaimer' },
+    { label: 'Research Use Only Policy', href: '/ruo-policy' },
   ],
 };
 

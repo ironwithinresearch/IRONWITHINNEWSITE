@@ -3,6 +3,7 @@
 
 import { createContext, useContext, useState, useCallback, useRef } from 'react';
 import { useQuery, useMutation, useApolloClient } from '@apollo/client';
+import { useAuth } from './AuthContext';
 import {
   GET_CART,
   ADD_TO_CART,
@@ -19,6 +20,10 @@ const CartContext = createContext({});
 export function CartProvider({ children }) {
   const client = useApolloClient();
   const [notification, setNotification] = useState(null);
+  // Accounts still pending (email not confirmed / not yet approved) can't buy — the backend
+  // refuses the order. Say so the moment they try to add something, not at the last step.
+  const { accountStatus } = useAuth();
+  const [pendingNotice, setPendingNotice] = useState(null);
 
   const showNotification = (message, type = 'success') => {
     setNotification({ message, type });
@@ -84,6 +89,11 @@ export function CartProvider({ children }) {
       window.location.href = `/login?redirect=${encodeURIComponent(here)}&reason=cart`;
       return { success: false, requiresAuth: true };
     }
+    if (accountStatus && accountStatus.canPurchase === false) {
+      const message = accountStatus.message || 'Your account is pending approval.';
+      setPendingNotice({ message, status: accountStatus.status });
+      return { success: false, pendingApproval: true, error: message };
+    }
     try {
       const variables = { productId: parseInt(productId), quantity };
       if (variationId) variables.variationId = parseInt(variationId);
@@ -96,7 +106,7 @@ export function CartProvider({ children }) {
     } catch (err) {
       return { success: false, error: err.message };
     }
-  }, [addToCartMutation]);
+  }, [addToCartMutation, accountStatus]);
 
   // ── UPDATE QUANTITY ──
   const [updateItemMutation] = useMutation(UPDATE_CART_ITEM, {
@@ -229,10 +239,37 @@ export function CartProvider({ children }) {
       refetchCart,
     }}>
       {children}
+      {pendingNotice && <PendingApprovalDialog notice={pendingNotice} onClose={() => setPendingNotice(null)} />}
     </CartContext.Provider>
   );
 }
 
 export function useCart() {
   return useContext(CartContext);
+}
+
+/* "Your account is pending approval" — shown when a pending account tries to add to cart. */
+function PendingApprovalDialog({ notice, onClose }) {
+  return (
+    <div role="dialog" aria-modal="true" aria-labelledby="iw-pending-title" onClick={onClose} style={{
+      position: 'fixed', inset: 0, zIndex: 10000, background: 'rgba(5,10,20,0.55)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16,
+    }}>
+      <div onClick={(e) => e.stopPropagation()} style={{
+        width: '100%', maxWidth: 420, background: 'var(--card-dark, #fff)', color: 'var(--text-light, #0b1220)',
+        border: '1px solid var(--glass-border, #dfe4ee)', borderRadius: 16, padding: 24, boxShadow: '0 24px 60px rgba(0,0,0,0.25)',
+      }}>
+        <h2 id="iw-pending-title" style={{ fontSize: '1.15rem', fontWeight: 800, margin: '0 0 10px' }}>Your account is pending approval</h2>
+        <p style={{ fontSize: '0.92rem', lineHeight: 1.6, color: 'var(--text-secondary, #4a5568)', margin: '0 0 18px' }}>{notice.message}</p>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          <a href="/account" style={{ flex: '1 1 140px', minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 10, fontWeight: 700, textDecoration: 'none', color: '#fff', background: 'var(--gradient-primary, #0a84b8)' }}>
+            {notice.status === 'pending_email' ? 'Resend confirmation' : 'View my account'}
+          </a>
+          <button type="button" onClick={onClose} autoFocus style={{ flex: '1 1 100px', minHeight: 44, borderRadius: 10, fontWeight: 600, border: '1px solid var(--glass-border, #dfe4ee)', background: 'transparent', color: 'var(--text-light, #0b1220)', cursor: 'pointer' }}>
+            Keep browsing
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }

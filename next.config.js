@@ -107,6 +107,18 @@ const nextConfig = {
   async redirects() {
     return [
       { source: "/continuity", destination: "/shop", permanent: false },
+      // 18 Oct 2026: the two TSM-6 products and their COA files were renamed off a
+      // restricted compound name (processor compliance scan). The old slugs live on in
+      // printed vial-label QR codes, affiliate links and search indexes, so every old URL
+      // 301s to its new home. The more specific "-ipamorelin" rules must come first.
+      { source: "/product/tesamorelin-ipamorelin-5-5", destination: "/product/tsm-6-ipa", statusCode: 301 },
+      { source: "/product/tesamorelin", destination: "/product/tsm-6", statusCode: 301 },
+      { source: "/coas/:f(tesamorelin-ipamorelin.*)", destination: "/coas/tsm-6-ipa", statusCode: 301 },
+      { source: "/coas/:f(tesamorelin.*)", destination: "/coas/tsm-6", statusCode: 301 },
+      { source: "/coa-pdf/:f(tesamorelin-ipamorelin.*)", destination: "/coa-pdf/tsm-6-ipa.pdf", statusCode: 301 },
+      { source: "/coa-pdf/tesamorelin-all-batches.pdf", destination: "/coa-pdf/tsm-6-all-batches.pdf", statusCode: 301 },
+      { source: "/coa-pdf/tesamorelin-2026-10-09.pdf", destination: "/coa-pdf/tsm-6-2026-10-09.pdf", statusCode: 301 },
+      { source: "/coa-pdf/tesamorelin.pdf", destination: "/coa-pdf/tsm-6.pdf", statusCode: 301 },
     ];
   },
 };

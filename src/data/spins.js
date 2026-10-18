@@ -191,10 +191,10 @@ const SPINS = {
   "tb-500": {
     "10mg": "tb-500-10mg"
   },
-  "tesamorelin": {
+  "tsm-6": {
     "10mg": "tsm-6-10mg"
   },
-  "tesamorelin-ipamorelin-5-5": {
+  "tsm-6-ipa": {
     "5mg + 5mg": "tsm-6-ipa-5mg-5mg"
   },
   "thrive": {

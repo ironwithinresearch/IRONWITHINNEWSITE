@@ -63,7 +63,7 @@ export default function SupportBot() {
     const r = new FileReader(); r.onload = () => setImg(r.result); r.readAsDataURL(f);
   };
 
-  const chips = ['Track my order', 'A vial was missing', 'Do you have COAs?', 'How do I dose this?'];
+  const chips = ['Track my order', 'A vial was missing', 'Do you have COAs?', 'Shipping times'];
 
   return (
     <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '22px 14px 30px', color: '#eef6fd',
@@ -112,7 +112,7 @@ export default function SupportBot() {
       </div>
 
       <div style={{ maxWidth: 440, marginTop: 14, color: '#728aa8', fontSize: 12.5, textAlign: 'center', lineHeight: 1.6 }}>
-        Try: <b style={{ color: '#a4bad4' }}>“has order 839 shipped? email ccartwright64@gmail.com”</b> · a dosing question · or “a vial was missing” + a photo.
+        Try: <b style={{ color: '#a4bad4' }}>“has order 839 shipped? email ccartwright64@gmail.com”</b> · a shipping question · or “a vial was missing” + a photo.
       </div>
 
       <style dangerouslySetInnerHTML={{ __html: '@keyframes iwb{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}' }} />
