@@ -6,7 +6,8 @@
 
 import { NextResponse } from 'next/server';
 
-const WP_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://bhidasowgm.onrocket.site';
+// Call the Vultr backend directly: via the old Rocket forwarder these POSTs come back 403 from Vercel.
+const WP_URL = 'https://api.ironwithin.io';
 
 export async function POST(request) {
   let body;
