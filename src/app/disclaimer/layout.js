@@ -2,7 +2,7 @@
 export const metadata = {
   title: 'Disclaimer',
   alternates: { canonical: '/disclaimer' },
-  robots: { index: true, follow: true },
+  robots: { index: false, follow: false },
 };
 
 export default function Layout({ children }) {

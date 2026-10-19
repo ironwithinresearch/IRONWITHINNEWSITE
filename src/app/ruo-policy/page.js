@@ -10,7 +10,7 @@ export const metadata = {
   description:
     'Iron Within Research sells research compounds strictly for lawful laboratory research by qualified researchers aged 21 and over. Not for human or veterinary use.',
   alternates: { canonical: '/ruo-policy' },
-  robots: { index: true, follow: true },
+  robots: { index: false, follow: false },
 };
 
 const UPDATED = 'October 18, 2026';

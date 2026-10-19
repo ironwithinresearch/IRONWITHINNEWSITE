@@ -1,6 +1,7 @@
 'use client';
 // src/app/checkout/page.js
 
+import PurchaseBlocked from '@/components/PurchaseBlocked';
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -840,34 +841,11 @@ export default function CheckoutPage() {
     );
   }
 
-  // ── Account required (no guest checkout) ──
-  // Iron Within requires a verified 21+ account to purchase. Block checkout for
-  // logged-out visitors and route them to sign in / create an account.
-  if (authMounted && !isLoggedIn) {
-    return (
-      <div style={{ minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 24px' }}>
-        <div style={{ maxWidth: 460, width: '100%', textAlign: 'center', background: 'var(--card-dark)', border: '1px solid var(--glass-border)', borderRadius: '20px', padding: '44px 36px' }}>
-          <div style={{ width: 60, height: 60, borderRadius: '14px', background: 'rgba(0,207,255,0.1)', border: '1px solid rgba(0,207,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
-            <Lock size={26} color="var(--primary-blue)" />
-          </div>
-          <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.6rem', fontWeight: 900, color: '#fff', margin: '0 0 12px' }}>Account required to check out</h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.6, margin: '0 0 28px' }}>
-            Iron Within requires a verified <strong style={{ color: 'var(--text-light)' }}>21+ account</strong> to purchase research compounds. Sign in or create your free account to continue — it takes a few seconds.
-          </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <Link href="/register?redirect=/checkout" style={{ padding: '14px', background: 'var(--gradient-primary)', borderRadius: '12px', color: '#fff', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-              Create your account <ArrowRight size={16} />
-            </Link>
-            <Link href="/login?redirect=/checkout" style={{ padding: '13px', background: 'transparent', border: '1px solid var(--glass-border)', borderRadius: '12px', color: 'var(--text-light)', fontWeight: 600, textDecoration: 'none' }}>
-              I already have an account — Sign in
-            </Link>
-          </div>
-          <p style={{ marginTop: '20px', fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
-            Your cart is saved — you'll come right back here after signing in.
-          </p>
-        </div>
-      </div>
-    );
+  // ── Account required + approved (no guest checkout, no pending accounts) ──
+  // Logged-out visitors and pending accounts never see the checkout form (processor
+  // compliance: only approved accounts can reach checkout). Backend enforces it too.
+  if (authMounted && (!isLoggedIn || accountBlocked)) {
+    return <PurchaseBlocked loggedIn={isLoggedIn} message={accountStatus?.message} redirect="/checkout" />;
   }
 
   return (

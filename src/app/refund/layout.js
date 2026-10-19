@@ -2,7 +2,7 @@
 export const metadata = {
   title: 'Refund Policy',
   alternates: { canonical: '/refund' },
-  robots: { index: true, follow: true },
+  robots: { index: false, follow: false },
 };
 
 export default function Layout({ children }) {

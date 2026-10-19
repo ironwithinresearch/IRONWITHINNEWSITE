@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { useQuery } from '@apollo/client';
 import B2SUnlockNudge from '@/components/B2SUnlockNudge';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
+import PurchaseBlocked from '@/components/PurchaseBlocked';
 import { decodePriceHtml } from '@/lib/utils';
 import FreeShippingBar from '@/components/FreeShippingBar';
 import CartStoreCredit from '@/components/CartStoreCredit';
@@ -50,6 +52,8 @@ export default function CartPage() {
     updateQuantity, removeItem, applyCoupon, removeCoupon, addToCart,
     applyingCoupon, cart, notification,
   } = useCart();
+  const { isLoggedIn, mounted: authMounted, accountStatus } = useAuth();
+  const accountBlocked = !!accountStatus && accountStatus.canPurchase === false;
 
   const [couponCode, setCouponCode] = useState('');
   const [couponError, setCouponError] = useState('');
@@ -204,6 +208,11 @@ export default function CartPage() {
       setCouponError('Invalid coupon code');
     }
   };
+
+  // Logged-out visitors and pending accounts cannot use the cart (processor compliance).
+  if (authMounted && (!isLoggedIn || accountBlocked)) {
+    return <PurchaseBlocked loggedIn={isLoggedIn} message={accountStatus?.message} redirect="/cart" />;
+  }
 
   return (
     <div style={{ minHeight: '100vh', paddingBottom: '80px' }}>

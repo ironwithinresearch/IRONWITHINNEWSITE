@@ -133,7 +133,13 @@ export async function middleware(req) {
     if (pathname.startsWith('/affiliate-assets/')) return NextResponse.next();
   }
 
-  if (isPublicPath(pathname)) return NextResponse.next();
+  // Public pages (policies, login, sign-up) are noindex too — processor review asked that
+  // nothing on the site be indexed while the 21+ check is in force.
+  if (isPublicPath(pathname)) {
+    const res = NextResponse.next();
+    res.headers.set('X-Robots-Tag', 'noindex, nofollow');
+    return res;
+  }
 
   if (req.cookies.get(AGE_COOKIE)?.value === '1') {
     const res = NextResponse.next();
