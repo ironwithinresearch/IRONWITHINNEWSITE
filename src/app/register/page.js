@@ -7,7 +7,7 @@
 // link. A new account can browse straight away but cannot order until the email is
 // confirmed AND our team approves it — the page says so plainly after sign-up.
 //
-// Required: email, password and the three boxes. Every other field is optional (Brian, 18 Oct 2026).
+// Required: legal name, work email, phone, address, research purpose, the three boxes.
 // Optional (Brian, 18 Oct 2026 — "don't make the Organization field mandatory"):
 // organization name, organization type, website, institution ID / EIN / credentials.
 
@@ -159,30 +159,30 @@ export default function RegisterPage() {
 
         <Section title="Your details">
           <Row>
-            <Input label="Legal first name" autoComplete="given-name" value={form.firstName} onChange={set('firstName')} />
-            <Input label="Legal last name" autoComplete="family-name" value={form.lastName} onChange={set('lastName')} />
+            <Input label="Legal first name" autoComplete="given-name" value={form.firstName} onChange={set('firstName')} required />
+            <Input label="Legal last name" autoComplete="family-name" value={form.lastName} onChange={set('lastName')} required />
           </Row>
           <Input label="Work email" type="email" inputMode="email" autoComplete="email" value={form.email} onChange={set('email')} required
             hint="Use your institutional or business email where you have one." />
-          <Input label="Phone" type="tel" inputMode="tel" autoComplete="tel" value={form.phone} onChange={set('phone')} />
+          <Input label="Phone" type="tel" inputMode="tel" autoComplete="tel" value={form.phone} onChange={set('phone')} required />
         </Section>
 
         <Section title="Address">
-          <Input label="Street address" autoComplete="address-line1" value={form.address1} onChange={set('address1')} />
+          <Input label="Street address" autoComplete="address-line1" value={form.address1} onChange={set('address1')} required />
           <Input label="Apartment, suite, unit (optional)" autoComplete="address-line2" value={form.address2} onChange={set('address2')} />
           <Row>
-            <Input label="City" autoComplete="address-level2" value={form.city} onChange={set('city')} />
-            <Input label="State / province" autoComplete="address-level1" value={form.state} onChange={set('state')} />
+            <Input label="City" autoComplete="address-level2" value={form.city} onChange={set('city')} required />
+            <Input label="State / province" autoComplete="address-level1" value={form.state} onChange={set('state')} required={form.country === 'US'} />
           </Row>
           <Row>
-            <Input label="ZIP / postal code" autoComplete="postal-code" value={form.postcode} onChange={set('postcode')} />
-            <Select label="Country" autoComplete="country" value={form.country} onChange={set('country')}
+            <Input label="ZIP / postal code" autoComplete="postal-code" value={form.postcode} onChange={set('postcode')} required />
+            <Select label="Country" autoComplete="country" value={form.country} onChange={set('country')} required
               options={COUNTRIES.map((c) => ({ value: c.code, label: c.name }))} />
           </Row>
         </Section>
 
         <Section title="Research">
-          <TextArea label="Research purpose" value={form.researchPurpose} onChange={set('researchPurpose')} 
+          <TextArea label="Research purpose" value={form.researchPurpose} onChange={set('researchPurpose')} required
             hint="A sentence or two on the laboratory research these compounds are for." />
           <Input label="Organization name (optional)" autoComplete="organization" value={form.orgName} onChange={set('orgName')} />
           <Select label="Organization type (optional)" value={form.orgType} onChange={set('orgType')}
@@ -298,7 +298,7 @@ function TextArea({ label, hint, required, ...props }) {
   return (
     <div>
       <Label id={id} label={label} required={required} />
-      <textarea id={id} required={required} rows={3} maxLength={2000} aria-describedby={hint ? `${id}-h` : undefined} {...props} style={{ ...inputStyle, resize: 'vertical', minHeight: 88 }} />
+      <textarea id={id} required={required} rows={3} minLength={10} maxLength={2000} aria-describedby={hint ? `${id}-h` : undefined} {...props} style={{ ...inputStyle, resize: 'vertical', minHeight: 88 }} />
       {hint && <Hint id={`${id}-h`}>{hint}</Hint>}
     </div>
   );
