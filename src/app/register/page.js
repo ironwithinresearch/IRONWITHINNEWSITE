@@ -197,8 +197,7 @@ export default function RegisterPage() {
             options={RESEARCH_CATEGORIES.map((t) => ({ value: t, label: t || 'Select…' }))} />
           <TextArea label="Research purpose" value={form.researchPurpose} onChange={set('researchPurpose')} required
             hint="A sentence or two on the laboratory research these compounds are for." />
-          <Input label="Business / organization name" autoComplete="organization" value={form.orgName} onChange={set('orgName')} required
-            hint="Independent researchers can enter their own name or lab name." />
+          <Input label="Business / organization name" autoComplete="organization" value={form.orgName} onChange={set('orgName')} required minLength={2} />
           <Select label="Industry / business classification" value={form.orgType} onChange={set('orgType')} required
             options={ORG_TYPES.map((t) => ({ value: t, label: t || 'Select…' }))} />
           <Input label="Organization website (optional)" type="url" inputMode="url" autoComplete="url" value={form.orgWebsite} onChange={set('orgWebsite')} placeholder="https://" />

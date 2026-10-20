@@ -26,6 +26,8 @@ export const PUBLIC_PREFIXES = [
   '/refund',
   '/shipping',
   '/ruo-policy',
+  // business address, phone and support email must be readable without an account (processor scan)
+  '/contact',
   // sweepstakes rules: the free mail-in route must be reachable without an account
   '/giveaway',
   // vial-label QR codes (route handler that 302s to the COA PDF) — printed on product
