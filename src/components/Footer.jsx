@@ -162,6 +162,18 @@ export default function Footer() {
           <PaymentMethods />
         </div>
 
+        {/* ── Research-use-only notice (processor requirement: in the footer of every page) ── */}
+        <p style={{
+          color: 'var(--text-muted)', fontSize: '0.78rem', lineHeight: 1.6,
+          borderTop: '1px solid var(--glass-border)', paddingTop: '20px', marginBottom: '20px',
+        }}>
+          <strong style={{ color: 'var(--text-secondary)' }}>Research Use Only.</strong>{' '}
+          All products sold by Iron Within Research are intended solely for laboratory research and
+          analytical use by qualified researchers aged 21 and over. They are not for human or veterinary
+          use, and are not intended to diagnose, treat, cure or prevent any disease. Not for human
+          consumption. See our <Link href="/ruo-policy" style={{ color: 'var(--text-secondary)', textDecoration: 'underline' }}>Research Use Only Policy</Link>.
+        </p>
+
         {/* ── Bottom bar ── */}
         <div style={{
           display: 'flex', alignItems: 'center',

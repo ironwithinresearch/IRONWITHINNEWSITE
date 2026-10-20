@@ -98,6 +98,23 @@ export default function ContactPage() {
           Have questions about our peptides? We're here to help. Send us a message and a member of our team will reply by email.
         </p>
 
+        <address style={{
+          fontStyle: 'normal', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px',
+          padding: '20px', marginBottom: '40px', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-lg)',
+          color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.7,
+        }}>
+          <div>
+            <div style={{ color: 'var(--text-light)', fontWeight: 700, marginBottom: '4px' }}>Business address</div>
+            Iron Within Nutrition LLC<br />DBA Iron Within Research<br />
+            8180 Pensacola Blvd, Unit 205<br />Pensacola, FL 32534<br />United States
+          </div>
+          <div>
+            <div style={{ color: 'var(--text-light)', fontWeight: 700, marginBottom: '4px' }}>Customer support</div>
+            Email: <a href="mailto:support@ironwithin.io" style={{ color: 'var(--primary-blue)' }}>support@ironwithin.io</a><br />
+            Phone: <a href="tel:+18504830027" style={{ color: 'var(--primary-blue)' }}>(850) 483-0027</a>
+          </div>
+        </address>
+
         {status === 'sent' ? (
           <div style={{
             padding: '24px',

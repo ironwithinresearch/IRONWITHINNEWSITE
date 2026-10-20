@@ -52,8 +52,8 @@ const esc = (s) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>
 
 function gatePage(nextPath) {
   const enc = encodeURIComponent(nextPath);
-  const yesRegister = `/api/age-confirm?next=${encodeURIComponent(`/register?redirect=${enc}`)}`;
-  const yesLogin = `/api/age-confirm?next=${encodeURIComponent(`/login?redirect=${enc}`)}`;
+  const nextRegister = `/register?redirect=${enc}`;
+  const nextLogin = `/login?redirect=${enc}`;
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -90,12 +90,17 @@ main{min-height:100vh;display:flex;align-items:center;justify-content:center;pad
 h1{font-size:1.6rem;line-height:1.2;margin:0 0 12px}
 p{color:var(--muted);line-height:1.6;margin:0 0 18px;font-size:.95rem}
 .note{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:.84rem;text-align:left}
+.checks{text-align:left;margin:0 0 16px;display:flex;flex-direction:column;gap:10px}
+.checks label{display:flex;gap:10px;align-items:flex-start;font-size:.9rem;line-height:1.5;color:var(--ink);cursor:pointer}
+.checks input{width:20px;height:20px;margin:2px 0 0;flex-shrink:0;accent-color:var(--accent);cursor:pointer}
 .btns{display:flex;flex-direction:column;gap:10px;margin-top:6px}
-a.btn{display:flex;align-items:center;justify-content:center;min-height:48px;padding:12px 16px;border-radius:12px;font-weight:700;font-size:1rem;text-decoration:none}
-a.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--btn-ink)}
-a.secondary{border:1px solid var(--line);color:var(--ink)}
+button.btn{width:100%;border:0;cursor:pointer;font-family:inherit}
+button.btn.secondary{background:transparent}
+a.btn,button.btn{display:flex;align-items:center;justify-content:center;min-height:48px;padding:12px 16px;border-radius:12px;font-weight:700;font-size:1rem;text-decoration:none}
+a.primary,button.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--btn-ink)}
+a.secondary,button.secondary{border:1px solid var(--line);color:var(--ink)}
 a.exit{color:var(--muted);font-weight:600;font-size:.92rem}
-a.btn:focus-visible,.legal a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+a.btn:focus-visible,button.btn:focus-visible,.checks input:focus-visible,.legal a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .legal{margin-top:22px;font-size:.78rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center}
 .legal a{color:var(--muted);text-decoration:underline;text-underline-offset:2px;padding:4px 0}
 </style>
@@ -105,14 +110,20 @@ a.btn:focus-visible,.legal a:focus-visible{outline:3px solid var(--accent);outli
   <div class="card" role="dialog" aria-labelledby="h" aria-describedby="d">
     <div class="brand"><img src="/logo-mark.png" alt="" width="34" height="34">IRON WITHIN RESEARCH</div>
     <p class="eyebrow">Age verification</p>
-    <h1 id="h">Are you 21 or older?</h1>
-    <p id="d">This site is restricted to researchers aged 21 and over. You will need a researcher account to view the catalog.</p>
+    <h1 id="h">Researchers aged 21+ only</h1>
+    <p id="d">This site is restricted to researchers aged 21 and over. Tick both boxes to continue. You will need a researcher account to view the catalog.</p>
     <p class="note">All products are sold for <strong>laboratory research use only</strong>. They are not for human or veterinary use, diagnosis, treatment or consumption.</p>
-    <div class="btns">
-      <a class="btn primary" href="${esc(yesRegister)}">Yes, I am 21+ &mdash; create an account</a>
-      <a class="btn secondary" href="${esc(yesLogin)}">Yes, I am 21+ &mdash; sign in</a>
-      <a class="btn exit" href="https://www.google.com/" rel="noopener">No, I am under 21 &mdash; leave this site</a>
-    </div>
+    <form method="get" action="/api/age-confirm">
+      <div class="checks">
+        <label><input type="checkbox" name="age21" value="1" required> I confirm I am 21 years of age or older.</label>
+        <label><input type="checkbox" name="ruo" value="1" required> I am a researcher, and I understand these products are for research use only &mdash; not for human or veterinary use.</label>
+      </div>
+      <div class="btns">
+        <button class="btn primary" type="submit" name="next" value="${esc(nextRegister)}">Enter &mdash; create an account</button>
+        <button class="btn secondary" type="submit" name="next" value="${esc(nextLogin)}">Enter &mdash; sign in</button>
+        <a class="btn exit" href="https://www.google.com/" rel="noopener">I do not qualify &mdash; leave this site</a>
+      </div>
+    </form>
     <nav class="legal" aria-label="Policies">
       <a href="/ruo-policy">Research Use Only Policy</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/disclaimer">Disclaimer</a>
     </nav>

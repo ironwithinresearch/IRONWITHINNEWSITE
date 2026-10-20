@@ -7,9 +7,10 @@
 // link. A new account can browse straight away but cannot order until the email is
 // confirmed AND our team approves it — the page says so plainly after sign-up.
 //
-// Required: legal name, work email, phone, address, research purpose, the three boxes.
-// Optional (Brian, 18 Oct 2026 — "don't make the Organization field mandatory"):
-// organization name, organization type, website, institution ID / EIN / credentials.
+// Required: legal name, work email, phone, address, research category, research purpose,
+// organization name, industry / business classification, and every confirmation box.
+// Org name + industry became required after the 20 Oct 2026 processor rescan (Brian approved).
+// Optional: organization website, institution ID / EIN / credentials.
 
 import { useState, useEffect, useId } from 'react';
 import Link from 'next/link';
@@ -22,12 +23,20 @@ import { setAgeCookie } from '../../lib/gate';
 import { COUNTRIES } from '../../lib/countries';
 
 // Exact wording — the backend stores its own copy of these strings with the timestamp.
+// Each statement has its own box (processor rescan 20 Oct 2026).
 const ACKS = [
-  { key: 'age_21_terms', node: (
-    <>I confirm I am <strong style={{ color: 'var(--text-light)' }}>21 years of age or older</strong> and agree to the <Link href="/terms" style={{ color: 'var(--primary-blue)' }}>Terms</Link> and <Link href="/disclaimer" style={{ color: 'var(--primary-blue)' }}>Disclaimer</Link>. All products are for research use only — not for human consumption.</>
-  ) },
+  { key: 'age_21', node: <>I confirm I am <strong style={{ color: 'var(--text-light)' }}>21 years of age or older</strong>.</> },
+  { key: 'terms', node: <>I have read and agree to the <Link href="/terms" style={{ color: 'var(--primary-blue)' }}>Terms of Service</Link> and <Link href="/disclaimer" style={{ color: 'var(--primary-blue)' }}>Disclaimer</Link>.</> },
+  { key: 'privacy', node: <>I have read and accept the <Link href="/privacy" style={{ color: 'var(--primary-blue)' }}>Privacy Policy</Link>.</> },
   { key: 'research_org', node: <>I represent a legitimate research organization and will use these products for lawful laboratory research only.</> },
   { key: 'not_human_use', node: <>I understand these products are not for human or veterinary use, diagnosis, treatment or consumption.</> },
+];
+
+// Both lists must match iw_ra_research_categories() / iw_ra_org_types() in iw-research-access.php.
+const RESEARCH_CATEGORIES = [
+  '', 'In-vitro / cell culture research', 'Metabolic research', 'Tissue repair & regeneration research',
+  'Neuroscience research', 'Dermatology / cosmetic science research', 'Aging & longevity research',
+  'Analytical chemistry / reference standards', 'Other laboratory research',
 ];
 
 const ORG_TYPES = [
@@ -38,7 +47,7 @@ const ORG_TYPES = [
 const EMPTY = {
   firstName: '', lastName: '', email: '', phone: '',
   address1: '', address2: '', city: '', state: '', postcode: '', country: 'US',
-  researchPurpose: '', orgName: '', orgType: '', orgWebsite: '', orgCredentials: '',
+  researchCategory: '', researchPurpose: '', orgName: '', orgType: '', orgWebsite: '', orgCredentials: '',
   password: '', confirmPassword: '', company_website_hp: '',
 };
 
@@ -57,7 +66,7 @@ export default function RegisterPage() {
   }, []);
 
   const [form, setForm] = useState(EMPTY);
-  const [acks, setAcks] = useState({ age_21_terms: false, research_org: false, not_human_use: false });
+  const [acks, setAcks] = useState(() => Object.fromEntries(ACKS.map((a) => [a.key, false])));
   const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -71,7 +80,7 @@ export default function RegisterPage() {
     setError('');
     if (form.password.length < 8) { setError('Password must be at least 8 characters.'); return; }
     if (form.password !== form.confirmPassword) { setError('Passwords do not match.'); return; }
-    if (!allAcked) { setError('Please tick all three confirmations to create an account.'); return; }
+    if (!allAcked) { setError('Please tick every confirmation box to create an account.'); return; }
 
     setLoading(true);
     try {
@@ -79,7 +88,9 @@ export default function RegisterPage() {
       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...payload, acks }),
+        // age_21_terms is the pre-20-Oct key; sent only so sign-ups keep working while the
+        // backend that knows the split boxes is deployed. Safe to drop afterwards.
+        body: JSON.stringify({ ...payload, acks: { ...acks, age_21_terms: acks.age_21 && acks.terms } }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.success) {
@@ -182,10 +193,13 @@ export default function RegisterPage() {
         </Section>
 
         <Section title="Research">
+          <Select label="Intended research category" value={form.researchCategory} onChange={set('researchCategory')} required
+            options={RESEARCH_CATEGORIES.map((t) => ({ value: t, label: t || 'Select…' }))} />
           <TextArea label="Research purpose" value={form.researchPurpose} onChange={set('researchPurpose')} required
             hint="A sentence or two on the laboratory research these compounds are for." />
-          <Input label="Organization name (optional)" autoComplete="organization" value={form.orgName} onChange={set('orgName')} />
-          <Select label="Organization type (optional)" value={form.orgType} onChange={set('orgType')}
+          <Input label="Business / organization name" autoComplete="organization" value={form.orgName} onChange={set('orgName')} required
+            hint="Independent researchers can enter their own name or lab name." />
+          <Select label="Industry / business classification" value={form.orgType} onChange={set('orgType')} required
             options={ORG_TYPES.map((t) => ({ value: t, label: t || 'Select…' }))} />
           <Input label="Organization website (optional)" type="url" inputMode="url" autoComplete="url" value={form.orgWebsite} onChange={set('orgWebsite')} placeholder="https://" />
           <Input label="Institution ID, EIN or credentials (optional)" value={form.orgCredentials} onChange={set('orgCredentials')} autoComplete="off" />
