@@ -9,6 +9,7 @@
     "adamax-10mg.pdf"
   ],
   "bpc-157": [
+    "bpc-157-2026-10-21-20mg.pdf",
     "bpc-157-7317226.pdf",
     "bpc-157.pdf"
   ],
@@ -120,5 +121,9 @@
   "tsm-6": [
     "tsm-6-2026-10-09.pdf",
     "tsm-6.pdf"
+  ],
+  "tsm-6-ipa": [
+    "tsm-6-ipa-2026-10-21-13mg.pdf",
+    "tsm-6-ipa.pdf"
   ]
 }
