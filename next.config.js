@@ -4,7 +4,7 @@
 //  - self + Next chunks
 //  - GoAffPro affiliate loader/tracking (api.goaffpro.com, api2.goaffpro.com)
 //  - Google Fonts (fonts.googleapis.com stylesheet, fonts.gstatic.com woff2)
-//  - WooCommerce backend (bhidasowgm.onrocket.site): GraphQL + product images
+//  - WooCommerce backend (api.ironwithin.io): GraphQL + product images
 // 'unsafe-inline' is required for Next's inline bootstrap + the app's inline
 // styles (a nonce-based strict CSP would need middleware — future hardening).
 // The payment-rail handoff is a top-level window.location navigation, which CSP
@@ -60,7 +60,7 @@ const csp = [
   "font-src 'self' data: https://fonts.gstatic.com",
   "img-src 'self' data: blob: https:",
   "media-src 'self'",
-  `connect-src 'self' https://bhidasowgm.onrocket.site https://api.goaffpro.com https://api2.goaffpro.com ${PAY_HOSTS.connect.join(" ")} ${VERIFY_HOSTS.connect.join(" ")} ${PAYPAL_PROXY_HOSTS.join(" ")}`,
+  `connect-src 'self' https://api.ironwithin.io https://api.goaffpro.com https://api2.goaffpro.com ${PAY_HOSTS.connect.join(" ")} ${VERIFY_HOSTS.connect.join(" ")} ${PAYPAL_PROXY_HOSTS.join(" ")}`,
   `frame-src 'self' ${PAY_HOSTS.frame.join(" ")} ${VERIFY_HOSTS.frame.join(" ")} ${PAYPAL_PROXY_HOSTS.join(" ")}`,
   "object-src 'none'",
   "base-uri 'self'",
@@ -81,7 +81,7 @@ const securityHeaders = [
 const nextConfig = {
   images: {
     // Backend moved off Rocket to api.ironwithin.io (Vultr) — product image URLs now use it.
-    domains: ["api.ironwithin.io", "bhidasowgm.onrocket.site"],
+    domains: ["api.ironwithin.io"],
   },
   async headers() {
     return [

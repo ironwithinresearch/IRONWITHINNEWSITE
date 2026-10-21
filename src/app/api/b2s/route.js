@@ -2,7 +2,7 @@
 // backend origin allowlisting needed. Cached briefly — the backend caches 60s too.
 export const dynamic = 'force-dynamic';
 
-const BACKEND = 'https://bhidasowgm.onrocket.site/wp-json/iw/v1/b2s';
+const BACKEND = 'https://api.ironwithin.io/wp-json/iw/v1/b2s';
 
 export async function GET() {
   try {

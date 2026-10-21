@@ -1,6 +1,6 @@
 // src/app/api/klaviyo-checkout/route.js — proxy that fires a Klaviyo "Started Checkout" event
 import { NextResponse } from 'next/server';
-const WP_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://bhidasowgm.onrocket.site';
+const WP_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://api.ironwithin.io';
 export async function POST(request) {
   const body = await request.json().catch(() => ({}));
   if (!body.email) return NextResponse.json({ ok: false }, { status: 400 });

@@ -6,7 +6,7 @@ import crypto from 'crypto';
 
 export const dynamic = 'force-dynamic';
 
-const GRAPHQL = 'https://bhidasowgm.onrocket.site/graphql';
+const GRAPHQL = 'https://api.ironwithin.io/graphql';
 // Comma-separated: we try every candidate secret; the one that verifies is the live one.
 const WH_SECRETS = (process.env.CHARGX_WEBHOOK_SECRET || '').split(',').map((s) => s.trim()).filter(Boolean);
 const INTERNAL_SECRET = process.env.CHARGX_INTERNAL_SECRET || '';

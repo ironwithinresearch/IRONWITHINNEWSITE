@@ -13,7 +13,7 @@ import { NextResponse } from 'next/server';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const BACKEND = 'https://bhidasowgm.onrocket.site';
+const BACKEND = 'https://api.ironwithin.io';
 
 // Only what the payload needs. An allowlist rather than a passthrough so the query string
 // cannot be used to smuggle arbitrary parameters at the gateway.

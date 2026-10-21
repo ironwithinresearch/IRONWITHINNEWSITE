@@ -1,6 +1,6 @@
 // src/app/api/referral/claim/route.js — record who referred the logged-in user
 import { NextResponse } from 'next/server';
-const WP_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://bhidasowgm.onrocket.site';
+const WP_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://api.ironwithin.io';
 export async function POST(request) {
   const auth = request.headers.get('authorization') || '';
   if (!auth) return NextResponse.json({ success: false }, { status: 401 });

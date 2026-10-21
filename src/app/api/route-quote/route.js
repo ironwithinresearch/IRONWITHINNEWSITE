@@ -6,7 +6,7 @@
 // so there is exactly one place that knows how to call Route.
 export const dynamic = 'force-dynamic';
 
-const BACKEND = 'https://bhidasowgm.onrocket.site/wp-json/iw/v1/route-quote';
+const BACKEND = 'https://api.ironwithin.io/wp-json/iw/v1/route-quote';
 
 export async function GET(req) {
   const subtotal = new URL(req.url).searchParams.get('subtotal') || '0';

@@ -1,4 +1,4 @@
-const GQL = process.env.NEXT_PUBLIC_GRAPHQL_URL || "https://bhidasowgm.onrocket.site/graphql";
+const GQL = process.env.NEXT_PUBLIC_GRAPHQL_URL || "https://api.ironwithin.io/graphql";
 const SITE = "https://www.ironwithin.io";
 
 // ISR: statically generate product pages and re-build them every 10 minutes.

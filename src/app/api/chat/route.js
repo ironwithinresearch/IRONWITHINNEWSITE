@@ -10,7 +10,7 @@ import Anthropic from '@anthropic-ai/sdk';
 export const runtime = 'nodejs';
 export const maxDuration = 30;
 
-const WC_URL   = process.env.WC_URL || 'https://bhidasowgm.onrocket.site';
+const WC_URL   = process.env.WC_URL || 'https://api.ironwithin.io';
 const WC_KEY   = process.env.WC_KEY;
 const WC_SECRET = process.env.WC_SECRET;
 const NOTIFY_SECRET = process.env.IW_BOT_NOTIFY_SECRET || '';

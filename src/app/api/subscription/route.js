@@ -4,7 +4,7 @@
 
 import { NextResponse } from 'next/server';
 
-const WP_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://bhidasowgm.onrocket.site';
+const WP_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://api.ironwithin.io';
 
 export async function GET(request) {
   const token = request.nextUrl.searchParams.get('token') || '';

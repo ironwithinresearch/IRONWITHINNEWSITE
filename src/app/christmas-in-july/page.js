@@ -9,7 +9,7 @@ export const metadata = {
   description: 'A new deal every day, July 11–22 — giveaways, BOGO, bonus days, and a grand finale. Take part in each day to win 1 of 5 $1,000 credits.',
 };
 
-const FEED_URL = (process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://bhidasowgm.onrocket.site') + '/wp-json/iw/v1/xmas-july';
+const FEED_URL = (process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://api.ironwithin.io') + '/wp-json/iw/v1/xmas-july';
 
 // Emoji + sub-line per day; badge/name/code come from the live engine feed.
 const ENRICH = {

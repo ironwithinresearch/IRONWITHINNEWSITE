@@ -7,7 +7,7 @@ import { onError } from '@apollo/client/link/error';
 
 export function makeClient() {
   const httpLink = createHttpLink({
-    uri: process.env.NEXT_PUBLIC_GRAPHQL_URL || 'https://bhidasowgm.onrocket.site/graphql',
+    uri: process.env.NEXT_PUBLIC_GRAPHQL_URL || 'https://api.ironwithin.io/graphql',
     credentials: 'include',
   });
 

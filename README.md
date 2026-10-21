@@ -83,7 +83,7 @@ Then test in this order:
 
 Make sure `.env.local` has these (they should already be there):
 ```
-NEXT_PUBLIC_WORDPRESS_URL=https://bhidasowgm.onrocket.site
-NEXT_PUBLIC_GRAPHQL_URL=https://bhidasowgm.onrocket.site/graphql
-NEXT_PUBLIC_JWT_AUTH_URL=https://bhidasowgm.onrocket.site/wp-json/jwt-auth/v1/token
+NEXT_PUBLIC_WORDPRESS_URL=https://api.ironwithin.io
+NEXT_PUBLIC_GRAPHQL_URL=https://api.ironwithin.io/graphql
+NEXT_PUBLIC_JWT_AUTH_URL=https://api.ironwithin.io/wp-json/jwt-auth/v1/token
 ```
