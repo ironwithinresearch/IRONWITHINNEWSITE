@@ -5,7 +5,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Zap, ShoppingCart, Clock, Loader2 } from 'lucide-react';
+import { Zap, ShoppingCart, Clock, Loader2, Wallet } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 
 function clock(ms) {
@@ -124,9 +124,20 @@ export default function FlashPage() {
             <Link href="/shop" style={{ color: 'var(--primary-blue)', fontWeight: 700 }}>Shop the store →</Link>
           </>
         )}
+        {data && items.length > 0 && data.p2p_only !== false && (
+          // Prominent, and shown before the window: #7352 lost the window setting up Cash App at checkout.
+          <div role="note" style={{ display: 'flex', gap: 12, alignItems: 'flex-start', textAlign: 'left', margin: '18px auto 0', maxWidth: 620,
+            background: 'rgba(251,191,36,0.10)', border: '1px solid rgba(251,191,36,0.55)', borderRadius: 'var(--radius-lg)', padding: '14px 16px' }}>
+            <Wallet size={22} color="#d97706" style={{ flexShrink: 0, marginTop: 2 }} />
+            <div style={{ color: 'var(--text-light)', fontSize: '0.92rem', lineHeight: 1.5 }}>
+              <strong>Flash prices are Zelle, Venmo &amp; Cash App only.</strong> Cards aren&apos;t accepted at flash prices.
+              {' '}{live ? 'Have your app open and check out before the timer ends' : 'Set up your app before the window opens'} — the flash price ends the moment the window closes, even mid-checkout.
+            </div>
+          </div>
+        )}
         {data && items.length > 0 && (
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', margin: '12px auto 0', maxWidth: 560, lineHeight: 1.5 }}>
-            Zelle, Venmo and Cash App only during the flash · max {max} of each item{stack ? ' · your affiliate code stacks' : ''}.
+            Max {max} of each item{stack ? ' · your affiliate code stacks' : ''}.
             {!live && ' Prices drop when the window opens.'}
           </p>
         )}

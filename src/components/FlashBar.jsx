@@ -52,6 +52,9 @@ export default function FlashBar() {
   // Windows with no picks (the store-wide ones) are not announced on the site at all (operator, 17 Oct).
   if (!w.percent) return null;
   const offer = `${w.percent}% off ${w.items || ''} select items${stack}`.replace('  ', ' ');
+  // Say it BEFORE the window too: a buyer who only learns at checkout that cards are out loses the
+  // window setting up an app (#7352, 24 Oct). The backend reports p2p_only per schedule.
+  const p2p = data.p2p_only !== false;
 
   return (
     <Link
@@ -64,9 +67,9 @@ export default function FlashBar() {
       }}
     >
       {isLive ? (
-        <>⚡ <strong>FLASH SALE LIVE — {offer}</strong> · ends in <strong>{clock(end - now)}</strong> · Zelle, Venmo &amp; Cash App only →</>
+        <>⚡ <strong>FLASH SALE LIVE — {offer}</strong> · ends in <strong>{clock(end - now)}</strong>{p2p && ' · Zelle, Venmo & Cash App only'} →</>
       ) : (
-        <>⚡ <strong>Flash sale at {ctTime(w.start)} CT</strong> — {offer} — {mins} minutes only · starts in <strong>{clock(start - now)}</strong></>
+        <>⚡ <strong>Flash sale at {ctTime(w.start)} CT</strong> — {offer} — {mins} minutes only · starts in <strong>{clock(start - now)}</strong>{p2p && <> · <strong>Zelle, Venmo &amp; Cash App only</strong> — have your app ready</>}</>
       )}
     </Link>
   );
