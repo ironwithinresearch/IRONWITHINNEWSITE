@@ -95,7 +95,9 @@ export default function FlashPage() {
   const live = (data?.live_items || []).length > 0 && liveEnd > now;
   const items = live ? data.live_items : (data?.next_items || []);
   const max = data?.max_per_sku || 5;
-  const stack = (data?.windows || []).find((w) => new Date(w.end).getTime() > now && w.percent)?.codes_stack;
+  const win = (data?.windows || []).find((w) => new Date(w.end).getTime() > now && w.percent);
+  const stack = win?.codes_stack;
+  const storewide = win?.storewide || 0;
 
   return (
     <div style={{ maxWidth: 1180, margin: '0 auto', padding: '32px 16px 64px' }}>
@@ -123,6 +125,11 @@ export default function FlashPage() {
             <p style={{ color: 'var(--text-secondary)', margin: '0 0 18px' }}>Watch our socials and email for the next one.</p>
             <Link href="/shop" style={{ color: 'var(--primary-blue)', fontWeight: 700 }}>Shop the store →</Link>
           </>
+        )}
+        {data && items.length > 0 && storewide > 0 && (
+          <p style={{ margin: '14px auto 0', fontWeight: 800, fontSize: '1.1rem', color: '#ef4444' }}>
+            Plus everything else in the store is {storewide}% off during the window
+          </p>
         )}
         {data && items.length > 0 && data.p2p_only !== false && (
           // Prominent, and shown before the window: #7352 lost the window setting up Cash App at checkout.

@@ -51,7 +51,8 @@ export default function FlashBar() {
   const stack = w.codes_stack ? ' + your code stacks' : '';
   // Windows with no picks (the store-wide ones) are not announced on the site at all (operator, 17 Oct).
   if (!w.percent) return null;
-  const offer = `${w.percent}% off ${w.items || ''} select items${stack}`.replace('  ', ' ');
+  const rest = w.storewide ? ` · everything else ${w.storewide}% off` : '';
+  const offer = `${w.percent}% off ${w.items || ''} select items${rest}${stack}`.replace('  ', ' ');
   // Say it BEFORE the window too: a buyer who only learns at checkout that cards are out loses the
   // window setting up an app (#7352, 24 Oct). The backend reports p2p_only per schedule.
   const p2p = data.p2p_only !== false;
