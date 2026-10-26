@@ -134,34 +134,15 @@ export default function AnniversaryClient() {
         </div>
       </section>
 
-      {/* HOLD & SHIP */}
+      {/* HOLD & SHIP — switched off 26 Oct 2026 (Brian); every held box shipped that day.
+          The old tier table / HoldStatus are left unused below in case it comes back. */}
       <section className="ann-wrap" aria-labelledby="ann-hold-h">
         <div className="ann-panel">
-          <h2 id="ann-hold-h" style={{ ...HEAD }} className="ann-h2">📦 Hold &amp; Ship Together</h2>
+          <h2 id="ann-hold-h" style={{ ...HEAD }} className="ann-h2">📦 Hold &amp; Ship Together has ended</h2>
           <p className="ann-p">
-            Ordering on more than one day this month? Tick <strong>&ldquo;Hold my order — I&apos;m ordering again
-            this month&rdquo;</strong> at checkout. The order is paid as normal with <strong>$0 shipping</strong>,
-            and we keep it on the shelf for you.
+            Every order now ships on its own, with shipping shown at checkout. Anything you had on hold
+            has already shipped, and we&apos;ve emailed you about it.
           </p>
-          <p className="ann-p">
-            When you place an order <em>without</em> the box ticked, everything you held ships together in one
-            box. Shipping on that last order is set by how many different days are in the box:
-          </p>
-          <div className="ann-table" role="table" aria-label="Hold and Ship shipping prices">
-            <div role="row" className="ann-tr ann-th">
-              <span role="columnheader">Days in the box</span><span role="columnheader">Shipping, once</span>
-            </div>
-            {HOLD_TIERS.map((t) => (
-              <div role="row" key={t.days} className="ann-tr">
-                <span role="cell">{t.days} days</span><span role="cell" className="ann-money">${t.price.toFixed(2)}</span>
-              </div>
-            ))}
-          </div>
-          <p className="ann-fine">
-            Holds run to October 31. If anything is still on hold on November 2, we&apos;ll email you once to pay
-            the box shipping for your tier, and it ships as soon as that&apos;s paid.
-          </p>
-          <HoldStatus me={me} />
         </div>
       </section>
 
