@@ -30,9 +30,11 @@ export const PUBLIC_PREFIXES = [
   '/contact',
   // sweepstakes rules: the free mail-in route must be reachable without an account
   '/giveaway',
-  // vial-label QR codes (route handler that 302s to the COA PDF) — printed on product
+  // vial-label QR codes (route handler serving the COA page) — printed on product
   // already in customers' hands, so it can never be walled
   '/coas',
+  // short QR form printed on labels from 26 Oct 2026 (/C/<SLUG>, upper case for a smaller code)
+  '/C',
   // Apple Pay domain verification
   '/.well-known',
 ];

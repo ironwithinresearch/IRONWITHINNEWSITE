@@ -5,8 +5,9 @@
    `batches` (newest first) shows continued batch-over-batch testing. The top-level
    coaFile/batchDate mirror the latest batch (kept for back-compat with single-COA UI).
    Never print a label pointing at /coa-pdf/... directly - the QR must resolve to
-   /coas/<slug>, which serves ONE PDF containing every batch for that product
-   (see getAllBatchesPdf below + src/app/coas/[file]/route.js). */
+   /coas/<slug> (or /C/<SLUG> on labels from 26 Oct 2026), which serves a phone-friendly
+   page listing every batch for that product (src/lib/coaPage.js), with the merged
+   all-batches PDF from getAllBatchesPdf below. */
 
 export const coaBySlug = {
   '5-amino-1mq-50mg': {
@@ -502,8 +503,8 @@ export function getBatches(slug) {
   return [{ coaFile: coa.coaFile, batchDate: coa.batchDate }];
 }
 
-/* ONE PDF holding every batch COA for a product — what a scanned vial-label QR
-   resolves to. Multi-batch products get a merged file built by
+/* ONE PDF holding every batch COA for a product, linked from the page a scanned
+   vial-label QR lands on. Multi-batch products get a merged file built by
    tools/merge-coas.py (all batches, newest first, one bookmark each);
    single-batch products already have a complete record in their one PDF.
 
