@@ -44,9 +44,13 @@ export const coaBySlug = {
     productName: 'AICAR',
   },
   'aod-9604-10mg': {
-    coaFile: '/coa-pdf/aod-9604-10mg.pdf',
-    batchDate: '8/2/2026',
+    coaFile: '/coa-pdf/aod-9604-10mg-2026-10-09.pdf',
+    batchDate: '10/9/2026 · Lot IWR-1010-AOD',
     productName: 'AOD 9604',
+    batches: [
+      { coaFile: '/coa-pdf/aod-9604-10mg-2026-10-09.pdf', batchDate: '10/9/2026 · Lot IWR-1010-AOD' },
+      { coaFile: '/coa-pdf/aod-9604-10mg.pdf', batchDate: '8/2/2026' },
+    ],
   },
   'ara-290': {
     coaFile: '/coa-pdf/ara-290.pdf',
