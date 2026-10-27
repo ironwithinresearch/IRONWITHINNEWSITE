@@ -71,6 +71,24 @@ export default function CartPage() {
  
   const appliedCoupons = cart?.appliedCoupons || [];
 
+  /* Stack Day (27 Oct, iw-anniversary.php) takes 40% / 45% off as a price cut, not a fee,
+     so the lines and subtotal were already lower but nothing said why. Recover the saving
+     from each line's regular price and show it as its own row, with the subtotal shown
+     before it so the rows still add up to the total. */
+  const stackDayToday = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(new Date()) === '2026-10-27';
+  const stackDay = (cartItems || []).reduce((acc, item) => {
+    if (!stackDayToday) return acc;
+    const qty = Number(item?.quantity) || 0;
+    const reg = num(item?.variation?.node?.regularPrice || item?.product?.node?.regularPrice);
+    const line = num(item?.subtotal);
+    if (!qty || !reg || !line) return acc;
+    const off = 1 - line / qty / reg;
+    const pct = [45, 40].find((p) => Math.abs(off - p / 100) < 0.006);
+    if (!pct) return acc;
+    return { saved: acc.saved + (reg * qty - line), pct: Math.max(acc.pct, pct) };
+  }, { saved: 0, pct: 0 });
+  const stackSaved = Math.round(stackDay.saved * 100) / 100;
+
   /* Amount the $225 free-US-shipping rule is actually judged on. This MUST mirror
      iw-freeship-net.php on the backend: the subtotal, less coupon discounts, less
      any NEGATIVE cart fee (currently the BOGO promo). WooCommerce's own min_amount
@@ -398,7 +416,18 @@ export default function CartPage() {
               <CartStoreCredit cart={cart} />
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <SummaryRow label="Subtotal" rawValue={cartSubtotal} />
+                {stackSaved > 0 ? (
+                  <>
+                    <SummaryRow label="Subtotal" value={`$${(subtotalNum + stackSaved).toFixed(2)}`} />
+                    <SummaryRow
+                      label={`Stack Day: ${stackDay.pct}% off ${stackDay.pct === 45 ? '5+' : '3+'} vials`}
+                      value={`- $${stackSaved.toFixed(2)}`}
+                      valueColor="#34d399"
+                    />
+                  </>
+                ) : (
+                  <SummaryRow label="Subtotal" rawValue={cartSubtotal} />
+                )}
 
                 {appliedCoupons.map((c) => {
                   // WooGraphQL sometimes returns an empty per-coupon discountAmount mid-recalc,

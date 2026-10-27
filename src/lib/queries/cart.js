@@ -36,7 +36,7 @@ export const GET_CART = gql`
               name
               slug
               image { sourceUrl altText }
-              ... on SimpleProduct { price stockStatus }
+              ... on SimpleProduct { price regularPrice stockStatus }
               ... on VariableProduct { price }
             }
           }
@@ -45,6 +45,7 @@ export const GET_CART = gql`
               id
               name
               price
+              regularPrice
               stockStatus
               attributes { nodes { name value } }
             }
