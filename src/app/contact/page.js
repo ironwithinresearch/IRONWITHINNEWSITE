@@ -97,6 +97,11 @@ export default function ContactPage() {
         <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginBottom: '48px', lineHeight: 1.8 }}>
           Have questions about our peptides? We're here to help. Send us a message and a member of our team will reply by email.
         </p>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginTop: '-32px', marginBottom: '40px', lineHeight: 1.7 }}>
+          Missing, damaged or wrong item in an order? Use the{' '}
+          <a href="/claims" style={{ color: 'var(--primary-blue)', fontWeight: 600 }}>order issue form</a>{' '}
+          so it is filed against your order with photos.
+        </p>
 
         <address style={{
           fontStyle: 'normal', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px',

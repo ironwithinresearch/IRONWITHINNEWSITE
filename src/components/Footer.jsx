@@ -22,6 +22,7 @@ const footerLinks = {
     { label: 'Shipping Info', href: '/shipping' },
     { label: 'Refund Policy', href: '/refund' },
     { label: 'Track Order', href: '/orders' },
+    { label: 'Report an Order Issue', href: '/claims' },
   ],
   Legal: [
     { label: 'Terms of Service', href: '/terms' },

@@ -12,7 +12,7 @@ import {
   Package, ChevronRight, Search, Truck,
   CheckCircle2, Clock, XCircle, ArrowRight,
   Download, RotateCcw, Eye, ChevronDown, X,
-  Loader2, ShoppingCart, MapPin,
+  Loader2, ShoppingCart, MapPin, AlertCircle,
 } from 'lucide-react';
 
 const statusConfig = {
@@ -285,6 +285,13 @@ export default function OrdersPage() {
                           onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}>
                           <Download size={13} /> Invoice
                         </button>
+                        {/* Order-issue claim form (missing / damaged / wrong item) — once something has shipped */}
+                        {(order.status === 'COMPLETED' || order.status === 'SHIPPED') && (
+                          <Link href={`/claims?order=${order.orderNumber}`}
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '9px 18px', background: 'transparent', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-md)', color: 'var(--text-secondary)', fontWeight: 500, fontSize: '0.82rem', textDecoration: 'none', fontFamily: 'var(--font-body)', minHeight: 40 }}>
+                            <AlertCircle size={13} /> Report a problem
+                          </Link>
+                        )}
                       </div>
                     </div>
                   )}
