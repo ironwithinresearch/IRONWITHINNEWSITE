@@ -49,7 +49,6 @@ function ClaimsForm() {
   const [items, setItems] = useState(null); // null = not looked up yet; [] = looked up
   const [picked, setPicked] = useState({}); // item_id -> qty (0 = not picked)
   const [issueType, setIssueType] = useState('');
-  const [lot, setLot] = useState('');
   const [description, setDescription] = useState('');
   const [photos, setPhotos] = useState([]); // [{file, url}]
   const [ack, setAck] = useState(false);
@@ -130,7 +129,6 @@ function ClaimsForm() {
       fd.append('email', email.trim());
       fd.append('items', JSON.stringify(pickedItems));
       fd.append('issue_type', issueType);
-      fd.append('lot', lot.trim());
       fd.append('description', description.trim());
       fd.append('ruo_ack', '1');
       fd.append('website', website);
@@ -252,11 +250,6 @@ function ClaimsForm() {
               </select>
             </div>
 
-            <div>
-              <label htmlFor="claim-lot" style={labelStyle}>Batch / lot number <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(optional)</span></label>
-              <input id="claim-lot" type="text" placeholder="e.g. IWR-1010-5AM" value={lot} onChange={(e) => setLot(e.target.value)} style={inputStyle} autoComplete="off" />
-              <p style={hintStyle}>Printed on the vial label after &ldquo;Lot&rdquo;. It lets us check the batch records.</p>
-            </div>
 
             <div>
               <label htmlFor="claim-desc" style={labelStyle}>Describe what happened</label>
