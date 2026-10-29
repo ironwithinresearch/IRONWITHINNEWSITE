@@ -172,7 +172,7 @@ function ClaimsForm() {
           background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
         }}>Report an Order Issue</h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', marginBottom: '16px', lineHeight: 1.8 }}>
-          Tell us what happened and we&apos;ll review it. Replacement or store credit is at our discretion under our policy; refunds are not offered. We reply by email.
+          Tell us what happened and we&apos;ll review it. Replacement or store credit is at our discretion under our policy; refunds are not offered. We reply by email. Please file within 7 days of delivery, as set out in our refund policy.
         </p>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '12px', lineHeight: 1.7 }}>
           Lost or damaged in transit? If your order included Route Package Protection, we&apos;ll check that and point you to Route&apos;s claim process.
@@ -296,7 +296,7 @@ function ClaimsForm() {
             {/* RUO acknowledgement */}
             <label style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', color: 'var(--text-light)', lineHeight: 1.5, cursor: 'pointer' }}>
               <input type="checkbox" checked={ack} onChange={(e) => setAck(e.target.checked)} style={{ width: 20, height: 20, marginTop: 2, flexShrink: 0, accentColor: 'var(--primary-blue)' }} />
-              <span>For research use only. Not for human or veterinary use.</span>
+              <span>I confirm this order was purchased for research use only. These products are not for human or veterinary use.</span>
             </label>
 
             {error && <p style={{ color: '#f87171', fontSize: '0.9rem', margin: 0 }} role="alert">{error}</p>}

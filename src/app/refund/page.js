@@ -5,8 +5,8 @@ import {
   ShieldCheck,
   PackageX,
   AlertTriangle,
-  CreditCard,
-  Clock,
+  Scale,
+  Truck,
   CheckCircle2,
 } from 'lucide-react';
 
@@ -36,16 +36,16 @@ const sections = [
       'Claims regarding missing items must be submitted within 7 days of delivery confirmation. We may investigate shipping records and packaging documentation before issuing a resolution.',
   },
   {
-    icon: CreditCard,
-    title: 'Refund Approval',
+    icon: Scale,
+    title: 'Resolution',
     content:
-      'Approved refunds will be processed back to the original payment method whenever possible. Processing times may vary depending on your financial institution.',
+      'Claims are reviewed case by case. Where a claim is approved, we issue a replacement or store credit at our discretion. Refunds to the original payment method are not offered.',
   },
   {
-    icon: Clock,
-    title: 'Refund Processing Time',
+    icon: Truck,
+    title: 'Loss or damage in transit',
     content:
-      'Once approved, refunds generally appear within 5–10 business days. Some payment providers may require additional processing time.',
+      'If your order included Route Package Protection, loss or damage in transit is handled through Route at claims.route.com.',
   },
 ];
 
