@@ -3,7 +3,7 @@
 //
 // Order-issue claim form. Collects what happened, checks it against the order on the backend
 // (iw-claims.php) and files it for a human to decide. Nothing here promises an outcome: the
-// policy is no refunds, replacement or store credit at our discretion, transit loss/damage via
+// policy is no refunds and no replacements, store credit at our discretion, transit loss/damage via
 // Route when the order had it. Photos are shrunk in the browser before upload so four of them
 // stay under the 4.5 MB limit on the /api/claims route.
 
@@ -170,7 +170,7 @@ function ClaimsForm() {
           background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
         }}>Report an Order Issue</h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', marginBottom: '16px', lineHeight: 1.8 }}>
-          Tell us what happened and we&apos;ll review it. Replacement or store credit is at our discretion under our policy; refunds are not offered. We reply by email. Please file within 7 days of delivery, as set out in our refund policy.
+          Tell us what happened and we&apos;ll review it. Approved issues are resolved with store credit under our policy; refunds and replacements are not offered. We reply by email. Please file within 7 days of delivery, as set out in our refund policy.
         </p>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '12px', lineHeight: 1.7 }}>
           Lost or damaged in transit? If your order included Route Package Protection, we&apos;ll check that and point you to Route&apos;s claim process.

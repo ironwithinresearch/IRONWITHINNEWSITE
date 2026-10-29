@@ -39,7 +39,7 @@ const sections = [
     icon: Scale,
     title: 'Resolution',
     content:
-      'Claims are reviewed case by case. Where a claim is approved, we issue a replacement or store credit at our discretion. Refunds to the original payment method are not offered.',
+      'Claims are reviewed case by case. Where a claim is approved, we issue store credit at our discretion. Refunds to the original payment method and product replacements are not offered.',
   },
   {
     icon: Truck,
@@ -80,7 +80,7 @@ export default function RefundPage() {
           </h1>
 
           <p>
-            Learn about our policies regarding refunds, replacements,
+            Learn about our policies regarding refunds, store credit,
             damaged shipments, and incorrect orders.
           </p>
         </div>
