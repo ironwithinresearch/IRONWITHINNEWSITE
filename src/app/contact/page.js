@@ -111,7 +111,7 @@ export default function ContactPage() {
           <div>
             <div style={{ color: 'var(--text-light)', fontWeight: 700, marginBottom: '4px' }}>Customer support</div>
             Email: <a href="mailto:support@ironwithin.io" style={{ color: 'var(--primary-blue)' }}>support@ironwithin.io</a><br />
-            Phone: <a href="tel:+18504830027" style={{ color: 'var(--primary-blue)' }}>(850) 483-0027</a>
+            Phone: <a href="tel:+18505053780" style={{ color: 'var(--primary-blue)' }}>(850) 505-3780</a>
           </div>
         </address>
 

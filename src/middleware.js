@@ -134,7 +134,7 @@ footer.site a{color:var(--muted)}
 </main>
 <footer class="site">
   <p><strong>Research Use Only.</strong> All products sold by Iron Within Research are intended solely for laboratory research and analytical use by qualified researchers aged 21 and over. They are not for human or veterinary use, and are not intended to diagnose, treat, cure or prevent any disease. Not for human consumption. See our <a href="/ruo-policy">Research Use Only Policy</a>.</p>
-  <p>Iron Within Nutrition LLC DBA Iron Within Research &middot; 8180 Pensacola Blvd, Unit 205, Pensacola, FL 32534 &middot; <a href="tel:+18504830027">(850) 483-0027</a> &middot; <a href="mailto:support@ironwithin.io">support@ironwithin.io</a></p>
+  <p>Iron Within Nutrition LLC DBA Iron Within Research &middot; 8180 Pensacola Blvd, Unit 205, Pensacola, FL 32534 &middot; <a href="tel:+18505053780">(850) 505-3780</a> &middot; <a href="mailto:support@ironwithin.io">support@ironwithin.io</a></p>
 </footer>
 </body>
 </html>`;
