@@ -32,7 +32,7 @@ export default function FreakyFridaysBanner() {
         live: !!cur,
         week: (win || {}).week ?? null,
         name: (win || {}).name || null,
-        pct: ffPct(win), sitewide: FF_SITEWIDE_WEEKS.includes((win || {}).week), blurb: (win || {}).blurb || '',
+        pct: ffPct(win), sitewide: FF_SITEWIDE_WEEKS.includes((win || {}).week), blurb: (win || {}).blurb || '', upTo: !!(win || {}).upTo,
         label: ffFormat(cd.ms),
         kind: cd.kind,
         // Derived from the schedule, never hardcoded: week 1 is a weekend and the rest are a
@@ -120,7 +120,7 @@ export default function FreakyFridaysBanner() {
             {live ? (
               <>
                 {s.week && FF_GIFT[s.week] ? <><strong style={{ color: '#00CFFF' }}>{FF_GIFT[s.week]}</strong>, plus </> : null}
-                {FF_FLAT ? (
+                {FF_FLAT && !s.upTo ? (
                   <><strong style={{ color: '#00CFFF' }}>{s.pct}% off {s.sitewide ? 'sitewide' : (s.blurb || 'select products')}</strong> — no
                   code needed, and your creator code still stacks on top.</>
                 ) : (

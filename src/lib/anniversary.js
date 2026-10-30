@@ -111,11 +111,11 @@ function fromWindow(w, d) {
   const raw = (w.name || '').replace(/^ANNIVERSARY\s*·\s*/u, '');
   const name = d >= 30 ? 'Grand Slam Finale' : titleCase(raw || 'Anniversary Day');
   let detail = 'No code needed — prices drop automatically at midnight CT, and your affiliate code stacks on top.';
-  if (d >= 30) detail = `${w.pct}% off sitewide — the biggest days of the month. ${FINALE_CAPS}`;
+  if (d >= 30) detail = `Up to ${w.pct}% off — the biggest days of the month. ${FINALE_CAPS}`;
   return {
     kind: d >= 30 ? 'finale' : w.sitewide ? 'sitewide' : 'category',
     name,
-    headline: `${w.pct}% off ${w.sitewide ? 'sitewide' : (w.blurb || BLURB_FALLBACK[w.week] || 'select products')}`,
+    headline: w.upTo ? `Up to ${w.pct}% off` : `${w.pct}% off ${w.sitewide ? 'sitewide' : (w.blurb || BLURB_FALLBACK[w.week] || 'select products')}`,
     detail,
     tag: `${w.pct}%`,
     pct: w.pct,

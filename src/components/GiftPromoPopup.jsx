@@ -62,7 +62,7 @@ export default function GiftPromoPopup() {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={`${ff ? `${ffPct(ff)}% off, and ` : ''}a free vial when you spend $${GIFT_MIN}`}
+      aria-label={`${ff ? `${ff.upTo ? 'Up to ' : ''}${ffPct(ff)}% off, and ` : ''}a free vial when you spend $${GIFT_MIN}`}
       onClick={() => close(false)}
       style={{
         position: 'fixed', inset: 0, zIndex: 9000,
@@ -120,7 +120,7 @@ export default function GiftPromoPopup() {
               {ff && ff.name ? `${ff.name} · ends ${ffEndsDay} 11:59pm CT` : `Freaky Friday · ends ${ffEnds} CT today`}
             </div>
             <div style={{ color: '#fff', fontSize: '1.45rem', fontWeight: 900, lineHeight: 1.1 }}>
-              {FF_FLAT ? '' : 'Up to '}{ffPct(ff)}% off {ffSitewide ? 'sitewide' : (ff.blurb || 'select products')}
+              {FF_FLAT && !ff.upTo ? '' : 'Up to '}{ffPct(ff)}% off{ff.upTo ? '' : ` ${ffSitewide ? 'sitewide' : (ff.blurb || 'select products')}`}
             </div>
             <div style={{ color: 'rgba(255,255,255,0.68)', fontSize: '0.86rem', marginTop: 6, lineHeight: 1.5 }}>
               No code needed — and your creator code still stacks on top.

@@ -48,8 +48,8 @@ export const FF_WINDOWS = [
   { week: 7, name: "ANNIVERSARY \u00b7 FREAKY FRIDAY", pct: 35, sitewide: true, blurb: "", start: '2026-10-23T05:00:00Z', end: '2026-10-24T05:00:00Z' },
   { week: 22, name: "ANNIVERSARY \u00b7 CUSTOMER'S CHOICE", pct: 45, sitewide: false, blurb: "RT-3, KLOW, 5-Amino-1MQ, NAD+, BPC-157/TB500 and more", start: '2026-10-26T05:00:00Z', end: '2026-10-27T05:00:00Z' },
   { week: 23, name: "ANNIVERSARY \u00b7 GLOW & AOD WEDNESDAY", pct: 50, sitewide: false, blurb: "GHK-Cu / KPV, KLOW, MT-2, GLOW, S-5 and more", start: '2026-10-28T05:00:00Z', end: '2026-10-29T05:00:00Z' },
-  { week: 8, name: "ANNIVERSARY \u00b7 GRAND SLAM \u00b7 FREAKY FRIDAY FINALE", pct: 55, sitewide: true, blurb: "", start: '2026-10-30T05:00:00Z', end: '2026-10-31T05:00:00Z' },
-  { week: 24, name: "ANNIVERSARY \u00b7 GRAND SLAM \u00b7 HALLOWEEN", pct: 55, sitewide: true, blurb: "", start: '2026-10-31T05:00:00Z', end: '2026-11-01T05:00:00Z' },
+  { week: 8, name: "ANNIVERSARY \u00b7 GRAND SLAM \u00b7 FREAKY FRIDAY FINALE", pct: 55, sitewide: true, upTo: true, blurb: "", start: '2026-10-30T05:00:00Z', end: '2026-10-31T05:00:00Z' },
+  { week: 24, name: "ANNIVERSARY \u00b7 GRAND SLAM \u00b7 HALLOWEEN", pct: 55, sitewide: true, upTo: true, blurb: "", start: '2026-10-31T05:00:00Z', end: '2026-11-01T05:00:00Z' },
 ];
 
 /* The SEASON is deliberately wider than the sale windows.
