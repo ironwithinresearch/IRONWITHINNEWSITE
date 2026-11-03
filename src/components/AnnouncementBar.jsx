@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { shipDaysLive, SHIPDAYS_LABEL, SHIPDAYS_UNTIL } from '@/lib/shipDays';
 import { annPromoLive } from '@/lib/anniversary';
+import { kbLive, KB_PCT, KB_GIFT_MIN } from '@/lib/kellyBday';
 
 /* One calm, static announcement line, fixed above the navbar (height 36px — the navbar
    sits at top: 36 and main is padded to match).
@@ -25,6 +26,9 @@ function currentLine(now) {
   if (shipDaysLive(now)) {
     return { text: `Shipping update: through ${SHIPDAYS_UNTIL}, orders ship ${SHIPDAYS_LABEL} only.`, short: `Through ${SHIPDAYS_UNTIL} we ship Mon, Wed & Thu`, cta: 'Details', href: '/shipping' };
   }
+  if (kbLive(now)) {
+    return { text: `Kelly's Birthday Bash: ${KB_PCT}% off most items, creator codes stack, plus a free RT-3 or TRZ-2 10mg on orders $${KB_GIFT_MIN}+ while supplies last. Through Friday.`, short: `Birthday Bash: ${KB_PCT}% off + free vial at $${KB_GIFT_MIN}`, cta: 'Shop now', href: '/shop', vip: true };
+  }
   if (annPromoLive(now)) {
     return { text: 'Anniversary Month: a new offer every day through October 31.', short: 'Anniversary Month: a deal every day', cta: 'See current deals', href: '/deals' };
   }
@@ -43,7 +47,7 @@ export default function AnnouncementBar() {
       aria-label="Store announcement"
       style={{
         position: 'fixed', top: 0, left: 0, right: 0, height: 36, zIndex: 101,
-        background: '#1c1917', color: '#f5f5f4', borderBottom: '1px solid rgba(255,255,255,0.06)',
+        background: line.vip ? 'linear-gradient(90deg,#05070d,#0b1a33 50%,#05070d)' : '#1c1917', color: line.vip ? '#f3e2a4' : '#f5f5f4', borderBottom: line.vip ? '1px solid rgba(232,199,102,0.45)' : '1px solid rgba(255,255,255,0.06)',
         display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 16px',
         fontFamily: 'var(--font-body)', fontSize: '0.82rem', fontWeight: 500, letterSpacing: '0.01em',
       }}

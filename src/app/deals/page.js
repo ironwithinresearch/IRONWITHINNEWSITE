@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { annPromoLive } from '@/lib/anniversary';
+import { kbLive, KB_PCT, KB_GIFT_MIN } from '@/lib/kellyBday';
 import { giveawayOpen } from '@/lib/giveaway';
 
 const ctWhen = (iso) => new Date(iso).toLocaleString('en-US', { weekday: 'short', hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' });
@@ -46,6 +47,9 @@ export default function Deals() {
       body: 'Short windows on a handful of compounds. Pay by Zelle, Venmo or Cash App to get the flash price.',
       href: '/flash', cta: flash.live ? 'Shop the flash sale' : 'Preview the items', highlight: flash.live,
     });
+  }
+  if (now && kbLive(now)) {
+    deals.push({ eyebrow: 'Through Friday', title: "Kelly's Birthday Bash", body: `${KB_PCT}% off almost everything (aminos, merch, bundles, gift cards and a few low-stock items excluded), no code needed, and creator codes stack on top. Orders of $${KB_GIFT_MIN}+ after discounts include a free RT-3 or TRZ-2 10mg while supplies last; pick yours at checkout.`, href: '/shop', cta: 'Shop the sale', highlight: true });
   }
   if (now && annPromoLive(now)) {
     deals.push({ eyebrow: 'Through October 31', title: 'Anniversary Month', body: 'A different offer every day of October, including Flash Saturdays and Loyalty Sundays.', href: '/anniversary', cta: 'See the calendar' });

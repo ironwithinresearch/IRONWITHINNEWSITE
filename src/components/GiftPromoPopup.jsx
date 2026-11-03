@@ -15,13 +15,14 @@
 import { useEffect, useState } from 'react';
 import { claimPopup } from '@/lib/popupBudget';
 import Link from 'next/link';
-import { GIFT_MIN, GIFT_BIG_MIN, GIFT_OPTIONS, GIFT_FROM, GIFT_TO,
+import { GIFT_MIN, GIFT_BIG_ON, GIFT_BIG_MIN, GIFT_OPTIONS, GIFT_FROM, GIFT_TO,
          GA_MIN, GA_PRIZE_EACH, GA_WINNERS, giveawayActive } from '@/lib/p2p';
 import { ffCurrent, FF_HEADLINE, FF_FLAT, FF_SITEWIDE_WEEKS, ffPct } from '@/lib/freakyFridays';
 import { isLoggedIn } from '@/lib/auth';
+import { kbLive, KB_PCT, KB_GOLD } from '@/lib/kellyBday';
 
 // v2 (25 Sep 2026): content changed, so shoppers who dismissed the old Labor Day version see it once.
-const KEY = 'iw_gift_promo_v2';
+const KEY = 'iw_gift_promo_v3'; // v3 (3 Nov): Kelly's Birthday Bash
 const SNOOZE_MS = 3 * 24 * 60 * 60 * 1000;
 
 export default function GiftPromoPopup() {
@@ -53,6 +54,7 @@ export default function GiftPromoPopup() {
   // The sale panel is DERIVED from the live Freaky Friday window — it used to be hardcoded
   // Labor Day copy ("Buy 1 get 1 free · ends Mon Sep 7") and resurfaced weeks later when the
   // gift window reopened. No live sale, no sale panel.
+  const kb = kbLive();
   const ff = ffCurrent();
   const ffEnds = ff ? new Date(Date.parse(ff.end)).toLocaleTimeString('en-US', { timeZone: 'America/Chicago', hour: 'numeric', minute: '2-digit' }) : '';
   const ffSitewide = ff && FF_SITEWIDE_WEEKS.includes(ff.week);
@@ -62,7 +64,7 @@ export default function GiftPromoPopup() {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={`${ff ? `${ff.upTo ? 'Up to ' : ''}${ffPct(ff)}% off, and ` : ''}a free vial when you spend $${GIFT_MIN}`}
+      aria-label={`${kb ? `${KB_PCT}% off almost everything, and ` : ff ? `${ff.upTo ? 'Up to ' : ''}${ffPct(ff)}% off, and ` : ''}a free vial when you spend $${GIFT_MIN}`}
       onClick={() => close(false)}
       style={{
         position: 'fixed', inset: 0, zIndex: 9000,
@@ -108,7 +110,27 @@ export default function GiftPromoPopup() {
             Iron Within Research
           </div>
 
-          {ff && (
+          {kb && (
+          <div style={{
+            border: `1px solid ${KB_GOLD}88`, background: 'linear-gradient(160deg,rgba(232,199,102,0.12),rgba(47,140,255,0.10))',
+            borderRadius: 12, padding: '16px 16px 14px', marginBottom: 12,
+          }}>
+            <div style={{
+              fontSize: '0.66rem', letterSpacing: '.12em', textTransform: 'uppercase',
+              color: KB_GOLD, fontWeight: 800, marginBottom: 6,
+            }}>
+              Kelly&rsquo;s Birthday Bash · ends Friday 11:59pm CT
+            </div>
+            <div style={{ color: '#fff', fontSize: '1.45rem', fontWeight: 900, lineHeight: 1.1 }}>
+              {KB_PCT}% off almost everything
+            </div>
+            <div style={{ color: 'rgba(255,255,255,0.68)', fontSize: '0.86rem', marginTop: 6, lineHeight: 1.5 }}>
+              No code needed, and your creator code still stacks on top.
+            </div>
+          </div>
+          )}
+
+          {ff && !kb && (
           <div style={{
             border: '1px solid rgba(0,168,214,0.42)', background: 'rgba(0,168,214,0.09)',
             borderRadius: 12, padding: '16px 16px 14px', marginBottom: 12,
@@ -137,10 +159,10 @@ export default function GiftPromoPopup() {
               fontSize: '0.66rem', letterSpacing: '.12em', textTransform: 'uppercase',
               color: '#34d399', fontWeight: 800, marginBottom: 6,
             }}>
-              {ff ? 'Today only' : 'Every order'}
+              {kb ? 'Through Friday' : ff ? 'Today only' : 'Every order'}
             </div>
             <div style={{ color: '#fff', fontSize: '1.45rem', fontWeight: 900, lineHeight: 1.1 }}>
-              Spend ${GIFT_MIN}, pick a free vial
+              Spend ${GIFT_MIN}, pick a free vial{kb ? ' (while supplies last)' : ''}
             </div>
             <div style={{
               display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap', margin: '10px 0 8px',
@@ -156,9 +178,11 @@ export default function GiftPromoPopup() {
                 </span>
               ))}
             </div>
+            {GIFT_BIG_ON && (
             <div style={{ color: 'rgba(255,255,255,0.68)', fontSize: '0.86rem', lineHeight: 1.5 }}>
               Spend ${GIFT_BIG_MIN}+ and it&rsquo;s the <strong style={{ color: '#6ee7b7' }}>30mg</strong>.
             </div>
+            )}
           </div>
 
           {/* Third block only while the giveaway window is open — it closes a day before
@@ -210,7 +234,8 @@ export default function GiftPromoPopup() {
             margin: '14px 0 0', color: 'rgba(255,255,255,0.38)', fontSize: '0.72rem', lineHeight: 1.5,
           }}>
             Applied automatically — choose your vial at checkout. Spend is measured after
-            discounts. Merch, bundles &amp; gift cards keep their own pricing.
+            discounts. {kb ? 'Aminos, merch, bundles, gift cards and a few low-stock items are not in the 25%. Free vial while supplies last; if your pick sells out, we send the other.' : 'Merch, bundles & gift cards keep their own pricing.'}
+            {' '}For research use only. Not for human or veterinary use.
           </p>
         </div>
       </div>

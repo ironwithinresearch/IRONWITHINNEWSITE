@@ -10,7 +10,7 @@ import { CHECKOUT, buildCheckoutInput } from '../../lib/queries/checkout';
 import { useCart } from '../../context/CartContext';
 import { getReferCookie } from '@/lib/referral';
 import PayPalFrame from '@/components/PayPalFrame';
-import { P2P_METHODS, p2pPaused, p2pRate, p2pPct, GIFT_OPTIONS, GIFT_MIN, GIFT_BIG_MIN, giftDoseFor, giftQualifies, giftQualifying } from '@/lib/p2p';
+import { P2P_METHODS, p2pPaused, p2pRate, p2pPct, GIFT_OPTIONS, GIFT_MIN, GIFT_BIG_ON, GIFT_BIG_MIN, giftDoseFor, giftQualifies, giftQualifying } from '@/lib/p2p';
 import { useAuth } from '../../context/AuthContext';
 import { GET_CUSTOMER } from '../../lib/queries/auth';
 import { decodePriceHtml } from '../../lib/utils';
@@ -1276,7 +1276,7 @@ export default function CheckoutPage() {
                     You&rsquo;ve earned a free vial
                   </div>
                   <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>
-                    Orders of ${GIFT_MIN}+ (after discounts) include a free 10mg, and ${GIFT_BIG_MIN}+ earns the 30mg. Yours is the <strong>{giftDoseFor(giftBase)}</strong> — pick which:
+                    {GIFT_BIG_ON ? <>Orders of ${GIFT_MIN}+ (after discounts) include a free 10mg, and ${GIFT_BIG_MIN}+ earns the 30mg. Yours is the <strong>{giftDoseFor(giftBase)}</strong> — pick which:</> : <>Orders of ${GIFT_MIN}+ (after discounts) include a free 10mg vial while supplies last. Pick which; if your pick has sold out, we&rsquo;ll send the other:</>}
                   </div>
                   <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                     {GIFT_OPTIONS.map((g) => (

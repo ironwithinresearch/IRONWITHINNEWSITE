@@ -96,10 +96,12 @@ export const p2pPct = (now = Date.now()) => String(Math.round(p2pRate(now) * 100
 // the shipping is not. Move the number and that copy together, always.
 // Freaky Friday week 3 (25 Sep): $200 earns a 10mg, $350 upgrades it to the 30mg. Free shipping
 // stays at $225, so no copy may pair the vial with free shipping. Mirrors IW_GIFT_MIN / IW_GIFT_MIN_BIG.
+// Kelly's Birthday Bash (4-6 Nov): 10mg at $175+, NO 30mg tier (backend IW_GIFT_MIN_BIG = 999999).
 export const GIFT_MIN = 175;
-export const GIFT_BIG_MIN = 275;
-export const GIFT_FROM = Date.parse('2026-10-11T21:30:00Z'); // Sun 11 Oct, 4:30pm CT (Sunday Night Special)
-export const GIFT_TO = Date.parse('2026-10-12T03:00:00Z');   // Sun 11 Oct, 10:00pm CT
+export const GIFT_BIG_ON = false;   // false = never mention a 30mg tier in copy
+export const GIFT_BIG_MIN = 999999;
+export const GIFT_FROM = Date.parse('2026-11-04T06:00:00Z'); // Wed 4 Nov, 12:00am CST
+export const GIFT_TO = Date.parse('2026-11-07T06:00:00Z');   // Sat 7 Nov, 12:00am CST (end of Fri)
 
 export const GIFT_OPTIONS = [
   { key: 'trz2', label: 'TRZ-2' },
@@ -109,7 +111,7 @@ export const GIFT_OPTIONS = [
 /** Which size the qualifying amount earns — the same compound choice, the size follows the spend. */
 export const giftDoseFor = (base) => (Number(base) >= GIFT_BIG_MIN ? '30mg' : '10mg');
 
-export const giftActive = (now = Date.now()) => now >= GIFT_FROM && now <= GIFT_TO;
+export const giftActive = (now = Date.now()) => now >= GIFT_FROM && now < GIFT_TO;
 
 /** Does this cart earn the free vial? Subtotal is items after coupons. Any payment method. */
 export const giftQualifies = (subtotal, _payMethod, now = Date.now()) =>
