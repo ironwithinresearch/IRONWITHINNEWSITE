@@ -22,8 +22,9 @@ import { Analytics } from "@vercel/analytics/react";
 // could only discover after downloading that stylesheet — two extra round trips to Google
 // before any text could render in its real face. The CSS variables feed --font-body /
 // --font-heading / --font-brand in src/styles/theme.css. Orbitron is only the logo wordmark,
-// so it is not preloaded. The weight lists are the ones the old @import asked for: Google
-// serves a slightly different Inter file for a weight RANGE, wide enough to re-wrap text.
+// so it is not preloaded. The weight lists are the ones the old @import asked for. next/font
+// downloads the build Google gives Macs, iPhones and Android, so text on phones renders
+// exactly as before; Windows/Linux desktops lose Google's hinted variant (barely visible).
 const inter = Inter({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700", "800", "900"], variable: "--font-inter", display: "swap" });
 const manrope = Manrope({ subsets: ["latin"], weight: ["500", "600", "700", "800"], variable: "--font-manrope", display: "swap" });
 const orbitron = Orbitron({ subsets: ["latin"], weight: ["700", "800", "900"], variable: "--font-orbitron", display: "swap", preload: false });
