@@ -49,8 +49,11 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  // data-scroll-behavior: globals.css sets `scroll-behavior: smooth` for in-page
+  // anchors. Next 16 stopped switching it off during route changes unless this
+  // attribute is present, which would make every page change glide instead of jump.
   return (
-    <html lang="en" data-theme="light">
+    <html lang="en" data-theme="light" data-scroll-behavior="smooth">
       <body>
         {/* Land in light by default; honor a returning visitor's saved choice
             BEFORE first paint so dark users don't see a flash of light. */}

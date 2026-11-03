@@ -18,6 +18,7 @@ import { coaPageResponse } from '@/lib/coaPage';
    to src/data/coas.js, re-run tools/merge-coas.py, and the same old QR now
    shows the new report too. See src/lib/coaPage.js. */
 
-export function GET(request, { params }) {
-  return coaPageResponse(decodeURIComponent(params.file));
+export async function GET(request, { params }) {
+  const { file } = await params;
+  return coaPageResponse(decodeURIComponent(file));
 }

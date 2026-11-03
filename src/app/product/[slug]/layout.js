@@ -27,7 +27,7 @@ export async function generateStaticParams() {
 const strip = (h) => (h || "").replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
 
 export async function generateMetadata({ params }) {
-  const slug = params?.slug;
+  const { slug } = await params;
   try {
     const res = await fetch(GQL, {
       method: "POST",

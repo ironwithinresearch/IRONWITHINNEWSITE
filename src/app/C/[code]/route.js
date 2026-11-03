@@ -10,6 +10,7 @@ import { coaPageResponse } from '@/lib/coaPage';
    exactly like /coas/<slug>. Printed labels can't be recalled, so this route
    is permanent. */
 
-export function GET(request, { params }) {
-  return coaPageResponse(decodeURIComponent(params.code).toLowerCase());
+export async function GET(request, { params }) {
+  const { code } = await params;
+  return coaPageResponse(decodeURIComponent(code).toLowerCase());
 }

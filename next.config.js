@@ -81,7 +81,7 @@ const securityHeaders = [
 const nextConfig = {
   images: {
     // Backend moved off Rocket to api.ironwithin.io (Vultr) — product image URLs now use it.
-    domains: ["api.ironwithin.io"],
+    remotePatterns: [{ protocol: "https", hostname: "api.ironwithin.io" }],
   },
   async headers() {
     return [
