@@ -14,6 +14,7 @@ import {
   Download, RotateCcw, Eye, ChevronDown, X,
   Loader2, ShoppingCart, MapPin, AlertCircle,
 } from 'lucide-react';
+import ProductThumb from '@/components/ProductThumb';
 
 const statusConfig = {
   PROCESSING: { label: 'Processing', color: '#fbbf24',             bg: 'rgba(251,191,36,0.12)', border: 'rgba(251,191,36,0.3)', Icon: Clock },
@@ -229,7 +230,7 @@ export default function OrdersPage() {
                             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 14px', background: 'var(--bg-dark)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-md)' }}>
                               <div style={{ width: 48, height: 48, flexShrink: 0, borderRadius: 'var(--radius-sm)', background: 'var(--bg-dark)', border: '1px solid var(--glass-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                                 {product?.image?.sourceUrl ? (
-                                  <img src={product.image.sourceUrl} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                                  <ProductThumb src={product.image.sourceUrl} alt={product.name} size={48} />
                                 ) : (
                                   <Package size={18} color="var(--text-muted)" />
                                 )}

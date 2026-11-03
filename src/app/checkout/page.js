@@ -32,6 +32,7 @@ import {
   Lock, CheckCircle2, Package, ArrowRight,
   Info, Loader2,
 } from 'lucide-react';
+import ProductThumb from '@/components/ProductThumb';
  
 const steps = ['Shipping', 'Review'];
 const SUPPORT_EMAIL = 'support@ironwithin.io';
@@ -1185,7 +1186,7 @@ export default function CheckoutPage() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, minWidth: 0 }}>
                     <div style={{ width: 32, height: 32, flexShrink: 0, borderRadius: '8px', background: 'var(--bg-elevated)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       {item.product?.node?.image?.sourceUrl ? (
-                        <img src={item.product.node.image.sourceUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                        <ProductThumb src={item.product.node.image.sourceUrl} size={32} />
                       ) : <Package size={14} color="var(--text-muted)" />}
                     </div>
                     <span style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>

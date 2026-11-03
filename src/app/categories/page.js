@@ -11,6 +11,7 @@ import {
   Dumbbell, Microscope, Dna, ArrowRight, BadgeCheck,
   Search, ShieldCheck, Package, Star, Loader2,
 } from 'lucide-react';
+import ProductThumb from '@/components/ProductThumb';
 
 // Map category slug → color + icon (fallback for categories without images)
 const categoryStyle = {
@@ -50,7 +51,7 @@ function CategoryProducts({ categorySlug }) {
         <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 12px', background: 'var(--bg-dark)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-md)' }}>
           <div style={{ width: 32, height: 32, flexShrink: 0, borderRadius: 'var(--radius-sm)', background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
             {p.image?.sourceUrl ? (
-              <img src={p.image.sourceUrl} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+              <ProductThumb src={p.image.sourceUrl} alt={p.name} size={32} />
             ) : (
               <FlaskConical size={14} color="var(--primary-blue)" style={{ opacity: 0.4 }} />
             )}
@@ -145,7 +146,7 @@ export default function CategoriesPage() {
                           {/* Category image or icon */}
                           <div style={{ width: 52, height: 52, borderRadius: 'var(--radius-md)', background: `${color}18`, border: `1px solid ${color}35`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px', overflow: 'hidden', boxShadow: isHovered ? `0 0 20px ${color}40` : 'none', transition: 'all 0.2s ease' }}>
                             {cat.image?.sourceUrl ? (
-                              <img src={cat.image.sourceUrl} alt={cat.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                              <ProductThumb src={cat.image.sourceUrl} alt={cat.name} size={52} fit="cover" />
                             ) : (
                               <Icon size={24} color={color} />
                             )}

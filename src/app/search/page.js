@@ -12,6 +12,7 @@ import {
   Search, FlaskConical, ArrowRight, BadgeCheck,
   ShoppingCart, X, Loader2, CheckCircle2, Tag,
 } from 'lucide-react';
+import ProductThumb from '@/components/ProductThumb';
 
 const accentColors = [
   'var(--primary-blue)', 'var(--purple)', 'var(--pink)',
@@ -196,7 +197,7 @@ function SearchInner() {
                         onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
                         <div style={{ width: 38, height: 38, borderRadius: 'var(--radius-md)', background: `${color}18`, border: `1px solid ${color}33`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
                           {image?.sourceUrl ? (
-                            <img src={image.sourceUrl} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            <ProductThumb src={image.sourceUrl} alt={name} size={38} fit="cover" />
                           ) : (
                             <Tag size={16} color={color} />
                           )}
@@ -288,7 +289,7 @@ function SearchInner() {
                       <Link href={`/product/${product.slug}`} style={{ textDecoration: 'none', flexShrink: 0 }}>
                         <div style={{ width: 56, height: 56, borderRadius: 'var(--radius-md)', background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                           {product.image?.sourceUrl ? (
-                            <img src={product.image.sourceUrl} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                            <ProductThumb src={product.image.sourceUrl} alt={product.name} size={56} />
                           ) : (
                             <FlaskConical size={22} color="var(--primary-blue)" style={{ opacity: 0.4 }} />
                           )}

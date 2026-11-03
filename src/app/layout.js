@@ -1,4 +1,5 @@
 import "./globals.css";
+import { Inter, Manrope, Orbitron } from "next/font/google";
 import AnnouncementBar from "../components/AnnouncementBar";
 import FlashBar from "../components/FlashBar";
 import Navbar from "../components/Navbar";
@@ -8,7 +9,6 @@ import AffiliateTracker from "../components/AffiliateTracker";
 import ReferralCapture from "../components/ReferralCapture";
 import LeadCapture from "../components/LeadCapture";
 import GiftPromoPopup from "../components/GiftPromoPopup";
-import QueenTheme from "../components/QueenTheme";
 import ShippingPauseNotice from "../components/ShippingPauseNotice";
 import SiteChat from "../components/SiteChat";
 import ApolloWrapper from "../lib/ApolloWrapper";
@@ -16,6 +16,17 @@ import ApolloWrapper from "../lib/ApolloWrapper";
 // had to be estimated by counting unique IPs in the Apache log. Serves its script and
 // beacons from /_vercel/insights on this same origin, so the CSP needs no new host.
 import { Analytics } from "@vercel/analytics/react";
+
+// Fonts are self-hosted by next/font (downloaded at build, served from this origin, preloaded).
+// They used to come from a Google Fonts @import at the top of globals.css, which the browser
+// could only discover after downloading that stylesheet — two extra round trips to Google
+// before any text could render in its real face. The CSS variables feed --font-body /
+// --font-heading / --font-brand in src/styles/theme.css. Orbitron is only the logo wordmark,
+// so it is not preloaded. The weight lists are the ones the old @import asked for: Google
+// serves a slightly different Inter file for a weight RANGE, wide enough to re-wrap text.
+const inter = Inter({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700", "800", "900"], variable: "--font-inter", display: "swap" });
+const manrope = Manrope({ subsets: ["latin"], weight: ["500", "600", "700", "800"], variable: "--font-manrope", display: "swap" });
+const orbitron = Orbitron({ subsets: ["latin"], weight: ["700", "800", "900"], variable: "--font-orbitron", display: "swap", preload: false });
 
 const SITE_NAME = "Iron Within Research";
 const SITE_DESC =
@@ -53,7 +64,7 @@ export default function RootLayout({ children }) {
   // anchors. Next 16 stopped switching it off during route changes unless this
   // attribute is present, which would make every page change glide instead of jump.
   return (
-    <html lang="en" data-theme="light" data-scroll-behavior="smooth">
+    <html lang="en" data-theme="light" data-scroll-behavior="smooth" className={`${inter.variable} ${manrope.variable} ${orbitron.variable}`}>
       <body>
         {/* Land in light by default; honor a returning visitor's saved choice
             BEFORE first paint so dark users don't see a flash of light. */}
@@ -62,7 +73,6 @@ export default function RootLayout({ children }) {
             __html: `try{var t=localStorage.getItem('iwr-theme');if(t==='dark'){document.documentElement.setAttribute('data-theme','dark');}}catch(e){}`,
           }}
         />
-        <QueenTheme />
         <ApolloWrapper>
           <AffiliateTracker />
           <ReferralCapture />

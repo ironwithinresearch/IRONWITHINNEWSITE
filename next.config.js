@@ -107,6 +107,9 @@ const nextConfig = {
   async redirects() {
     return [
       { source: "/continuity", destination: "/shop", permanent: false },
+      // The July "12 Days of Christmas in July" page was removed in Nov 2026 (the event ended
+      // 23 Jul). Old emails and posts still link it, so send them to the live deals page.
+      { source: "/christmas-in-july", destination: "/deals", permanent: false },
       // 18 Oct 2026: the two TSM-6 products and their COA files were renamed off a
       // restricted compound name (processor compliance scan). The old slugs live on in
       // printed vial-label QR codes, affiliate links and search indexes, so every old URL

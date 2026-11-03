@@ -4,7 +4,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@apollo/client';
-import B2SUnlockNudge from '@/components/B2SUnlockNudge';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import PurchaseBlocked from '@/components/PurchaseBlocked';
@@ -21,6 +20,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import { useState, useMemo, useEffect, useRef } from 'react';
+import ProductThumb from '@/components/ProductThumb';
 
 // Free vial picker. ONE tier, mirroring mu-plugin iw-p2p-gift.php: IW_GIFT_MIN = $125
 // and iw_gift_options() = TRZ-2 10mg (1033) / RT-3 10mg (520).
@@ -113,7 +113,6 @@ export default function CartPage() {
   // backend, seeing $204, added nothing; the customer chose a gift that never came.
   const activeGiftTier = XJ_GIFT_TIERS.find(t => freeShipQualifyingNum >= t.min) || null;
   const giftOpts = activeGiftTier ? activeGiftTier.opts : [];
-  const activeGiftVids = new Set(giftOpts.map(o => o.vid));
   const giftDose = activeGiftTier?.dose || '10mg';
 
   // REFER25 auto-apply REMOVED (12 Sep 2026). The friend-side $25 coupon is retired and the
@@ -164,11 +163,6 @@ export default function CartPage() {
   const xjHasPick = cartItems.some(it => (it.extraData || []).some(e => e.key === 'iw_gift_pick' && !!e.value));
   const currentGiftSlug = xjGiftItem?.product?.node?.slug;
   const xjGiftKey = xjGiftItem?.key;
-  // The gift line's variation id (from its iw_gift_pick tag) — used to tell whether the
-  // gift already in the cart matches the tier the current subtotal earns. If the cart
-  // crosses $300 (or drops below), a wrong-tier gift is swapped for the right one.
-  const xjGiftVid = xjGiftItem ? parseInt((xjGiftItem.extraData || []).find(e => e.key === 'iw_gift_pick')?.value || '0', 10) : 0;
-  const giftCorrectTier = !!xjGiftVid && activeGiftVids.has(xjGiftVid);
   // Auto-open once per cart visit whenever there's an unclaimed gift. Picking a gift
   // (iw_gift_pick) stops it for good; dismissing just closes it for this visit.
   const giftAutoOpened = useRef(false);
@@ -177,44 +171,18 @@ export default function CartPage() {
     giftAutoOpened.current = true;
     if (!xjHasPick) setGiftModalOpen(true);
   }, [xjGiftKey, xjHasPick]);
-  // Remember what they actually chose, so the auto-add effect below re-adds THEIR
-  // pick rather than snapping back to the default.
-  const lastPick = useRef(null);
   const pickGift = async (opt) => {
     setGiftModalOpen(false);
     if (currentGiftSlug === opt.slug) return;
-    lastPick.current = opt;
-    // Hold the auto-add effect off: swapping removes the old gift line first, which
-    // briefly leaves the cart with no gift and would otherwise re-trigger the
-    // auto-add -- re-adding the default alongside their pick, and the leftover
-    // line then bills at full price.
+    // Swapping removes the old gift line first; the busy flag marks the swap in flight.
     giftBusy.current = true;
     try { await chooseXjGift(opt); } finally { giftBusy.current = false; }
   };
   const dismissGiftModal = () => setGiftModalOpen(false);
 
-  // Flash free gift (tonight only, ends midnight CT). At $175+ auto-add the default vial via a
-  // NORMAL addToCart mutation, which trips the picker so the customer can swap RT-3 ↔ TRZ-2.
-  // Remove it if the cart drops back under $175. Self-disables after the window. (Root cause of
-  // the earlier "can't add" was the dormant 12-Days plugin removing iw_gift_pick lines — fixed.)
-  const FLASH_GIFT_ON = Date.now() >= Date.parse('2026-07-28T23:30:00Z') && Date.now() < Date.parse('2026-08-03T05:00:00Z');
-  const giftEligible = !!activeGiftTier;
+  // Set by pickGift() while it swaps gift lines. (The Jul 28-Aug 2 flash auto-add effect
+  // that also read it was removed in Nov 2026.)
   const giftBusy = useRef(false);
-  useEffect(() => {
-    if (!FLASH_GIFT_ON || cartLoading || giftBusy.current) return;
-    const hasGift = !!xjGiftItem;
-    // Eligible but missing the gift, OR holding the wrong tier's gift (e.g. cart just
-    // crossed $300 so a 10mg needs to become 30mg): add/swap to this tier's pick.
-    if (giftEligible && (!hasGift || !giftCorrectTier)) {
-      giftBusy.current = true;
-      const want = giftOpts.find(o => o.slug === lastPick.current?.slug) || giftOpts[0];
-      chooseXjGift(want).finally(() => { giftBusy.current = false; });
-    } else if (!giftEligible && hasGift && xjGiftKey) {
-      giftBusy.current = true;
-      removeItem(xjGiftKey).finally(() => { giftBusy.current = false; });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [giftEligible, xjGiftItem, giftCorrectTier, cartLoading]);
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return;
@@ -258,13 +226,6 @@ export default function CartPage() {
           {cartLoading ? 'Loading…' : `${cartItems.length} item${cartItems.length !== 1 ? 's' : ''}`}
         </p>
 
-        {/* Buy-3 unlock progress. Counts UNITS, not lines, to match iw_b2s_cart_units()
-            on the backend — 3 of one vial qualifies. Free-gift lines are excluded there
-            too, but they are never in a cart that has not already qualified. */}
-        {cartItems.length > 0 && (
-          <B2SUnlockNudge units={cartItems.reduce((n, i) => n + (i.quantity || 0), 0)} />
-        )}
-
         {cartLoading && cartItems.length === 0 ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}>
             <Loader2 size={36} color="var(--primary-blue)" style={{ animation: 'spin 1s linear infinite' }} />
@@ -303,7 +264,7 @@ export default function CartPage() {
                     {/* Image */}
                     <div style={{ width: 70, height: 70, flexShrink: 0, borderRadius: '10px', background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                       {product?.image?.sourceUrl ? (
-                        <img src={product.image.sourceUrl} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                        <ProductThumb src={product.image.sourceUrl} alt={product.name} size={70} />
                       ) : (
                         <Package size={26} color="var(--text-muted)" />
                       )}

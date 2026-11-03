@@ -18,6 +18,7 @@ import {
   ChevronDown, X, ShoppingCart, RotateCcw, Download,
   Save, Eye, EyeOff, CheckCircle, AlertCircle, Wallet,
 } from 'lucide-react';
+import ProductThumb from '@/components/ProductThumb';
 
 /* ─────────────────────── helpers ─────────────────────────── */
 const statusConfig = {
@@ -245,7 +246,7 @@ function OrdersPanel() {
                         return (
                           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '11px 13px', background: 'var(--bg-dark)', border: '1px solid var(--glass-border)', borderRadius: 'var(--radius-md)' }}>
                             <div style={{ width: 44, height: 44, flexShrink: 0, borderRadius: 'var(--radius-sm)', background: 'var(--bg-dark)', border: '1px solid var(--glass-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-                              {product?.image?.sourceUrl ? <img src={product.image.sourceUrl} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} /> : <Package size={16} color="var(--text-muted)" />}
+                              {product?.image?.sourceUrl ? <ProductThumb src={product.image.sourceUrl} alt={product.name} size={44} /> : <Package size={16} color="var(--text-muted)" />}
                             </div>
                             <div style={{ flex: 1 }}>
                               <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>{product?.name || 'Product'}</div>

@@ -4,7 +4,6 @@
 
 import Link from 'next/link';
 import FreakyFridaysBanner from "../components/FreakyFridaysBanner";
-import { AnniversaryToday } from "./anniversary/AnniversaryClient";
 import Image from 'next/image';
 import { useQuery } from '@apollo/client';
 import { GET_PRODUCTS } from '@/lib/queries/products';
@@ -19,9 +18,7 @@ import {
   ShoppingCart, Heart, Loader2,
 } from 'lucide-react';
 import SaleCountdown from '@/components/SaleCountdown';
-import FillTheFreezerBanner from '@/components/FillTheFreezerBanner';
 import BirthdayBashBanner from '@/components/BirthdayBashBanner';
-import QueenBirthdayBanner from '@/components/QueenBirthdayBanner';
 
 // (Removed 2026-07-27: an unused category grid whose labels were outcome claims —
 //  'Anti-Aging', 'Healing & Recovery' etc. It was never rendered, and the real
@@ -197,7 +194,6 @@ export default function Home() {
             99%+ purity, independently third-party lab-tested, with a Certificate of Analysis for every lot and tracking on every order.
           </p>
           <div><SaleCountdown /></div>
-          <FillTheFreezerBanner />
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
             <Link href="/shop" style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', padding: '16px 38px', background: 'var(--gradient-primary)', borderRadius: 'var(--radius-md)', color: '#fff', fontWeight: 800, fontSize: '1.05rem', textDecoration: 'none', boxShadow: '0 0 30px rgba(0,207,255,0.5)', fontFamily: 'var(--font-body)' }}>
               Shop All Research Compounds <ArrowRight size={17} />
@@ -219,18 +215,11 @@ export default function Home() {
       {/* ══ BIRTHDAY BASH BANNER (sale window only) ══ */}
       <BirthdayBashBanner />
 
-      {/* ══ QUEEN'S BIRTHDAY BASH (Jul 28–Aug 2) ══ */}
-      <QueenBirthdayBanner />
-
       {/* Freaky Fridays — the live weekly series. Self-gates to the season and to each
           window, so it simply disappears after Halloween with nothing to remove. */}
       <div style={{ padding: '0 24px', maxWidth: 1200, margin: '0 auto' }}>
         <FreakyFridaysBanner />
       </div>
-
-      {/* Anniversary Month: today's live deal (flash windows, countdown), then Browse the shop /
-          See all 31 days. Same card as /anniversary; hides itself outside October. */}
-      <AnniversaryToday />
 
       {/* ══ STATS BAR ══ */}
       <section style={{ background: 'var(--card-dark)', borderTop: '1px solid var(--glass-border)', borderBottom: '1px solid var(--glass-border)', padding: '36px 24px' }}>

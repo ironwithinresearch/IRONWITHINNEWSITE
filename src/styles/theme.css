@@ -57,9 +57,11 @@
   /* ── Typography ─────────────────────────────────────────── */
   /* Headings: Manrope — calm and professional (operator, 17 Oct 2026). Orbitron is kept
      for the logo wordmark only, via --font-brand. */
-  --font-heading: 'Manrope', 'Inter', sans-serif;
-  --font-brand:   'Orbitron', 'Inter', sans-serif;
-  --font-body:    'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* --font-inter / --font-manrope / --font-orbitron are set on <html> by next/font
+     (src/app/layout.js). */
+  --font-heading: var(--font-manrope), var(--font-inter), sans-serif;
+  --font-brand:   var(--font-orbitron), var(--font-inter), sans-serif;
+  --font-body:    var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
 
   /* ── Shadows ────────────────────────────────────────────── */
   --shadow-sm:  0 1px 3px rgba(0,0,0,0.5);
