@@ -86,6 +86,9 @@ function P2PDeadline({ deadline }) {
 // The rest are manual P2P gateways (iw-p2p-pay.php) — the order is placed on-hold and
 // the buyer is shown send-to instructions.
 const CARD_METHOD = 'iwr_card';
+// Installed Stripe Payment Gateway returns a hosted checkout URL from process_payment.
+const STRIPE_METHOD = 'sps_stripe';
+const CARD_METHODS = new Set([STRIPE_METHOD, CARD_METHOD]);
 
 // PayPal. iwr_paypal is a WRAPPER around the paypal-proxy-phantom gateway, not that gateway
 // itself — see mu-plugin iw-paypal-headless.php. The plugin picks its proxy in a wp_head
@@ -141,11 +144,12 @@ function p2pAppLink(method, amount, orderNumber) {
 }
 
 const PAY_METHODS = [
-  { id: CARD_METHOD,   label: 'Credit / Debit Card', desc: 'Pay securely by card. Visa, Mastercard, American Express & Discover.' },
+  { id: STRIPE_METHOD, label: 'Card (Stripe)', desc: 'Continue to secure checkout to pay with Stripe.' },
   { id: 'iwr_zelle',   label: 'Zelle',    handle: '8508980623' },
   { id: 'iwr_venmo',   label: 'Venmo',    handle: '@iwnpay' },
   // backup: shown as "if that fails, use …" — operator, 3 Oct 2026 (the main Cash App was failing for some buyers).
   { id: 'iwr_cashapp', label: 'Cash App', handle: '$ironwithinresearch', backup: '$AmberKrisell' },
+  { id: CARD_METHOD,   label: 'Credit / Debit Card', desc: 'Pay securely by card. Visa, Mastercard, American Express & Discover.' },
 ];
 
 // Paying by app takes a discount off (see mu-plugin iw-p2p-discount.php). Card payers
@@ -155,7 +159,7 @@ const P2P_DISCOUNT_METHODS = P2P_METHODS;
 
 // Any method whose backend gateway answers with an off-site `redirect` rather than
 // completing the order in-place.
-const REDIRECT_METHODS = new Set(['iwr_rail', CARD_METHOD, PAYPAL_METHOD]);
+const REDIRECT_METHODS = new Set(['iwr_rail', STRIPE_METHOD, CARD_METHOD, PAYPAL_METHOD]);
 
 // Card kill switch. Set to true to pull the card option from checkout instantly — keep it
 // in step with CARDS_ENABLED in PaymentMethods.jsx.
@@ -276,12 +280,12 @@ export default function CheckoutPage() {
   };
   const flashInCart = flashVids.length > 0 && (cartItems || []).some((i) => flashVids.includes(vidOf(i)));
   useEffect(() => {
-    if (flashInCart && payMethod === CARD_METHOD) setPayMethod('');
+    if (flashInCart && CARD_METHODS.has(payMethod)) setPayMethod('');
   }, [flashInCart, payMethod]);
 
   const payMethodOptions = PAY_METHODS
-    .filter((m) => !(flashInCart && m.id === CARD_METHOD))
-    .filter((m) => !(isCardPaused() && m.id === CARD_METHOD))
+    .filter((m) => !(flashInCart && CARD_METHODS.has(m.id)))
+    .filter((m) => !(isCardPaused() && CARD_METHODS.has(m.id)))
     .filter((m) => PAYPAL_ENABLED || m.id !== PAYPAL_METHOD)
     .filter((m) => PP_ENABLED || m.id !== PP_METHOD);
   // Route Package Protection — customer-paid shipping insurance.
