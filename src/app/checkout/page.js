@@ -144,7 +144,7 @@ function p2pAppLink(method, amount, orderNumber) {
 }
 
 const PAY_METHODS = [
-  { id: STRIPE_METHOD, label: 'Card (Stripe)', desc: 'Continue to secure checkout to pay with Stripe.' },
+  { id: STRIPE_METHOD, label: 'Credit Card', desc: 'Continue to secure checkout to pay with Stripe.' },
   { id: 'iwr_zelle',   label: 'Zelle',    handle: '8508980623' },
   { id: 'iwr_venmo',   label: 'Venmo',    handle: '@iwnpay' },
   // backup: shown as "if that fails, use …" — operator, 3 Oct 2026 (the main Cash App was failing for some buyers).
