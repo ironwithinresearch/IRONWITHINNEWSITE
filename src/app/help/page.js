@@ -21,7 +21,7 @@ const LINKS = [
   { href: '/claims', label: 'Report a problem with an order', Icon: AlertTriangle },
   { href: '/faq', label: 'Frequently asked questions', Icon: HelpCircle },
   { href: '/shipping', label: 'Shipping information', Icon: Truck },
-  { href: '/refund', label: 'Refund policy', Icon: RotateCcw },
+  { href: '/refund', label: 'Refund & store credit policy', Icon: RotateCcw },
   { href: '/lab-reports', label: 'Lab reports and COAs', Icon: FlaskConical },
 ];
 
@@ -80,7 +80,7 @@ export default function HelpPage() {
 
       <section className="iwa-card" aria-labelledby="help-chat">
         <h2 id="help-chat">Message us</h2>
-        <p>Replies usually arrive within a few hours. You can close the chat and come back to it later.</p>
+        <p>We reply as soon as we can. You can close the chat and come back to it later.</p>
         <button type="button" className="iwa-btn" style={{ width: '100%' }} onClick={openChat} disabled={!ready}>
           <MessageCircle size={18} aria-hidden="true" /> {ready ? 'Start a conversation' : failed ? 'Chat unavailable' : 'Loading chat…'}
         </button>

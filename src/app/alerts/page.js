@@ -68,7 +68,7 @@ export default function AlertsPage() {
   return (
     <div className="iwa-page">
       <h1>Back-in-stock alerts</h1>
-      <p className="lead">When something you want is sold out, tap <strong>Notify me when it&rsquo;s back</strong> on its page. We will tell you the moment it is back in stock.</p>
+      <p className="lead">When something you want is sold out, tap <strong>Notify me when it&rsquo;s back</strong> on its page. We will send you an alert when it is back in stock.</p>
 
       <section className="iwa-card" aria-labelledby="alerts-device">
         <h2 id="alerts-device">Notifications on this device</h2>

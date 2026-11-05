@@ -6,7 +6,7 @@ import { RUO_LINE } from '@/lib/appHost';
 
 const LINKS = [
   ['Terms', '/terms'], ['Privacy', '/privacy'], ['Research Use Only Policy', '/ruo-policy'],
-  ['Shipping', '/shipping'], ['Refunds', '/refund'], ['Contact', '/contact'],
+  ['Shipping', '/shipping'], ['Refunds & store credit', '/refund'], ['Contact', '/contact'],
 ];
 
 export default function AppFooter() {

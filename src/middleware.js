@@ -129,7 +129,7 @@ footer.site a{color:var(--muted)}
       </div>
     </form>
     <nav class="legal" aria-label="Policies">
-      <a href="/ruo-policy">Research Use Only Policy</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/disclaimer">Disclaimer</a><a href="/contact">Contact</a>
+      <a href="/ruo-policy">Research Use Only Policy</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/disclaimer">Disclaimer</a><a href="/shipping">Shipping</a><a href="/refund">Refunds &amp; store credit</a><a href="/contact">Contact</a>
     </nav>
   </div>
 </main>

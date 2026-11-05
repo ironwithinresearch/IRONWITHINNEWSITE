@@ -40,7 +40,7 @@ export default function AppRestockButton({ targetId }) {
         <div style={text}>
           <strong style={{ color: '#059669' }}>You&rsquo;re on the list.</strong>{' '}
           {pushOn
-            ? 'We will send a notification to this device the moment it is back.'
+            ? 'We will send a notification to this device when it is back.'
             : <>We will email your account address when it is back. To get it as a notification instead, turn them on in <Link href="/alerts" style={{ color: 'var(--primary-blue)' }}>Alerts</Link>.</>}
         </div>
       </div>
@@ -49,7 +49,7 @@ export default function AppRestockButton({ targetId }) {
   return (
     <div style={box}>
       <div style={{ ...text, marginBottom: 10 }}>
-        <strong style={{ color: '#059669' }}>Sold out.</strong> Get an alert the moment it is back in stock.
+        <strong style={{ color: '#059669' }}>Sold out.</strong> Get an alert when it is back in stock.
       </div>
       <button type="button" className="iwa-btn" style={{ width: '100%', background: '#34d399', color: '#04201a' }} onClick={go} disabled={state === 'busy'}>
         <Bell size={17} aria-hidden="true" /> {state === 'busy' ? 'Saving…' : 'Notify me when it’s back'}

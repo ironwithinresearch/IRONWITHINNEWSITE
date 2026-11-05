@@ -10,7 +10,7 @@ export function GET(request) {
     id: '/shop',
     name: APP_NAME,
     short_name: APP_SHORT_NAME,
-    description: 'Shop Iron Within Research products, get back-in-stock alerts and message support. For research use only.',
+    description: 'Shop Iron Within Research products, get back-in-stock alerts and message support. For research use only. Not for human or veterinary use.',
     start_url: '/shop?source=app',
     scope: '/',
     display: 'standalone',

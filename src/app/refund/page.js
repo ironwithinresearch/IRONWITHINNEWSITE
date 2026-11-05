@@ -73,9 +73,9 @@ export default function RefundPage() {
           </div>
 
           <h1>
-            Refund &{' '}
+            Refund Policy:{' '}
             <span className="gradient-text">
-              Return Policy
+              store credit only
             </span>
           </h1>
 

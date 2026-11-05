@@ -46,7 +46,7 @@ export function IOSInstallSheet({ open, onClose }) {
       <div className="iwa-sheet-back" onClick={onClose} aria-hidden="true" />
       <div className="iwa-sheet" role="dialog" aria-modal="true" aria-labelledby="iwa-ios-h">
         <h2 id="iwa-ios-h">Add {APP_NAME} to your Home Screen</h2>
-        <p>Install the app to shop in one tap and get back-in-stock alerts on your iPhone.</p>
+        <p>Install the app to open the shop in one tap and get back-in-stock alerts on your iPhone.</p>
         <ol>
           <li>Tap the <strong>Share</strong> button in Safari (the square with an arrow pointing up).</li>
           <li>Scroll down and tap <strong>Add to Home Screen</strong>.</li>
@@ -186,7 +186,7 @@ export default function AppChrome() {
         <div className="iwa-install" role="region" aria-label="Install the app">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/app-icons/icon-192.png" alt="" width={40} height={40} style={{ borderRadius: 10 }} />
-          <p>Install the {APP_NAME} app for one-tap shopping and back-in-stock alerts.</p>
+          <p>Install the {APP_NAME} app for one-tap access to the shop and back-in-stock alerts.</p>
           <button type="button" className="iwa-btn" onClick={install}>Install</button>
           <button type="button" className="iwa-x" onClick={dismiss} aria-label="Not now">×</button>
         </div>
