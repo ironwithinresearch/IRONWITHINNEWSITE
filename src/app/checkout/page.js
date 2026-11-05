@@ -143,8 +143,52 @@ function p2pAppLink(method, amount, orderNumber) {
   return '';
 }
 
+// Keep four choices visible; the remaining choices stay reachable by scrolling or expanding.
+function PaymentOptionsList({ children, count }) {
+  const listRef = useRef(null);
+  const [expanded, setExpanded] = useState(false);
+  const [collapsedHeight, setCollapsedHeight] = useState(null);
+
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list) return;
+    const measure = () => {
+      const fourth = list.children[3];
+      setCollapsedHeight(fourth
+        ? Math.ceil(fourth.getBoundingClientRect().bottom - list.getBoundingClientRect().top + list.scrollTop)
+        : null);
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(list);
+    Array.from(list.children).slice(0, 4).forEach((row) => observer.observe(row));
+    return () => observer.disconnect();
+  }, [count]);
+
+  return (
+    <div>
+      <div ref={listRef} id="checkout-payment-options" role="group" aria-label="Payment options"
+        tabIndex={count > 4 && !expanded ? 0 : undefined}
+        style={{ display: 'flex', flexDirection: 'column', gap: '8px',
+          maxHeight: !expanded && count > 4 && collapsedHeight ? collapsedHeight : undefined,
+          overflowY: !expanded && count > 4 ? 'auto' : 'visible',
+          scrollbarWidth: 'thin', scrollbarGutter: 'stable', paddingRight: 4 }}>
+        {children}
+      </div>
+      {count > 4 && (
+        <button type="button" aria-expanded={expanded} aria-controls="checkout-payment-options"
+          onClick={() => { setExpanded((value) => !value); if (listRef.current) listRef.current.scrollTop = 0; }}
+          style={{ marginTop: 10, padding: '6px 0', background: 'none', border: 0,
+            color: 'var(--primary-blue)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '0.8rem' }}>
+          {expanded ? 'Show fewer payment options' : 'Show all payment options'}
+        </button>
+      )}
+    </div>
+  );
+}
+
 const PAY_METHODS = [
-  { id: STRIPE_METHOD, label: 'Credit Card', desc: 'Continue to secure checkout to pay with Stripe.' },
+  { id: STRIPE_METHOD, label: 'Credit Card / Debit Card', desc: 'Continue to secure checkout to pay with Stripe.' },
   { id: 'iwr_zelle',   label: 'Zelle',    handle: '8508980623' },
   { id: 'iwr_venmo',   label: 'Venmo',    handle: '@iwnpay' },
   // backup: shown as "if that fails, use …" — operator, 3 Oct 2026 (the main Cash App was failing for some buyers).
@@ -1039,6 +1083,7 @@ export default function CheckoutPage() {
                         {' '}applied — you'll pay <strong style={{ color: 'var(--text-light)' }}>{fmt(dueAfterAll)}</strong> with the method below.
                       </div>
                     )}
+                    <PaymentOptionsList count={payMethodOptions.length}>
                     {payMethodOptions.map((m) => {
                       const active = payMethod === m.id;
                       return (
@@ -1047,7 +1092,7 @@ export default function CheckoutPage() {
                           type="button"
                           onClick={() => setPayMethod(m.id)}
                           style={{
-                            textAlign: 'left', padding: '12px 14px', borderRadius: '10px', cursor: 'pointer',
+                            flexShrink: 0, textAlign: 'left', padding: '12px 14px', borderRadius: '10px', cursor: 'pointer',
                             background: active ? 'rgba(0,207,255,0.08)' : 'var(--bg-dark)',
                             border: `1px solid ${active ? 'var(--primary-blue)' : 'var(--glass-border)'}`,
                             display: 'flex', alignItems: 'center', gap: '10px', fontFamily: 'var(--font-body)',
@@ -1075,6 +1120,7 @@ export default function CheckoutPage() {
                         </button>
                       );
                     })}
+                    </PaymentOptionsList>
                   </div>
                   )}
                 </ReviewBlock>
