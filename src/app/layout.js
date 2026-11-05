@@ -1,4 +1,5 @@
 import "./globals.css";
+import "./app.css";
 import AnnouncementBar from "../components/AnnouncementBar";
 import FlashBar from "../components/FlashBar";
 import Navbar from "../components/Navbar";
@@ -12,6 +13,9 @@ import QueenTheme from "../components/QueenTheme";
 import ShippingPauseNotice from "../components/ShippingPauseNotice";
 import SiteChat from "../components/SiteChat";
 import ApolloWrapper from "../lib/ApolloWrapper";
+import AppChrome from "../components/app/AppChrome";
+import AppFooter from "../components/app/AppFooter";
+import { APP_BOOT_SCRIPT } from "../lib/appHost";
 // Vercel Web Analytics. Added 2026-08-26 — the store had NO analytics at all, so traffic
 // had to be estimated by counting unique IPs in the Apache log. Serves its script and
 // beacons from /_vercel/insights on this same origin, so the CSP needs no new host.
@@ -50,7 +54,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" data-theme="light">
+    <html lang="en" data-theme="light" suppressHydrationWarning>
       <body>
         {/* Land in light by default; honor a returning visitor's saved choice
             BEFORE first paint so dark users don't see a flash of light. */}
@@ -59,6 +63,9 @@ export default function RootLayout({ children }) {
             __html: `try{var t=localStorage.getItem('iwr-theme');if(t==='dark'){document.documentElement.setAttribute('data-theme','dark');}}catch(e){}`,
           }}
         />
+        {/* App mode (app.ironwithin.io only): flags <html data-app> before first paint so the
+            app chrome shows and the website chrome hides with no flash. No-op on www. */}
+        <script dangerouslySetInnerHTML={{ __html: APP_BOOT_SCRIPT }} />
         <QueenTheme />
         <ApolloWrapper>
           <AffiliateTracker />
@@ -66,17 +73,32 @@ export default function RootLayout({ children }) {
           {/* Account wall (carries the 21+ confirmation). The standalone age pop-up
               is retired — age is confirmed on the register form's 21+ checkbox. */}
           <SiteGate />
-          <FlashBar />
-          <AnnouncementBar />
-          <Navbar />
+          {/* Website chrome. The wrapper is display:contents on www (no layout change) and
+              hidden in the app, which has its own top bar + tab bar below. */}
+          <div className="iw-www-only">
+            <FlashBar />
+            <AnnouncementBar />
+            <Navbar />
+          </div>
+          <div className="iw-app-only">
+            <AppChrome />
+          </div>
           <main style={{ minHeight: '100vh', paddingTop: 'calc(var(--navbar-height, 68px) + 36px)' }}>
             {children}
           </main>
-          <Footer />
+          <div className="iw-www-only">
+            <Footer />
+          </div>
+          <div className="iw-app-only">
+            <AppFooter />
+          </div>
           <LeadCapture />
           <GiftPromoPopup />
           <ShippingPauseNotice />
-          <SiteChat />
+          {/* The website's chat bubble; the app uses the Help tab (Chatwoot) instead. */}
+          <div className="iw-www-only">
+            <SiteChat />
+          </div>
         </ApolloWrapper>
         <Analytics />
       </body>

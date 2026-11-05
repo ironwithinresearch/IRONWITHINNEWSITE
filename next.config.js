@@ -69,6 +69,21 @@ const csp = [
   "upgrade-insecure-requests",
 ].join("; ");
 
+// The installable app (app.ironwithin.io) additionally embeds the Chatwoot support widget
+// (self-hosted at support.ironwithin.io: script, iframe, API + websocket) and runs a
+// service worker. Applied by host below, so www keeps the exact policy above.
+const CHAT_HOST = "https://support.ironwithin.io";
+const appCsp = csp
+  .split("; ")
+  .map((d) => {
+    if (d.startsWith("script-src ")) return `${d} ${CHAT_HOST}`;
+    if (d.startsWith("connect-src ")) return `${d} ${CHAT_HOST} wss://support.ironwithin.io`;
+    if (d.startsWith("frame-src ")) return `${d} ${CHAT_HOST}`;
+    return d;
+  })
+  .concat(["worker-src 'self'", "manifest-src 'self'"])
+  .join("; ");
+
 const securityHeaders = [
   { key: "Content-Security-Policy", value: csp },
   { key: "X-Content-Type-Options", value: "nosniff" },
@@ -88,6 +103,13 @@ const nextConfig = {
       {
         source: "/:path*",
         headers: securityHeaders,
+      },
+      {
+        // App host only: same headers, CSP widened for the support chat + service worker.
+        // Listed AFTER the generic rule so its Content-Security-Policy wins on this host.
+        source: "/:path*",
+        has: [{ type: "host", value: "(?:app\\.ironwithin\\.io|app\\.localhost)" }],
+        headers: [{ key: "Content-Security-Policy", value: appCsp }],
       },
       {
         // Apple Pay domain association. The file deliberately has NO extension, so without

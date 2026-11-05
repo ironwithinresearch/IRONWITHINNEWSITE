@@ -13,6 +13,8 @@ import { getSpin } from '@/data/spins';
 import { useCart } from '@/context/CartContext';
 import GuaranteeBadge from '@/components/GuaranteeBadge';
 import SaleCountdown from '@/components/SaleCountdown';
+import AppRestockButton from '@/components/app/AppRestockButton';
+import { useAppMode } from '@/lib/appMode';
 import {
   FlaskConical, ShoppingCart, Heart, ChevronRight,
   BadgeCheck, Minus, Plus,
@@ -54,6 +56,7 @@ export default function ProductPage() {
   const [notifyError, setNotifyError] = useState('');
   const [subscribe, setSubscribe] = useState(false);   // Subscribe & Save
   const [subCadence, setSubCadence] = useState(30);
+  const appMode = useAppMode();
 
   // The gift card has a dedicated page; never show it on the generic product page.
   useEffect(() => {
@@ -787,7 +790,10 @@ export default function ProductPage() {
               </div>
             )}
 
-            {canNotify && (
+            {/* App (app.ironwithin.io): one-tap push/email alert on the account instead of the email form. */}
+            {canNotify && appMode && <AppRestockButton targetId={notifyTargetId} />}
+
+            {canNotify && !appMode && (
               <div style={{ marginTop: '12px', padding: '14px 16px', background: 'rgba(52,211,153,0.07)', border: '1px solid rgba(52,211,153,0.35)', borderRadius: '12px' }}>
                 {notifyState === 'done' ? (
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>

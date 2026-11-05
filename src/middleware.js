@@ -21,6 +21,7 @@
 
 import { NextResponse } from 'next/server';
 import { AGE_COOKIE, isPublicPath } from './lib/gate';
+import { isAppHost } from './lib/appHost';
 
 const AFF_COOKIE = 'iw_aff_gate';
 
@@ -140,8 +141,30 @@ footer.site a{color:var(--muted)}
 </html>`;
 }
 
+// App-only pages (app.ironwithin.io). On the website they send visitors to the page that
+// already covers the same need, so www behaves exactly as before.
+const APP_ONLY = { '/help': '/contact', '/alerts': '/shop' };
+
 export async function middleware(req) {
   const { pathname, search } = req.nextUrl;
+
+  // The app's web manifest (route handler, 404 off the app host). Browsers fetch it
+  // WITHOUT cookies, so it must never get the age-gate page; it holds no store content.
+  if (pathname === '/manifest.webmanifest') return NextResponse.next();
+
+  // Installable app: its start page is the shop grid, not the marketing home page.
+  const app = isAppHost(req.headers.get('host'));
+  if (app && pathname === '/') {
+    const url = req.nextUrl.clone();
+    url.pathname = '/shop';
+    return NextResponse.redirect(url, 307);
+  }
+  if (!app && APP_ONLY[pathname]) {
+    const url = req.nextUrl.clone();
+    url.pathname = APP_ONLY[pathname];
+    url.search = '';
+    return NextResponse.redirect(url, 307);
+  }
 
   // Affiliate section: its own password first.
   if (pathname === '/affiliate' || pathname.startsWith('/affiliate/') || pathname.startsWith('/affiliate-assets/')) {
