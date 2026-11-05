@@ -97,7 +97,7 @@ function ShopContent() {
       <div className="page-header">
         <div className="container">
           <h1>Research <span className="gradient-text">Catalogue</span></h1>
-          <p>Pharmaceutical-grade peptides, independently verified for purity and potency.</p>
+          <p>Research peptides, third-party tested for purity, with a lab report for every lot.</p>
         </div>
       </div>
 
