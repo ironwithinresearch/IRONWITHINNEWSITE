@@ -13,7 +13,7 @@
 //
 // Live values are also served at /wp-json/iw/v1/p2p-discount for spot-checking.
 
-export const P2P_METHODS = new Set(['iwr_zelle', 'iwr_venmo', 'iwr_cashapp']);
+export const P2P_METHODS = new Set(['iwr_zelle', 'iwr_venmo', 'iwr_cashapp', 'iwr_crypto']);
 
 /** Baseline rate, outside any event window. */
 export const P2P_BASE_RATE = 0.1;

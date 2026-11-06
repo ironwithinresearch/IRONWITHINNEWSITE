@@ -75,7 +75,7 @@ const faqs = [
     // Card is off at checkout (CARD_PAUSED in app/checkout/page.js, CARDS_ENABLED in
     // PaymentMethods.jsx). Keep this answer in step with those two flags — an FAQ that
     // promises card while checkout refuses it is a support ticket per reader.
-    a: 'We take credit and debit cards, plus Zelle, Venmo, and Cash App. Card payments are entered on a secure encrypted form at checkout and we never store your card details.',
+    a: 'We take credit and debit cards, plus Zelle, Venmo, Cash App, and crypto (USDC on the Ethereum network). Card payments are entered on a secure encrypted form at checkout and we never store your card details.',
   },
   {
     category: 'ordering',

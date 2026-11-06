@@ -193,6 +193,9 @@ const PAY_METHODS = [
   { id: 'iwr_venmo',   label: 'Venmo',    handle: '@iwnpay' },
   // backup: shown as "if that fails, use …" — operator, 3 Oct 2026 (the main Cash App was failing for some buyers).
   { id: 'iwr_cashapp', label: 'Cash App', handle: '$ironwithinresearch', backup: '$AmberKrisell' },
+  // USDC on Ethereum straight to the operator's wallet (Brian, 6 Nov 2026). Mirrors IW_CRYPTO_ADDRESS in
+  // mu-plugin iw-crypto-pay.php, which also watches the chain and marks the order paid by exact amount.
+  { id: 'iwr_crypto',  label: 'Crypto (USDC)', handle: '0x40BF693b06D01c94393A1eDE5bABd9898D119a62', network: 'Ethereum' },
   { id: CARD_METHOD,   label: 'Credit / Debit Card', desc: 'Pay securely by card. Visa, Mastercard, American Express & Discover.' },
 ];
 
@@ -674,6 +677,7 @@ export default function CheckoutPage() {
         label: m?.label || 'P2P',
         handle: m?.handle || '',
         backup: m?.backup || '',
+        network: m?.network || '',
         total: plainPrice(result?.order?.total || cartTotal),
         // The deep links need a bare decimal — "1,234.56" is rejected by both apps.
         amount: String(priceToNumber(result?.order?.total || cartTotal) || ''),
@@ -858,9 +862,24 @@ export default function CheckoutPage() {
                     . Same amount, same order number in the note.
                   </div>
                 )}
+                {p2pInfo.network ? (
+                  <>
+                    <button type="button" onClick={() => navigator.clipboard?.writeText(p2pInfo.handle)}
+                      style={{ display: 'block', width: '100%', padding: '10px', marginBottom: '12px', borderRadius: '10px', cursor: 'pointer',
+                        background: 'transparent', border: '1px solid var(--primary-blue)', color: 'var(--primary-blue)', fontWeight: 700, fontFamily: 'var(--font-body)' }}>
+                      Copy wallet address
+                    </button>
+                    <p style={{ fontSize: '0.86rem', color: 'var(--text-secondary)', lineHeight: 1.6, background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.4)', borderRadius: '10px', padding: '10px 12px', marginBottom: '10px' }}>
+                      Send <strong style={{ color: 'var(--text-light)' }}>exactly {p2pInfo.total} in USDC</strong> on the <strong style={{ color: 'var(--text-light)' }}>{p2pInfo.network} network</strong>.
+                      Crypto has no note field, so the exact amount is how we match it to order #{p2pInfo.orderNumber}. Any other coin, or USDC on another network, is lost and can&rsquo;t be recovered.
+                      We confirm it on the blockchain automatically.
+                    </p>
+                  </>
+                ) : (
                 <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '10px' }}>
                   Include <strong style={{ color: 'var(--text-secondary)' }}>order #{p2pInfo.orderNumber}</strong> in the payment note so we can match your payment.
                 </p>
+                )}
                 <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.6, background: 'rgba(52,211,153,0.10)', border: '1px solid rgba(52,211,153,0.35)', borderRadius: '10px', padding: '10px 12px', margin: 0 }}>
                   <strong style={{ color: '#34d399' }}>Once you&rsquo;ve sent it,</strong> reply to the email we just sent you with a screenshot of the payment &mdash; or send it to <strong style={{ color: 'var(--text-light)' }}>payments@ironwithin.io</strong>. That&rsquo;s the fastest way to get your order released. Questions? Email support@ironwithin.io.
                 </p>
@@ -1112,7 +1131,9 @@ export default function CheckoutPage() {
                               )}
                             </span>
                             <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                              {m.handle
+                              {m.network
+                                ? `Send USDC on the ${m.network} network within ${P2P_PAY_MINUTES} minutes of placing the order — we confirm it on the blockchain automatically${p2pPaused() ? '' : `. ${p2pPct()}% comes off your total`}`
+                                : m.handle
                                 ? `Send your payment to ${m.handle}${m.backup ? ` (if that fails, use ${m.backup})` : ''} within ${P2P_PAY_MINUTES} minutes of placing the order — unpaid orders cancel automatically${p2pPaused() ? '' : `. ${p2pPct()}% comes off your total`}`
                                 : m.desc}
                             </span>
