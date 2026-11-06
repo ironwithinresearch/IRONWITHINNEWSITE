@@ -143,7 +143,8 @@ function p2pAppLink(method, amount, orderNumber) {
   return '';
 }
 
-// Keep four choices visible; the remaining choices stay reachable by scrolling or expanding.
+// Keep five choices visible; the rest stay reachable by scrolling or expanding.
+const VISIBLE_PAY_OPTIONS = 5;
 function PaymentOptionsList({ children, count }) {
   const listRef = useRef(null);
   const [expanded, setExpanded] = useState(false);
@@ -153,29 +154,29 @@ function PaymentOptionsList({ children, count }) {
     const list = listRef.current;
     if (!list) return;
     const measure = () => {
-      const fourth = list.children[3];
-      setCollapsedHeight(fourth
-        ? Math.ceil(fourth.getBoundingClientRect().bottom - list.getBoundingClientRect().top + list.scrollTop)
+      const last = list.children[VISIBLE_PAY_OPTIONS - 1];
+      setCollapsedHeight(last
+        ? Math.ceil(last.getBoundingClientRect().bottom - list.getBoundingClientRect().top + list.scrollTop)
         : null);
     };
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(list);
-    Array.from(list.children).slice(0, 4).forEach((row) => observer.observe(row));
+    Array.from(list.children).slice(0, VISIBLE_PAY_OPTIONS).forEach((row) => observer.observe(row));
     return () => observer.disconnect();
   }, [count]);
 
   return (
     <div>
       <div ref={listRef} id="checkout-payment-options" role="group" aria-label="Payment options"
-        tabIndex={count > 4 && !expanded ? 0 : undefined}
+        tabIndex={count > VISIBLE_PAY_OPTIONS && !expanded ? 0 : undefined}
         style={{ display: 'flex', flexDirection: 'column', gap: '8px',
-          maxHeight: !expanded && count > 4 && collapsedHeight ? collapsedHeight : undefined,
-          overflowY: !expanded && count > 4 ? 'auto' : 'visible',
+          maxHeight: !expanded && count > VISIBLE_PAY_OPTIONS && collapsedHeight ? collapsedHeight : undefined,
+          overflowY: !expanded && count > VISIBLE_PAY_OPTIONS ? 'auto' : 'visible',
           scrollbarWidth: 'thin', scrollbarGutter: 'stable', paddingRight: 4 }}>
         {children}
       </div>
-      {count > 4 && (
+      {count > VISIBLE_PAY_OPTIONS && (
         <button type="button" aria-expanded={expanded} aria-controls="checkout-payment-options"
           onClick={() => { setExpanded((value) => !value); if (listRef.current) listRef.current.scrollTop = 0; }}
           style={{ marginTop: 10, padding: '6px 0', background: 'none', border: 0,
