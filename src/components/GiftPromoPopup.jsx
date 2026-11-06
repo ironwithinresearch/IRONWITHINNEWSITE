@@ -19,7 +19,7 @@ import { GIFT_MIN, GIFT_BIG_ON, GIFT_BIG_MIN, GIFT_OPTIONS, GIFT_FROM, GIFT_TO,
          GA_MIN, GA_PRIZE_EACH, GA_WINNERS, giveawayActive } from '@/lib/p2p';
 import { ffCurrent, FF_HEADLINE, FF_FLAT, FF_SITEWIDE_WEEKS, ffPct } from '@/lib/freakyFridays';
 import { isLoggedIn } from '@/lib/auth';
-import { kbLive, KB_PCT, KB_GOLD } from '@/lib/kellyBday';
+import { kbLive, KB_PCT, KB_APP_PCT, KB_GOLD } from '@/lib/kellyBday';
 
 // v2 (25 Sep 2026): content changed, so shoppers who dismissed the old Labor Day version see it once.
 const KEY = 'iw_gift_promo_v3'; // v3 (3 Nov): Kelly's Birthday Bash
@@ -64,7 +64,7 @@ export default function GiftPromoPopup() {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={`${kb ? `Up to ${KB_PCT}% off, and ` : ff ? `${ff.upTo ? 'Up to ' : ''}${ffPct(ff)}% off, and ` : ''}a free vial when you spend $${GIFT_MIN}`}
+      aria-label={`${kb ? `${KB_PCT}% off, up to ${KB_APP_PCT}% with Venmo, Cash App, Zelle or crypto, and ` : ff ? `${ff.upTo ? 'Up to ' : ''}${ffPct(ff)}% off, and ` : ''}a free vial when you spend $${GIFT_MIN}`}
       onClick={() => close(false)}
       style={{
         position: 'fixed', inset: 0, zIndex: 9000,
@@ -122,7 +122,7 @@ export default function GiftPromoPopup() {
               Kelly&rsquo;s Birthday Bash · ends Friday 11:59pm CT
             </div>
             <div style={{ color: '#fff', fontSize: '1.45rem', fontWeight: 900, lineHeight: 1.1 }}>
-              Up to {KB_PCT}% off
+              {KB_PCT}% off, up to {KB_APP_PCT}% with Venmo, Cash App, Zelle or crypto
             </div>
             <div style={{ color: 'rgba(255,255,255,0.68)', fontSize: '0.86rem', marginTop: 6, lineHeight: 1.5 }}>
               No code needed, and your creator code still stacks on top.

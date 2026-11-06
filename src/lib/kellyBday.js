@@ -10,7 +10,8 @@
 
 export const KB_START = Date.parse('2026-11-04T06:00:00Z');
 export const KB_END = Date.parse('2026-11-07T06:00:00Z');
-export const KB_PCT = 55; // 6 Nov (Brian): last day matches the Grand Slam, shown as "up to"
+export const KB_PCT = 25;
+export const KB_APP_PCT = 55; // 6 Nov (Brian): up to 55% off with Venmo, Cash App, Zelle or crypto
 export const KB_GIFT_MIN = 175;
 export const KB_NAME = "Kelly's Birthday Bash";
 

@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { annPromoLive } from '@/lib/anniversary';
-import { kbLive, KB_PCT, KB_GIFT_MIN } from '@/lib/kellyBday';
+import { kbLive, KB_PCT, KB_APP_PCT, KB_GIFT_MIN } from '@/lib/kellyBday';
 import { giveawayOpen } from '@/lib/giveaway';
 
 const ctWhen = (iso) => new Date(iso).toLocaleString('en-US', { weekday: 'short', hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' });
@@ -49,7 +49,7 @@ export default function Deals() {
     });
   }
   if (now && kbLive(now)) {
-    deals.push({ eyebrow: 'Ends tonight', title: "Kelly's Birthday Bash", body: `Up to ${KB_PCT}% off (aminos, merch, bundles, gift cards and a few low-stock items excluded), no code needed, and creator codes stack on top. Orders of $${KB_GIFT_MIN}+ after discounts include a free RT-3 or TRZ-2 10mg while supplies last; pick yours at checkout. Limit 15 items per order and 5 RT-3 and TRZ-2 combined.`, href: '/shop', cta: 'Shop the sale', highlight: true });
+    deals.push({ eyebrow: 'Ends tonight', title: "Kelly's Birthday Bash", body: `${KB_PCT}% off almost everything, and up to ${KB_APP_PCT}% off when you pay with Venmo, Cash App, Zelle or crypto (aminos, merch, bundles, gift cards and a few low-stock items excluded), no code needed, and creator codes stack on top. Orders of $${KB_GIFT_MIN}+ after discounts include a free RT-3 or TRZ-2 10mg while supplies last; pick yours at checkout. Limit 15 items per order and 5 RT-3 and TRZ-2 combined.`, href: '/shop', cta: 'Shop the sale', highlight: true });
   }
   if (now && annPromoLive(now)) {
     deals.push({ eyebrow: 'Through October 31', title: 'Anniversary Month', body: 'A different offer every day of October, including Flash Saturdays and Loyalty Sundays.', href: '/anniversary', cta: 'See the calendar' });

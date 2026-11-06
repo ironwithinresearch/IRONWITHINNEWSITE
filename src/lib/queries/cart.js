@@ -43,6 +43,7 @@ export const GET_CART = gql`
           variation {
             node {
               id
+              databaseId
               name
               price
               regularPrice

@@ -10,7 +10,7 @@ import { CHECKOUT, buildCheckoutInput } from '../../lib/queries/checkout';
 import { useCart } from '../../context/CartContext';
 import { getReferCookie } from '@/lib/referral';
 import PayPalFrame from '@/components/PayPalFrame';
-import { P2P_METHODS, p2pPaused, p2pRate, p2pPct, GIFT_OPTIONS, GIFT_MIN, GIFT_BIG_ON, GIFT_BIG_MIN, giftDoseFor, giftQualifies, giftQualifying } from '@/lib/p2p';
+import { P2P_METHODS, p2pPaused, p2pRate, p2pPct, p2pEventLive, p2pEventDiscount, GIFT_OPTIONS, GIFT_MIN, GIFT_BIG_ON, GIFT_BIG_MIN, giftDoseFor, giftQualifies, giftQualifying } from '@/lib/p2p';
 import { useAuth } from '../../context/AuthContext';
 import { GET_CUSTOMER } from '../../lib/queries/auth';
 import { decodePriceHtml } from '../../lib/utils';
@@ -524,7 +524,7 @@ export default function CheckoutPage() {
     && creditBalance >= round2(computedTotalNum + routeFee) - 0.005;
   const p2pEligible = !creditCoversAll && P2P_DISCOUNT_METHODS.has(payMethod) && !p2pPaused();
   const p2pItemsBase = Math.max(0, money(cartSubtotal) || (computedTotalNum - shipCostNum));
-  const p2pDiscount = p2pEligible ? round2(p2pItemsBase * p2pRate()) : 0;
+  const p2pDiscount = p2pEligible ? (p2pEventLive() ? p2pEventDiscount(cart) : round2(p2pItemsBase * p2pRate())) : 0;
   // Free vial: ANY payment method at $225+ chooses a TRZ-2 10mg or RT-3 10mg.
   // Judged on giftQualifying(), which mirrors iw_gift_qualifying_total() — items after
   // coupons, minus negative cart fees, then the P2P rate where it applies. NOT the raw
@@ -1127,7 +1127,7 @@ export default function CheckoutPage() {
                               {/* The whole point of the pricing change — make the cheaper path obvious. */}
                               {P2P_DISCOUNT_METHODS.has(m.id) && !p2pPaused() && (
                                 <span style={{ fontSize: '0.68rem', fontWeight: 800, letterSpacing: '0.04em', padding: '2px 7px', borderRadius: 999, color: '#04121a', background: '#34d399' }}>
-                                  SAVE {p2pPct()}%
+                                  {p2pEventLive() ? 'UP TO 55% OFF' : `SAVE ${p2pPct()}%`}
                                 </span>
                               )}
                             </span>
@@ -1376,7 +1376,7 @@ export default function CheckoutPage() {
                 </div>
               )}
               {p2pDiscount > 0 && (
-                <SummaryRow label={`Zelle / Venmo / Cash App discount (${p2pPct()}%)`} value={`- $${p2pDiscount.toFixed(2)}`} valueColor="#34d399" />
+                <SummaryRow label={p2pEventLive() ? 'Venmo / Cash App / Zelle / crypto discount (up to 55% off)' : `Zelle / Venmo / Cash App discount (${p2pPct()}%)`} value={`- $${p2pDiscount.toFixed(2)}`} valueColor="#34d399" />
               )}
               <SpendLadder subtotal={ladderBase} />
 

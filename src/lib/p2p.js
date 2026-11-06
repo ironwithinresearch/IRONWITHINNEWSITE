@@ -24,9 +24,27 @@ export const P2P_BASE_RATE = 0.1;
  * same moment for exactly one reason: stacked on a live 30% sale this lands at ~63% off
  * list and takes several SKUs under landed cost. The 35% must sit on LIST price.
  */
-export const P2P_EVENT_RATE = 0.2; // Grand Slam Sunday (27 Sep): extra 20%, stacks with everything
-export const P2P_EVENT_FROM = Date.parse('2026-09-27T05:00:00Z'); // Sun 27 Sep 12:00am CT
-export const P2P_EVENT_TO = Date.parse('2026-09-28T04:59:59Z'); // Sun 27 Sep 11:59:59pm CT
+export const P2P_EVENT_RATE = 0.4; // 6 Nov: 40% off a 25%-off line = 55% off list. Per line, see p2pEventDiscount
+export const P2P_EVENT_FROM = Date.parse('2026-11-06T19:15:00Z'); // Fri 6 Nov 1:15pm CT
+export const P2P_EVENT_TO = Date.parse('2026-11-07T05:59:59Z'); // Fri 6 Nov 11:59:59pm CT
+
+/* 6 Nov: pay-by-app lands each line on its Grand Slam rate. Mirrors iw_p2p_line_extra() in
+   iw-p2p-discount.php (rates = slot 8 of IW_FF_RATES, those above the 25% everyone gets). */
+const P2P_EVENT_RATES = {"520":55,"522":55,"523":55,"524":55,"530":35,"531":55,"533":55,"534":55,"535":55,"536":40,"539":55,"541":55,"542":55,"544":55,"545":55,"546":30,"549":50,"551":55,"552":55,"553":55,"554":35,"556":45,"557":55,"558":55,"561":40,"562":40,"563":55,"566":35,"567":55,"569":55,"576":45,"1033":55,"1034":55,"1038":55,"2972":55,"2982":55,"3188":40,"3254":55,"3255":55,"3258":55,"3267":55,"3641":55,"3644":55,"3884":55,"5283":45};
+const num = (v) => parseFloat(String(v ?? '').replace(/[^0-9.-]/g, '')) || 0;
+export const p2pEventDiscount = (cart) => {
+  let sum = 0;
+  for (const it of cart?.contents?.nodes || []) {
+    const v = it.variation?.node;
+    const r = P2P_EVENT_RATES[v?.databaseId ?? it.product?.node?.databaseId] || 0;
+    if (r <= 25) continue;
+    const reg = num(v?.regularPrice ?? it.product?.node?.regularPrice);
+    const qty = Math.max(1, Number(it.quantity) || 1);
+    if (reg <= 0 || num(it.subtotal) / qty >= reg * 0.99) continue; // at list: under 5 in stock
+    sum += num(it.total) * (1 - (1 - r / 100) / 0.75);
+  }
+  return Math.round(sum * 100) / 100;
+};
 
 /**
  * Full suspension of the discount. Null = not paused.

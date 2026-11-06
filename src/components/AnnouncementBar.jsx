@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { shipDaysLive, SHIPDAYS_LABEL, SHIPDAYS_UNTIL } from '@/lib/shipDays';
 import { annPromoLive } from '@/lib/anniversary';
-import { kbLive, KB_PCT, KB_GIFT_MIN } from '@/lib/kellyBday';
+import { kbLive, KB_PCT, KB_APP_PCT, KB_GIFT_MIN } from '@/lib/kellyBday';
 
 /* One calm, static announcement line, fixed above the navbar (height 36px — the navbar
    sits at top: 36 and main is padded to match).
@@ -27,7 +27,7 @@ function currentLine(now) {
     return { text: `Shipping update: through ${SHIPDAYS_UNTIL}, orders ship ${SHIPDAYS_LABEL} only.`, short: `Through ${SHIPDAYS_UNTIL} we ship Mon, Wed & Thu`, cta: 'Details', href: '/shipping' };
   }
   if (kbLive(now)) {
-    return { text: `Kelly's Birthday Bash: up to ${KB_PCT}% off, creator codes stack, plus a free RT-3 or TRZ-2 10mg on orders $${KB_GIFT_MIN}+ while supplies last. Ends tonight.`, short: `Birthday Bash: up to ${KB_PCT}% off + free vial at $${KB_GIFT_MIN}`, cta: 'Shop now', href: '/shop', vip: true };
+    return { text: `Kelly's Birthday Bash: ${KB_PCT}% off most items, up to ${KB_APP_PCT}% off with Venmo, Cash App, Zelle or crypto. Creator codes stack, plus a free RT-3 or TRZ-2 10mg on orders $${KB_GIFT_MIN}+ while supplies last. Ends tonight.`, short: `${KB_PCT}% off, up to ${KB_APP_PCT}% with Venmo, Cash App, Zelle or crypto`, cta: 'Shop now', href: '/shop', vip: true };
   }
   if (annPromoLive(now)) {
     return { text: 'Anniversary Month: a new offer every day through October 31.', short: 'Anniversary Month: a deal every day', cta: 'See current deals', href: '/deals' };

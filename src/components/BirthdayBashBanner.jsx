@@ -8,7 +8,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { kbLive, KB_END, KB_PCT, KB_GIFT_MIN, KB_GOLD, KB_GOLD_DEEP, KB_BLUE } from '@/lib/kellyBday';
+import { kbLive, KB_END, KB_PCT, KB_APP_PCT, KB_GIFT_MIN, KB_GOLD, KB_GOLD_DEEP, KB_BLUE } from '@/lib/kellyBday';
 
 function left(ms) {
   if (ms <= 0) return '';
@@ -51,7 +51,7 @@ export default function BirthdayBashBanner() {
             Kelly&rsquo;s Birthday Bash
           </h2>
           <div style={{ color: '#fff', fontWeight: 800, fontSize: 'clamp(1.25rem, 3.2vw, 1.7rem)', margin: '14px 0 6px' }}>
-            Up to {KB_PCT}% off <span style={{ color: KB_BLUE }}>·</span> creator codes stack
+            {KB_PCT}% off, up to {KB_APP_PCT}% with Venmo, Cash App, Zelle or crypto <span style={{ color: KB_BLUE }}>·</span> creator codes stack
           </div>
           <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1rem', lineHeight: 1.55, maxWidth: 560, margin: '0 auto' }}>
             Orders of <strong style={{ color: KB_GOLD }}>${KB_GIFT_MIN}+</strong> get a free <strong style={{ color: '#fff' }}>RT-3 or TRZ-2 10mg</strong> while supplies last. Pick yours at checkout.
