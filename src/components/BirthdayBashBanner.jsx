@@ -51,7 +51,7 @@ export default function BirthdayBashBanner() {
             Kelly&rsquo;s Birthday Bash
           </h2>
           <div style={{ color: '#fff', fontWeight: 800, fontSize: 'clamp(1.25rem, 3.2vw, 1.7rem)', margin: '14px 0 6px' }}>
-            {KB_PCT}% off almost everything <span style={{ color: KB_BLUE }}>·</span> creator codes stack
+            Up to {KB_PCT}% off <span style={{ color: KB_BLUE }}>·</span> creator codes stack
           </div>
           <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1rem', lineHeight: 1.55, maxWidth: 560, margin: '0 auto' }}>
             Orders of <strong style={{ color: KB_GOLD }}>${KB_GIFT_MIN}+</strong> get a free <strong style={{ color: '#fff' }}>RT-3 or TRZ-2 10mg</strong> while supplies last. Pick yours at checkout.
@@ -68,7 +68,7 @@ export default function BirthdayBashBanner() {
             Ends Friday 11:59pm CT{left(KB_END - now) ? ` · ${left(KB_END - now)} left` : ''}
           </div>
           <div style={{ marginTop: 14, fontSize: '0.72rem', color: 'rgba(255,255,255,0.42)', lineHeight: 1.5 }}>
-            No code needed. The $175 is measured after discounts. Aminos, merch, bundles, gift cards and a few low-stock items are not in the {KB_PCT}%. If your free-vial pick sells out, we send the other one.
+            No code needed. The $175 is measured after discounts. Aminos, merch, bundles, gift cards and a few low-stock items are not on sale. Limit 15 items per order and 5 RT-3 and TRZ-2 combined. If your free-vial pick sells out, we send the other one.
             <br />For research use only. Not for human or veterinary use.
           </div>
         </div>

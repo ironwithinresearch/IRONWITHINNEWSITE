@@ -49,7 +49,7 @@ export default function Deals() {
     });
   }
   if (now && kbLive(now)) {
-    deals.push({ eyebrow: 'Through Friday', title: "Kelly's Birthday Bash", body: `${KB_PCT}% off almost everything (aminos, merch, bundles, gift cards and a few low-stock items excluded), no code needed, and creator codes stack on top. Orders of $${KB_GIFT_MIN}+ after discounts include a free RT-3 or TRZ-2 10mg while supplies last; pick yours at checkout.`, href: '/shop', cta: 'Shop the sale', highlight: true });
+    deals.push({ eyebrow: 'Ends tonight', title: "Kelly's Birthday Bash", body: `Up to ${KB_PCT}% off (aminos, merch, bundles, gift cards and a few low-stock items excluded), no code needed, and creator codes stack on top. Orders of $${KB_GIFT_MIN}+ after discounts include a free RT-3 or TRZ-2 10mg while supplies last; pick yours at checkout. Limit 15 items per order and 5 RT-3 and TRZ-2 combined.`, href: '/shop', cta: 'Shop the sale', highlight: true });
   }
   if (now && annPromoLive(now)) {
     deals.push({ eyebrow: 'Through October 31', title: 'Anniversary Month', body: 'A different offer every day of October, including Flash Saturdays and Loyalty Sundays.', href: '/anniversary', cta: 'See the calendar' });

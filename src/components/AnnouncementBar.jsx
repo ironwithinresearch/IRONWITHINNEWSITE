@@ -27,7 +27,7 @@ function currentLine(now) {
     return { text: `Shipping update: through ${SHIPDAYS_UNTIL}, orders ship ${SHIPDAYS_LABEL} only.`, short: `Through ${SHIPDAYS_UNTIL} we ship Mon, Wed & Thu`, cta: 'Details', href: '/shipping' };
   }
   if (kbLive(now)) {
-    return { text: `Kelly's Birthday Bash: ${KB_PCT}% off most items, creator codes stack, plus a free RT-3 or TRZ-2 10mg on orders $${KB_GIFT_MIN}+ while supplies last. Through Friday.`, short: `Birthday Bash: ${KB_PCT}% off + free vial at $${KB_GIFT_MIN}`, cta: 'Shop now', href: '/shop', vip: true };
+    return { text: `Kelly's Birthday Bash: up to ${KB_PCT}% off, creator codes stack, plus a free RT-3 or TRZ-2 10mg on orders $${KB_GIFT_MIN}+ while supplies last. Ends tonight.`, short: `Birthday Bash: up to ${KB_PCT}% off + free vial at $${KB_GIFT_MIN}`, cta: 'Shop now', href: '/shop', vip: true };
   }
   if (annPromoLive(now)) {
     return { text: 'Anniversary Month: a new offer every day through October 31.', short: 'Anniversary Month: a deal every day', cta: 'See current deals', href: '/deals' };
