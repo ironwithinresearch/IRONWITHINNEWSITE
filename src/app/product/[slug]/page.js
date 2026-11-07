@@ -15,6 +15,7 @@ import GuaranteeBadge from '@/components/GuaranteeBadge';
 import SaleCountdown from '@/components/SaleCountdown';
 import AppRestockButton from '@/components/app/AppRestockButton';
 import { useAppMode } from '@/lib/appMode';
+import { bfLive, isB1G2, B1G2_BY_SLUG } from '@/lib/blackFriday';
 import {
   FlaskConical, ShoppingCart, Heart, ChevronRight,
   BadgeCheck, Minus, Plus,
@@ -49,6 +50,9 @@ export default function ProductPage() {
   const [imgIndex, setImgIndex] = useState(0);
   const [showSpin, setShowSpin] = useState(false);   // 360° turntable video in place of the photo
   const [cartError, setCartError] = useState('');
+  // Black Friday sale day (lib/blackFriday.js). Read after mount so the SSG shell never disagrees.
+  const [bfOn, setBfOn] = useState(false);
+  useEffect(() => { setBfOn(bfLive()); }, []);
   // Restock waitlist, shown only when the picked dose is sold out AND cannot be
   // backordered — if it can be backordered the customer should buy, not wait.
   const [notifyEmail, setNotifyEmail] = useState('');
@@ -503,7 +507,8 @@ export default function ProductPage() {
                 </span>
               ) : null}
               {(() => {
-                const low = inStock && hasCount && stockQty > 0 && stockQty <= 10;
+                // Buy 1, get 2 free SKUs can oversell on sale days, so a low count is not a real limit.
+                const low = !(bfOn && isB1G2(resolvedVariation?.databaseId)) && inStock && hasCount && stockQty > 0 && stockQty <= 10;
                 if (onBackorder) {
                   return (
                     <span style={{ padding: '3px 10px', background: 'rgba(245,158,11,0.14)', border: '1px solid rgba(245,158,11,0.45)', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 600, color: '#fbbf24' }}>
@@ -522,6 +527,19 @@ export default function ProductPage() {
                 );
               })()}
             </div>
+
+            {bfOn && isB1G2(resolvedVariation?.databaseId) ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4, padding: '12px 14px', borderRadius: 12, background: 'rgba(124,58,237,0.10)', border: '1px solid rgba(124,58,237,0.40)' }}>
+                <span style={{ fontWeight: 700, color: 'var(--text-light)', fontSize: '0.95rem' }}>Buy 1, get 2 free today</span>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.86rem', lineHeight: 1.55 }}>
+                  Add 3 of this size and pay for 1. Up to 2 deals (6 units) per order. The discount shows in your cart, and creator codes apply to the unit you pay for.
+                </span>
+              </div>
+            ) : bfOn && B1G2_BY_SLUG[product.slug] ? (
+              <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.86rem' }}>
+                Today only: buy 1, get 2 free on the {B1G2_BY_SLUG[product.slug]}.
+              </p>
+            ) : null}
 
             {product.shortDescription && (
               <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.7 }}

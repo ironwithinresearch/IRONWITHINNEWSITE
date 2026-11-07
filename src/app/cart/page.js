@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@apollo/client';
 import B2SUnlockNudge from '@/components/B2SUnlockNudge';
+import B1G2CartNudge from '@/components/B1G2CartNudge';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import PurchaseBlocked from '@/components/PurchaseBlocked';
@@ -264,6 +265,7 @@ export default function CartPage() {
         {cartItems.length > 0 && (
           <B2SUnlockNudge units={cartItems.reduce((n, i) => n + (i.quantity || 0), 0)} />
         )}
+        {cartItems.length > 0 && <B1G2CartNudge items={cartItems} />}
 
         {cartLoading && cartItems.length === 0 ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}>

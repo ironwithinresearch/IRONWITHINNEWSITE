@@ -8,6 +8,7 @@ import { ArrowRight } from 'lucide-react';
 import { annPromoLive } from '@/lib/anniversary';
 import { kbLive, KB_PCT, KB_APP_PCT, KB_GIFT_MIN } from '@/lib/kellyBday';
 import { giveawayOpen } from '@/lib/giveaway';
+import { bfLive, bfNext, bfgOpen, BFG } from '@/lib/blackFriday';
 
 const ctWhen = (iso) => new Date(iso).toLocaleString('en-US', { weekday: 'short', hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' });
 
@@ -48,6 +49,19 @@ export default function Deals() {
       href: '/flash', cta: flash.live ? 'Shop the flash sale' : 'Preview the items', highlight: flash.live,
     });
   }
+  if (now && (bfLive(now) || bfNext(now))) {
+    const live = bfLive(now);
+    const next = bfNext(now);
+    deals.push({
+      eyebrow: live ? 'Sale day, ends 11:59 p.m. CT' : `Next sale day: ${next.label}`,
+      title: 'Black Friday sale days',
+      body: 'Buy 1, get 2 free on RT-3 20mg, RT-3 30mg and TRZ-2 30mg at regular price: for every 3 of the same item, 2 are free, up to 2 deals per item per order. 35% off most other items, with a smaller discount on a few. Creator codes stack. Not included: aminos, merch, gift cards, bundles, lab supplies, RT-3 60mg and TRZ-2 60mg. Sale days: Saturdays November 7, 14 and 21.',
+      href: live ? '/shop' : '/giveaway', cta: live ? 'Shop the sale' : 'See the dates and rates', highlight: live,
+    });
+  }
+  if (now && bfgOpen(now)) {
+    deals.push({ eyebrow: 'Giveaway', title: `Win up to $${BFG.bigPrize.total.toLocaleString('en-US')} in store credit`, body: `No purchase necessary. Enter free with a short form, or with $${BFG.minSpend}+ in paid orders. One entry per person. Entries close November 27; drawing December 1.`, href: '/giveaway', cta: 'Enter or read the rules', highlight: !bfLive(now) });
+  }
   if (now && kbLive(now)) {
     deals.push({ eyebrow: 'Ends tonight', title: "Kelly's Birthday Bash", body: `${KB_PCT}% off almost everything, and up to ${KB_APP_PCT}% off when you pay with Venmo, Cash App, Zelle or crypto (aminos, merch, bundles, gift cards and a few low-stock items excluded), no code needed, and creator codes stack on top. Orders of $${KB_GIFT_MIN}+ after discounts include a free RT-3 or TRZ-2 10mg while supplies last; pick yours at checkout. Limit 15 items per order and 5 RT-3 and TRZ-2 combined.`, href: '/shop', cta: 'Shop the sale', highlight: true });
   }
@@ -57,7 +71,7 @@ export default function Deals() {
   deals.push({ eyebrow: 'Always on', title: 'Refer a friend', body: 'Your friend gets $25 off their first order, and you get $25 in store credit once they order.', href: '/refer', cta: 'Get your referral link' });
   deals.push({ eyebrow: 'Always on', title: 'Teachers, military & first responders', body: '15% off for those who serve. Verify once and it applies at checkout.', href: '/heroes', cta: 'Verify and save' });
   if (now && giveawayOpen(now)) {
-    deals.push({ eyebrow: 'Giveaway', title: 'Win a cruise for two', body: 'Every qualifying order is an automatic entry. Full official rules on the giveaway page.', href: '/giveaway', cta: 'See the rules' });
+    deals.push({ eyebrow: 'Sweepstakes', title: 'Win a cruise for two', body: 'Every qualifying order is an automatic entry, or enter free by mail. Full official rules on the sweepstakes page.', href: '/giveaway/cruise', cta: 'See the rules' });
   }
   deals.push({ eyebrow: 'Gift cards', title: 'Send a gift card', body: 'Delivered by email and spendable on anything in the store.', href: '/gift-cards', cta: 'Buy a gift card' });
 

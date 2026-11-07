@@ -11,6 +11,7 @@ import { useWishlist } from '@/context/WishlistContext';
 import { GET_PRODUCTS, GET_CATEGORIES } from '@/lib/queries/products';
 import { decodePriceHtml } from '@/lib/utils';
 import { lowStockCount } from '@/lib/stock';
+import { bfLive, B1G2_BY_SLUG } from '@/lib/blackFriday';
 import {
   FlaskConical, Search, ShoppingCart, Package,
   Loader2, ChevronRight, AlertCircle,
@@ -22,6 +23,8 @@ function ShopContent() {
   const [activeCategory, setActiveCategory] = useState('');
   const [searchInput, setSearchInput] = useState('');
   const [addedItems, setAddedItems] = useState({});
+  const [bfOn, setBfOn] = useState(false);
+  useEffect(() => { setBfOn(bfLive()); }, []);
 
   // Honor ?category=<slug> from the nav (and react when it changes without a remount).
   const searchParams = useSearchParams();
@@ -225,6 +228,11 @@ function ShopContent() {
                       <Link href={`/product/${product.slug}`} style={{ textDecoration: 'none' }}>
                         <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 700, marginBottom: '6px', color: 'var(--text-light)', lineHeight: 1.3 }}>{product.name}</h3>
                       </Link>
+                      {bfOn && B1G2_BY_SLUG[product.slug] && (
+                        <span style={{ alignSelf: 'flex-start', marginBottom: 8, padding: '3px 10px', background: 'rgba(124,58,237,0.15)', border: '1px solid rgba(124,58,237,0.4)', borderRadius: 999, fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-light)' }}>
+                          Buy 1, get 2 free: {B1G2_BY_SLUG[product.slug]}
+                        </span>
+                      )}
 
                       {product.shortDescription && (
                         <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem', lineHeight: 1.5, marginBottom: '14px', flex: 1, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}

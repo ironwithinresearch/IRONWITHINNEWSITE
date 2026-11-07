@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { shipDaysLive, SHIPDAYS_LABEL, SHIPDAYS_UNTIL } from '@/lib/shipDays';
 import { annPromoLive } from '@/lib/anniversary';
 import { kbLive, KB_PCT, KB_APP_PCT, KB_GIFT_MIN } from '@/lib/kellyBday';
+import { bfLive, bfgOpen } from '@/lib/blackFriday';
 
 /* One calm, static announcement line, fixed above the navbar (height 36px — the navbar
    sits at top: 36 and main is padded to match).
@@ -25,6 +26,12 @@ const DEFAULT_LINE = {
 function currentLine(now) {
   if (shipDaysLive(now)) {
     return { text: `Shipping update: through ${SHIPDAYS_UNTIL}, orders ship ${SHIPDAYS_LABEL} only.`, short: `Through ${SHIPDAYS_UNTIL} we ship Mon, Wed & Thu`, cta: 'Details', href: '/shipping' };
+  }
+  if (bfLive(now)) {
+    return { text: 'Black Friday sale day: buy 1, get 2 free on RT-3 20mg, RT-3 30mg and TRZ-2 30mg, plus 35% off most other items. Creator codes stack. Ends 11:59 p.m. CT.', short: 'Sale day: buy 1, get 2 free on select RT-3 and TRZ-2', cta: 'See the deals', href: '/deals' };
+  }
+  if (bfgOpen(now)) {
+    return { text: 'Black Friday Giveaway: one winner gets up to $3,000 in store credit. No purchase necessary.', short: 'Giveaway: up to $3,000 in store credit', cta: 'Enter or read the rules', href: '/giveaway' };
   }
   if (kbLive(now)) {
     return { text: `Kelly's Birthday Bash: ${KB_PCT}% off most items, up to ${KB_APP_PCT}% off with Venmo, Cash App, Zelle or crypto. Creator codes stack, plus a free RT-3 or TRZ-2 10mg on orders $${KB_GIFT_MIN}+ while supplies last. Ends tonight.`, short: `${KB_PCT}% off, up to ${KB_APP_PCT}% with Venmo, Cash App, Zelle or crypto`, cta: 'Shop now', href: '/shop', vip: true };
