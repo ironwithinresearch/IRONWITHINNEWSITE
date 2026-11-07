@@ -237,7 +237,7 @@ export default function BlackFridayGiveaway() {
               <strong style={S.strong}>Fewer than {BFG.tierMin}:</strong> {money(Sm.total)} in store credit, as {Sm.months} monthly credits of {money(Sm.monthly)}.
             </p>
             <p style={{ ...S.p, fontSize: '0.9rem', marginBottom: 0 }}>
-              Drawing {BFG.drawLabel}. Each month&apos;s credit expires at the end of that month.
+              Drawing {BFG.drawLabel}. Each month&apos;s credit expires 30 days after it is issued.
             </p>
           </div>
         </div>
@@ -344,10 +344,10 @@ export default function BlackFridayGiveaway() {
             credits of {money(Sm.monthly)} each.
             <br />
             The first credit is issued after the winner is confirmed, and one credit is issued in each following month. Each
-            month&apos;s credit expires at the end of the calendar month in which it is issued, and any unused balance is
+            monthly credit expires 30 days after it is issued, and any unused balance of that credit is
             forfeited. The approximate retail value of the prize is the stated credit total ({money(B.total)} or {money(Sm.total)}).
             Store credit is a promotional credit with no cash value. It is not transferable, cannot be exchanged for cash and
-            cannot be resold. It is redeemable only at ironwithin.io, by the winner as a verified account holder aged 21 or older,
+            cannot be resold. It is redeemable only at ironwithin.io, by the winner as a verified account holder aged 21 or older who completes the store&apos;s researcher account signup and accepts its research-use-only terms,
             and is subject to the store&apos;s Terms, including its research-use-only terms. No substitution, except that the
             Sponsor may substitute a prize of equal or greater value.</p>
 
