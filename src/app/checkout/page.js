@@ -205,6 +205,9 @@ const PAY_METHODS = [
 // so read it from src/lib/p2p.js rather than hardcoding it here.
 const P2P_DISCOUNT_METHODS = P2P_METHODS;
 
+// Brian, 7 Nov 2026: hide the second card option (iwr_card) for now; Stripe stays. Set false to bring it back.
+const HIDE_LEGACY_CARD = true;
+
 // Any method whose backend gateway answers with an off-site `redirect` rather than
 // completing the order in-place.
 const REDIRECT_METHODS = new Set(['iwr_rail', STRIPE_METHOD, CARD_METHOD, PAYPAL_METHOD]);
@@ -334,6 +337,7 @@ export default function CheckoutPage() {
   const payMethodOptions = PAY_METHODS
     .filter((m) => !(flashInCart && CARD_METHODS.has(m.id)))
     .filter((m) => !(isCardPaused() && CARD_METHODS.has(m.id)))
+    .filter((m) => !(HIDE_LEGACY_CARD && m.id === CARD_METHOD))
     .filter((m) => PAYPAL_ENABLED || m.id !== PAYPAL_METHOD)
     .filter((m) => PP_ENABLED || m.id !== PP_METHOD);
   // Route Package Protection — customer-paid shipping insurance.
