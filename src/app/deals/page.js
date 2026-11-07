@@ -8,7 +8,7 @@ import { ArrowRight } from 'lucide-react';
 import { annPromoLive } from '@/lib/anniversary';
 import { kbLive, KB_PCT, KB_APP_PCT, KB_GIFT_MIN } from '@/lib/kellyBday';
 import { giveawayOpen } from '@/lib/giveaway';
-import { bfLive, bfNext, bfgOpen, BFG } from '@/lib/blackFriday';
+import { bfLive, bfNext, bfgOpen, bfWeekLive, BFG } from '@/lib/blackFriday';
 
 const ctWhen = (iso) => new Date(iso).toLocaleString('en-US', { weekday: 'short', hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' });
 
@@ -48,6 +48,9 @@ export default function Deals() {
       body: 'Short windows on a handful of compounds. Pay by Zelle, Venmo or Cash App to get the flash price.',
       href: '/flash', cta: flash.live ? 'Shop the flash sale' : 'Preview the items', highlight: flash.live,
     });
+  }
+  if (now && bfWeekLive(now)) {
+    deals.push({ eyebrow: 'Through November 27', title: '35% off most items', body: 'Every day through Black Friday: 35% off most items, with a smaller discount on a few, no code needed, and creator codes stack. Aminos, merch, gift cards, bundles and lab supplies are not included. Full list on the giveaway page.', href: '/shop', cta: 'Shop the sale', highlight: true });
   }
   if (now && (bfLive(now) || bfNext(now))) {
     const live = bfLive(now);

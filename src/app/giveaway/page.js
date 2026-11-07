@@ -260,6 +260,10 @@ export default function BlackFridayGiveaway() {
             <strong style={S.strong}>35% off most other items</strong>, with a smaller discount on a few items, no code needed.
             Creator codes stack on top.
           </p>
+          <p style={{ ...S.p, fontSize: '0.9rem', marginBottom: 8 }}>
+            <strong style={S.strong}>Between sale days</strong> (November 8 through November 27), most items are also 35% off, including
+            RT-3 and TRZ-2 in every size. The buy 1, get 2 free offer runs on the three sale days only.
+          </p>
           <p style={{ ...S.p, fontSize: '0.9rem', marginBottom: 0 }}>
             <strong style={S.strong}>Not in the sale:</strong> aminos, merch, gift cards, bundles and research plans, lab supplies
             (water), RT-3 60mg and TRZ-2 60mg.

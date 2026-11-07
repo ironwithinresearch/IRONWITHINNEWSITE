@@ -17,6 +17,12 @@ export const BF_DAYS = [
 
 export const bfDay = (now = Date.now()) => BF_DAYS.find((d) => now >= d.start && now < d.end) || null;
 export const bfLive = (now = Date.now()) => !!bfDay(now);
+
+/* 35% between sale days (Brian, 7 Nov): every day from Sun 8 Nov through Fri 27 Nov 11:59pm CT that is not a
+   sale day. Mirrors slots 32-34 in iw-freaky-fridays.php (IW_BF_WEEK_RATES). */
+export const BF_WEEK_START = Date.parse('2026-11-08T06:00:00Z');
+export const BF_WEEK_END = Date.parse('2026-11-28T06:00:00Z');
+export const bfWeekLive = (now = Date.now()) => !bfLive(now) && now >= BF_WEEK_START && now < BF_WEEK_END;
 export const bfNext = (now = Date.now()) => BF_DAYS.find((d) => now < d.start) || null;
 
 /* Buy 1, get 2 free: every 3 units of the SAME variation, 2 are free. Max 2 deals per variation. */

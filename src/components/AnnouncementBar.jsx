@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { shipDaysLive, SHIPDAYS_LABEL, SHIPDAYS_UNTIL } from '@/lib/shipDays';
 import { annPromoLive } from '@/lib/anniversary';
 import { kbLive, KB_PCT, KB_APP_PCT, KB_GIFT_MIN } from '@/lib/kellyBday';
-import { bfLive, bfgOpen } from '@/lib/blackFriday';
+import { bfLive, bfgOpen, bfWeekLive } from '@/lib/blackFriday';
 
 /* One calm, static announcement line, fixed above the navbar (height 36px — the navbar
    sits at top: 36 and main is padded to match).
@@ -29,6 +29,9 @@ function currentLine(now) {
   }
   if (bfLive(now)) {
     return { text: 'Black Friday sale day: buy 1, get 2 free on RT-3 20mg, RT-3 30mg and TRZ-2 30mg, plus 35% off most other items. Limit 2 deals per item per order. Creator codes stack. Ends 11:59 p.m. CT.', short: 'Sale day: buy 1, get 2 free on select RT-3 and TRZ-2', cta: 'See the deals', href: '/deals' };
+  }
+  if (bfWeekLive(now)) {
+    return { text: 'Black Friday sale: 35% off most items through November 27, no code needed, and creator codes stack. Saturdays add buy 1, get 2 free on select RT-3 and TRZ-2.', short: '35% off most items through Nov 27', cta: 'Shop the sale', href: '/shop' };
   }
   if (bfgOpen(now)) {
     return { text: 'Black Friday Giveaway: one winner gets up to $3,000 in store credit. No purchase necessary.', short: 'Giveaway: up to $3,000 in store credit', cta: 'Enter or read the rules', href: '/giveaway' };
