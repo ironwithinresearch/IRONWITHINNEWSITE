@@ -52,3 +52,15 @@ export const BFG = {
 };
 
 export const bfgOpen = (now = Date.now()) => now >= Date.parse(BFG.opensISO) && now <= Date.parse(BFG.closesISO);
+
+/* RE:SEQ thank-you credit (Brian, 7 Nov 2026). Mirrors IW_RSR_TIERS in iw-reseq-reward.php, which
+   is the authority: same spend definition and window as the $450 giveaway entry above. Highest tier
+   only, so the most anyone gets is the last credit. Change the tiers there and here together. */
+export const RESEQ_REWARD = {
+  tiers: [[225, 25], [450, 50], [675, 75]],   // [Iron Within spend, RE:SEQ credit]
+  byLabel: '11/27',
+};
+const orList = (xs) => xs.slice(0, -1).join(', ') + ' or ' + xs[xs.length - 1];
+export const reseqRewardLine =
+  `Spend ${orList(RESEQ_REWARD.tiers.map(([s]) => `$${s}`))} at Iron Within by ${RESEQ_REWARD.byLabel} and get ` +
+  `${orList(RESEQ_REWARD.tiers.map(([, c]) => `$${c}`))} to spend at our sister skincare brand RE:SEQ.`;

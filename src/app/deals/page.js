@@ -8,11 +8,11 @@ import { ArrowRight } from 'lucide-react';
 import { annPromoLive } from '@/lib/anniversary';
 import { kbLive, KB_PCT, KB_APP_PCT, KB_GIFT_MIN } from '@/lib/kellyBday';
 import { giveawayOpen } from '@/lib/giveaway';
-import { bfLive, bfNext, bfgOpen, bfWeekLive, BFG } from '@/lib/blackFriday';
+import { bfLive, bfNext, bfgOpen, bfWeekLive, BFG, reseqRewardLine } from '@/lib/blackFriday';
 
 const ctWhen = (iso) => new Date(iso).toLocaleString('en-US', { weekday: 'short', hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' });
 
-function Deal({ eyebrow, title, body, href, cta, highlight }) {
+function Deal({ eyebrow, title, body, note, href, cta, highlight }) {
   return (
     <Link href={href} style={{
       display: 'flex', flexDirection: 'column', gap: 8, padding: '22px 22px 20px', textDecoration: 'none',
@@ -22,6 +22,7 @@ function Deal({ eyebrow, title, body, href, cta, highlight }) {
       <span style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: highlight ? '#7c3aed' : 'var(--text-muted)' }}>{eyebrow}</span>
       <span style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-light)', fontFamily: 'var(--font-body)' }}>{title}</span>
       <span style={{ fontSize: '0.92rem', lineHeight: 1.55, color: 'var(--text-secondary)', flex: 1 }}>{body}</span>
+      {note && <span style={{ fontSize: '0.92rem', lineHeight: 1.55, color: 'var(--text-light)' }}>{note}</span>}
       <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 6, fontSize: '0.88rem', fontWeight: 600, color: 'var(--text-light)' }}>{cta} <ArrowRight size={15} /></span>
     </Link>
   );
@@ -61,6 +62,11 @@ export default function Deals() {
       body: 'Buy 1, get 2 free on RT-3 20mg, RT-3 30mg and TRZ-2 30mg at regular price: for every 3 of the same item, 2 are free, up to 2 deals per item per order. 35% off most other items, with a smaller discount on a few. Creator codes stack. Not included: aminos, merch, gift cards, bundles, lab supplies, RT-3 60mg and TRZ-2 60mg. Sale days: Saturdays November 7, 14 and 21.',
       href: live ? '/shop' : '/giveaway', cta: live ? 'Shop the sale' : 'See the dates and rates', highlight: live,
     });
+  }
+  // RE:SEQ thank-you credit: one line on the Black Friday sale card that is showing (35% week card, else sale-day card).
+  if (now && bfgOpen(now)) {
+    const saleCard = deals.find((d) => d.title === '35% off most items') || deals.find((d) => d.title === 'Black Friday sale days');
+    if (saleCard) saleCard.note = reseqRewardLine;
   }
   if (now && bfgOpen(now)) {
     deals.push({ eyebrow: 'Giveaway', title: `Win up to $${BFG.bigPrize.total.toLocaleString('en-US')} in store credit`, body: `No purchase necessary. Enter free with a short form, or with $${BFG.minSpend}+ in paid orders. One entry per person. Entries close November 27; drawing December 1.`, href: '/giveaway', cta: 'Enter or read the rules', highlight: !bfLive(now) });

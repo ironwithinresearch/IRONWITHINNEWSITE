@@ -17,7 +17,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Gift, ShoppingBag, PenLine, ShieldCheck, CalendarDays, Tag } from 'lucide-react';
-import { BFG, BF_DAYS, bfgOpen } from '@/lib/blackFriday';
+import { BFG, BF_DAYS, bfgOpen, reseqRewardLine } from '@/lib/blackFriday';
 
 const STATES = [
   ['AL', 'Alabama'], ['AK', 'Alaska'], ['AZ', 'Arizona'], ['AR', 'Arkansas'], ['CA', 'California'], ['CO', 'Colorado'],
@@ -270,6 +270,10 @@ export default function BlackFridayGiveaway() {
           </p>
           <RateList rows={rates} />
         </div>
+
+        {open && (
+          <p style={{ ...S.p, fontSize: '0.9rem', marginTop: 14, marginBottom: 0 }}>{reseqRewardLine}</p>
+        )}
       </section>
 
       {/* ── Free entry ──────────────────────────────────────────────────────── */}
