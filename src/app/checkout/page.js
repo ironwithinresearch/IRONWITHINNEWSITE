@@ -205,8 +205,7 @@ const PAY_METHODS = [
 // so read it from src/lib/p2p.js rather than hardcoding it here.
 const P2P_DISCOUNT_METHODS = P2P_METHODS;
 
-// Brian, 7 Nov 2026: hide the second card option (iwr_card) for now; Stripe stays. Set false to bring it back.
-const HIDE_LEGACY_CARD = true;
+// Brian, 7 Nov 2026: show the existing card gateway when Stripe lacks capacity.
 
 // Any method whose backend gateway answers with an off-site `redirect` rather than
 // completing the order in-place.
@@ -334,12 +333,6 @@ export default function CheckoutPage() {
     if (flashInCart && CARD_METHODS.has(payMethod)) setPayMethod('');
   }, [flashInCart, payMethod]);
 
-  const payMethodOptions = PAY_METHODS
-    .filter((m) => !(flashInCart && CARD_METHODS.has(m.id)))
-    .filter((m) => !(isCardPaused() && CARD_METHODS.has(m.id)))
-    .filter((m) => !(HIDE_LEGACY_CARD && m.id === CARD_METHOD))
-    .filter((m) => PAYPAL_ENABLED || m.id !== PAYPAL_METHOD)
-    .filter((m) => PP_ENABLED || m.id !== PP_METHOD);
   // Route Package Protection — customer-paid shipping insurance.
   // OPT-OUT by design (pre-checked): Route's own guidance is that opt-in roughly halves
   // attach rate. The buyer can untick it, and the choice rides to the order as meta; the
@@ -561,6 +554,53 @@ export default function CheckoutPage() {
   const rewardsApplied = 0;
   const dueAfterAll = Math.max(0, round2(dueAfterCredit - rewardsApplied));
 
+  // Capacity is checked against the card total, independent of a selected app discount.
+  const cardGrossDue = Math.max(0, round2(computedTotalNum + routeFee));
+  const cardCredit = creditRule.eligible ? Math.min(creditBalance, cardGrossDue) : 0;
+  const cardAmount = Math.max(0, round2(cardGrossDue - cardCredit));
+  const [cardAvailability, setCardAvailability] = useState(null);
+  const [checkingCard, setCheckingCard] = useState(false);
+  const cardCheckRef = useRef(false);
+  const loadCardAvailability = async () => {
+    try {
+      const response = await fetch(`/api/card-availability?amount=${cardAmount.toFixed(2)}`, { cache: 'no-store', signal: AbortSignal.timeout(10000) });
+      if (!response.ok) return null;
+      const data = await response.json();
+      if (typeof data.stripeAvailable !== 'boolean' || typeof data.legacyAvailable !== 'boolean') return null;
+      return data;
+    } catch { return null; }
+  };
+  useEffect(() => {
+    let live = true;
+    setCardAvailability(null);
+    const load = async () => {
+      const data = await loadCardAvailability();
+      if (live && data) setCardAvailability(data);
+    };
+    load();
+    const timer = setInterval(load, 30000);
+    const onFocus = () => load();
+    window.addEventListener('focus', onFocus);
+    return () => { live = false; clearInterval(timer); window.removeEventListener('focus', onFocus); };
+  }, [cardAmount]);
+  useEffect(() => {
+    if (payMethod === STRIPE_METHOD && cardAvailability?.stripeAvailable === false) {
+      setPayMethod(cardAvailability.legacyAvailable && !flashInCart && !isCardPaused() ? CARD_METHOD : '');
+      setCheckoutError(null);
+    }
+  }, [cardAvailability, payMethod, flashInCart]);
+
+  const payMethodOptions = PAY_METHODS
+    .filter((m) => !(flashInCart && CARD_METHODS.has(m.id)))
+    .filter((m) => !(isCardPaused() && CARD_METHODS.has(m.id)))
+    .filter((m) => m.id !== STRIPE_METHOD || cardAvailability?.stripeAvailable !== false)
+    .filter((m) => m.id !== CARD_METHOD || (cardAvailability?.legacyAvailable !== false
+      && (cardAvailability?.stripeAvailable !== true || payMethod === CARD_METHOD)))
+    .filter((m) => PAYPAL_ENABLED || m.id !== PAYPAL_METHOD)
+    .filter((m) => PP_ENABLED || m.id !== PP_METHOD)
+    .sort((a, b) => cardAvailability?.stripeAvailable === false
+      ? Number(b.id === CARD_METHOD) - Number(a.id === CARD_METHOD) : 0);
+
   // When a gift card / store credit / rewards fully cover the order, nothing is due —
   // we complete the $0 order through a backend gateway, not the card rail.
   const isZeroDue = (cartItems?.length || 0) > 0 && computedTotalNum <= 0;
@@ -572,7 +612,7 @@ export default function CheckoutPage() {
   // Card is available if EITHER rail is up. The paused-card notice keys off this, not off
   // SnapPay alone — otherwise turning the second rail on leaves a banner apologising for
   // the absence of a method that is right there in the list.
-  const cardAvailable = !isCardPaused() || PP_ENABLED;
+  const cardAvailable = payMethodOptions.some((method) => CARD_METHODS.has(method.id));
   const fullyCovered = computedTotalNum > 0 && dueAfterAll <= 0.005;
   // A fully-covered order hides the method picker ("Paid in full"), so it must count as chosen —
   // otherwise Place Order stays disabled with no way to enable it (27 Sep: customers stuck).
@@ -718,6 +758,7 @@ export default function CheckoutPage() {
   };
 
   const handlePlaceOrder = async () => {
+    if (cardCheckRef.current || placingOrder) return;
     setCheckoutError(null);                    // a retry starts clean
     if (hasBackorder && !backorderAck) return; // require backorder acknowledgment
     if (!methodChosen) return;                 // nothing is pre-selected; the buyer must pick
@@ -726,7 +767,28 @@ export default function CheckoutPage() {
       setCheckoutError({ title: 'Please confirm the research-use statements', body: 'Tick all three boxes above Place Order to continue.' });
       return;
     }
-    payMethodRef.current = effectiveMethod;
+    let methodToSubmit = effectiveMethod;
+    if (CARD_METHODS.has(methodToSubmit)) {
+      cardCheckRef.current = true;
+      setCheckingCard(true);
+      const latest = await loadCardAvailability();
+      cardCheckRef.current = false;
+      setCheckingCard(false);
+      if (latest) {
+        setCardAvailability(latest);
+        if (methodToSubmit === STRIPE_METHOD && !latest.stripeAvailable && latest.legacyAvailable) {
+          methodToSubmit = CARD_METHOD;
+          setPayMethod(CARD_METHOD);
+        }
+        const available = methodToSubmit === STRIPE_METHOD ? latest.stripeAvailable : latest.legacyAvailable;
+        if (!available) {
+          setPayMethod('');
+          setCheckoutError({ title: 'Please choose another payment method', body: 'Card payment is temporarily unavailable for this order. Please choose Zelle, Venmo, Cash App or Crypto below.' });
+          return;
+        }
+      }
+    }
+    payMethodRef.current = methodToSubmit;
     const billingInfo = billing.sameAsShipping ? shipping : billing;
     if (isPoBox(shipping.address, billingInfo.address)) {
       setCheckoutError({ title: 'PO Boxes can’t be shipped to', body: PO_BOX_MESSAGE });
@@ -737,7 +799,7 @@ export default function CheckoutPage() {
     const input = buildCheckoutInput({
       billing: { ...billingInfo, email: shipping.email },
       transactionId: '',
-      paymentMethod: effectiveMethod,
+      paymentMethod: methodToSubmit,
       affiliateRef: getAffiliateRef(),
       referrerCode: getReferCookie(),
       shippingMethod: shipRate,
@@ -1224,9 +1286,9 @@ export default function CheckoutPage() {
 
                 {checkoutError && <Notice title={checkoutError.title} body={checkoutError.body} />}
 
-                <button onClick={handlePlaceOrder} disabled={placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal || accountBlocked || !ruoAcked}
-                  style={{ width: '100%', padding: '14px', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: (placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal || accountBlocked || !ruoAcked) ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: 'var(--glow-blue)', opacity: (placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal || accountBlocked || !ruoAcked) ? 0.6 : 1 }}>
-                  {placingOrder ? (
+                <button onClick={handlePlaceOrder} disabled={checkingCard || placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal || accountBlocked || !ruoAcked}
+                  style={{ width: '100%', padding: '14px', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: (checkingCard || placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal || accountBlocked || !ruoAcked) ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: 'var(--glow-blue)', opacity: (checkingCard || placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal || accountBlocked || !ruoAcked) ? 0.6 : 1 }}>
+                  {(checkingCard || placingOrder) ? (
                     <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Placing Order…</>
                   ) : accountBlocked ? (
                     <><Lock size={15} /> Account pending approval</>
