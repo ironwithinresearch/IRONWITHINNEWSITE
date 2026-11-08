@@ -58,9 +58,11 @@ export const bfgOpen = (now = Date.now()) => now >= Date.parse(BFG.opensISO) && 
    only, so the most anyone gets is the last credit. Change the tiers there and here together. */
 export const RESEQ_REWARD = {
   tiers: [[225, 25], [450, 50], [675, 75]],   // [Iron Within spend, RE:SEQ credit]
-  byLabel: '11/27',
+  byLabel: '11:59 p.m. CT on 11/27',
 };
 const orList = (xs) => xs.slice(0, -1).join(', ') + ' or ' + xs[xs.length - 1];
 export const reseqRewardLine =
   `Spend ${orList(RESEQ_REWARD.tiers.map(([s]) => `$${s}`))} at Iron Within by ${RESEQ_REWARD.byLabel} and get ` +
-  `${orList(RESEQ_REWARD.tiers.map(([, c]) => `$${c}`))} to spend at our sister skincare brand RE:SEQ.`;
+  `${orList(RESEQ_REWARD.tiers.map(([, c]) => `$${c}`))} in store credit at our sister skincare brand RE:SEQ. ` +
+  'Spend = product total after discounts, before shipping. Credit is emailed within a day and expires 30 days ' +
+  "after it's issued. No cash value.";   // wording approved by ruo-compliance, 7 Nov 2026
