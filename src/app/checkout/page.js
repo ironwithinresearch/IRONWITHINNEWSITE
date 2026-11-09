@@ -188,6 +188,11 @@ function PaymentOptionsList({ children, count }) {
   );
 }
 
+// 24-hour price drop, 9-10 Nov 2026: the 54 variations on the drop list (~/iw-reports/sale24/plan.json).
+const DROP_P2P_END = Date.parse('2026-11-10T20:00:00Z');
+const DROP_P2P_VIDS = [520, 522, 523, 524, 527, 534, 538, 541, 542, 544, 545, 546, 549, 551, 552, 553, 554, 556, 558, 561, 562, 566, 567, 569, 576, 1033, 1034, 1038, 3252, 3253, 3254, 3255, 3257, 3258, 3262, 3263, 3267, 3641, 3644, 3645, 3884, 5281, 5282, 5283, 5875, 6740, 6741, 6742, 7218, 7220, 7222, 7224, 7227, 7239];
+const DROP_P2P_METHODS = new Set(['iwr_zelle', 'iwr_venmo', 'iwr_cashapp', 'iwr_crypto']);
+
 const PAY_METHODS = [
   { id: STRIPE_METHOD, label: 'Credit Card / Debit Card', desc: 'Continue to secure checkout to pay with Stripe.' },
   { id: 'iwr_zelle',   label: 'Zelle',    handle: '8508980623' },
@@ -328,7 +333,11 @@ export default function CheckoutPage() {
     if (!gid) return i?.product?.node?.databaseId || 0;
     try { return Number(String(atob(gid)).split(':').pop()) || 0; } catch { return 0; }
   };
-  const flashInCart = flashVids.length > 0 && (cartItems || []).some((i) => flashVids.includes(vidOf(i)));
+  const flashOnlyInCart = flashVids.length > 0 && (cartItems || []).some((i) => flashVids.includes(vidOf(i)));
+  // 24-hour price drop (2pm CT 9 Nov to 2pm CT 10 Nov): those lines are pay-by-app only too.
+  // The backend refuses a card order for them on its own (mu-plugin iw-24h-p2p.php).
+  const dropInCart = Date.now() < DROP_P2P_END && (cartItems || []).some((i) => DROP_P2P_VIDS.includes(vidOf(i)));
+  const flashInCart = flashOnlyInCart || dropInCart;
   useEffect(() => {
     if (flashInCart && CARD_METHODS.has(payMethod)) setPayMethod('');
   }, [flashInCart, payMethod]);
@@ -592,6 +601,7 @@ export default function CheckoutPage() {
 
   const payMethodOptions = PAY_METHODS
     .filter((m) => !(flashInCart && CARD_METHODS.has(m.id)))
+    .filter((m) => !dropInCart || DROP_P2P_METHODS.has(m.id))
     .filter((m) => !(isCardPaused() && CARD_METHODS.has(m.id)))
     .filter((m) => m.id !== STRIPE_METHOD || cardAvailability?.stripeAvailable !== false)
     .filter((m) => m.id !== CARD_METHOD || (cardAvailability?.legacyAvailable !== false
@@ -1153,7 +1163,7 @@ export default function CheckoutPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     {flashInCart && (
                       <div style={{ padding: '11px 13px', borderRadius: '10px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.45)', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-                        ⚡ <strong style={{ color: '#f87171' }}>Flash sale items are Zelle, Venmo or Cash App only.</strong> Pick one below to lock in the flash price.
+                        ⚡ <strong style={{ color: '#f87171' }}>{flashOnlyInCart ? 'Flash sale items are Zelle, Venmo or Cash App only.' : '24-hour price drop items are Zelle, Venmo, Cash App or crypto only.'}</strong> Pick one below to lock in the {flashOnlyInCart ? 'flash' : 'sale'} price.
                       </div>
                     )}
                     {!cardAvailable && !flashInCart && (
