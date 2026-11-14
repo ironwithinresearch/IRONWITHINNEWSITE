@@ -23,7 +23,7 @@ export default function B1G2CartNudge({ items = [] }) {
     const rem = q % 3;
     if (rem === 0) return [];
     const need = 3 - rem;
-    return [`${BF_B1G2[vid].name}: add ${need} more and you pay for 1 of every 3 (buy 1, get 2 free).`];
+    return [`${BF_B1G2[vid].name}: add ${need} more and you pay for 1 of every 3 (buy 1, get 2 free, Venmo, Zelle or crypto checkout only).`];
   });
   if (!tips.length) return null;
   return (

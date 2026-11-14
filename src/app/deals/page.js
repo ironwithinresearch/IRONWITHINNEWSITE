@@ -59,7 +59,7 @@ export default function Deals() {
     deals.push({
       eyebrow: live ? 'Sale day, ends 11:59 p.m. CT' : `Next sale day: ${next.label}`,
       title: 'Black Friday sale days',
-      body: 'Buy 1, get 2 free on RT-3 20mg, RT-3 30mg and TRZ-2 30mg at regular price: for every 3 of the same item, 2 are free, up to 2 deals per item per order. 35% off most other items, with a smaller discount on a few. Creator codes stack. Not included: aminos, merch, gift cards, bundles, lab supplies, RT-3 60mg and TRZ-2 60mg. Sale days: Saturdays November 7, 14 and 21.',
+      body: 'Buy 1, get 2 free on RT-3 20mg, RT-3 30mg and TRZ-2 30mg at regular price: for every 3 of the same item, 2 are free, up to 2 deals per item per order. Venmo, Zelle or crypto checkout only. 35% off most other items, with a smaller discount on a few. Creator codes stack. Not included: aminos, merch, gift cards, bundles, lab supplies, RT-3 60mg and TRZ-2 60mg. Sale days: Saturdays November 7, 14 and 21.',
       href: live ? '/shop' : '/giveaway', cta: live ? 'Shop the sale' : 'See the dates and rates', highlight: live,
     });
   }

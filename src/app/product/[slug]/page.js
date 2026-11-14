@@ -532,7 +532,7 @@ export default function ProductPage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4, padding: '12px 14px', borderRadius: 12, background: 'rgba(124,58,237,0.10)', border: '1px solid rgba(124,58,237,0.40)' }}>
                 <span style={{ fontWeight: 700, color: 'var(--text-light)', fontSize: '0.95rem' }}>Buy 1, get 2 free today</span>
                 <span style={{ color: 'var(--text-secondary)', fontSize: '0.86rem', lineHeight: 1.55 }}>
-                  Add 3 of this size and pay for 1. Up to 2 deals (6 units) per order. The discount shows in your cart, and creator codes apply to the unit you pay for.
+                  Add 3 of this size and pay for 1. Up to 2 deals (6 units) per order. Venmo, Zelle or crypto checkout only (no cards). The discount shows in your cart, and creator codes apply to the unit you pay for.
                 </span>
               </div>
             ) : bfOn && B1G2_BY_SLUG[product.slug] ? (
