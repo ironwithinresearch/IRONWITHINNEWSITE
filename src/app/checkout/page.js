@@ -12,6 +12,7 @@ import { getReferCookie } from '@/lib/referral';
 import PayPalFrame from '@/components/PayPalFrame';
 import { P2P_METHODS, p2pPaused, p2pRate, p2pPct, p2pEventLive, p2pEventDiscount, GIFT_OPTIONS, GIFT_MIN, GIFT_BIG_ON, GIFT_BIG_MIN, giftDoseFor, giftQualifies, giftQualifying } from '@/lib/p2p';
 import { useAuth } from '../../context/AuthContext';
+import { nbLive, NB_EXTRA_MIN, NB_EXTRA_ITEMS, nbJoin } from '@/lib/newmeBday';
 import { GET_CUSTOMER } from '../../lib/queries/auth';
 import { decodePriceHtml } from '../../lib/utils';
 import { getAffiliateRef } from '../../lib/affiliate';
@@ -300,6 +301,24 @@ export default function CheckoutPage() {
   const [p2pInfo, setP2pInfo] = useState(null);
   const [ppOrder, setPpOrder] = useState(null);   // { id, key } once a card order is placed
   const [giftChoice, setGiftChoice] = useState('');
+  // NewMe's Birthday Bash extra gift (KPV 10mg + Pink Glutathione at $225+), added by the backend
+  // automatically. Read extra_min / extra_items from iw-p2p-gift.php's status endpoint so the copy
+  // follows the engine; fall back to lib/newmeBday.js while the Bash is live if the fields are absent.
+  const [giftExtra, setGiftExtra] = useState(null);   // { min, items }
+  useEffect(() => {
+    let alive = true;
+    const fallback = nbLive() ? { min: NB_EXTRA_MIN, items: NB_EXTRA_ITEMS } : null;
+    fetch('https://api.ironwithin.io/wp-json/iw/v1/p2p-gift', { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (!alive) return;
+        const min = Number(d && d.extra_min);
+        const items = d && Array.isArray(d.extra_items) ? d.extra_items.filter((x) => typeof x === 'string' && x) : [];
+        setGiftExtra(min > 0 && items.length ? { min, items } : fallback);
+      })
+      .catch(() => { if (alive) setGiftExtra(fallback); });
+    return () => { alive = false; };
+  }, []);
   const [ppApproved, setPpApproved] = useState(null);   // { ppOrderId, proxyId, proxyUrl }
 
   // PayPal is approved INSIDE the iframe before the order is placed, so Place Order has to
@@ -1447,6 +1466,11 @@ export default function CheckoutPage() {
                   {!giftChoice && (
                     <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', marginTop: '8px' }}>
                       No pick? We&rsquo;ll send whichever is in stock.
+                    </div>
+                  )}
+                  {giftExtra && giftBase >= giftExtra.min && (
+                    <div style={{ fontSize: '0.85rem', color: '#34d399', fontWeight: 600, marginTop: '10px' }}>
+                      Plus {nbJoin(giftExtra.items)}, free at ${giftExtra.min}+ (added automatically)
                     </div>
                   )}
                 </div>

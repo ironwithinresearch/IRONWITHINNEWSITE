@@ -1,21 +1,15 @@
 'use client';
 
-// Kelly's Birthday Bash homepage banner (Wed 4 Nov -> Fri 6 Nov 2026, CT). VIP gold + electric
-// blue on black, the Founding Five look. Window and numbers come from lib/kellyBday.js, which
-// mirrors the backend (slot 28 in iw-freaky-fridays.php, iw-p2p-gift.php). Renders nothing
-// outside the window. Lacey's June version is in git history.
+// NewMe's Birthday Bash homepage banner (Thu 19 Nov 8am -> Sat 21 Nov 8am CT, 2026). VIP gold +
+// electric blue on black, the Founding Five look. Window and numbers come from lib/newmeBday.js,
+// which mirrors the backend (iw-freaky-fridays.php, iw-p2p-gift.php). Renders nothing outside
+// the window, and nothing on the server (it waits for the client clock). Kelly's (4-6 Nov) and
+// Lacey's (June) versions are in git history.
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { kbLive, KB_END, KB_PCT, KB_APP_PCT, KB_GIFT_MIN, KB_GOLD, KB_GOLD_DEEP, KB_BLUE } from '@/lib/kellyBday';
-
-function left(ms) {
-  if (ms <= 0) return '';
-  const s = Math.floor(ms / 1000);
-  const d = Math.floor(s / 86400), h = Math.floor((s % 86400) / 3600), m = Math.floor((s % 3600) / 60);
-  return d > 0 ? `${d}d ${h}h ${String(m).padStart(2, '0')}m` : `${h}h ${String(m).padStart(2, '0')}m`;
-}
+import { nbLive, NB_PCT, NB_GIFT_MIN, NB_EXTRA_MIN, NB_ENDS_LABEL, NB_GOLD as KB_GOLD, NB_GOLD_DEEP as KB_GOLD_DEEP, NB_BLUE as KB_BLUE } from '@/lib/newmeBday';
 
 export default function BirthdayBashBanner() {
   const [now, setNow] = useState(null);
@@ -26,7 +20,7 @@ export default function BirthdayBashBanner() {
     return () => clearInterval(id);
   }, []);
 
-  if (!now || !kbLive(now)) return null;
+  if (!now || !nbLive(now)) return null;
 
   return (
     <section style={{ padding: '40px 20px 8px' }}>
@@ -48,13 +42,14 @@ export default function BirthdayBashBanner() {
             background: `linear-gradient(180deg, #fbeaa8 0%, ${KB_GOLD} 45%, ${KB_GOLD_DEEP} 100%)`,
             WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent',
           }}>
-            Kelly&rsquo;s Birthday Bash
+            NewMe&rsquo;s Birthday Bash
           </h2>
           <div style={{ color: '#fff', fontWeight: 800, fontSize: 'clamp(1.25rem, 3.2vw, 1.7rem)', margin: '14px 0 6px' }}>
-            {KB_PCT}% off, up to {KB_APP_PCT}% with Venmo, Cash App, Zelle or crypto <span style={{ color: KB_BLUE }}>·</span> creator codes stack
+            {NB_PCT}% off almost everything <span style={{ color: KB_BLUE }}>·</span> creator codes stack
           </div>
           <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1rem', lineHeight: 1.55, maxWidth: 560, margin: '0 auto' }}>
-            Orders of <strong style={{ color: KB_GOLD }}>${KB_GIFT_MIN}+</strong> get a free <strong style={{ color: '#fff' }}>RT-3 or TRZ-2 10mg</strong> while supplies last. Pick yours at checkout.
+            Orders of <strong style={{ color: KB_GOLD }}>${NB_GIFT_MIN}+</strong> get a free <strong style={{ color: '#fff' }}>RT-3 or TRZ-2 10mg</strong> while supplies last. Pick yours at checkout.
+            <br />Plus a free <strong style={{ color: '#fff' }}>KPV 10mg and Pink Glutathione</strong> on orders <strong style={{ color: KB_GOLD }}>${NB_EXTRA_MIN}+</strong>, added automatically.
           </div>
           <Link href="/shop" style={{
             display: 'inline-flex', alignItems: 'center', gap: 9, marginTop: 22, padding: '14px 34px',
@@ -65,10 +60,10 @@ export default function BirthdayBashBanner() {
             Shop the Birthday Bash <ArrowRight size={17} />
           </Link>
           <div style={{ marginTop: 14, fontSize: '0.86rem', color: 'rgba(255,255,255,0.65)' }}>
-            Ends Friday 11:59pm CT{left(KB_END - now) ? ` · ${left(KB_END - now)} left` : ''}
+            Ends {NB_ENDS_LABEL}
           </div>
           <div style={{ marginTop: 14, fontSize: '0.72rem', color: 'rgba(255,255,255,0.42)', lineHeight: 1.5 }}>
-            No code needed. The $175 is measured after discounts. Aminos, merch, bundles, gift cards and a few low-stock items are not on sale. Limit 15 items per order and 5 RT-3 and TRZ-2 combined. If your free-vial pick sells out, we send the other one.
+            No code needed. The ${NB_GIFT_MIN} and ${NB_EXTRA_MIN} are measured after discounts. Aminos, merch, bundles, gift cards, capsules and a few low-stock items are not on sale. Free items while supplies last; if your free-vial pick sells out, we send the other one.
             <br />For research use only. Not for human or veterinary use.
           </div>
         </div>

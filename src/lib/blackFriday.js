@@ -12,7 +12,8 @@
 export const BF_DAYS = [
   { day: 1, start: Date.parse('2026-11-07T17:45:00Z'), end: Date.parse('2026-11-08T06:00:00Z'), label: 'Saturday, November 7', when: 'from 11:45 a.m. to 11:59 p.m. CT' },
   { day: 2, start: Date.parse('2026-11-14T06:00:00Z'), end: Date.parse('2026-11-15T06:00:00Z'), label: 'Saturday, November 14', when: 'all day, 12:00 a.m. to 11:59 p.m. CT' },
-  { day: 3, start: Date.parse('2026-11-21T06:00:00Z'), end: Date.parse('2026-11-22T06:00:00Z'), label: 'Saturday, November 21', when: 'all day, 12:00 a.m. to 11:59 p.m. CT' },
+  // Day 3 starts at 8:00am CT (Brian, 19 Nov), right when NewMe's Birthday Bash ends (lib/newmeBday.js).
+  { day: 3, start: Date.parse('2026-11-21T14:00:00Z'), end: Date.parse('2026-11-22T06:00:00Z'), label: 'Saturday, November 21', when: 'from 8:00 a.m. to 11:59 p.m. CT' },
 ];
 
 export const bfDay = (now = Date.now()) => BF_DAYS.find((d) => now >= d.start && now < d.end) || null;

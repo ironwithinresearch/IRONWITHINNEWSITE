@@ -115,11 +115,12 @@ export const p2pPct = (now = Date.now()) => String(Math.round(p2pRate(now) * 100
 // Freaky Friday week 3 (25 Sep): $200 earns a 10mg, $350 upgrades it to the 30mg. Free shipping
 // stays at $225, so no copy may pair the vial with free shipping. Mirrors IW_GIFT_MIN / IW_GIFT_MIN_BIG.
 // Kelly's Birthday Bash (4-6 Nov): 10mg at $175+, NO 30mg tier (backend IW_GIFT_MIN_BIG = 999999).
+// NewMe's Birthday Bash (19-21 Nov, lib/newmeBday.js): same $175 / 10mg, window Thu 8am -> Sat 8am CT.
 export const GIFT_MIN = 175;
 export const GIFT_BIG_ON = false;   // false = never mention a 30mg tier in copy
 export const GIFT_BIG_MIN = 999999;
-export const GIFT_FROM = Date.parse('2026-11-04T06:00:00Z'); // Wed 4 Nov, 12:00am CST
-export const GIFT_TO = Date.parse('2026-11-07T06:00:00Z');   // Sat 7 Nov, 12:00am CST (end of Fri)
+export const GIFT_FROM = Date.parse('2026-11-19T14:00:00Z'); // Thu 19 Nov, 8:00am CST
+export const GIFT_TO = Date.parse('2026-11-21T14:00:00Z');   // Sat 21 Nov, 8:00am CST
 
 export const GIFT_OPTIONS = [
   { key: 'trz2', label: 'TRZ-2' },

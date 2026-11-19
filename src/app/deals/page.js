@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { annPromoLive } from '@/lib/anniversary';
-import { kbLive, KB_PCT, KB_APP_PCT, KB_GIFT_MIN } from '@/lib/kellyBday';
+import { nbLive, NB_PCT, NB_GIFT_MIN, NB_EXTRA_MIN, NB_EXTRA_ITEMS, NB_ENDS_LABEL, nbJoin } from '@/lib/newmeBday';
 import { giveawayOpen } from '@/lib/giveaway';
 import { bfLive, bfNext, bfgOpen, bfWeekLive, BFG, reseqRewardLine } from '@/lib/blackFriday';
 
@@ -50,7 +50,13 @@ export default function Deals() {
       href: '/flash', cta: flash.live ? 'Shop the flash sale' : 'Preview the items', highlight: flash.live,
     });
   }
-  if (now && bfWeekLive(now)) {
+  // NewMe's Birthday Bash first: its 40% supersedes the 35%, so the 35% card is hidden and the
+  // sale-day card drops its 35% sentence while the Bash is live (Thu 8am -> Sat 8am CT).
+  const nb = !!now && nbLive(now);
+  if (nb) {
+    deals.push({ eyebrow: `Ends ${NB_ENDS_LABEL}`, title: "NewMe's Birthday Bash", body: `${NB_PCT}% off almost everything (aminos, merch, bundles, gift cards, capsules and a few low-stock items excluded), no code needed, and creator codes stack on top. Orders of $${NB_GIFT_MIN}+ after discounts include a free RT-3 or TRZ-2 10mg while supplies last; pick yours at checkout. At $${NB_EXTRA_MIN}+, ${nbJoin(NB_EXTRA_ITEMS)} are added free as well. For research use only. Not for human or veterinary use.`, href: '/shop', cta: 'Shop the sale', highlight: true });
+  }
+  if (now && bfWeekLive(now) && !nb) {
     deals.push({ eyebrow: 'Through November 27', title: '35% off most items', body: 'Every day through Black Friday: 35% off most items, with a smaller discount on a few, no code needed, and creator codes stack. Aminos, merch, gift cards, bundles and lab supplies are not included. Full list on the giveaway page.', href: '/shop', cta: 'Shop the sale', highlight: true });
   }
   if (now && (bfLive(now) || bfNext(now))) {
@@ -59,7 +65,7 @@ export default function Deals() {
     deals.push({
       eyebrow: live ? 'Sale day, ends 11:59 p.m. CT' : `Next sale day: ${next.label}`,
       title: 'Black Friday sale days',
-      body: 'Buy 1, get 2 free on RT-3 20mg, RT-3 30mg and TRZ-2 30mg at regular price: for every 3 of the same item, 2 are free, up to 2 deals per item per order. Venmo, Zelle or crypto checkout only. 35% off most other items, with a smaller discount on a few. Creator codes stack. Not included: aminos, merch, gift cards, bundles, lab supplies, RT-3 60mg and TRZ-2 60mg. Sale days: Saturdays November 7, 14 and 21.',
+      body: `Buy 1, get 2 free on RT-3 20mg, RT-3 30mg and TRZ-2 30mg at regular price: for every 3 of the same item, 2 are free, up to 2 deals per item per order. Venmo, Zelle or crypto checkout only. ${nb ? '' : '35% off most other items, with a smaller discount on a few. '}Creator codes stack. Not included: aminos, merch, gift cards, bundles, lab supplies, RT-3 60mg and TRZ-2 60mg. Sale days: Saturdays November 7, 14 and 21.`,
       href: live ? '/shop' : '/giveaway', cta: live ? 'Shop the sale' : 'See the dates and rates', highlight: live,
     });
   }
@@ -70,9 +76,6 @@ export default function Deals() {
   }
   if (now && bfgOpen(now)) {
     deals.push({ eyebrow: 'Giveaway', title: `Win up to $${BFG.bigPrize.total.toLocaleString('en-US')} in store credit`, body: `No purchase necessary. Enter free with a short form, or with $${BFG.minSpend}+ in paid orders. One entry per person. Entries close November 27; drawing December 1.`, href: '/giveaway', cta: 'Enter or read the rules', highlight: !bfLive(now) });
-  }
-  if (now && kbLive(now)) {
-    deals.push({ eyebrow: 'Ends tonight', title: "Kelly's Birthday Bash", body: `${KB_PCT}% off almost everything, and up to ${KB_APP_PCT}% off when you pay with Venmo, Cash App, Zelle or crypto (aminos, merch, bundles, gift cards and a few low-stock items excluded), no code needed, and creator codes stack on top. Orders of $${KB_GIFT_MIN}+ after discounts include a free RT-3 or TRZ-2 10mg while supplies last; pick yours at checkout. Limit 15 items per order and 5 RT-3 and TRZ-2 combined.`, href: '/shop', cta: 'Shop the sale', highlight: true });
   }
   if (now && annPromoLive(now)) {
     deals.push({ eyebrow: 'Through October 31', title: 'Anniversary Month', body: 'A different offer every day of October, including Flash Saturdays and Loyalty Sundays.', href: '/anniversary', cta: 'See the calendar' });
