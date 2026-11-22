@@ -41,6 +41,12 @@ const sections = [
       'We may share necessary information with trusted third-party providers including payment processors, shipping carriers, and analytics services solely for business operations.',
   },
   {
+    icon: Eye,
+    title: 'Affiliate & Referral Partners',
+    content:
+      "If you place an order using an Iron Within affiliate's code or referral link, we share your name, email address, phone number and the products in that order with that affiliate through our password-protected affiliate portal. This applies to orders placed on or after November 22, 2026. It lets the affiliate help with questions about your order and lets us pay their commission. Affiliates agree to use this information only to support your Iron Within orders and for no other purpose. They never receive your payment details or card information. To ask us to stop showing your contact details to an affiliate, email support@ironwithin.io and we will remove them from that affiliate's view. Details already shown cannot be recalled, the affiliate may still be credited for your past orders, and your orders and account will not be affected.",
+  },
+  {
     icon: Database,
     title: 'Data Retention',
     content:
@@ -239,7 +245,7 @@ export default function PrivacyPage() {
                 fontSize: '0.85rem',
               }}
             >
-              Last Updated: June 2026
+              Last Updated: November 22, 2026
             </p>
           </div>
         </div>
