@@ -25,6 +25,7 @@ import SpendLadder from '../../components/SpendLadder';
 import PaymentMethods from '../../components/PaymentMethods';
 import PeptidesPayContainer from '../../components/PeptidesPayContainer';
 import DispatchNotice from '../../components/DispatchNotice';
+import ShipPauseNote from '../../components/ShipPauseNote';
 import { isPoBox, PO_BOX_MESSAGE } from '../../lib/poBox';
 import { COUNTRIES } from '../../lib/countries';
 import AccountStatusNotice from '../../components/AccountStatusNotice';
@@ -1041,6 +1042,8 @@ export default function CheckoutPage() {
 
         {/* Pending accounts learn it here, before typing an address — not at Place Order. */}
         {accountBlocked && <AccountStatusNotice style={{ maxWidth: 760, margin: '-24px auto 28px' }} />}
+
+        <ShipPauseNote style={{ maxWidth: 760, margin: '-12px auto 24px' }} />
 
         <div className="checkout-grid">
 

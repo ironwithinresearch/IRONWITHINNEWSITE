@@ -53,7 +53,7 @@ const SCRIPTS = [
   },
   {
     title: '"Restock unboxing" (15–25s)',
-    body: 'HOOK: "Restocking my research supplies."\nSHOT: quick unboxing — vials lined up, flash the COA card.\nTEXT overlay: "99%+ purity · COA in every order · ships in 24h."\nCTA: "My code\'s in the caption for a discount."',
+    body: 'HOOK: "Restocking my research supplies."\nSHOT: quick unboxing — vials lined up, flash the COA card.\nTEXT overlay: "99%+ purity · COA in every order · tracked shipping."\nCTA: "My code\'s in the caption for a discount."',
   },
   {
     title: '"The one thing to check" (20–30s)',

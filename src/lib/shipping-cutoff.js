@@ -11,6 +11,7 @@
 // 2pm" with no zone is ambiguous to a buyer in California and to the packer alike.
 // If the operator meant Eastern, change ZONE and ZONE_LABEL together; nothing else.
 import { shipDaysLive, SHIPDAYS } from './shipDays';
+import { shipPauseLive, PAUSE_DATES, NO_COUNTDOWN_DATES, NO_COUNTDOWN_TEXT } from './shipPause';
 
 export const ZONE = 'America/Chicago';
 export const ZONE_LABEL = 'CT';
@@ -22,6 +23,9 @@ function localParts(now = new Date()) {
   const fmt = new Intl.DateTimeFormat('en-US', {
     timeZone: ZONE,
     weekday: 'short',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
     hour: 'numeric',
     minute: 'numeric',
     hour12: false,
@@ -32,6 +36,7 @@ function localParts(now = new Date()) {
     dow: days[parts.weekday] ?? 1,
     hour: Number(parts.hour) % 24,
     minute: Number(parts.minute),
+    ymd: `${parts.year}-${parts.month}-${parts.day}`,
   };
 }
 
@@ -45,13 +50,20 @@ const DAY_NAME = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Frida
  * never render a countdown to a deadline that has passed.
  */
 export function dispatchStatus(now = new Date()) {
-  const { dow, hour, minute } = localParts(now);
+  const { dow, hour, minute, ymd } = localParts(now);
   const mins = hour * 60 + minute;
   const cutoff = CUTOFF_HOUR * 60;
   // Normally Mon–Fri; during the reduced schedule (src/lib/shipDays.js) only those days.
   const shipDays = shipDaysLive(now.getTime()) ? SHIPDAYS : [1, 2, 3, 4, 5];
+  // Thanksgiving pause (src/lib/shipPause.js): these CT dates are never ship days.
+  const paused = shipPauseLive(now.getTime()) ? PAUSE_DATES : [];
+  const isShipDay = (d, date) => shipDays.includes(d) && !paused.includes(date);
 
-  if (shipDays.includes(dow) && mins < cutoff) {
+  if (NO_COUNTDOWN_DATES.includes(ymd)) {
+    return { todayPickup: false, shipsLabel: NO_COUNTDOWN_TEXT, minutesLeft: null, message: NO_COUNTDOWN_TEXT, plain: true };
+  }
+
+  if (isShipDay(dow, ymd) && mins < cutoff) {
     return {
       todayPickup: true,
       shipsLabel: 'today',
@@ -60,11 +72,19 @@ export function dispatchStatus(now = new Date()) {
     };
   }
 
-  // Missed today's collection (or today is not a ship day) — find the next ship day.
-  let next = (dow + 1) % 7;
-  while (!shipDays.includes(next)) next = (next + 1) % 7;
-
-  const label = DAY_NAME[next];
+  // Missed today's collection (or today is not a ship day) — walk forward day by day in
+  // the warehouse's calendar until a ship day that is not paused.
+  let t = now.getTime();
+  let next;
+  for (let i = 0; i < 21; i++) {
+    t += 24 * 60 * 60 * 1000;
+    next = localParts(new Date(t));
+    if (isShipDay(next.dow, next.ymd)) break;
+  }
+  // During the pause name the date too ("Monday, Nov 30") — a bare weekday a week out is ambiguous.
+  const label = paused.length && next.ymd > paused[0]
+    ? new Intl.DateTimeFormat('en-US', { timeZone: ZONE, weekday: 'long', month: 'short', day: 'numeric' }).format(new Date(t))
+    : DAY_NAME[next.dow];
   return {
     todayPickup: false,
     shipsLabel: label,

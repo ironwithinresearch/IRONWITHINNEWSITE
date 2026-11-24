@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Truck } from 'lucide-react';
 import { dispatchStatus, formatLeft, ZONE_LABEL, CUTOFF_HOUR } from '@/lib/shipping-cutoff';
 import { shipDaysLive, SHIPDAYS_LABEL } from '@/lib/shipDays';
+import { shipPauseLive } from '@/lib/shipPause';
 
 /**
  * "Order within 3h 12m for today's 4pm pickup" — or "Ships Monday" once that has gone.
@@ -27,7 +28,11 @@ export default function DispatchNotice({ compact = false, style = {} }) {
   const urgent = status.todayPickup;
   const text = urgent
     ? `Order within ${formatLeft(status.minutesLeft)} for today's 4pm pickup`
-    : shipDaysLive()
+    : status.plain
+      ? `${status.message}.`
+      : shipPauseLive()
+      ? `Ships ${status.shipsLabel} once payment is confirmed. We're not shipping Tuesday, Nov 24 through Sunday, Nov 29.`
+      : shipDaysLive()
       ? `Ships ${status.shipsLabel} — through Oct 31 we ship ${SHIPDAYS_LABEL} only`
       : `Ships ${status.shipsLabel} — orders after ${CUTOFF_HOUR - 12}pm ${ZONE_LABEL} go out the next working day`;
 

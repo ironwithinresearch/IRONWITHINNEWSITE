@@ -1,5 +1,6 @@
 'use client';
 import ShipDaysNote from '@/components/ShipDaysNote';
+import ShipPauseNote from '@/components/ShipPauseNote';
 
 import {
   Truck,
@@ -80,6 +81,7 @@ export default function ShippingPage() {
             </span>
           </h1>
           <ShipDaysNote style={{ marginTop: 18 }} />
+          <ShipPauseNote style={{ margin: '18px auto 22px', maxWidth: 720 }} />
 
           <p>
             Learn about processing times, delivery methods, tracking,

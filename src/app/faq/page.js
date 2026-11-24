@@ -1,5 +1,6 @@
 'use client';
 import ShipDaysNote from '@/components/ShipDaysNote';
+import ShipPauseNote from '@/components/ShipPauseNote';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -156,6 +157,7 @@ export default function FaqPage() {
             }}>Questions</span>
           </h1>
           <ShipDaysNote style={{ marginTop: 18 }} />
+          <ShipPauseNote style={{ margin: '18px auto 22px', maxWidth: 720 }} />
           <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', marginBottom: '28px' }}>
             Find answers to common questions about our products, shipping, and policies.
           </p>
