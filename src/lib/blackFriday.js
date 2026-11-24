@@ -9,6 +9,8 @@
    The rate list on /giveaway is NOT copied here: it is read live from /api/black-friday, so the
    page can never advertise a rate the engine does not charge. */
 
+import { TG_START, tgLive } from './thanksgiving';
+
 export const BF_DAYS = [
   { day: 1, start: Date.parse('2026-11-07T17:45:00Z'), end: Date.parse('2026-11-08T06:00:00Z'), label: 'Saturday, November 7', when: 'from 11:45 a.m. to 11:59 p.m. CT' },
   { day: 2, start: Date.parse('2026-11-14T06:00:00Z'), end: Date.parse('2026-11-15T06:00:00Z'), label: 'Saturday, November 14', when: 'all day, 12:00 a.m. to 11:59 p.m. CT' },
@@ -19,11 +21,12 @@ export const BF_DAYS = [
 export const bfDay = (now = Date.now()) => BF_DAYS.find((d) => now >= d.start && now < d.end) || null;
 export const bfLive = (now = Date.now()) => !!bfDay(now);
 
-/* 35% between sale days (Brian, 7 Nov): every day from Sun 8 Nov through Fri 27 Nov 11:59pm CT that is not a
-   sale day. Mirrors slots 32-34 in iw-freaky-fridays.php (IW_BF_WEEK_RATES). */
+/* 35% between sale days (Brian, 7 Nov): every day from Sun 8 Nov that is not a sale day. Mirrors slots 32-34
+   in iw-freaky-fridays.php (IW_BF_WEEK_RATES). Ends Wed 25 Nov 11:59pm CT, when the Thanksgiving sale
+   (lib/thanksgiving.js, backend slot 36, which overrides slot 34) takes over (Brian, 23 Nov). */
 export const BF_WEEK_START = Date.parse('2026-11-08T06:00:00Z');
-export const BF_WEEK_END = Date.parse('2026-11-28T06:00:00Z');
-export const bfWeekLive = (now = Date.now()) => !bfLive(now) && now >= BF_WEEK_START && now < BF_WEEK_END;
+export const BF_WEEK_END = TG_START;
+export const bfWeekLive = (now = Date.now()) => !bfLive(now) && !tgLive(now) && now >= BF_WEEK_START && now < BF_WEEK_END;
 export const bfNext = (now = Date.now()) => BF_DAYS.find((d) => now < d.start) || null;
 
 /* Buy 1, get 2 free: every 3 units of the SAME variation, 2 are free. Max 2 deals per variation. */

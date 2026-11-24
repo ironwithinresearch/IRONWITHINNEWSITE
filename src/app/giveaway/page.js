@@ -261,8 +261,8 @@ export default function BlackFridayGiveaway() {
             Creator codes stack on top.
           </p>
           <p style={{ ...S.p, fontSize: '0.9rem', marginBottom: 8 }}>
-            <strong style={S.strong}>Between sale days</strong> (November 8 through November 27), most items are also 35% off, including
-            RT-3 and TRZ-2 in every size. The buy 1, get 2 free offer runs on the three sale days only.
+            <strong style={S.strong}>Between sale days</strong> (November 8 through November 25), most items are also 35% off, including
+            RT-3 and TRZ-2 in every size. The buy 1, get 2 free offer runs on the three sale days only. From Thursday, November 26 through Sunday, November 29, Thanksgiving sale prices apply instead; see the Deals page.
           </p>
           <p style={{ ...S.p, fontSize: '0.9rem', marginBottom: 0 }}>
             <strong style={S.strong}>Not in the sale:</strong> aminos, merch, gift cards, bundles and research plans, lab supplies

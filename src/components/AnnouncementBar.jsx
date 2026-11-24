@@ -7,6 +7,7 @@ import { shipPauseLive, PAUSE_MESSAGE, PAUSE_MID, PAUSE_SHORT } from '@/lib/ship
 import { annPromoLive } from '@/lib/anniversary';
 import { nbLive, NB_PCT, NB_GIFT_MIN, NB_EXTRA_MIN } from '@/lib/newmeBday';
 import { bfLive, bfgOpen, bfWeekLive } from '@/lib/blackFriday';
+import { tgLive } from '@/lib/thanksgiving';
 
 /* One calm, static announcement line, fixed above the navbar (height 36px — the navbar
    sits at top: 36 and main is padded to match).
@@ -43,11 +44,15 @@ function currentLine(now) {
   if (nbLive(now)) {
     return { text: `NewMe's Birthday Bash: ${NB_PCT}% off almost everything, creator codes stack. Free RT-3 or TRZ-2 10mg on orders $${NB_GIFT_MIN}+, plus free KPV 10mg and Pink Glutathione at $${NB_EXTRA_MIN}+, while supplies last. Ends Saturday 8am CT.`, short: `Birthday Bash: ${NB_PCT}% off + free vial at $${NB_GIFT_MIN}`, cta: 'Shop now', href: '/shop', vip: true };
   }
+  // Thanksgiving (Thu 26 -> Sun 29 Nov CT) replaces the 35% week; the shipping-pause notice still shows first.
+  if (tgLive(now)) {
+    return { text: 'Thanksgiving: up to 60% off almost everything, Thursday through Sunday. Codes stack.', short: 'Thanksgiving: up to 60% off almost everything', cta: 'See the deals', href: '/deals' };
+  }
   if (bfLive(now)) {
     return { text: 'Black Friday sale day: buy 1, get 2 free on RT-3 20mg, RT-3 30mg and TRZ-2 30mg, plus 35% off most other items. Limit 2 deals per item per order, Venmo, Zelle or crypto checkout only. Creator codes stack. Ends 11:59 p.m. CT.', short: 'Sale day: buy 1, get 2 free on select RT-3 and TRZ-2 (P2P only)', cta: 'See the deals', href: '/deals' };
   }
   if (bfWeekLive(now)) {
-    return { text: 'Black Friday sale: 35% off most items through November 27, no code needed, and creator codes stack.', short: '35% off most items through Nov 27', cta: 'Shop the sale', href: '/shop' };
+    return { text: 'Black Friday sale: 35% off most items through November 25, no code needed, and creator codes stack.', short: '35% off most items through Nov 25', cta: 'Shop the sale', href: '/shop' };
   }
   if (bfgOpen(now)) {
     return { text: 'Black Friday Giveaway: one winner gets up to $3,000 in store credit. No purchase necessary.', short: 'Giveaway: up to $3,000 in store credit', cta: 'Enter or read the rules', href: '/giveaway' };

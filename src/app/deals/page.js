@@ -8,6 +8,7 @@ import { ArrowRight } from 'lucide-react';
 import { annPromoLive } from '@/lib/anniversary';
 import { nbLive, NB_PCT, NB_GIFT_MIN, NB_EXTRA_MIN, NB_EXTRA_ITEMS, NB_ENDS_LABEL, nbJoin } from '@/lib/newmeBday';
 import { giveawayOpen } from '@/lib/giveaway';
+import { tgLive, TG_ENDS_LABEL } from '@/lib/thanksgiving';
 import { bfLive, bfNext, bfgOpen, bfWeekLive, BFG, reseqRewardLine } from '@/lib/blackFriday';
 
 const ctWhen = (iso) => new Date(iso).toLocaleString('en-US', { weekday: 'short', hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' });
@@ -56,8 +57,12 @@ export default function Deals() {
   if (nb) {
     deals.push({ eyebrow: `Ends ${NB_ENDS_LABEL}`, title: "NewMe's Birthday Bash", body: `${NB_PCT}% off almost everything (aminos, merch, bundles, gift cards, capsules and a few low-stock items excluded), no code needed, and creator codes stack on top. Orders of $${NB_GIFT_MIN}+ after discounts include a free RT-3 or TRZ-2 10mg while supplies last; pick yours at checkout. At $${NB_EXTRA_MIN}+, ${nbJoin(NB_EXTRA_ITEMS)} are added free as well. For research use only. Not for human or veterinary use.`, href: '/shop', cta: 'Shop the sale', highlight: true });
   }
+  // Thanksgiving (Thu 26 -> Sun 29 Nov CT): prices come from the store (backend slot 36), so no per-item % here.
+  if (now && tgLive(now)) {
+    deals.push({ eyebrow: `Ends ${TG_ENDS_LABEL}`, title: 'Thanksgiving sale', body: 'Up to 60% off almost everything, no code needed, and creator codes stack. Nasal sprays are 35% off, aminos 15% off, and capsules are full price. Some items excluded; low-stock items may drop out of the sale. While supplies last.', note: 'Orders placed Nov 24–29 ship Monday, Nov 30. For research use only. Not for human or veterinary use.', href: '/shop', cta: 'Shop the sale', highlight: true });
+  }
   if (now && bfWeekLive(now) && !nb) {
-    deals.push({ eyebrow: 'Through November 27', title: '35% off most items', body: 'Every day through Black Friday: 35% off most items, with a smaller discount on a few, no code needed, and creator codes stack. Aminos, merch, gift cards, bundles and lab supplies are not included. Full list on the giveaway page.', href: '/shop', cta: 'Shop the sale', highlight: true });
+    deals.push({ eyebrow: 'Through November 25', title: '35% off most items', body: 'Every day through Wednesday, November 25: 35% off most items, with a smaller discount on a few, no code needed, and creator codes stack. Aminos, merch, gift cards, bundles and lab supplies are not included. Full list on the giveaway page.', href: '/shop', cta: 'Shop the sale', highlight: true });
   }
   if (now && (bfLive(now) || bfNext(now))) {
     const live = bfLive(now);
