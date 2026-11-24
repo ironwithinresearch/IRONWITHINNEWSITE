@@ -22,11 +22,9 @@ const money = (n) => `$${(Math.round(n * 100) / 100).toFixed(2)}`;
 
 export default function FreeShippingBar({ subtotal = 0, alreadyFree = false }) {
   // Clock read after mount so server and client markup match.
-  const [paused, setPaused] = useState(true);
-  useEffect(() => {
-    const now = Date.now();
-    setPaused(now >= NO_FREESHIP_FROM && now < NO_FREESHIP_UNTIL);
-  }, []);
+  // Brian, 24 Nov 2026: "no free shipping anymore". Backend iw-no-freeship.php blocks it
+  // permanently, so the bar never renders. Kept (not deleted) in case free shipping returns.
+  const [paused] = useState(true);
   if (paused) return null;
 
   const s = Number(subtotal) || 0;

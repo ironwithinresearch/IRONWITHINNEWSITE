@@ -64,7 +64,7 @@ export default function ContinuityPage() {
 
   const stack = [
     { Icon: Sparkles, t: 'Up to 1 month free', d: '6-month plans include a free month — ~17% off.' },
-    { Icon: Truck, t: 'Free U.S. shipping', d: 'Every shipment, the whole plan.' },
+    { Icon: Truck, t: 'Tracked shipping', d: 'Every shipment ships with tracking.' },
     { Icon: Lock, t: 'Locked-in price', d: 'Your price never changes for the term.' },
     { Icon: PackageCheck, t: 'Fresh every month', d: 'We ship one vial at a time — never stockpiled.' },
     { Icon: ShieldCheck, t: 'One charge, no card stored', d: 'Prepaid — no recurring billing, ever.' },
@@ -81,8 +81,8 @@ export default function ContinuityPage() {
           Never run out mid-study. Lock in your supply.
         </h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '1.02rem', lineHeight: 1.6, maxWidth: 620, margin: '0 auto' }}>
-          Prepay 3 or 6 months, pay once, and we ship a fresh vial every month. Get a month free,
-          and free shipping — <strong style={{ color: 'var(--text-light)' }}>no recurring charges and no card kept on file.</strong>
+          Prepay 3 or 6 months, pay once, and we ship a fresh vial every month. Get a month free —
+          <strong style={{ color: 'var(--text-light)' }}>no recurring charges and no card kept on file.</strong>
         </p>
       </div>
 
@@ -200,7 +200,7 @@ export default function ContinuityPage() {
           { q: 'Is this a subscription?', a: 'No. You pay once for the whole plan — there are no recurring charges and we never store your card. It\'s a prepaid supply we ship out monthly.' },
           { q: 'Can I change the vial size?', a: 'Yes — just reply to your confirmation email and we\'ll adjust your monthly vial.' },
           { q: 'What if I want to stop?', a: 'There\'s nothing to cancel since it\'s prepaid. When your plan ends, you simply choose whether to renew.' },
-          { q: 'Is shipping included?', a: 'Yes — every shipment in the plan ships free within the U.S.' },
+          { q: 'Is shipping included?', a: 'Shipping is charged at our standard rate at checkout.' },
         ].map((f) => (
           <details key={f.q} style={{ borderBottom: '1px solid var(--glass-border)', padding: '16px 4px' }}>
             <summary style={{ cursor: 'pointer', fontWeight: 700, color: '#fff', fontSize: '0.95rem', listStyle: 'none' }}>{f.q}</summary>

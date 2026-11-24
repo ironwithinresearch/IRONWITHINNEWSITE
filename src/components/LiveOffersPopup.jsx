@@ -148,9 +148,8 @@ export default function LiveOffersPopup() {
           )}
 
           {giftLive && (
-            <Card eyebrow={`At $${GIFT_MIN}`} title="A free vial, and free US shipping">
-              Spend ${GIFT_MIN} and pick a free RT-3 10mg or TRZ-2 10mg at checkout — free US
-              shipping kicks in at the same point.
+            <Card eyebrow={`At $${GIFT_MIN}`} title="A free vial">
+              Spend ${GIFT_MIN} and pick a free RT-3 10mg or TRZ-2 10mg at checkout.
             </Card>
           )}
 
