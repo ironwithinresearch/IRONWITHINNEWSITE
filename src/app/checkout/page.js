@@ -179,8 +179,8 @@ const DROP_P2P_VIDS = [520, 522, 523, 524, 527, 534, 538, 541, 542, 544, 545, 54
 const DROP_P2P_METHODS = new Set(['iwr_zelle', 'iwr_venmo', 'iwr_cashapp', 'iwr_crypto']);
 
 const PAY_METHODS = [
-  { id: CARD_METHOD,   label: 'Credit / Debit Card', desc: 'Pay securely by card. Visa, Mastercard, American Express & Discover.' },
   { id: STRIPE_METHOD, label: 'Credit Card / Debit Card', desc: 'Continue to secure checkout to pay with Stripe.' },
+  { id: CARD_METHOD,   label: 'Credit / Debit Card', desc: 'Pay securely by card. Visa, Mastercard, American Express & Discover.' },
   { id: 'iwr_zelle',   label: 'Zelle',    handle: '8508980623' },
   { id: 'iwr_venmo',   label: 'Venmo',    handle: '@iwnpay' },
   // backup: shown as "if that fails, use …" — operator, 3 Oct 2026 (the main Cash App was failing for some buyers).
@@ -602,7 +602,8 @@ export default function CheckoutPage() {
     .filter((m) => !dropInCart || DROP_P2P_METHODS.has(m.id))
     .filter((m) => !(isCardPaused() && CARD_METHODS.has(m.id)))
     .filter((m) => m.id !== STRIPE_METHOD || cardAvailability?.stripeAvailable !== false)
-    .filter((m) => m.id !== CARD_METHOD || cardAvailability?.legacyAvailable !== false)
+    .filter((m) => m.id !== CARD_METHOD || (cardAvailability?.legacyAvailable === true
+      && (cardAvailability.stripeAvailable === false || payMethod === CARD_METHOD)))
     .filter((m) => PAYPAL_ENABLED || m.id !== PAYPAL_METHOD)
     .filter((m) => PP_ENABLED || m.id !== PP_METHOD);
 
