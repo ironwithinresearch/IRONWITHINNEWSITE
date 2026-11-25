@@ -69,24 +69,7 @@ function P2PDeadline({ deadline }) {
   );
 }
 
-// Payment methods. iwr_card is the ROUTER (mu-plugin iw-card-router.php): one card option for
-// the buyer, and the backend decides which acquirer takes it. Since 2026-09-24 (operator) that
-// is a MerchantCore trial: MerchantCore leads, KeyBilling keeps the first card order of each
-// Central day, a soft decline fails over to the other rail, and orders over KeyBilling's $750
-// ceiling go to MerchantCore instead of being refused. Both rails redirect to the isolated pay
-// app at pay.ironwithin.io; no card data touches this app.
-//
-// History: this pointed straight at iwr_keybilling from 20 Sep (one rail, router was pure
-// indirection) — which silently meant the MerchantCore rotation added on 23 Sep never ran.
-// If this is ever pointed at a single acquirer again, the router's rotation stops applying.
-//
-// ⚠ Whatever this points at must be settling real money. It read `iwr_snappay` until
-// 2026-08-25, a month after that rail stopped paying out, and every card buyer was sent to it.
-// The iwr_card gateway must be ENABLED in WooCommerce before this is deployed, or card
-// checkout breaks.
-//
-// The rest are manual P2P gateways (iw-p2p-pay.php) — the order is placed on-hold and
-// the buyer is shown send-to instructions.
+// The card router uses KeyBilling for eligible amounts. Stripe is a separate option.
 const CARD_METHOD = 'iwr_card';
 // Installed Stripe Payment Gateway returns a hosted checkout URL from process_payment.
 const STRIPE_METHOD = 'sps_stripe';
@@ -196,6 +179,7 @@ const DROP_P2P_VIDS = [520, 522, 523, 524, 527, 534, 538, 541, 542, 544, 545, 54
 const DROP_P2P_METHODS = new Set(['iwr_zelle', 'iwr_venmo', 'iwr_cashapp', 'iwr_crypto']);
 
 const PAY_METHODS = [
+  { id: CARD_METHOD,   label: 'Credit / Debit Card', desc: 'Pay securely by card. Visa, Mastercard, American Express & Discover.' },
   { id: STRIPE_METHOD, label: 'Credit Card / Debit Card', desc: 'Continue to secure checkout to pay with Stripe.' },
   { id: 'iwr_zelle',   label: 'Zelle',    handle: '8508980623' },
   { id: 'iwr_venmo',   label: 'Venmo',    handle: '@iwnpay' },
@@ -204,7 +188,6 @@ const PAY_METHODS = [
   // USDC on Ethereum straight to the operator's wallet (Brian, 6 Nov 2026). Mirrors IW_CRYPTO_ADDRESS in
   // mu-plugin iw-crypto-pay.php, which also watches the chain and marks the order paid by exact amount.
   { id: 'iwr_crypto',  label: 'Crypto (USDC)', handle: '0x40BF693b06D01c94393A1eDE5bABd9898D119a62', network: 'Ethereum' },
-  { id: CARD_METHOD,   label: 'Credit / Debit Card', desc: 'Pay securely by card. Visa, Mastercard, American Express & Discover.' },
 ];
 
 // Paying by app takes a discount off (see mu-plugin iw-p2p-discount.php). Card payers
@@ -265,11 +248,6 @@ export default function CheckoutPage() {
   // Only approved researcher accounts can buy (backend iw-research-access.php refuses the
   // order otherwise). null = status not loaded yet → don't block on the client.
   const accountBlocked = !!accountStatus && accountStatus.canPurchase === false;
-  // The three research-use confirmations — unchecked, all required, recorded on the order
-  // (with this exact wording and a timestamp) by the backend.
-  const [ruoAcks, setRuoAcks] = useState({ age_21: false, research_org: false, not_human_use: false });
-  const ruoAcked = ruoAcks.age_21 && ruoAcks.research_org && ruoAcks.not_human_use;
-
   const [currentStep, setCurrentStep] = useState(0);
   /* Checkout failures used to be native alert()s. On a phone an alert is a dead end:
      the buyer taps OK and is back on the same screen with nothing telling them what to
@@ -624,12 +602,9 @@ export default function CheckoutPage() {
     .filter((m) => !dropInCart || DROP_P2P_METHODS.has(m.id))
     .filter((m) => !(isCardPaused() && CARD_METHODS.has(m.id)))
     .filter((m) => m.id !== STRIPE_METHOD || cardAvailability?.stripeAvailable !== false)
-    .filter((m) => m.id !== CARD_METHOD || (cardAvailability?.legacyAvailable !== false
-      && (cardAvailability?.stripeAvailable !== true || payMethod === CARD_METHOD)))
+    .filter((m) => m.id !== CARD_METHOD || cardAvailability?.legacyAvailable !== false)
     .filter((m) => PAYPAL_ENABLED || m.id !== PAYPAL_METHOD)
-    .filter((m) => PP_ENABLED || m.id !== PP_METHOD)
-    .sort((a, b) => cardAvailability?.stripeAvailable === false
-      ? Number(b.id === CARD_METHOD) - Number(a.id === CARD_METHOD) : 0);
+    .filter((m) => PP_ENABLED || m.id !== PP_METHOD);
 
   // When a gift card / store credit / rewards fully cover the order, nothing is due —
   // we complete the $0 order through a backend gateway, not the card rail.
@@ -677,9 +652,9 @@ export default function CheckoutPage() {
     // Refused by the research-access check (account pending / confirmations missing):
     // say exactly that — nothing was created, so no payment wording.
     const refusal = errors?.[0]?.message || '';
-    if (!result?.order && /pending approval|research-use confirmations/i.test(refusal)) {
+    if (!result?.order && /pending approval/i.test(refusal)) {
       setCheckoutError({
-        title: /pending approval/i.test(refusal) ? 'Your account is pending approval' : 'Please confirm the research-use statements',
+        title: 'Your account is pending approval',
         body: <>{refusal} No order was placed and nothing has been charged.</>,
       });
       return;
@@ -793,10 +768,6 @@ export default function CheckoutPage() {
     if (hasBackorder && !backorderAck) return; // require backorder acknowledgment
     if (!methodChosen) return;                 // nothing is pre-selected; the buyer must pick
     if (accountBlocked) return;                // pending accounts can't buy (backend enforces too)
-    if (!ruoAcked) {
-      setCheckoutError({ title: 'Please confirm the research-use statements', body: 'Tick all three boxes above Place Order to continue.' });
-      return;
-    }
     let methodToSubmit = effectiveMethod;
     if (CARD_METHODS.has(methodToSubmit)) {
       cardCheckRef.current = true;
@@ -840,7 +811,6 @@ export default function CheckoutPage() {
       ppOrderId: ppApproved?.ppOrderId || '',
       ppProxyUrl: ppApproved?.proxyUrl || '',
       ppProxyId: ppApproved?.proxyId || '',
-      ruoAcks,
     });
     try {
       const { data, errors } = await checkoutMutation({ variables: input });
@@ -1299,33 +1269,14 @@ export default function CheckoutPage() {
                   </div>
                 )}
 
-                {/* Research-use confirmations — all three required, none pre-ticked. */}
-                <fieldset style={{ border: '1px solid var(--glass-border)', borderRadius: '12px', padding: '12px 14px 4px', margin: '0 0 12px' }}>
-                  <legend style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-light)', padding: '0 6px' }}>Required before you order</legend>
-                  {[
-                    ['age_21', 'I am 21 years of age or older.'],
-                    ['research_org', 'I represent a legitimate research organization and will use these products for lawful laboratory research only.'],
-                    ['not_human_use', 'I understand these products are not for human or veterinary use, diagnosis, treatment or consumption.'],
-                  ].map(([k, text]) => (
-                    <label key={k} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '10px', cursor: 'pointer', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
-                      <input type="checkbox" required checked={ruoAcks[k]}
-                        onChange={e => { const v = e.target.checked; setRuoAcks(a => ({ ...a, [k]: v })); setCheckoutError(null); }}
-                        style={{ width: 20, height: 20, marginTop: '1px', accentColor: 'var(--primary-blue)', cursor: 'pointer', flexShrink: 0 }} />
-                      <span>{text}</span>
-                    </label>
-                  ))}
-                </fieldset>
-
                 {checkoutError && <Notice title={checkoutError.title} body={checkoutError.body} />}
 
-                <button onClick={handlePlaceOrder} disabled={checkingCard || placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal || accountBlocked || !ruoAcked}
-                  style={{ width: '100%', padding: '14px', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: (checkingCard || placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal || accountBlocked || !ruoAcked) ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: 'var(--glow-blue)', opacity: (checkingCard || placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal || accountBlocked || !ruoAcked) ? 0.6 : 1 }}>
+                <button onClick={handlePlaceOrder} disabled={checkingCard || placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal || accountBlocked}
+                  style={{ width: '100%', padding: '14px', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: (checkingCard || placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal || accountBlocked) ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: 'var(--glow-blue)', opacity: (checkingCard || placingOrder || (hasBackorder && !backorderAck) || !methodChosen || awaitingPayPal || accountBlocked) ? 0.6 : 1 }}>
                   {(checkingCard || placingOrder) ? (
                     <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Placing Order…</>
                   ) : accountBlocked ? (
                     <><Lock size={15} /> Account pending approval</>
-                  ) : !ruoAcked ? (
-                    <><Lock size={15} /> Tick the three boxes above</>
                   ) : !methodChosen ? (
                     <><Lock size={15} /> Choose a payment method</>
                   ) : awaitingPayPal ? (

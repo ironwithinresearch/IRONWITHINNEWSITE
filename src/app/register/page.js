@@ -1,17 +1,4 @@
 'use client';
-// src/app/register/page.js
-//
-// Researcher sign-up. Posts to /api/register → backend iw-research-access.php, which
-// re-validates every field, stores the profile + the three acknowledgements (exact wording,
-// timestamp, IP) as user meta, creates the account as PENDING and emails a confirmation
-// link. A new account can browse straight away but cannot order until the email is
-// confirmed AND our team approves it — the page says so plainly after sign-up.
-//
-// Required: legal name, work email, phone, address, research category, research purpose,
-// organization name, industry / business classification, and every confirmation box.
-// Org name + industry became required after the 20 Oct 2026 processor rescan (Brian approved).
-// Optional: organization website, institution ID / EIN / credentials.
-
 import { useState, useEffect, useId } from 'react';
 import Link from 'next/link';
 import {
@@ -23,31 +10,16 @@ import { setAgeCookie } from '../../lib/gate';
 import { COUNTRIES } from '../../lib/countries';
 
 // Exact wording — the backend stores its own copy of these strings with the timestamp.
-// Each statement has its own box (processor rescan 20 Oct 2026).
 const ACKS = [
   { key: 'age_21', node: <>I confirm I am <strong style={{ color: 'var(--text-light)' }}>21 years of age or older</strong>.</> },
   { key: 'terms', node: <>I have read and agree to the <Link href="/terms" style={{ color: 'var(--primary-blue)' }}>Terms of Service</Link> and <Link href="/disclaimer" style={{ color: 'var(--primary-blue)' }}>Disclaimer</Link>.</> },
   { key: 'privacy', node: <>I have read and accept the <Link href="/privacy" style={{ color: 'var(--primary-blue)' }}>Privacy Policy</Link>.</> },
-  { key: 'research_org', node: <>I represent a legitimate research organization and will use these products for lawful laboratory research only.</> },
   { key: 'not_human_use', node: <>I understand these products are not for human or veterinary use, diagnosis, treatment or consumption.</> },
-];
-
-// Both lists must match iw_ra_research_categories() / iw_ra_org_types() in iw-research-access.php.
-const RESEARCH_CATEGORIES = [
-  '', 'In-vitro / cell culture research', 'Metabolic research', 'Tissue repair & regeneration research',
-  'Neuroscience research', 'Dermatology / cosmetic science research', 'Aging & longevity research',
-  'Analytical chemistry / reference standards', 'Other laboratory research',
-];
-
-const ORG_TYPES = [
-  '', 'University / academic lab', 'Private research laboratory', 'Biotech / pharmaceutical company',
-  'Contract research organization (CRO)', 'Independent researcher', 'Other',
 ];
 
 const EMPTY = {
   firstName: '', lastName: '', email: '', phone: '',
   address1: '', address2: '', city: '', state: '', postcode: '', country: 'US',
-  researchCategory: '', researchPurpose: '', orgName: '', orgType: '', orgWebsite: '', orgCredentials: '',
   password: '', confirmPassword: '', company_website_hp: '',
 };
 
@@ -192,18 +164,6 @@ export default function RegisterPage() {
           </Row>
         </Section>
 
-        <Section title="Research">
-          <Select label="Intended research category" value={form.researchCategory} onChange={set('researchCategory')} required
-            options={RESEARCH_CATEGORIES.map((t) => ({ value: t, label: t || 'Select…' }))} />
-          <TextArea label="Research purpose" value={form.researchPurpose} onChange={set('researchPurpose')} required
-            hint="A sentence or two on the laboratory research these compounds are for." />
-          <Input label="Business / organization name" autoComplete="organization" value={form.orgName} onChange={set('orgName')} required minLength={2} />
-          <Select label="Industry / business classification" value={form.orgType} onChange={set('orgType')} required
-            options={ORG_TYPES.map((t) => ({ value: t, label: t || 'Select…' }))} />
-          <Input label="Organization website (optional)" type="url" inputMode="url" autoComplete="url" value={form.orgWebsite} onChange={set('orgWebsite')} placeholder="https://" />
-          <Input label="Institution ID, EIN or credentials (optional)" value={form.orgCredentials} onChange={set('orgCredentials')} autoComplete="off" />
-        </Section>
-
         <Section title="Password">
           <PasswordInput label="Password" value={form.password} onChange={set('password')} show={showPass} onToggle={() => setShowPass((v) => !v)} />
           <Input label="Confirm password" type={showPass ? 'text' : 'password'} autoComplete="new-password" value={form.confirmPassword} onChange={set('confirmPassword')} required minLength={8} />
@@ -301,17 +261,6 @@ function Input({ label, hint, required, ...props }) {
     <div>
       <Label id={id} label={label} required={required} />
       <input id={id} required={required} aria-describedby={hint ? `${id}-h` : undefined} {...props} type={props.type || 'text'} style={inputStyle} />
-      {hint && <Hint id={`${id}-h`}>{hint}</Hint>}
-    </div>
-  );
-}
-
-function TextArea({ label, hint, required, ...props }) {
-  const id = useId();
-  return (
-    <div>
-      <Label id={id} label={label} required={required} />
-      <textarea id={id} required={required} rows={3} minLength={10} maxLength={2000} aria-describedby={hint ? `${id}-h` : undefined} {...props} style={{ ...inputStyle, resize: 'vertical', minHeight: 88 }} />
       {hint && <Hint id={`${id}-h`}>{hint}</Hint>}
     </div>
   );
