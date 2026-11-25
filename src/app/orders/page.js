@@ -7,6 +7,7 @@ import { useQuery } from '@apollo/client';
 import { useAuth } from '@/context/AuthContext';
 import { GET_ORDERS } from '@/lib/queries/orders';
 import { useOrderHoldInfo, holdAwareStatus } from '@/lib/holdShip';
+import { useProCodes, ProCodesPanel } from '@/lib/proCodes';
 import { decodePriceHtml } from '@/lib/utils';
 import {
   Package, ChevronRight, Search, Truck,
@@ -48,6 +49,8 @@ export default function OrdersPage() {
   });
   // Held orders that already shipped inside another order's box (Hold & Ship Together).
   const holdMap = useOrderHoldInfo(isLoggedIn);
+  // Peptide Paradigm Pro unlock codes, keyed by order databaseId (separate query, see lib/proCodes).
+  const proMap = useProCodes(isLoggedIn);
 
   const orders = data?.customer?.orders?.nodes || [];
 
@@ -192,6 +195,13 @@ export default function OrdersPage() {
                       <ChevronDown size={16} color="var(--text-muted)" style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s ease', flexShrink: 0 }} />
                     </div>
                   </div>
+
+                  {/* Peptide Paradigm Pro codes — outside the clickable header so Copy doesn't toggle it */}
+                  {proMap.get(order.databaseId) && (
+                    <div style={{ padding: '0 22px 16px' }}>
+                      <ProCodesPanel info={proMap.get(order.databaseId)} compact />
+                    </div>
+                  )}
 
                   {/* Expanded details */}
                   {isOpen && (

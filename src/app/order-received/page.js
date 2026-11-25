@@ -2,11 +2,14 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { CheckCircle2, Package, ArrowRight } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+import { OrderProCodes } from '../../lib/proCodes';
 
 // Where ChargeX redirects the buyer back to after a successful card payment (success_url).
 // The webhook is what actually marks the order paid server-side — this page just confirms.
 export default function OrderReceived() {
   const [order, setOrder] = useState('');
+  const { isLoggedIn } = useAuth();
   useEffect(() => {
     try { setOrder(new URLSearchParams(window.location.search).get('order') || ''); } catch {}
   }, []);
@@ -31,6 +34,8 @@ export default function OrderReceived() {
               <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, color: 'var(--primary-blue)' }}>#{order}</span>
             </div>
           )}
+
+          <OrderProCodes orderNumber={order} isLoggedIn={isLoggedIn} />
 
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link href="/account" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '13px 26px', background: 'var(--gradient-primary)', borderRadius: '12px', color: '#fff', fontWeight: 700, textDecoration: 'none' }}>

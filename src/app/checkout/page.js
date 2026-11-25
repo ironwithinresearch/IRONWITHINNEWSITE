@@ -26,6 +26,7 @@ import PaymentMethods from '../../components/PaymentMethods';
 import PeptidesPayContainer from '../../components/PeptidesPayContainer';
 import DispatchNotice from '../../components/DispatchNotice';
 import ShipPauseNote from '../../components/ShipPauseNote';
+import { cartIsProOnly, cartHasPro, isProSlug, OrderProCodes } from '../../lib/proCodes';
 import { isPoBox, PO_BOX_MESSAGE } from '../../lib/poBox';
 import { COUNTRIES } from '../../lib/countries';
 import AccountStatusNotice from '../../components/AccountStatusNotice';
@@ -259,6 +260,7 @@ export default function CheckoutPage() {
   const [orderNumber, setOrderNumber] = useState('');
   // What the placed order asked for, so the success screen can say it (Hold & Ship Together).
   const [placedHold, setPlacedHold] = useState(''); // '' | 'held' | 'release'
+  const [placedPro, setPlacedPro] = useState(''); // '' | 'only' | 'mixed' — Peptide Paradigm Pro in the placed order
   // NO DEFAULT — the buyer must choose. A pre-selected method silently decides things
   // that change the price: the pay-by-app discount only exists for Zelle/Venmo/Cash App,
   // so defaulting to one quoted a discount the buyer never asked for, and defaulting to
@@ -346,17 +348,24 @@ export default function CheckoutPage() {
   // backend RE-QUOTES before charging, so the price shown here is never trusted as input.
   const [routeOn, setRouteOn] = useState(true);
   const [routeQuote, setRouteQuote] = useState(null);
+  // Peptide Paradigm Pro app codes ship nothing: a Pro-only cart has no shipping, no Route and
+  // no ship-pause copy, and Pro lines are left out of the insured subtotal (the backend does the
+  // same in iw-route-protection.php, so the quote shown matches the fee charged).
+  const proOnly = cartIsProOnly(cartItems);
+  const hasPro = cartHasPro(cartItems);
+  const proLinesTotal = (cartItems || []).reduce((t, i) => t + (isProSlug(i.product?.node?.slug)
+    ? (parseFloat(String(i.total || '').replace(/&nbsp;/g, '').replace(/[^0-9.]/g, '')) || 0) : 0), 0);
   useEffect(() => {
-    const sub = money(cartSubtotal) || 0;
-    if (sub <= 0) { setRouteQuote(null); return; }
+    const sub = Math.max(0, (money(cartSubtotal) || 0) - proLinesTotal);
+    if (sub <= 0 || proOnly) { setRouteQuote(null); return; }
     let live = true;
     fetch(`/api/route-quote?subtotal=${sub}`, { cache: 'no-store' })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (live) setRouteQuote(d && d.enabled ? d.insurance_price : null); })
       .catch(() => {});
     return () => { live = false; };
-  }, [cartSubtotal]);
-  const routeFee = routeOn && routeQuote ? routeQuote : 0;
+  }, [cartSubtotal, proLinesTotal, proOnly]);
+  const routeFee = !proOnly && routeOn && routeQuote ? routeQuote : 0;
 
   // Account store-credit balance (auto-applied at checkout, server-side). Fetched
   // once on mount; the backend is authoritative on how much actually applies.
@@ -792,7 +801,7 @@ export default function CheckoutPage() {
     }
     payMethodRef.current = methodToSubmit;
     const billingInfo = billing.sameAsShipping ? shipping : billing;
-    if (isPoBox(shipping.address, billingInfo.address)) {
+    if (!proOnly && isPoBox(shipping.address, billingInfo.address)) {
       setCheckoutError({ title: 'PO Boxes can’t be shipped to', body: PO_BOX_MESSAGE });
       return;
     }
@@ -816,6 +825,7 @@ export default function CheckoutPage() {
     try {
       const { data, errors } = await checkoutMutation({ variables: input });
       setPlacedHold(holding ? 'held' : releasing ? 'release' : '');
+      setPlacedPro(proOnly ? 'only' : hasPro ? 'mixed' : '');
       finishCheckout(data, errors);
     } catch (err) {
       // Network / unexpected errors only — GraphQL errors arrive via errorPolicy:'all'.
@@ -853,9 +863,15 @@ export default function CheckoutPage() {
                 : p2pInfo
                 ? (placedHold === 'held'
                   ? 'One more step — send your payment below. Once it lands, your order joins your Ship Together box.'
+                  : placedPro === 'only'
+                  ? `One more step — send your payment below within ${P2P_PAY_MINUTES} minutes. Your Peptide Paradigm Pro code is emailed as soon as payment is received.`
                   : `One more step — send your payment below within ${P2P_PAY_MINUTES} minutes. Your order ships as soon as payment is received.`)
                 : placedHold === 'held'
                 ? 'Thank you for your order.'
+                : placedPro === 'only'
+                ? 'Thank you for your order. Your Peptide Paradigm Pro unlock code is on its way to your email, and it is saved under My Account › Orders.'
+                : placedPro === 'mixed'
+                ? 'Thank you for your order. Your research peptides are being prepared for shipment, and your Peptide Paradigm Pro unlock code is on its way to your email.'
                 : 'Thank you for your order. Your research peptides are being prepared for shipment.'}
             </p>
             {orderNumber && (
@@ -865,6 +881,8 @@ export default function CheckoutPage() {
             )}
 
             {p2pInfo?.deadline && !payOpenFailed && <P2PDeadline deadline={p2pInfo.deadline} />}
+
+            {placedPro && !ppOrder && !payOpenFailed && <OrderProCodes orderNumber={orderNumber} isLoggedIn={isLoggedIn} />}
 
             {orderNumber && placedHold === 'held' && !payOpenFailed && (
               <div role="status" style={{ textAlign: 'left', padding: '12px 14px', borderRadius: '12px', marginBottom: '20px', background: 'rgba(0,207,255,0.07)', border: '1px solid rgba(0,207,255,0.35)', fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
@@ -1014,14 +1032,14 @@ export default function CheckoutPage() {
         {/* Pending accounts learn it here, before typing an address — not at Place Order. */}
         {accountBlocked && <AccountStatusNotice style={{ maxWidth: 760, margin: '-24px auto 28px' }} />}
 
-        <ShipPauseNote style={{ maxWidth: 760, margin: '-12px auto 24px' }} />
+        {!proOnly && <ShipPauseNote style={{ maxWidth: 760, margin: '-12px auto 24px' }} />}
 
         <div className="checkout-grid">
 
           {/* ── Left: Form ── */}
           <div>
             {currentStep === 0 && (
-              <FormCard icon={<Truck size={17} color="var(--primary-blue)" />} title="Shipping Information">
+              <FormCard icon={<Truck size={17} color="var(--primary-blue)" />} title={proOnly ? 'Billing Information' : 'Shipping Information'}>
                 <DispatchNotice compact style={{ marginBottom: '14px' }} />
                 {addressPrefilled && (
                   <div style={{ marginBottom: '14px', padding: '10px 13px', borderRadius: '10px', background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.3)', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
@@ -1060,7 +1078,7 @@ export default function CheckoutPage() {
 
             {currentStep === 1 && (
               <FormCard icon={<CheckCircle2 size={17} color="#34d399" />} title="Review Your Order">
-                <ReviewBlock title="Shipping Address" onEdit={() => setCurrentStep(0)}>
+                <ReviewBlock title={proOnly ? 'Billing Address' : 'Shipping Address'} onEdit={() => setCurrentStep(0)}>
                   <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
                     {shipping.firstName} {shipping.lastName}<br />
                     {shipping.address}<br />
@@ -1368,11 +1386,11 @@ export default function CheckoutPage() {
                 );
               })}
               {/* Shipping — $0.00 until the review step, then the selected rate */}
-              <SummaryRow label={shipLabel} htmlValue={shipDisplay} value={undefined} />
+              {!proOnly && <SummaryRow label={shipLabel} htmlValue={shipDisplay} value={undefined} />}
               {/* Pay-by-app discount — shown before credit/rewards, matching the backend order */}
               {/* Route Package Protection — pre-checked (opt-out). Rendered natively rather
                   than via Route's CDN widget, which the site CSP would block. */}
-              {routeQuote > 0 && (
+              {routeQuote > 0 && !proOnly && (
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: 11, padding: '13px 14px', marginBottom: 14,
                               background: 'rgba(0,207,255,0.05)', border: '1px solid rgba(0,207,255,0.22)', borderRadius: 12 }}>
                   <input id="routeProtect" type="checkbox" checked={routeOn}

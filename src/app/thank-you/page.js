@@ -12,6 +12,8 @@ import { Suspense, useEffect } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
+import { OrderProCodes } from '../../lib/proCodes';
 import { CheckCircle2, ArrowRight, Mail } from 'lucide-react';
 
 function ThankYouContent() {
@@ -26,6 +28,7 @@ function ThankYouContent() {
   // The order is placed server-side and the Woo cart is already emptied; refresh
   // so the cart badge clears after the customer returns from the Stripe page.
   const { refetchCart } = useCart();
+  const { isLoggedIn } = useAuth();
   useEffect(() => {
     try { if (refetchCart) refetchCart(); } catch (e) { /* noop */ }
   }, [refetchCart]);
@@ -52,8 +55,10 @@ function ThankYouContent() {
           <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '32px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
             <Mail size={14} /> A confirmation email is on its way.
           </p>
+          {/* Peptide Paradigm Pro: the unlock code(s), once minted (renders nothing otherwise) */}
+          <OrderProCodes orderNumber={orderNumber} isLoggedIn={isLoggedIn} />
           <div style={{ textAlign: 'left', background: 'var(--bg-dark)', border: '1px solid rgba(0,207,255,0.25)', borderRadius: '14px', padding: '18px 20px', marginBottom: '26px' }}>
-            <div style={{ fontWeight: 800, color: '#fff', fontSize: '1rem', marginBottom: '6px' }}>🎁 Earn $25 per referral</div>
+            <div style={{ fontWeight: 800, color: 'var(--text-light)', fontSize: '1rem', marginBottom: '6px' }}>🎁 Earn $25 per referral</div>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.87rem', lineHeight: 1.55, margin: '0 0 12px' }}>
               Share your referral link — you get <strong style={{ color: 'var(--text-light)' }}>$25 in store credit</strong> when a fellow researcher places their first order.
             </p>

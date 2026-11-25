@@ -4,6 +4,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import DispatchNotice from '@/components/DispatchNotice';
+import { isProSlug } from '@/lib/proCodes';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useQuery } from '@apollo/client';
@@ -238,6 +239,8 @@ export default function ProductPage() {
   const spinSrc = getSpin(slug, spinDose);
   const spinOn = showSpin && !!spinSrc;
 
+  // Peptide Paradigm Pro is an app code: no purity/shipping trust block, no dispatch countdown.
+  const isPro = isProSlug(slug);
   // Merch is never discounted, so no volume tier applies to it.
   const volPct = isMerch ? 0 : (qty >= 3 ? 0.05 : qty >= 2 ? 0.025 : 0);
   const isDoseOnly = isVariable && doseTiers.length <= 1;
@@ -465,7 +468,7 @@ export default function ProductPage() {
             {/* One trust block, not three. The Lab Verified / Fast Shipping pair that used
                 to sit here repeated two of the four claims GuaranteeBadge already makes,
                 16px above it — the same reassurance stated twice reads as filler. */}
-            <GuaranteeBadge style={{ marginTop: '16px' }} />
+            {!isPro && <GuaranteeBadge style={{ marginTop: '16px' }} />}
 
           </div>
 
@@ -758,7 +761,7 @@ export default function ProductPage() {
 
             <div style={{ marginBottom: '12px' }}><SaleCountdown /></div>
 
-            <DispatchNotice style={{ marginBottom: '12px' }} />
+            {!isPro && <DispatchNotice style={{ marginBottom: '12px' }} />}
 
             {/* Add to cart + wishlist */}
             <div style={{ display: 'flex', gap: '12px' }}>
