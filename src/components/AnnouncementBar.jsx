@@ -46,7 +46,7 @@ function currentLine(now) {
   }
   // Thanksgiving (Thu 26 -> Sun 29 Nov CT) replaces the 35% week; the shipping-pause notice still shows first.
   if (tgLive(now)) {
-    return { text: 'Thanksgiving: up to 60% off almost everything, Thursday through Sunday. Codes stack.', short: 'Thanksgiving: up to 60% off almost everything', cta: 'See the deals', href: '/deals' };
+    return { text: 'Thanksgiving: up to 60% off almost everything, Thursday through Sunday. Codes stack. Sale prices at app & crypto checkout.', mid: 'Thanksgiving: up to 60% off almost everything, Thursday through Sunday. Codes stack.', short: 'Thanksgiving: up to 60% off almost everything', cta: 'See the deals', href: '/deals' };
   }
   if (bfLive(now)) {
     return { text: 'Black Friday sale day: buy 1, get 2 free on RT-3 20mg, RT-3 30mg and TRZ-2 30mg, plus 35% off most other items. Limit 2 deals per item per order, Venmo, Zelle or crypto checkout only. Creator codes stack. Ends 11:59 p.m. CT.', short: 'Sale day: buy 1, get 2 free on select RT-3 and TRZ-2 (P2P only)', cta: 'See the deals', href: '/deals' };

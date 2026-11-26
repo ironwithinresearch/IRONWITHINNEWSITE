@@ -13,6 +13,7 @@ import PayPalFrame from '@/components/PayPalFrame';
 import { P2P_METHODS, p2pPaused, p2pRate, p2pPct, p2pEventLive, p2pEventDiscount, GIFT_OPTIONS, GIFT_MIN, GIFT_BIG_ON, GIFT_BIG_MIN, giftDoseFor, giftQualifies, giftQualifying } from '@/lib/p2p';
 import { useAuth } from '../../context/AuthContext';
 import { nbLive, NB_EXTRA_MIN, NB_EXTRA_ITEMS, nbJoin } from '@/lib/newmeBday';
+import { tgCartP2POnly, TG_P2P_METHODS, TG_P2P_NOTICE, TG_SALE_PAY_LINE } from '@/lib/thanksgiving';
 import { GET_CUSTOMER } from '../../lib/queries/auth';
 import { decodePriceHtml } from '../../lib/utils';
 import { getAffiliateRef } from '../../lib/affiliate';
@@ -337,10 +338,14 @@ export default function CheckoutPage() {
   // 24-hour price drop (2pm CT 9 Nov to 2pm CT 10 Nov): those lines are pay-by-app only too.
   // The backend refuses a card order for them on its own (mu-plugin iw-24h-p2p.php).
   const dropInCart = Date.now() < DROP_P2P_END && (cartItems || []).some((i) => DROP_P2P_VIDS.includes(vidOf(i)));
-  const flashInCart = flashOnlyInCart || dropInCart;
+  // Thanksgiving (Thu 26 -> Mon 30 Nov 00:00 CT): any sale-priced line makes the cart pay-by-app only
+  // (mu-plugin iw-thanksgiving-p2p.php refuses a card order on its own). Full-price-only carts keep card.
+  const tgP2P = tgCartP2POnly(cartItems);
+  const flashInCart = flashOnlyInCart || dropInCart || tgP2P;
   useEffect(() => {
+    if (tgP2P && !TG_P2P_METHODS.has(payMethod)) { setPayMethod('iwr_zelle'); return; }
     if (flashInCart && CARD_METHODS.has(payMethod)) setPayMethod('');
-  }, [flashInCart, payMethod]);
+  }, [flashInCart, tgP2P, payMethod]);
 
   // Route Package Protection — customer-paid shipping insurance.
   // OPT-OUT by design (pre-checked): Route's own guidance is that opt-in roughly halves
@@ -609,6 +614,7 @@ export default function CheckoutPage() {
   const payMethodOptions = PAY_METHODS
     .filter((m) => !(flashInCart && CARD_METHODS.has(m.id)))
     .filter((m) => !dropInCart || DROP_P2P_METHODS.has(m.id))
+    .filter((m) => !tgP2P || TG_P2P_METHODS.has(m.id))
     .filter((m) => !(isCardPaused() && CARD_METHODS.has(m.id)))
     .filter((m) => m.id !== STRIPE_METHOD || cardAvailability?.stripeAvailable !== false)
     .filter((m) => m.id !== CARD_METHOD || (cardAvailability?.legacyAvailable === true
@@ -779,6 +785,12 @@ export default function CheckoutPage() {
     if (!methodChosen) return;                 // nothing is pre-selected; the buyer must pick
     if (accountBlocked) return;                // pending accounts can't buy (backend enforces too)
     let methodToSubmit = effectiveMethod;
+    // Stale card (or other non-app) selection on a Thanksgiving sale cart: never send it to the server.
+    if (tgCartP2POnly(cartItems) && !TG_P2P_METHODS.has(methodToSubmit)) {
+      setPayMethod('iwr_zelle');
+      setCheckoutError({ title: 'Please choose a pay-by-app method', body: `${TG_SALE_PAY_LINE} We've selected Zelle for you; you can switch to Venmo, Cash App or crypto below.` });
+      return;
+    }
     if (CARD_METHODS.has(methodToSubmit)) {
       cardCheckRef.current = true;
       setCheckingCard(true);
@@ -1174,7 +1186,7 @@ export default function CheckoutPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     {flashInCart && (
                       <div style={{ padding: '11px 13px', borderRadius: '10px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.45)', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-                        ⚡ <strong style={{ color: '#f87171' }}>{flashOnlyInCart ? 'Flash sale items are Zelle, Venmo or Cash App only.' : '24-hour price drop items are Zelle, Venmo, Cash App or crypto only.'}</strong> Pick one below to lock in the {flashOnlyInCart ? 'flash' : 'sale'} price.
+                        ⚡ <strong style={{ color: '#f87171' }}>{flashOnlyInCart ? 'Flash sale items are Zelle, Venmo or Cash App only.' : tgP2P ? TG_P2P_NOTICE : '24-hour price drop items are Zelle, Venmo, Cash App or crypto only.'}</strong> Pick one below to lock in the {flashOnlyInCart ? 'flash' : 'sale'} price.
                       </div>
                     )}
                     {!cardAvailable && !flashInCart && (

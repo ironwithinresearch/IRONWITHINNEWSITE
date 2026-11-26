@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useQuery } from '@apollo/client';
 import B2SUnlockNudge from '@/components/B2SUnlockNudge';
 import B1G2CartNudge from '@/components/B1G2CartNudge';
+import TGCartNudge from '@/components/TGCartNudge';
 import ShipPauseNote from '@/components/ShipPauseNote';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
@@ -268,6 +269,7 @@ export default function CartPage() {
         )}
         <ShipPauseNote style={{ marginBottom: '16px' }} />
         {cartItems.length > 0 && <B1G2CartNudge items={cartItems} />}
+        {cartItems.length > 0 && <TGCartNudge items={cartItems} />}
 
         {cartLoading && cartItems.length === 0 ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}>

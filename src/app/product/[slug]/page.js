@@ -17,6 +17,7 @@ import SaleCountdown from '@/components/SaleCountdown';
 import AppRestockButton from '@/components/app/AppRestockButton';
 import { useAppMode } from '@/lib/appMode';
 import { bfLive, isB1G2, B1G2_BY_SLUG } from '@/lib/blackFriday';
+import { tgLive, TG_SALE_PAY_LINE } from '@/lib/thanksgiving';
 import {
   FlaskConical, ShoppingCart, Heart, ChevronRight,
   BadgeCheck, Minus, Plus,
@@ -54,6 +55,9 @@ export default function ProductPage() {
   // Black Friday sale day (lib/blackFriday.js). Read after mount so the SSG shell never disagrees.
   const [bfOn, setBfOn] = useState(false);
   useEffect(() => { setBfOn(bfLive()); }, []);
+  // Thanksgiving: sale-priced items are pay-by-app only (iw-thanksgiving-p2p.php). Client clock only.
+  const [tgOn, setTgOn] = useState(false);
+  useEffect(() => { setTgOn(tgLive()); }, []);
   // Restock waitlist, shown only when the picked dose is sold out AND cannot be
   // backordered — if it can be backordered the customer should buy, not wait.
   const [notifyEmail, setNotifyEmail] = useState('');
@@ -543,6 +547,10 @@ export default function ProductPage() {
                 Today only: buy 1, get 2 free on the {B1G2_BY_SLUG[product.slug]}.
               </p>
             ) : null}
+
+            {tgOn && onSale && (
+              <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.86rem' }}>{TG_SALE_PAY_LINE}</p>
+            )}
 
             {product.shortDescription && (
               <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.7 }}
