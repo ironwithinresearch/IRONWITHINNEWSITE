@@ -57,6 +57,11 @@ export default function Deals() {
   if (nb) {
     deals.push({ eyebrow: `Ends ${NB_ENDS_LABEL}`, title: "NewMe's Birthday Bash", body: `${NB_PCT}% off almost everything (aminos, merch, bundles, gift cards, capsules and a few low-stock items excluded), no code needed, and creator codes stack on top. Orders of $${NB_GIFT_MIN}+ after discounts include a free RT-3 or TRZ-2 10mg while supplies last; pick yours at checkout. At $${NB_EXTRA_MIN}+, ${nbJoin(NB_EXTRA_ITEMS)} are added free as well. For research use only. Not for human or veterinary use.`, href: '/shop', cta: 'Shop the sale', highlight: true });
   }
+  // Black Friday capsules buy 1 get 1 free (Brian 27 Nov): today only, ends Sat 28 Nov 00:00 CT (backend iw-capsule-b1g1.php).
+  // Every card needs href: Deal renders a next/link, and an undefined href crashes the page.
+  if (now && now >= Date.parse('2026-11-27T06:00:00Z') && now < Date.parse('2026-11-28T06:00:00Z')) {
+    deals.push({ eyebrow: 'Today only', title: 'Capsules: buy 1, get 1 free', body: 'BPC-157, GHK-Cu, SLU-PP-332 and 5-Amino-1MQ capsules (60 count), mix and match: buy any two and the lower-priced one is free, at regular prices. Ends tonight at 11:59 p.m. CT. Deal applies at app & crypto checkout. While supplies last. For research use only. Not for human or veterinary use.', href: '/shop?category=capsules', cta: 'Shop capsules', highlight: true });
+  }
   // Thanksgiving (Thu 26 -> Sun 29 Nov CT): prices come from the store (backend slot 36), so no per-item % here.
   if (now && tgLive(now)) {
     deals.push({ eyebrow: `Ends ${TG_ENDS_LABEL}`, title: 'Thanksgiving sale', body: 'Up to 60% off almost everything, no code needed, and creator codes stack. Nasal sprays are up to 35% off. Aminos are 5% off (10% through Friday) and creator codes stack on them. Capsules are full price. Sale prices at app & crypto checkout. Some items excluded; low-stock items may drop out of the sale. While supplies last.', note: 'Sale prices apply to orders paid by bank/app transfer or crypto. Card checkout is not available for sale-priced items. App and crypto payments can\'t be reversed; unpaid orders cancel after 20 minutes. Orders placed Nov 24–29 ship Monday, Nov 30. For research use only. Not for human or veterinary use.', href: '/shop', cta: 'Shop the sale', highlight: true });
