@@ -18,6 +18,22 @@ export const ZONE_LABEL = 'CT';
 export const CUTOFF_HOUR = 14; // 2:00pm
 export const PICKUP_HOUR = 16; // 4:00pm
 
+// Processing-time wording — Brian, 27 Nov 2026: "processing can take up to 72 hours (3 business days)".
+// Same-day applies only to orders placed before the 2pm CT cutoff on a ship day (Mon–Fri,
+// minus paused dates). FTC Mail Order Rule: never promise "ships today" without the
+// 72-hour caveat. Every surface (product page, cart, checkout, /shipping, /faq) reads these.
+export const PROCESSING_FULL =
+  'Most orders placed before 2 p.m. Central (Mon\u2013Fri) ship the same day, but processing can take up to 72 hours (3 business days).';
+export const PROCESSING_SHORT =
+  'Order by 2 p.m. CT for same-day shipping on most orders; processing can take up to 72 hours (3 business days).';
+export const PROCESSING_CAVEAT = 'processing can take up to 72 hours (3 business days)';
+
+// Carrier (UPS) holidays — no pickup, so no same-day countdown and never named as the next
+// ship day (compliance review, 27 Nov 2026). America/Chicago dates. Extend each year.
+export const CARRIER_HOLIDAYS = [
+  '2026-12-25', '2027-01-01', '2027-05-31', '2027-07-05', '2027-09-06', '2027-11-25', '2027-11-26', '2027-12-24', '2027-12-31',
+];
+
 /** The wall-clock parts of `now` in the warehouse's timezone. */
 function localParts(now = new Date()) {
   const fmt = new Intl.DateTimeFormat('en-US', {
@@ -57,7 +73,7 @@ export function dispatchStatus(now = new Date()) {
   const shipDays = shipDaysLive(now.getTime()) ? SHIPDAYS : [1, 2, 3, 4, 5];
   // Thanksgiving pause (src/lib/shipPause.js): these CT dates are never ship days.
   const paused = shipPauseLive(now.getTime()) ? PAUSE_DATES : [];
-  const isShipDay = (d, date) => shipDays.includes(d) && !paused.includes(date);
+  const isShipDay = (d, date) => shipDays.includes(d) && !paused.includes(date) && !CARRIER_HOLIDAYS.includes(date);
 
   if (NO_COUNTDOWN_DATES.includes(ymd)) {
     return { todayPickup: false, shipsLabel: NO_COUNTDOWN_TEXT, minutesLeft: null, message: NO_COUNTDOWN_TEXT, plain: true };
@@ -68,7 +84,7 @@ export function dispatchStatus(now = new Date()) {
       todayPickup: true,
       shipsLabel: 'today',
       minutesLeft: cutoff - mins,
-      message: `Order within %s for today's ${PICKUP_HOUR - 12}pm pickup`,
+      message: `Order within %s for same-day shipping on most orders; ${PROCESSING_CAVEAT}.`,
     };
   }
 
@@ -89,7 +105,7 @@ export function dispatchStatus(now = new Date()) {
     todayPickup: false,
     shipsLabel: label,
     minutesLeft: null,
-    message: `Ships ${label}`,
+    message: `Most orders placed now ship ${label}; ${PROCESSING_CAVEAT}.`,
   };
 }
 
@@ -103,8 +119,7 @@ export function formatLeft(minutes) {
 
 /** The full policy, for the shipping page and the FAQ. One source of wording. */
 export const POLICY_LINES = [
+  PROCESSING_FULL,
   `We ship Monday to Friday. The carrier collects at ${PICKUP_HOUR - 12}:00pm ${ZONE_LABEL} each weekday.`,
-  `Orders placed before ${CUTOFF_HOUR - 12}:00pm ${ZONE_LABEL} go out on that same day's collection.`,
-  `Orders placed after ${CUTOFF_HOUR - 12}:00pm ${ZONE_LABEL} go out on the next working day.`,
-  `Anything ordered after ${CUTOFF_HOUR - 12}:00pm ${ZONE_LABEL} on Friday ships Monday afternoon — we do not ship at weekends.`,
+  `Most orders placed after ${CUTOFF_HOUR - 12}:00pm ${ZONE_LABEL}, or at the weekend, ship the next business day.`,
 ];

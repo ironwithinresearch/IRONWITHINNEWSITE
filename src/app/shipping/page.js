@@ -17,7 +17,7 @@ const sections = [
     icon: Clock,
     title: 'Order Processing',
     content:
-      'We ship Monday to Friday. The carrier collects at 4:00pm CT each weekday. Orders placed before 2:00pm CT go out on that same day\u2019s collection; orders placed after 2:00pm CT go out on the next working day. Anything ordered after 2:00pm CT on Friday ships Monday afternoon \u2014 we do not ship at weekends or on public holidays.',
+      'Processing can take up to 72 hours (3 business days) before your order ships. Most orders placed before 2 p.m. Central (Mon\u2013Fri) ship the same day; most orders placed after 2 p.m. Central, or at the weekend, ship the next business day. We ship Monday to Friday, with a 4:00pm CT carrier pickup each weekday, and we do not ship at weekends or on public holidays.',
   },
   {
     icon: Truck,

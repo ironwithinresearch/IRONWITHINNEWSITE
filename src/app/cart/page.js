@@ -8,6 +8,7 @@ import B2SUnlockNudge from '@/components/B2SUnlockNudge';
 import B1G2CartNudge from '@/components/B1G2CartNudge';
 import TGCartNudge from '@/components/TGCartNudge';
 import ShipPauseNote from '@/components/ShipPauseNote';
+import DispatchNotice from '@/components/DispatchNotice';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import PurchaseBlocked from '@/components/PurchaseBlocked';
@@ -485,6 +486,7 @@ export default function CartPage() {
               <p style={{ color: 'var(--text-muted)', fontSize: '0.72rem', margin: '0 0 20px' }}>
                 Shipping calculated at checkout.
               </p>
+              <DispatchNotice compact hideDuringPause style={{ margin: '-8px 0 18px' }} />
 
               {/* Coupon */}
               <div style={{ marginBottom: '18px' }}>
@@ -513,7 +515,7 @@ export default function CartPage() {
 
               {[
                 { Icon: ShieldCheck, label: 'Secure checkout' },
-                { Icon: Package, label: 'Fast, discreet shipping' },
+                { Icon: Package, label: 'Fast, secure shipping' },
               ].map(({ Icon, label }) => (
                 <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '7px', fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '6px' }}>
                   <Icon size={12} color="var(--primary-blue)" /> {label}

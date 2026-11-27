@@ -2,39 +2,46 @@
 
 import { useEffect, useState } from 'react';
 import { Truck } from 'lucide-react';
-import { dispatchStatus, formatLeft, ZONE_LABEL, CUTOFF_HOUR } from '@/lib/shipping-cutoff';
+import { dispatchStatus, formatLeft, PROCESSING_CAVEAT } from '@/lib/shipping-cutoff';
 import { shipDaysLive, SHIPDAYS_LABEL } from '@/lib/shipDays';
 import { shipPauseLive } from '@/lib/shipPause';
 
 /**
- * "Order within 3h 12m for today's 4pm pickup" — or "Ships Monday" once that has gone.
+ * "Order within 3h 12m for same-day shipping on most orders; processing can take up to 72
+ * hours" — or "Most orders placed now ship Monday; processing can take up to 72 hours".
+ * Never a bare "ships today" (Brian, 27 Nov 2026; FTC Mail Order Rule).
+ *
+ * `hideDuringPause`: for pages that already show <ShipPauseNote/> (cart), so the pause
+ * message is not stated twice.
  *
  * Rendered only after mount. The cutoff depends on the current time, so a server render
  * would bake in whatever the clock said at build time and then disagree with the client
  * on hydration — the exact mismatch class that has taken this site down before.
  */
-export default function DispatchNotice({ compact = false, style = {} }) {
+export default function DispatchNotice({ compact = false, style = {}, hideDuringPause = false }) {
   const [status, setStatus] = useState(null);
+  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
-    const tick = () => setStatus(dispatchStatus());
+    const tick = () => { setStatus(dispatchStatus()); setPaused(shipPauseLive()); };
     tick();
     const id = setInterval(tick, 30000); // keep the countdown honest
     return () => clearInterval(id);
   }, []);
 
   if (!status) return null;
+  if (hideDuringPause && paused) return null;
 
   const urgent = status.todayPickup;
   const text = urgent
-    ? `Order within ${formatLeft(status.minutesLeft)} for today's 4pm pickup`
+    ? null
     : status.plain
       ? `${status.message}.`
-      : shipPauseLive()
+      : paused
       ? `Ships ${status.shipsLabel} once payment is confirmed. We're not shipping Tuesday, Nov 24 through Sunday, Nov 29.`
       : shipDaysLive()
       ? `Ships ${status.shipsLabel} — through Oct 31 we ship ${SHIPDAYS_LABEL} only`
-      : `Ships ${status.shipsLabel} — orders after ${CUTOFF_HOUR - 12}pm ${ZONE_LABEL} go out the next working day`;
+      : status.message;
 
   return (
     <div
@@ -57,7 +64,7 @@ export default function DispatchNotice({ compact = false, style = {} }) {
         {urgent ? (
           <>
             <strong style={{ color: '#34d399' }}>Order within {formatLeft(status.minutesLeft)}</strong>{' '}
-            for today&rsquo;s 4pm pickup
+            for same-day shipping on most orders; {PROCESSING_CAVEAT}.
           </>
         ) : (
           text

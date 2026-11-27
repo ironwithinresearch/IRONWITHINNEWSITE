@@ -877,7 +877,7 @@ export default function CheckoutPage() {
                   ? 'One more step — send your payment below. Once it lands, your order joins your Ship Together box.'
                   : placedPro === 'only'
                   ? `One more step — send your payment below within ${P2P_PAY_MINUTES} minutes. Your Peptide Paradigm Pro code is emailed as soon as payment is received.`
-                  : `One more step — send your payment below within ${P2P_PAY_MINUTES} minutes. Your order ships as soon as payment is received.`)
+                  : `One more step — send your payment below within ${P2P_PAY_MINUTES} minutes. Once payment is received, most orders paid before 2 p.m. CT (Mon\u2013Fri) ship the same day; processing can take up to 72 hours (3 business days).`)
                 : placedHold === 'held'
                 ? 'Thank you for your order.'
                 : placedPro === 'only'
