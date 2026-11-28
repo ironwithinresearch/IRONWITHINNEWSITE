@@ -9,6 +9,7 @@ import { annPromoLive } from '@/lib/anniversary';
 import { nbLive, NB_PCT, NB_GIFT_MIN, NB_EXTRA_MIN, NB_EXTRA_ITEMS, NB_ENDS_LABEL, nbJoin } from '@/lib/newmeBday';
 import { giveawayOpen } from '@/lib/giveaway';
 import { tgLive, TG_ENDS_LABEL } from '@/lib/thanksgiving';
+import { xmasLive, xmasDayAt, xmasShipLine, GT } from '@/lib/christmas';
 import { bfLive, bfNext, bfgOpen, bfWeekLive, BFG, reseqRewardLine } from '@/lib/blackFriday';
 
 const ctWhen = (iso) => new Date(iso).toLocaleString('en-US', { weekday: 'short', hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' });
@@ -65,6 +66,12 @@ export default function Deals() {
   // Thanksgiving (Thu 26 -> Sun 29 Nov CT): prices come from the store (backend slot 36), so no per-item % here.
   if (now && tgLive(now)) {
     deals.push({ eyebrow: `Ends ${TG_ENDS_LABEL}`, title: 'Thanksgiving sale', body: 'Up to 60% off almost everything, no code needed, and creator codes stack. Nasal sprays are up to 35% off. Aminos are 5% off (10% through Friday) and creator codes stack on them. Capsules are full price. Sale prices at app & crypto checkout. Some items excluded; low-stock items may drop out of the sale. While supplies last.', note: 'Sale prices apply to orders paid by bank/app transfer or crypto. Card checkout is not available for sale-priced items. App and crypto payments can\'t be reversed; unpaid orders cancel after 20 minutes. Orders placed Nov 24–29 ship Monday, Nov 30. For research use only. Not for human or veterinary use.', href: '/shop', cta: 'Shop the sale', highlight: true });
+  }
+  // 25 Days of Christmas (Dec 1-25 CT). Prices + today's items come from the store (backend slots 37-61); no % here.
+  // Every card needs href: Deal renders a next/link, and an undefined href crashes the page.
+  if (now && xmasLive(now)) {
+    deals.push({ eyebrow: `Day ${xmasDayAt(now)} of 25 · ends 11:59 p.m. CT`, title: '25 Days of Christmas', body: 'A new door opens every day at midnight CT with one themed deal, no code needed, and creator codes stack (nasal sprays excepted). Items with fewer than 5 in stock drop out. While supplies last. For research use only. Not for human or veterinary use.', note: xmasShipLine(now), href: '/christmas', cta: "Open today's door", highlight: true });
+    deals.push({ eyebrow: 'Daily drawing · no purchase necessary', title: 'Golden Tickets', body: `${GT.tickets} prizes, one drawn each day, worth $${GT.total.toLocaleString('en-US')} in store credit in all. No purchase necessary: enter free once a day, or with a paid order that day; one chance per person per day either way. US residents 21+.`, href: '/golden-ticket', cta: 'Enter free or read the rules' });
   }
   if (now && bfWeekLive(now) && !nb) {
     deals.push({ eyebrow: 'Through November 25', title: '35% off most items', body: 'Every day through Wednesday, November 25: 35% off most items, with a smaller discount on a few, no code needed, and creator codes stack. Aminos, merch, gift cards, bundles and lab supplies are not included. Full list on the giveaway page.', href: '/shop', cta: 'Shop the sale', highlight: true });

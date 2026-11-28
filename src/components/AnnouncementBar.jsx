@@ -8,6 +8,7 @@ import { annPromoLive } from '@/lib/anniversary';
 import { nbLive, NB_PCT, NB_GIFT_MIN, NB_EXTRA_MIN } from '@/lib/newmeBday';
 import { bfLive, bfgOpen, bfWeekLive } from '@/lib/blackFriday';
 import { tgLive } from '@/lib/thanksgiving';
+import { xmasLive, xmasDayAt, xmasShipShort } from '@/lib/christmas';
 
 /* One calm, static announcement line, fixed above the navbar (height 36px — the navbar
    sits at top: 36 and main is padded to match).
@@ -47,6 +48,11 @@ function currentLine(now) {
   // Thanksgiving (Thu 26 -> Sun 29 Nov CT) replaces the 35% week; the shipping-pause notice still shows first.
   if (tgLive(now)) {
     return { text: 'Thanksgiving: up to 60% off almost everything, Thursday through Sunday. Codes stack. Sale prices at app & crypto checkout.', mid: 'Thanksgiving: up to 60% off almost everything, Thursday through Sunday. Codes stack.', short: 'Thanksgiving: up to 60% off almost everything', cta: 'See the deals', href: '/deals' };
+  }
+  // 25 Days of Christmas (Tue 1 Dec -> Fri 25 Dec CT): a new themed deal every day + a daily Golden Ticket drawing.
+  if (xmasLive(now)) {
+    const d = xmasDayAt(now);
+    return { text: `25 Days of Christmas, Day ${d}: a new deal every day, plus a daily Golden Ticket drawing (no purchase necessary). ${xmasShipShort(now)}.`, mid: `25 Days of Christmas, Day ${d}: today's deal + a free daily Golden Ticket drawing (no purchase necessary).`, short: `25 Days of Christmas: Day ${d} is open`, cta: "Open today's door", href: '/christmas' };
   }
   if (bfLive(now)) {
     return { text: 'Black Friday sale day: buy 1, get 2 free on RT-3 20mg, RT-3 30mg and TRZ-2 30mg, plus 35% off most other items. Limit 2 deals per item per order, Venmo, Zelle or crypto checkout only. Creator codes stack. Ends 11:59 p.m. CT.', short: 'Sale day: buy 1, get 2 free on select RT-3 and TRZ-2 (P2P only)', cta: 'See the deals', href: '/deals' };

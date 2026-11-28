@@ -30,6 +30,8 @@ export const PUBLIC_PREFIXES = [
   '/contact',
   // sweepstakes rules: the free mail-in route must be reachable without an account
   '/giveaway',
+  // Golden Ticket (25 Days of Christmas): free entry form + Official Rules must be reachable without an account
+  '/golden-ticket',
   // vial-label QR codes (route handler serving the COA page) — printed on product
   // already in customers' hands, so it can never be walled
   '/coas',

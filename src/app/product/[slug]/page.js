@@ -18,6 +18,7 @@ import AppRestockButton from '@/components/app/AppRestockButton';
 import { useAppMode } from '@/lib/appMode';
 import { bfLive, isB1G2, B1G2_BY_SLUG } from '@/lib/blackFriday';
 import { tgLive, TG_SALE_PAY_LINE } from '@/lib/thanksgiving';
+import { xmasLive, xmasShipShort } from '@/lib/christmas';
 import {
   FlaskConical, ShoppingCart, Heart, ChevronRight,
   BadgeCheck, Minus, Plus,
@@ -58,6 +59,12 @@ export default function ProductPage() {
   // Thanksgiving: sale-priced items are pay-by-app only (iw-thanksgiving-p2p.php). Client clock only.
   const [tgOn, setTgOn] = useState(false);
   useEffect(() => { setTgOn(tgLive()); }, []);
+  // 25 Days of Christmas: badge when THIS product is in today's door (list comes from the store, /api/christmas).
+  const [xmasToday, setXmasToday] = useState(null);
+  useEffect(() => {
+    if (!xmasLive()) return;
+    fetch('/api/christmas').then((r) => r.json()).then((d) => { if (d && d.ok && d.today) setXmasToday(d.today); }).catch(() => {});
+  }, []);
   // Restock waitlist, shown only when the picked dose is sold out AND cannot be
   // backordered — if it can be backordered the customer should buy, not wait.
   const [notifyEmail, setNotifyEmail] = useState('');
@@ -547,6 +554,15 @@ export default function ProductPage() {
                 Today only: buy 1, get 2 free on the {B1G2_BY_SLUG[product.slug]}.
               </p>
             ) : null}
+
+            {xmasToday && (xmasToday.slugs || []).includes(product.slug) && (
+              <Link href="/christmas" style={{ display: 'flex', flexDirection: 'column', gap: 4, padding: '12px 14px', borderRadius: 12, background: 'rgba(124,58,237,0.10)', border: '1px solid rgba(124,58,237,0.40)', textDecoration: 'none' }}>
+                <span style={{ fontWeight: 700, color: 'var(--text-light)', fontSize: '0.95rem' }}>25 Days of Christmas · Day {xmasToday.day}: {xmasToday.theme}</span>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.86rem', lineHeight: 1.55 }}>
+                  In today&apos;s door until 11:59 p.m. CT, no code needed. {xmasShipShort()}. Daily Golden Ticket drawing, no purchase necessary: enter free on the calendar page, or any paid order today enters you automatically. One chance per person per day.
+                </span>
+              </Link>
+            )}
 
             {tgOn && onSale && (
               <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.86rem' }}>{TG_SALE_PAY_LINE}</p>
