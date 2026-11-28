@@ -22,19 +22,27 @@ export const xmasDayStart = (d) => XMAS_START + (d - 1) * 86400000;
 export const xmasDateLabel = (d, opts = { weekday: 'short', month: 'short', day: 'numeric' }) =>
   new Date(xmasDayStart(d) + 12 * 3600000).toLocaleDateString('en-US', { ...opts, timeZone: 'America/Chicago' });
 
-/* Christmas delivery cutoff (UPS 2nd Day Air from Pensacola FL). Processing can take up to 3 business
-   days, so an order placed by 2 p.m. CT Thu 17 Dec ships by Tue 22 Dec, which UPS 2nd Day Air schedules
-   for Thu 24 Dec. 25 Dec is a carrier holiday (CARRIER_HOLIDAYS in shipping-cutoff.js). We never promise
-   a date past this: after the cutoff the copy only says orders are expected to arrive after Christmas. */
-export const XMAS_ORDER_BY = Date.parse('2026-12-17T20:00:00Z');   // Thu 17 Dec 2:00pm CST
-export const XMAS_ORDER_BY_LABEL = '2 p.m. CT on Thursday, December 17';
-export const xmasBeforeCutoff = (now = Date.now()) => now < XMAS_ORDER_BY;
-export const xmasShipLine = (now = Date.now()) => (xmasBeforeCutoff(now)
-  ? `Christmas delivery: choose Expedited shipping at checkout and place and pay for your order by ${XMAS_ORDER_BY_LABEL}. Those orders ship by Tuesday, December 22, by UPS 2nd Day Air, which UPS schedules for delivery by December 24. Standard shipping takes 2–7 business days after dispatch. Carrier delays can happen.`
-  : 'Orders placed now are expected to arrive after Christmas.');
-export const xmasShipShort = (now = Date.now()) => (xmasBeforeCutoff(now)
-  ? 'For Christmas delivery, choose Expedited and order by 2 p.m. CT Dec 17'
-  : 'Orders placed now are expected to arrive after Christmas');
+/* Christmas delivery cutoffs from Pensacola FL — CONSERVATIVE, dates we can meet (Brian 28 Nov: Expedited = UPS Next
+   Day Air). Processing can take up to 72 hours (3 business days); UPS does not deliver Dec 25 (CARRIER_HOLIDAYS).
+   - Expedited (UPS Next Day Air): placed + paid by 2 p.m. CT Fri 18 Dec -> processed by Wed 23 Dec (Mon/Tue/Wed)
+     -> UPS schedules delivery Thu 24 Dec.
+   - Standard: usually UPS 2nd Day Air, but the published transit is 2–7 business days, so: placed + paid by 2 p.m. CT
+     Thu 10 Dec -> ships by Tue 15 Dec -> 7 business days = Thu 24 Dec.
+   After a cutoff the copy only says orders may / are expected to arrive after Christmas. Never promise past these. */
+export const XMAS_STD_BY = Date.parse('2026-12-10T20:00:00Z');   // Thu 10 Dec 2:00pm CST
+export const XMAS_EXP_BY = Date.parse('2026-12-18T20:00:00Z');   // Fri 18 Dec 2:00pm CST
+export const XMAS_ORDER_BY = XMAS_EXP_BY;                        // last moment ANY method can make it
+export const xmasBeforeCutoff = (now = Date.now()) => now < XMAS_EXP_BY;
+export const xmasShipLine = (now = Date.now()) => (now < XMAS_STD_BY
+  ? 'Christmas delivery: place and pay for your order by 2 p.m. CT on Thursday, December 10 with Standard shipping, or by 2 p.m. CT on Friday, December 18 with Expedited (UPS Next Day Air). Processing can take up to 3 business days; orders placed by those times are expected to arrive by December 24. Carrier delays can happen.'
+  : now < XMAS_EXP_BY
+    ? 'Christmas delivery: choose Expedited (UPS Next Day Air) and place and pay for your order by 2 p.m. CT on Friday, December 18; it is expected to arrive by December 24. Standard orders placed now may arrive after Christmas. Carrier delays can happen.'
+    : 'Orders placed now are expected to arrive after Christmas.');
+export const xmasShipShort = (now = Date.now()) => (now < XMAS_STD_BY
+  ? 'Christmas delivery: order by Dec 10 (Standard) or Dec 18 (Expedited), 2 p.m. CT'
+  : now < XMAS_EXP_BY
+    ? 'For Christmas delivery, choose Expedited and order by 2 p.m. CT Dec 18'
+    : 'Orders placed now are expected to arrive after Christmas');
 
 /* Golden Tickets — mirrors iw-xmas.php, which implements the Official Rules at /golden-ticket/rules. */
 export const GT = {
