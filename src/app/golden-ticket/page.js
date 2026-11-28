@@ -130,7 +130,7 @@ export default function GoldenTicketPage() {
         <h2 id="gt-redeem" style={S.h2}><KeyRound size={17} aria-hidden="true" style={{ verticalAlign: -2, marginRight: 6 }} />Redeem a gold card</h2>
         <div style={S.card}>
           <p style={{ ...S.p, fontSize: '0.9rem' }}>
-            Each code works once, on the account that placed the winning order, until {GT.redeemByLabel}. The credit applies automatically at checkout, including on sale prices, and expires
+            Each code works once, on the account that placed the winning order, until {GT.redeemByLabel}. The credit applies automatically at checkout (except on orders already more than 30% off regular prices, where it stays on your account) and expires
             {` ${GT.expiryDays}`} days after it is added. It has no cash value.
           </p>
           <Redeem />
