@@ -44,7 +44,7 @@ export const GT = {
   get total() { return this.prizes.reduce((t, [n, v]) => t + n * v, 0); },
   opensLabel: 'December 1, 2026 at 12:00 a.m. Central Time',
   closesLabel: 'December 25, 2026 at 11:59 p.m. Central Time',
-  drawTime: 'shortly after midnight Central Time (normally by 1:00 a.m.) on the following day',
+  drawTime: 'shortly after midnight Central Time (usually between 12:10 a.m. and 12:30 a.m.) on the following day',
   claimDays: 14,
   redeemByLabel: 'January 31, 2027',   // gold-card codes stop working after 11:59 p.m. CT that day (IW_XMAS_REDEEM_BY)
   expiryDays: 30,

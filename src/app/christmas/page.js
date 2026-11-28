@@ -100,8 +100,13 @@ export default function ChristmasCalendar() {
           <div style={{ ...S.card, border: '1px solid rgba(124,58,237,0.5)' }}>
             <span style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#a78bfa' }}>Day {today.day} · ends 11:59 p.m. CT tonight</span>
             <h2 style={{ ...S.h2, margin: '6px 0 6px' }}>{today.theme}</h2>
-            <p style={{ ...S.p, marginBottom: 10 }}>{today.blurb} {pctLabel(today)}{today.max_pct ? ', no code needed.' : 'No code needed.'}</p>
-            {today.items?.length > 0 && today.max_pct && today.min_pct !== today.max_pct && (
+            <p style={{ ...S.p, marginBottom: 10 }}>
+              {today.blurb}{' '}
+              {!today.max_pct ? 'No code needed.'
+                : today.items?.some((it) => !it.pct) ? `Marked items ${pctLabel(today).toLowerCase()}, no code needed. Each product shows its own price.`
+                : `${pctLabel(today)}, no code needed.`}
+            </p>
+            {today.items?.length > 0 && today.max_pct && (today.min_pct !== today.max_pct || today.items.some((it) => !it.pct)) && (
               <p style={{ ...S.p, fontSize: '0.9rem', marginBottom: 10 }}>
                 <strong style={{ color: 'var(--text-light)' }}>At {today.max_pct}% off:</strong> {today.items.filter((it) => it.pct && it.pct === today.max_pct).map((it) => it.name).join(', ')}. Other items are discounted less; each product shows its own price.
               </p>

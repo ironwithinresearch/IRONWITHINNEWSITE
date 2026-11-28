@@ -120,7 +120,7 @@ export default function GoldenTicketPage() {
             </p>
             <p style={{ ...S.p, fontSize: '0.9rem', marginBottom: 0 }}>
               If your order wins and has not shipped yet, a gold card with a one-time code is packed in your box; the card is your notice.
-              {' '}{GT_LABEL_LINE} If your order has already shipped, the credit goes straight to your account and we email you within 7 days.
+              {' '}{GT_LABEL_LINE} If your order has already shipped, the credit goes straight to your account and we email you within 7 days. If you win with the free form, we add the credit to the account with that email and email you within 7 days; if there is no account yet, you have 14 days from our email to create one.
             </p>
           </div>
         </div>
