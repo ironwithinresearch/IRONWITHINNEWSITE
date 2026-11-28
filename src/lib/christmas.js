@@ -39,7 +39,7 @@ export const xmasShipShort = (now = Date.now()) => (xmasBeforeCutoff(now)
 /* Golden Tickets — mirrors iw-xmas.php, which implements the Official Rules at /golden-ticket/rules. */
 export const GT = {
   tickets: 25,
-  // [count, $ store credit]. To change a prize: edit here + IW_XMAS_POOL, then `wp iw-xmas prize-swap --from= --to=`.
+  // [count, $ store credit]. To change a prize: edit here AND IW_XMAS_POOL in iw-xmas.php (values are drawn from what is left).
   prizes: [[15, 25], [7, 50], [2, 100], [1, 400]],   // Brian 28 Nov: top prize $400 (pool $1,325)
   get total() { return this.prizes.reduce((t, [n, v]) => t + n * v, 0); },
   opensLabel: 'December 1, 2026 at 12:00 a.m. Central Time',

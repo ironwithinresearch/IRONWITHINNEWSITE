@@ -88,7 +88,7 @@ export default function ChristmasCalendar() {
             <Door key={d} d={d} info={byDay[d]} selected={pick === d} onPick={setPick} />
           ))}
         </div>
-        <style dangerouslySetInnerHTML={{ __html: '.xm-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}@media(min-width:760px){.xm-grid{grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}}' }} />
+        <style dangerouslySetInnerHTML={{ __html: '.xm-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding-right:56px}@media(min-width:760px){.xm-grid{grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}}' }} />
       </section>
 
       <section aria-live="polite" style={{ marginBottom: 30 }}>

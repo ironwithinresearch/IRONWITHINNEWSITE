@@ -16,7 +16,7 @@ export async function POST(request) {
   try {
     const res = await fetch(`${WP_URL}/wp-json/iw/v1/christmas/redeem`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: auth, 'x-iw-client-ip': ip },
+      headers: { 'Content-Type': 'application/json', Authorization: auth, 'x-iw-client-ip': ip, ...(process.env.IW_XMAS_PROXY_SECRET ? { 'x-iw-proxy-key': process.env.IW_XMAS_PROXY_SECRET } : {}) },
       body: JSON.stringify({ code }),
       cache: 'no-store',
     });
